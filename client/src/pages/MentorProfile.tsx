@@ -158,7 +158,7 @@ export default function MentorProfile() {
     try {
       await uploadGalleryMutation.mutateAsync({
         mentorId: profile.id,
-        imageUrl: uploadedImages[0].url,
+        imageData: uploadedImages[0].url,
         caption: newCaption || undefined,
         displayOrder: (gallery?.length || 0) + 1,
       });

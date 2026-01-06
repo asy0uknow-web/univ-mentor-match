@@ -532,7 +532,7 @@ export const appRouter = router({
     uploadImage: protectedProcedure
       .input(z.object({
         mentorId: z.number(),
-        imageUrl: z.string(),
+        imageData: z.string(),
         caption: z.string().optional(),
         displayOrder: z.number().default(0),
       }))
@@ -541,7 +541,19 @@ export const appRouter = router({
         if (!mentor || mentor.profile.userId !== ctx.user?.id) {
           throw new Error("Unauthorized: Can only upload to your own gallery");
         }
-        return await addGalleryImage(input);
+        
+        const base64Data = input.imageData.replace(/^data:image\/[a-z]+;base64,/, '');
+        const buffer = Buffer.from(base64Data, 'base64');
+        
+        const fileName = `mentor-gallery/${input.mentorId}-${Date.now()}-${Math.random().toString(36).substring(7)}.jpg`;
+        const { url } = await storagePut(fileName, buffer, 'image/jpeg');
+        
+        return await addGalleryImage({
+          mentorId: input.mentorId,
+          imageUrl: url,
+          caption: input.caption,
+          displayOrder: input.displayOrder,
+        });
       }),
 
     getByMentorId: publicProcedure
