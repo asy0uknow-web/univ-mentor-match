@@ -1,6 +1,17 @@
-import { eq } from "drizzle-orm";
+import { eq, and, desc, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users } from "../drizzle/schema";
+import { 
+  InsertUser, 
+  users, 
+  mentorProfiles, 
+  InsertMentorProfile, 
+  bookings, 
+  InsertBooking,
+  reviews,
+  InsertReview,
+  notifications,
+  InsertNotification
+} from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -59,6 +70,14 @@ export async function upsertUser(user: InsertUser): Promise<void> {
       values.role = 'admin';
       updateSet.role = 'admin';
     }
+    if (user.userType !== undefined) {
+      values.userType = user.userType;
+      updateSet.userType = user.userType;
+    }
+    if (user.stripeCustomerId !== undefined) {
+      values.stripeCustomerId = user.stripeCustomerId;
+      updateSet.stripeCustomerId = user.stripeCustomerId;
+    }
 
     if (!values.lastSignedIn) {
       values.lastSignedIn = new Date();
@@ -89,4 +108,243 @@ export async function getUserByOpenId(openId: string) {
   return result.length > 0 ? result[0] : undefined;
 }
 
-// TODO: add feature queries here as your schema grows.
+export async function updateUserType(userId: number, userType: "high_school_student" | "university_student") {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  await db.update(users).set({ userType }).where(eq(users.id, userId));
+}
+
+export async function updateStripeCustomerId(userId: number, stripeCustomerId: string) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  await db.update(users).set({ stripeCustomerId }).where(eq(users.id, userId));
+}
+
+// Mentor Profile queries
+export async function createMentorProfile(profile: InsertMentorProfile) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const result = await db.insert(mentorProfiles).values(profile);
+  return result;
+}
+
+export async function getMentorProfileByUserId(userId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const result = await db.select().from(mentorProfiles).where(eq(mentorProfiles.userId, userId)).limit(1);
+  return result.length > 0 ? result[0] : null;
+}
+
+export async function updateMentorProfile(userId: number, updates: Partial<InsertMentorProfile>) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  await db.update(mentorProfiles).set(updates).where(eq(mentorProfiles.userId, userId));
+}
+
+export async function getAllActiveMentors() {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const result = await db
+    .select({
+      profile: mentorProfiles,
+      user: users,
+    })
+    .from(mentorProfiles)
+    .innerJoin(users, eq(mentorProfiles.userId, users.id))
+    .where(eq(mentorProfiles.isActive, true))
+    .orderBy(desc(mentorProfiles.averageRating));
+  
+  return result;
+}
+
+export async function getMentorById(mentorId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const result = await db
+    .select({
+      profile: mentorProfiles,
+      user: users,
+    })
+    .from(mentorProfiles)
+    .innerJoin(users, eq(mentorProfiles.userId, users.id))
+    .where(eq(mentorProfiles.userId, mentorId))
+    .limit(1);
+  
+  return result.length > 0 ? result[0] : null;
+}
+
+// Booking queries
+export async function createBooking(booking: InsertBooking) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const result = await db.insert(bookings).values(booking);
+  return result;
+}
+
+export async function getBookingById(bookingId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const result = await db.select().from(bookings).where(eq(bookings.id, bookingId)).limit(1);
+  return result.length > 0 ? result[0] : null;
+}
+
+export async function updateBookingStatus(bookingId: number, status: "pending" | "confirmed" | "completed" | "cancelled") {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  await db.update(bookings).set({ status }).where(eq(bookings.id, bookingId));
+}
+
+export async function updateBookingPaymentIntent(bookingId: number, stripePaymentIntentId: string) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  await db.update(bookings).set({ stripePaymentIntentId }).where(eq(bookings.id, bookingId));
+}
+
+export async function getBookingsByStudent(studentId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const result = await db
+    .select({
+      booking: bookings,
+      mentor: users,
+      mentorProfile: mentorProfiles,
+    })
+    .from(bookings)
+    .innerJoin(users, eq(bookings.mentorId, users.id))
+    .leftJoin(mentorProfiles, eq(bookings.mentorId, mentorProfiles.userId))
+    .where(eq(bookings.studentId, studentId))
+    .orderBy(desc(bookings.createdAt));
+  
+  return result;
+}
+
+export async function getBookingsByMentor(mentorId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const result = await db
+    .select({
+      booking: bookings,
+      student: users,
+    })
+    .from(bookings)
+    .innerJoin(users, eq(bookings.studentId, users.id))
+    .where(eq(bookings.mentorId, mentorId))
+    .orderBy(desc(bookings.createdAt));
+  
+  return result;
+}
+
+// Review queries
+export async function createReview(review: InsertReview) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const result = await db.insert(reviews).values(review);
+  
+  // Update mentor's average rating and review count
+  await updateMentorRating(review.mentorId);
+  
+  return result;
+}
+
+export async function getReviewsByMentor(mentorId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const result = await db
+    .select({
+      review: reviews,
+      student: users,
+    })
+    .from(reviews)
+    .innerJoin(users, eq(reviews.studentId, users.id))
+    .where(eq(reviews.mentorId, mentorId))
+    .orderBy(desc(reviews.createdAt));
+  
+  return result;
+}
+
+export async function getReviewByBooking(bookingId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const result = await db.select().from(reviews).where(eq(reviews.bookingId, bookingId)).limit(1);
+  return result.length > 0 ? result[0] : null;
+}
+
+async function updateMentorRating(mentorId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const result = await db
+    .select({
+      avgRating: sql<number>`AVG(${reviews.rating})`,
+      count: sql<number>`COUNT(*)`,
+    })
+    .from(reviews)
+    .where(eq(reviews.mentorId, mentorId));
+  
+  if (result.length > 0 && result[0]) {
+    const avgRating = result[0].avgRating || 0;
+    const count = result[0].count || 0;
+    
+    await db.update(mentorProfiles).set({
+      averageRating: avgRating.toFixed(2),
+      reviewCount: count,
+    }).where(eq(mentorProfiles.userId, mentorId));
+  }
+}
+
+// Notification queries
+export async function createNotification(notification: InsertNotification) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const result = await db.insert(notifications).values(notification);
+  return result;
+}
+
+export async function getNotificationsByUser(userId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const result = await db
+    .select()
+    .from(notifications)
+    .where(eq(notifications.userId, userId))
+    .orderBy(desc(notifications.createdAt));
+  
+  return result;
+}
+
+export async function markNotificationAsRead(notificationId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  await db.update(notifications).set({ isRead: true }).where(eq(notifications.id, notificationId));
+}
+
+export async function getUnreadNotificationCount(userId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const result = await db
+    .select({ count: sql<number>`COUNT(*)` })
+    .from(notifications)
+    .where(and(eq(notifications.userId, userId), eq(notifications.isRead, false)));
+  
+  return result.length > 0 ? result[0]?.count || 0 : 0;
+}

@@ -43,39 +43,40 @@
 }
 
 :root {
-  --primary: var(--color-blue-700);
-  --primary-foreground: var(--color-blue-50);
-  --sidebar-primary: var(--color-blue-600);
-  --sidebar-primary-foreground: var(--color-blue-50);
-  --chart-1: var(--color-blue-300);
-  --chart-2: var(--color-blue-500);
-  --chart-3: var(--color-blue-600);
-  --chart-4: var(--color-blue-700);
-  --chart-5: var(--color-blue-800);
-  --radius: 0.65rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.235 0.015 65);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.235 0.015 65);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.235 0.015 65);
-  --secondary: oklch(0.98 0.001 286.375);
-  --secondary-foreground: oklch(0.4 0.015 65);
-  --muted: oklch(0.967 0.001 286.375);
-  --muted-foreground: oklch(0.552 0.016 285.938);
-  --accent: oklch(0.967 0.001 286.375);
-  --accent-foreground: oklch(0.141 0.005 285.823);
+  /* Sacred Geometry Theme - Warm Cream & Gold */
+  --primary: oklch(0.65 0.15 75); /* Golden accent */
+  --primary-foreground: oklch(0.25 0.03 240); /* Deep navy */
+  --sidebar-primary: oklch(0.65 0.15 75);
+  --sidebar-primary-foreground: oklch(0.25 0.03 240);
+  --chart-1: oklch(0.75 0.10 75);
+  --chart-2: oklch(0.65 0.15 75);
+  --chart-3: oklch(0.55 0.18 75);
+  --chart-4: oklch(0.45 0.20 75);
+  --chart-5: oklch(0.35 0.22 75);
+  --radius: 0.5rem;
+  --background: oklch(0.96 0.02 75); /* Warm cream */
+  --foreground: oklch(0.25 0.03 240); /* Deep navy */
+  --card: oklch(0.98 0.01 75);
+  --card-foreground: oklch(0.25 0.03 240);
+  --popover: oklch(0.98 0.01 75);
+  --popover-foreground: oklch(0.25 0.03 240);
+  --secondary: oklch(0.90 0.02 75);
+  --secondary-foreground: oklch(0.25 0.03 240);
+  --muted: oklch(0.92 0.02 75);
+  --muted-foreground: oklch(0.50 0.02 240);
+  --accent: oklch(0.65 0.15 75);
+  --accent-foreground: oklch(0.25 0.03 240);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(0.92 0.004 286.32);
-  --input: oklch(0.92 0.004 286.32);
-  --ring: oklch(0.623 0.214 259.815);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.235 0.015 65);
-  --sidebar-accent: oklch(0.967 0.001 286.375);
-  --sidebar-accent-foreground: oklch(0.141 0.005 285.823);
-  --sidebar-border: oklch(0.92 0.004 286.32);
-  --sidebar-ring: oklch(0.623 0.214 259.815);
+  --border: oklch(0.88 0.02 75);
+  --input: oklch(0.88 0.02 75);
+  --ring: oklch(0.65 0.15 75);
+  --sidebar: oklch(0.98 0.01 75);
+  --sidebar-foreground: oklch(0.25 0.03 240);
+  --sidebar-accent: oklch(0.90 0.02 75);
+  --sidebar-accent-foreground: oklch(0.25 0.03 240);
+  --sidebar-border: oklch(0.88 0.02 75);
+  --sidebar-ring: oklch(0.65 0.15 75);
 }
 
 .dark {
@@ -119,6 +120,7 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   }
   button:not(:disabled),
   [role="button"]:not([aria-disabled="true"]),
@@ -174,4 +176,91 @@
       max-width: 1280px; /* Standard content width */
     }
   }
+}
+/* Typography - Strong contrast navy sans-serif headlines */
+@layer base {
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-bold text-foreground;
+    letter-spacing: -0.02em;
+  }
+
+  h1 {
+    @apply text-4xl md:text-5xl lg:text-6xl;
+  }
+
+  h2 {
+    @apply text-3xl md:text-4xl lg:text-5xl;
+  }
+
+  h3 {
+    @apply text-2xl md:text-3xl lg:text-4xl;
+  }
+
+  /* Golden elegant subtitles */
+  .subtitle {
+    @apply text-primary font-medium tracking-wide;
+  }
+}
+
+/* Sacred geometry patterns */
+.sacred-pattern {
+  background-image: 
+    radial-gradient(circle at 20% 30%, oklch(0.65 0.15 75 / 0.05) 1px, transparent 1px),
+    radial-gradient(circle at 80% 70%, oklch(0.65 0.15 75 / 0.05) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+
+/* Golden ratio spiral decoration */
+.golden-spiral {
+  position: relative;
+}
+
+.golden-spiral::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cpath d='M100,100 Q120,80 140,100 T180,100' stroke='%23d4af37' stroke-width='0.5' fill='none' opacity='0.2'/%3E%3Ccircle cx='100' cy='100' r='30' stroke='%23d4af37' stroke-width='0.5' fill='none' opacity='0.2'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  pointer-events: none;
+}
+
+/* Geometric intersecting circles */
+.geometric-circles {
+  position: relative;
+}
+
+.geometric-circles::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 200px;
+  height: 200px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Ccircle cx='100' cy='100' r='60' stroke='%23d4af37' stroke-width='1' fill='none' opacity='0.15'/%3E%3Ccircle cx='80' cy='100' r='40' stroke='%23d4af37' stroke-width='1' fill='none' opacity='0.15'/%3E%3Ccircle cx='120' cy='100' r='40' stroke='%23d4af37' stroke-width='1' fill='none' opacity='0.15'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-size: contain;
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-secondary;
+}
+
+::-webkit-scrollbar-thumb {
+  background: oklch(0.65 0.15 75 / 0.3);
+  @apply rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: oklch(0.65 0.15 75 / 0.5);
 }
