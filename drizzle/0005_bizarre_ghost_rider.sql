@@ -1,0 +1,1 @@
+ALTER TABLE `mentor_gallery` MODIFY COLUMN `imageUrl` varchar(2000) NOT NULL;

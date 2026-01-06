@@ -169,7 +169,7 @@ export const mentorGallery = mysqlTable("mentor_gallery", {
   id: int("id").autoincrement().primaryKey(),
   mentorId: int("mentorId").notNull(), // References mentor_profiles.id
   // Image URL stored in S3
-  imageUrl: varchar("imageUrl", { length: 500 }).notNull(),
+  imageUrl: varchar("imageUrl", { length: 2000 }).notNull(),
   // Image caption or description
   caption: text("caption"),
   // Display order
