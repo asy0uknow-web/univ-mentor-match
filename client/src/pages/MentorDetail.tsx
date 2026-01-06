@@ -23,6 +23,7 @@ export default function MentorDetail() {
   const mentorId = parseInt(id || "0");
   const { data: mentor, isLoading } = trpc.mentor.getById.useQuery({ mentorId });
   const { data: reviews } = trpc.review.getByMentor.useQuery({ mentorId });
+  const { data: gallery } = trpc.gallery.getByMentorId.useQuery({ mentorId });
 
   const createBookingMutation = trpc.booking.create.useMutation({
     onSuccess: async (data) => {
@@ -177,6 +178,36 @@ export default function MentorDetail() {
                     </p>
                   </div>
                 </div>
+              </CardContent>
+            </Card>
+
+            {/* Gallery */}
+            <Card className="mt-6">
+              <CardHeader>
+                <CardTitle>대학생활 갤러리</CardTitle>
+                <CardDescription>멘토의 대학생활을 엿보세요</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {gallery && gallery.length > 0 ? (
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                    {gallery.map((image) => (
+                      <div key={image.id} className="group relative overflow-hidden rounded-lg">
+                        <img
+                          src={image.imageUrl}
+                          alt={image.caption || "Gallery"}
+                          className="w-full h-40 object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                        {image.caption && (
+                          <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3">
+                            <p className="text-white text-sm line-clamp-2">{image.caption}</p>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-muted-foreground text-center py-8">아직 갤러리 사진이 없습니다</p>
+                )}
               </CardContent>
             </Card>
 
