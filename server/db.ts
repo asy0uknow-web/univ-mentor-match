@@ -12,7 +12,9 @@ import {
   notifications,
   InsertNotification,
   messages,
-  InsertMessage
+  InsertMessage,
+  mentorVerifications,
+  InsertMentorVerification
 } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
@@ -408,4 +410,103 @@ export async function getUnreadMessagesCount(userId: number) {
     .where(and(eq(messages.recipientId, userId), eq(messages.isRead, false)));
   
   return result.length > 0 ? result[0]?.count || 0 : 0;
+}
+
+// Mentor Verification queries
+export async function createMentorVerification(verification: InsertMentorVerification) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const result = await db.insert(mentorVerifications).values(verification);
+  return result;
+}
+
+export async function getMentorVerificationByUserId(userId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const result = await db
+    .select()
+    .from(mentorVerifications)
+    .where(eq(mentorVerifications.userId, userId))
+    .orderBy(desc(mentorVerifications.createdAt))
+    .limit(1);
+  
+  return result.length > 0 ? result[0] : null;
+}
+
+export async function getPendingMentorVerifications() {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const result = await db
+    .select({
+      verification: mentorVerifications,
+      user: users,
+      profile: mentorProfiles,
+    })
+    .from(mentorVerifications)
+    .innerJoin(users, eq(mentorVerifications.userId, users.id))
+    .leftJoin(mentorProfiles, eq(mentorVerifications.userId, mentorProfiles.userId))
+    .where(eq(mentorVerifications.status, "pending"))
+    .orderBy(desc(mentorVerifications.createdAt));
+  
+  return result;
+}
+
+export async function approveMentorVerification(verificationId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const verification = await db
+    .select()
+    .from(mentorVerifications)
+    .where(eq(mentorVerifications.id, verificationId))
+    .limit(1);
+  
+  if (verification.length === 0) throw new Error("Verification not found");
+  
+  // Update verification status
+  await db.update(mentorVerifications).set({
+    status: "approved",
+    verifiedAt: new Date(),
+  }).where(eq(mentorVerifications.id, verificationId));
+  
+  // Update mentor profile verification status
+  await db.update(mentorProfiles).set({
+    verificationStatus: "approved",
+  }).where(eq(mentorProfiles.userId, verification[0].userId));
+}
+
+export async function rejectMentorVerification(verificationId: number, adminNotes: string) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const verification = await db
+    .select()
+    .from(mentorVerifications)
+    .where(eq(mentorVerifications.id, verificationId))
+    .limit(1);
+  
+  if (verification.length === 0) throw new Error("Verification not found");
+  
+  // Update verification status
+  await db.update(mentorVerifications).set({
+    status: "rejected",
+    adminNotes,
+  }).where(eq(mentorVerifications.id, verificationId));
+  
+  // Update mentor profile verification status
+  await db.update(mentorProfiles).set({
+    verificationStatus: "rejected",
+  }).where(eq(mentorProfiles.userId, verification[0].userId));
+}
+
+export async function updateMentorVerificationStatus(userId: number, status: "pending" | "approved" | "rejected") {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  await db.update(mentorProfiles).set({
+    verificationStatus: status,
+  }).where(eq(mentorProfiles.userId, userId));
 }

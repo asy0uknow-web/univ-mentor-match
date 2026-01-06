@@ -28,12 +28,25 @@ import {
   getMessagesForUser,
   markMessageAsRead,
   getUnreadMessagesCount,
+  createMentorVerification,
+  getMentorVerificationByUserId,
+  getPendingMentorVerifications,
+  approveMentorVerification,
+  rejectMentorVerification,
 } from "./db";
 import { CONSULTATION_PRODUCT, MIN_BOOKING_DURATION, MAX_BOOKING_DURATION } from "./products";
+import { storagePut } from "./storage";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2025-12-15.clover",
 });
+
+function adminProcedure(ctx: any) {
+  if (ctx.user?.role !== "admin") {
+    throw new Error("Only admins can access this");
+  }
+  return true;
+}
 
 export const appRouter = router({
   system: systemRouter,
@@ -307,6 +320,59 @@ export const appRouter = router({
     getUnreadCount: protectedProcedure.query(async ({ ctx }) => {
       return await getUnreadMessagesCount(ctx.user.id);
     }),
+  }),
+
+  verification: router({
+    submitVerification: protectedProcedure
+      .input(z.object({
+        studentIdImageUrl: z.string().url(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const existingVerification = await getMentorVerificationByUserId(ctx.user.id);
+        
+        if (existingVerification && existingVerification.status === "pending") {
+          throw new Error("이미 인증 요청이 진행 중입니다.");
+        }
+        
+        const result = await createMentorVerification({
+          userId: ctx.user.id,
+          studentIdImageUrl: input.studentIdImageUrl,
+          status: "pending",
+        });
+        
+        return { success: true, verificationId: (result as any).insertId };
+      }),
+
+    getMyVerification: protectedProcedure.query(async ({ ctx }) => {
+      return await getMentorVerificationByUserId(ctx.user.id);
+    }),
+
+    getPendingVerifications: protectedProcedure.query(async ({ ctx }) => {
+      if (ctx.user?.role !== "admin") {
+        throw new Error("Only admins can access this");
+      }
+      return await getPendingMentorVerifications();
+    }),
+
+    approveVerification: protectedProcedure
+      .input(z.object({ verificationId: z.number() }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user?.role !== "admin") {
+          throw new Error("Only admins can approve verifications");
+        }
+        await approveMentorVerification(input.verificationId);
+        return { success: true };
+      }),
+
+    rejectVerification: protectedProcedure
+      .input(z.object({ verificationId: z.number(), adminNotes: z.string() }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user?.role !== "admin") {
+          throw new Error("Only admins can reject verifications");
+        }
+        await rejectMentorVerification(input.verificationId, input.adminNotes);
+        return { success: true };
+      }),
   }),
 });
 

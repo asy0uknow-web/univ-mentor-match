@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { trpc } from "@/lib/trpc";
 import { Link, useLocation } from "wouter";
-import { GraduationCap } from "lucide-react";
+import { GraduationCap, CheckCircle, AlertCircle, Clock } from "lucide-react";
 import { useState, useEffect } from "react";
 import { getLoginUrl } from "@/const";
 import { toast } from "sonner";
@@ -22,6 +22,10 @@ export default function MentorProfile() {
   const [hourlyRate, setHourlyRate] = useState("");
 
   const { data: profile, isLoading } = trpc.mentor.getMyProfile.useQuery(undefined, {
+    enabled: isAuthenticated,
+  });
+
+  const { data: verification } = trpc.verification.getMyVerification.useQuery(undefined, {
     enabled: isAuthenticated,
   });
 
@@ -50,7 +54,7 @@ export default function MentorProfile() {
       setMajor(profile.major);
       setGrade(profile.grade);
       setBio(profile.bio || "");
-      setHourlyRate(profile.hourlyRate);
+      setHourlyRate(profile.hourlyRate.toString());
     }
   }, [profile]);
 
@@ -139,90 +143,150 @@ export default function MentorProfile() {
           {isLoading ? (
             <p className="text-muted-foreground">로딩 중...</p>
           ) : (
-            <Card>
-              <CardHeader>
-                <CardTitle>프로필 정보</CardTitle>
-                <CardDescription>
-                  멘토로 활동하기 위한 정보를 입력해주세요.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div>
-                    <Label htmlFor="university">대학명 *</Label>
-                    <Input
-                      id="university"
-                      value={university}
-                      onChange={(e) => setUniversity(e.target.value)}
-                      placeholder="예: 서울대학교"
-                      required
-                    />
-                  </div>
+            <>
+              {profile && (
+                <Card className="mb-6 border-blue-200 bg-blue-50">
+                  <CardHeader>
+                    <CardTitle className="flex items-center justify-between text-base">
+                      <span>인증 상태</span>
+                      {verification && (
+                        <div className="flex items-center gap-2">
+                          {verification.status === "approved" && (
+                            <>
+                              <CheckCircle className="h-5 w-5 text-green-500" />
+                              <span className="text-sm font-normal text-green-700">인증됨</span>
+                            </>
+                          )}
+                          {verification.status === "pending" && (
+                            <>
+                              <Clock className="h-5 w-5 text-yellow-500" />
+                              <span className="text-sm font-normal text-yellow-700">검토 중</span>
+                            </>
+                          )}
+                          {verification.status === "rejected" && (
+                            <>
+                              <AlertCircle className="h-5 w-5 text-red-500" />
+                              <span className="text-sm font-normal text-red-700">거부됨</span>
+                            </>
+                          )}
+                        </div>
+                      )}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    {!verification ? (
+                      <div className="space-y-3">
+                        <p className="text-sm text-blue-900">
+                          멘토로 활동하기 위해 학과 재학 인증이 필요합니다.
+                        </p>
+                        <Link href="/verify-mentor">
+                          <Button size="sm" className="w-full">
+                            인증하기
+                          </Button>
+                        </Link>
+                      </div>
+                    ) : (
+                      <div className="space-y-2">
+                        <p className="text-sm text-blue-900">
+                          {verification.status === "approved" && "당신의 멘토 프로필이 인증되었습니다."}
+                          {verification.status === "pending" && "관리자가 당신의 인증 요청을 검토 중입니다."}
+                          {verification.status === "rejected" && "인증이 거부되었습니다. 다시 신청해주세요."}
+                        </p>
+                        <Link href="/verify-mentor">
+                          <Button variant="outline" size="sm" className="w-full">
+                            인증 상태 확인
+                          </Button>
+                        </Link>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              )}
+              <Card>
+                <CardHeader>
+                  <CardTitle>프로필 정보</CardTitle>
+                  <CardDescription>
+                    멘토로 활동하기 위한 정보를 입력해주세요.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <form onSubmit={handleSubmit} className="space-y-6">
+                    <div>
+                      <Label htmlFor="university">대학명 *</Label>
+                      <Input
+                        id="university"
+                        value={university}
+                        onChange={(e) => setUniversity(e.target.value)}
+                        placeholder="예: 서울대학교"
+                        required
+                      />
+                    </div>
 
-                  <div>
-                    <Label htmlFor="major">전공 *</Label>
-                    <Input
-                      id="major"
-                      value={major}
-                      onChange={(e) => setMajor(e.target.value)}
-                      placeholder="예: 컴퓨터공학과"
-                      required
-                    />
-                  </div>
+                    <div>
+                      <Label htmlFor="major">전공 *</Label>
+                      <Input
+                        id="major"
+                        value={major}
+                        onChange={(e) => setMajor(e.target.value)}
+                        placeholder="예: 컴퓨터공학과"
+                        required
+                      />
+                    </div>
 
-                  <div>
-                    <Label htmlFor="grade">학년 *</Label>
-                    <Select value={grade} onValueChange={(value: any) => setGrade(value)}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="학년 선택" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="1">1학년</SelectItem>
-                        <SelectItem value="2">2학년</SelectItem>
-                        <SelectItem value="3">3학년</SelectItem>
-                        <SelectItem value="4">4학년</SelectItem>
-                        <SelectItem value="graduate">대학원생</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+                    <div>
+                      <Label htmlFor="grade">학년 *</Label>
+                      <Select value={grade} onValueChange={(value: any) => setGrade(value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="학년 선택" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="1">1학년</SelectItem>
+                          <SelectItem value="2">2학년</SelectItem>
+                          <SelectItem value="3">3학년</SelectItem>
+                          <SelectItem value="4">4학년</SelectItem>
+                          <SelectItem value="graduate">대학원생</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
 
-                  <div>
-                    <Label htmlFor="hourlyRate">시간당 상담료 (원) *</Label>
-                    <Input
-                      id="hourlyRate"
-                      type="number"
-                      value={hourlyRate}
-                      onChange={(e) => setHourlyRate(e.target.value)}
-                      placeholder="예: 30000"
-                      required
-                    />
-                  </div>
+                    <div>
+                      <Label htmlFor="hourlyRate">시간당 상담료 (원) *</Label>
+                      <Input
+                        id="hourlyRate"
+                        type="number"
+                        value={hourlyRate}
+                        onChange={(e) => setHourlyRate(e.target.value)}
+                        placeholder="예: 30000"
+                        required
+                      />
+                    </div>
 
-                  <div>
-                    <Label htmlFor="bio">자기소개</Label>
-                    <Textarea
-                      id="bio"
-                      value={bio}
-                      onChange={(e) => setBio(e.target.value)}
-                      placeholder="자신의 경험과 상담 가능한 내용을 소개해주세요."
-                      rows={6}
-                    />
-                  </div>
+                    <div>
+                      <Label htmlFor="bio">자기소개</Label>
+                      <Textarea
+                        id="bio"
+                        value={bio}
+                        onChange={(e) => setBio(e.target.value)}
+                        placeholder="자신의 경험과 상담 가능한 내용을 소개해주세요."
+                        rows={6}
+                      />
+                    </div>
 
-                  <Button
-                    type="submit"
-                    className="w-full"
-                    disabled={createProfileMutation.isPending || updateProfileMutation.isPending}
-                  >
-                    {createProfileMutation.isPending || updateProfileMutation.isPending
-                      ? "저장 중..."
-                      : profile
-                      ? "프로필 업데이트"
-                      : "멘토 등록하기"}
-                  </Button>
-                </form>
-              </CardContent>
-            </Card>
+                    <Button
+                      type="submit"
+                      className="w-full"
+                      disabled={createProfileMutation.isPending || updateProfileMutation.isPending}
+                    >
+                      {createProfileMutation.isPending || updateProfileMutation.isPending
+                        ? "저장 중..."
+                        : profile
+                        ? "프로필 업데이트"
+                        : "멘토 등록하기"}
+                    </Button>
+                  </form>
+                </CardContent>
+              </Card>
+            </>
           )}
         </div>
       </div>

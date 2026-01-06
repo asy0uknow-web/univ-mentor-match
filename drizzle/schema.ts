@@ -45,6 +45,8 @@ export const mentorProfiles = mysqlTable("mentor_profiles", {
   availableSlots: text("availableSlots"),
   // Profile visibility
   isActive: boolean("isActive").default(true).notNull(),
+  // Verification status: pending, approved, rejected
+  verificationStatus: mysqlEnum("verificationStatus", ["pending", "approved", "rejected"]).default("pending").notNull(),
   // Average rating (calculated from reviews)
   averageRating: decimal("averageRating", { precision: 3, scale: 2 }).default("0.00"),
   // Total number of reviews
@@ -135,3 +137,23 @@ export const messages = mysqlTable("messages", {
 
 export type Message = typeof messages.$inferSelect;
 export type InsertMessage = typeof messages.$inferInsert;
+/**
+ * Mentor verification requests with student ID image
+ */
+export const mentorVerifications = mysqlTable("mentor_verifications", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(),
+  // Student ID image URL (stored in S3)
+  studentIdImageUrl: varchar("studentIdImageUrl", { length: 500 }).notNull(),
+  // Verification status: pending, approved, rejected
+  status: mysqlEnum("status", ["pending", "approved", "rejected"]).default("pending").notNull(),
+  // Admin notes for rejection
+  adminNotes: text("adminNotes"),
+  // Verified at timestamp
+  verifiedAt: timestamp("verifiedAt"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type MentorVerification = typeof mentorVerifications.$inferSelect;
+export type InsertMentorVerification = typeof mentorVerifications.$inferInsert;
