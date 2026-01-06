@@ -323,6 +323,34 @@ export const appRouter = router({
   }),
 
   verification: router({
+    uploadStudentId: protectedProcedure
+      .input(z.object({
+        fileData: z.string(),
+        fileName: z.string(),
+        mimeType: z.string(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const allowedMimeTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
+        if (!allowedMimeTypes.includes(input.mimeType)) {
+          throw new Error("Unsupported file format");
+        }
+
+        const buffer = Buffer.from(input.fileData, "base64");
+        const maxSize = 5 * 1024 * 1024;
+        if (buffer.length > maxSize) {
+          throw new Error("File size must be less than 5MB");
+        }
+
+        const timestamp = Date.now();
+        const randomSuffix = Math.random().toString(36).substring(2, 15);
+        const fileExtension = input.fileName.split(".").pop() || "jpg";
+        const secureFileName = `student-id/${ctx.user.id}/${timestamp}-${randomSuffix}.${fileExtension}`;
+
+        const { url } = await storagePut(secureFileName, buffer, input.mimeType);
+
+        return { success: true, imageUrl: url };
+      }),
+
     submitVerification: protectedProcedure
       .input(z.object({
         studentIdImageUrl: z.string().url(),
