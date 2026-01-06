@@ -33,13 +33,25 @@ import {
   getPendingMentorVerifications,
   approveMentorVerification,
   rejectMentorVerification,
+  getMentorsByField,
+  getMentorsByRegion,
+  getMentorsByFieldAndRegion,
+  addGalleryImage,
+  getGalleryByMentorId,
+  deleteGalleryImage,
+  updateGalleryImageOrder,
+  getDb,
 } from "./db";
 import { CONSULTATION_PRODUCT, MIN_BOOKING_DURATION, MAX_BOOKING_DURATION } from "./products";
 import { storagePut } from "./storage";
+import { eq } from "drizzle-orm";
+import { mentorGallery } from "../drizzle/schema";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2025-12-15.clover",
 });
+
+
 
 function adminProcedure(ctx: any) {
   if (ctx.user?.role !== "admin") {
@@ -482,6 +494,96 @@ export const appRouter = router({
           throw new Error("Only admins can reject verifications");
         }
         await rejectMentorVerification(input.verificationId, input.adminNotes);
+        return { success: true };
+      }),
+  }),
+  mentorSearch: router({
+    getByField: publicProcedure
+      .input(z.object({
+        field: z.enum(["engineering", "natural_science", "business", "humanities", "education", "liberal_arts", "medicine"]),
+      }))
+      .query(async ({ input }) => {
+        return await getMentorsByField(input.field);
+      }),
+
+    getByRegion: publicProcedure
+      .input(z.object({
+        region: z.enum(["seoul", "gyeonggi", "incheon", "gangwon", "chungcheong", "jeolla", "gyeongsang", "jeju"]),
+      }))
+      .query(async ({ input }) => {
+        return await getMentorsByRegion(input.region);
+      }),
+
+    getByFieldAndRegion: publicProcedure
+      .input(z.object({
+        field: z.enum(["engineering", "natural_science", "business", "humanities", "education", "liberal_arts", "medicine"]).optional(),
+        region: z.enum(["seoul", "gyeonggi", "incheon", "gangwon", "chungcheong", "jeolla", "gyeongsang", "jeju"]).optional(),
+      }))
+      .query(async ({ input }) => {
+        return await getMentorsByFieldAndRegion(input.field, input.region);
+      }),
+  }),
+
+  gallery: router({
+    uploadImage: protectedProcedure
+      .input(z.object({
+        mentorId: z.number(),
+        imageUrl: z.string(),
+        caption: z.string().optional(),
+        displayOrder: z.number().default(0),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const mentor = await getMentorById(input.mentorId);
+        if (!mentor || mentor.profile.userId !== ctx.user?.id) {
+          throw new Error("Unauthorized: Can only upload to your own gallery");
+        }
+        return await addGalleryImage(input);
+      }),
+
+    getByMentorId: publicProcedure
+      .input(z.object({
+        mentorId: z.number(),
+      }))
+      .query(async ({ input }) => {
+        return await getGalleryByMentorId(input.mentorId);
+      }),
+
+    deleteImage: protectedProcedure
+      .input(z.object({
+        imageId: z.number(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const database = await getDb();
+        if (!database) throw new Error("Database not available");
+        const gallery = await database.select().from(mentorGallery).where(eq(mentorGallery.id, input.imageId)).limit(1);
+        if (gallery.length === 0) throw new Error("Image not found");
+        
+        const mentor = await getMentorById(gallery[0].mentorId);
+        if (!mentor || mentor.profile.userId !== ctx.user?.id) {
+          throw new Error("Unauthorized");
+        }
+        
+        await deleteGalleryImage(input.imageId);
+        return { success: true };
+      }),
+
+    updateOrder: protectedProcedure
+      .input(z.object({
+        imageId: z.number(),
+        displayOrder: z.number(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const database = await getDb();
+        if (!database) throw new Error("Database not available");
+        const gallery = await database.select().from(mentorGallery).where(eq(mentorGallery.id, input.imageId)).limit(1);
+        if (gallery.length === 0) throw new Error("Image not found");
+        
+        const mentor = await getMentorById(gallery[0].mentorId);
+        if (!mentor || mentor.profile.userId !== ctx.user?.id) {
+          throw new Error("Unauthorized");
+        }
+        
+        await updateGalleryImageOrder(input.imageId, input.displayOrder);
         return { success: true };
       }),
   }),

@@ -37,6 +37,10 @@ export const mentorProfiles = mysqlTable("mentor_profiles", {
   userId: int("userId").notNull(), // References users.id
   university: varchar("university", { length: 255 }).notNull(),
   major: varchar("major", { length: 255 }).notNull(),
+  // Field of study: 이공계, 자연계, 상경계, 어문계, 사범계, 문과계, 의학계
+  field: mysqlEnum("field", ["engineering", "natural_science", "business", "humanities", "education", "liberal_arts", "medicine"]),
+  // Region: 서울, 경기, 인천, 강원, 충청, 전라, 경상, 제주
+  region: mysqlEnum("region", ["seoul", "gyeonggi", "incheon", "gangwon", "chungcheong", "jeolla", "gyeongsang", "jeju"]),
   grade: mysqlEnum("grade", ["1", "2", "3", "4", "graduate"]).notNull(),
   bio: text("bio"),
   // Hourly consultation fee in KRW
@@ -157,3 +161,22 @@ export const mentorVerifications = mysqlTable("mentor_verifications", {
 
 export type MentorVerification = typeof mentorVerifications.$inferSelect;
 export type InsertMentorVerification = typeof mentorVerifications.$inferInsert;
+
+/**
+ * Mentor gallery images
+ */
+export const mentorGallery = mysqlTable("mentor_gallery", {
+  id: int("id").autoincrement().primaryKey(),
+  mentorId: int("mentorId").notNull(), // References mentor_profiles.id
+  // Image URL stored in S3
+  imageUrl: varchar("imageUrl", { length: 500 }).notNull(),
+  // Image caption or description
+  caption: text("caption"),
+  // Display order
+  displayOrder: int("displayOrder").default(0).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type MentorGallery = typeof mentorGallery.$inferSelect;
+export type InsertMentorGallery = typeof mentorGallery.$inferInsert;

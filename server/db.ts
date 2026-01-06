@@ -14,7 +14,9 @@ import {
   messages,
   InsertMessage,
   mentorVerifications,
-  InsertMentorVerification
+  InsertMentorVerification,
+  mentorGallery,
+  InsertMentorGallery
 } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
@@ -509,4 +511,117 @@ export async function updateMentorVerificationStatus(userId: number, status: "pe
   await db.update(mentorProfiles).set({
     verificationStatus: status,
   }).where(eq(mentorProfiles.userId, userId));
+}
+
+// Mentor filtering queries
+export async function getMentorsByFieldAndRegion(
+  field?: "engineering" | "natural_science" | "business" | "humanities" | "education" | "liberal_arts" | "medicine",
+  region?: "seoul" | "gyeonggi" | "incheon" | "gangwon" | "chungcheong" | "jeolla" | "gyeongsang" | "jeju"
+) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const conditions = [];
+  if (field) conditions.push(eq(mentorProfiles.field, field));
+  if (region) conditions.push(eq(mentorProfiles.region, region));
+  conditions.push(eq(mentorProfiles.isActive, true));
+  conditions.push(eq(mentorProfiles.verificationStatus, "approved"));
+  
+  const result = await db
+    .select({
+      profile: mentorProfiles,
+      user: users,
+    })
+    .from(mentorProfiles)
+    .innerJoin(users, eq(mentorProfiles.userId, users.id))
+    .where(conditions.length > 0 ? and(...conditions) : undefined)
+    .orderBy(desc(mentorProfiles.averageRating));
+  
+  return result;
+}
+
+export async function getMentorsByField(
+  field: "engineering" | "natural_science" | "business" | "humanities" | "education" | "liberal_arts" | "medicine"
+) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const result = await db
+    .select({
+      profile: mentorProfiles,
+      user: users,
+    })
+    .from(mentorProfiles)
+    .innerJoin(users, eq(mentorProfiles.userId, users.id))
+    .where(
+      and(
+        eq(mentorProfiles.field, field),
+        eq(mentorProfiles.isActive, true),
+        eq(mentorProfiles.verificationStatus, "approved")
+      )
+    )
+    .orderBy(desc(mentorProfiles.averageRating));
+  
+  return result;
+}
+
+export async function getMentorsByRegion(
+  region: "seoul" | "gyeonggi" | "incheon" | "gangwon" | "chungcheong" | "jeolla" | "gyeongsang" | "jeju"
+) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const result = await db
+    .select({
+      profile: mentorProfiles,
+      user: users,
+    })
+    .from(mentorProfiles)
+    .innerJoin(users, eq(mentorProfiles.userId, users.id))
+    .where(
+      and(
+        eq(mentorProfiles.region, region),
+        eq(mentorProfiles.isActive, true),
+        eq(mentorProfiles.verificationStatus, "approved")
+      )
+    )
+    .orderBy(desc(mentorProfiles.averageRating));
+  
+  return result;
+}
+
+// Mentor gallery queries
+export async function addGalleryImage(galleryImage: InsertMentorGallery) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const result = await db.insert(mentorGallery).values(galleryImage);
+  return result;
+}
+
+export async function getGalleryByMentorId(mentorId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const result = await db
+    .select()
+    .from(mentorGallery)
+    .where(eq(mentorGallery.mentorId, mentorId))
+    .orderBy(mentorGallery.displayOrder);
+  
+  return result;
+}
+
+export async function deleteGalleryImage(imageId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  await db.delete(mentorGallery).where(eq(mentorGallery.id, imageId));
+}
+
+export async function updateGalleryImageOrder(imageId: number, displayOrder: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  await db.update(mentorGallery).set({ displayOrder }).where(eq(mentorGallery.id, imageId));
 }
