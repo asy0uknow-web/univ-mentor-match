@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { trpc } from "@/lib/trpc";
-import { Link, useParams } from "wouter";
+import { Link, useParams, useLocation } from "wouter";
 import { GraduationCap, Star, Calendar, ArrowLeft, MessageCircle } from "lucide-react";
 import { useState } from "react";
 import { getLoginUrl } from "@/const";
@@ -45,9 +45,14 @@ export default function MentorDetail() {
     },
   });
 
+  const [, setLocation] = useLocation();
   const sendMessageMutation = trpc.message.send.useMutation({
     onSuccess: () => {
       toast.success("메시지가 전송되었습니다.");
+      setStudentMessage("");
+      setTimeout(() => {
+        setLocation("/messages");
+      }, 500);
     },
     onError: (error) => {
       toast.error(`메시지 전송 실패: ${error.message}`);
