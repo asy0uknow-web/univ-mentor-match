@@ -136,7 +136,6 @@ export default function Mentors() {
                   <SelectValue placeholder="분야 선택" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">전체</SelectItem>
                   {FIELDS.map((field) => (
                     <SelectItem key={field.value} value={field.value}>
                       {field.label}
@@ -154,7 +153,6 @@ export default function Mentors() {
                   <SelectValue placeholder="지역 선택" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">전체</SelectItem>
                   {REGIONS.map((region) => (
                     <SelectItem key={region.value} value={region.value}>
                       {region.label}
