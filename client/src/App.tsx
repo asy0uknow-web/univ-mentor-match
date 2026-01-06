@@ -12,6 +12,7 @@ import Bookings from "./pages/Bookings";
 import Notifications from "./pages/Notifications";
 import Messages from "./pages/Messages";
 import VerifyMentor from "./pages/VerifyMentor";
+import AdminDashboard from "./pages/AdminDashboard";
 
 function Router() {
   return (
@@ -24,6 +25,7 @@ function Router() {
       <Route path={"/notifications"} component={Notifications} />
       <Route path={"/messages"} component={Messages} />
       <Route path={"/verify-mentor"} component={VerifyMentor} />
+      <Route path={"/admin"} component={AdminDashboard} />
       <Route path={"/404"} component={NotFound} />
       <Route component={NotFound} />
     </Switch>

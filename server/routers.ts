@@ -402,6 +402,89 @@ export const appRouter = router({
         return { success: true };
       }),
   }),
+
+  admin: router({
+    getAllMentors: protectedProcedure.query(async ({ ctx }) => {
+      if (ctx.user?.role !== "admin") {
+        throw new Error("Only admins can access this");
+      }
+      return await getAllActiveMentors();
+    }),
+
+    getMentorDetails: protectedProcedure
+      .input(z.object({
+        mentorId: z.number(),
+      }))
+      .query(async ({ ctx, input }) => {
+        if (ctx.user?.role !== "admin") {
+          throw new Error("Only admins can access this");
+        }
+        return await getMentorById(input.mentorId);
+      }),
+
+    updateMentorProfile: protectedProcedure
+      .input(z.object({
+        mentorId: z.number(),
+        university: z.string().optional(),
+        major: z.string().optional(),
+        grade: z.enum(["1", "2", "3", "4", "graduate"]).optional(),
+        bio: z.string().optional(),
+        hourlyRate: z.string().optional(),
+        isActive: z.boolean().optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user?.role !== "admin") {
+          throw new Error("Only admins can update mentor profiles");
+        }
+        const { mentorId, ...updateData } = input;
+        await updateMentorProfile(mentorId, updateData);
+        return { success: true };
+      }),
+
+    deleteMentorProfile: protectedProcedure
+      .input(z.object({
+        mentorId: z.number(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user?.role !== "admin") {
+          throw new Error("Only admins can delete mentor profiles");
+        }
+        await updateMentorProfile(input.mentorId, { isActive: false });
+        return { success: true };
+      }),
+
+    getPendingVerifications: protectedProcedure.query(async ({ ctx }) => {
+      if (ctx.user?.role !== "admin") {
+        throw new Error("Only admins can access this");
+      }
+      return await getPendingMentorVerifications();
+    }),
+
+    approveVerification: protectedProcedure
+      .input(z.object({
+        verificationId: z.number(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user?.role !== "admin") {
+          throw new Error("Only admins can approve verifications");
+        }
+        await approveMentorVerification(input.verificationId);
+        return { success: true };
+      }),
+
+    rejectVerification: protectedProcedure
+      .input(z.object({
+        verificationId: z.number(),
+        adminNotes: z.string(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user?.role !== "admin") {
+          throw new Error("Only admins can reject verifications");
+        }
+        await rejectMentorVerification(input.verificationId, input.adminNotes);
+        return { success: true };
+      }),
+  }),
 });
 
 export type AppRouter = typeof appRouter;
