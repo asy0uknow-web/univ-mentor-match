@@ -1,4 +1,4 @@
-import { eq, and, desc, sql } from "drizzle-orm";
+import { eq, and, or, desc, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import { 
   InsertUser, 
@@ -10,7 +10,9 @@ import {
   reviews,
   InsertReview,
   notifications,
-  InsertNotification
+  InsertNotification,
+  messages,
+  InsertMessage
 } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
@@ -345,6 +347,65 @@ export async function getUnreadNotificationCount(userId: number) {
     .select({ count: sql<number>`COUNT(*)` })
     .from(notifications)
     .where(and(eq(notifications.userId, userId), eq(notifications.isRead, false)));
+  
+  return result.length > 0 ? result[0]?.count || 0 : 0;
+}
+
+// Message queries
+export async function createMessage(message: InsertMessage) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const result = await db.insert(messages).values(message);
+  return result;
+}
+
+export async function getMessagesBetweenUsers(userId1: number, userId2: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const result = await db
+    .select()
+    .from(messages)
+    .where(
+      or(
+        and(eq(messages.senderId, userId1), eq(messages.recipientId, userId2)),
+        and(eq(messages.senderId, userId2), eq(messages.recipientId, userId1))
+      )
+    )
+    .orderBy(desc(messages.createdAt));
+  
+  return result;
+}
+
+export async function getMessagesForUser(userId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const result = await db
+    .select()
+    .from(messages)
+    .where(eq(messages.recipientId, userId))
+    .orderBy(desc(messages.createdAt));
+  
+  return result;
+}
+
+export async function markMessageAsRead(messageId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  await db.update(messages).set({ isRead: true }).where(eq(messages.id, messageId));
+}
+
+export async function getUnreadMessagesCount(userId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const result = await db
+    .select({ count: sql<number>`COUNT(*)` })
+    .from(messages)
+    .where(and(eq(messages.recipientId, userId), eq(messages.isRead, false)));
   
   return result.length > 0 ? result[0]?.count || 0 : 0;
 }

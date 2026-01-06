@@ -23,6 +23,11 @@ import {
   markNotificationAsRead,
   getUnreadNotificationCount,
   updateStripeCustomerId,
+  createMessage,
+  getMessagesBetweenUsers,
+  getMessagesForUser,
+  markMessageAsRead,
+  getUnreadMessagesCount,
 } from "./db";
 import { CONSULTATION_PRODUCT, MIN_BOOKING_DURATION, MAX_BOOKING_DURATION } from "./products";
 
@@ -261,6 +266,46 @@ export const appRouter = router({
 
     getUnreadCount: protectedProcedure.query(async ({ ctx }) => {
       return await getUnreadNotificationCount(ctx.user.id);
+    }),
+  }),
+
+  message: router({
+    send: protectedProcedure
+      .input(z.object({
+        recipientId: z.number(),
+        content: z.string().min(1),
+        bookingId: z.number().optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const message = await createMessage({
+          senderId: ctx.user.id,
+          recipientId: input.recipientId,
+          content: input.content,
+          bookingId: input.bookingId,
+          isRead: false,
+        });
+        return { success: true, messageId: (message as any).insertId };
+      }),
+
+    getConversation: protectedProcedure
+      .input(z.object({ otherUserId: z.number() }))
+      .query(async ({ ctx, input }) => {
+        return await getMessagesBetweenUsers(ctx.user.id, input.otherUserId);
+      }),
+
+    getInbox: protectedProcedure.query(async ({ ctx }) => {
+      return await getMessagesForUser(ctx.user.id);
+    }),
+
+    markAsRead: protectedProcedure
+      .input(z.object({ messageId: z.number() }))
+      .mutation(async ({ input }) => {
+        await markMessageAsRead(input.messageId);
+        return { success: true };
+      }),
+
+    getUnreadCount: protectedProcedure.query(async ({ ctx }) => {
+      return await getUnreadMessagesCount(ctx.user.id);
     }),
   }),
 });

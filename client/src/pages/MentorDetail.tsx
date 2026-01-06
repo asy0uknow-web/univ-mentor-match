@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { trpc } from "@/lib/trpc";
 import { Link, useParams } from "wouter";
-import { GraduationCap, Star, Calendar, ArrowLeft } from "lucide-react";
+import { GraduationCap, Star, Calendar, ArrowLeft, MessageCircle } from "lucide-react";
 import { useState } from "react";
 import { getLoginUrl } from "@/const";
 import { toast } from "sonner";
@@ -41,6 +41,15 @@ export default function MentorDetail() {
     },
     onError: (error) => {
       toast.error(`예약 실패: ${error.message}`);
+    },
+  });
+
+  const sendMessageMutation = trpc.message.send.useMutation({
+    onSuccess: () => {
+      toast.success("메시지가 전송되었습니다.");
+    },
+    onError: (error) => {
+      toast.error(`메시지 전송 실패: ${error.message}`);
     },
   });
 
@@ -291,6 +300,22 @@ export default function MentorDetail() {
                     </Button>
                   </a>
                 )}
+                <Button
+                  variant="outline"
+                  className="w-full mt-3"
+                  onClick={() => {
+                    if (mentor?.user?.id) {
+                      sendMessageMutation.mutate({
+                        recipientId: mentor.user.id,
+                        content: "안녕하세요! 상담을 받고 싶습니다.",
+                      });
+                    }
+                  }}
+                  disabled={sendMessageMutation.isPending}
+                >
+                  <MessageCircle className="h-5 w-5 mr-2" />
+                  {sendMessageMutation.isPending ? "전송 중..." : "문의 메시지"}
+                </Button>
               </CardContent>
             </Card>
           </div>

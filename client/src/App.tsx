@@ -10,6 +10,7 @@ import MentorDetail from "./pages/MentorDetail";
 import MentorProfile from "./pages/MentorProfile";
 import Bookings from "./pages/Bookings";
 import Notifications from "./pages/Notifications";
+import Messages from "./pages/Messages";
 
 function Router() {
   return (
@@ -20,6 +21,7 @@ function Router() {
       <Route path={"/my-profile"} component={MentorProfile} />
       <Route path={"/bookings"} component={Bookings} />
       <Route path={"/notifications"} component={Notifications} />
+      <Route path={"/messages"} component={Messages} />
       <Route path={"/404"} component={NotFound} />
       <Route component={NotFound} />
     </Switch>
