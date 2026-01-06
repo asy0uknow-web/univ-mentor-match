@@ -89,6 +89,8 @@ export const appRouter = router({
         grade: z.enum(["1", "2", "3", "4", "graduate"]),
         bio: z.string().optional(),
         hourlyRate: z.string().min(1),
+        field: z.enum(["engineering", "natural_science", "business", "humanities", "education", "liberal_arts", "medicine"]).optional(),
+        region: z.enum(["seoul", "gyeonggi", "incheon", "gangwon", "chungcheong", "jeolla", "gyeongsang", "jeju"]).optional(),
         availableSlots: z.string().optional(),
       }))
       .mutation(async ({ ctx, input }) => {
@@ -111,6 +113,8 @@ export const appRouter = router({
         grade: z.enum(["1", "2", "3", "4", "graduate"]).optional(),
         bio: z.string().optional(),
         hourlyRate: z.string().optional(),
+        field: z.enum(["engineering", "natural_science", "business", "humanities", "education", "liberal_arts", "medicine"]).optional(),
+        region: z.enum(["seoul", "gyeonggi", "incheon", "gangwon", "chungcheong", "jeolla", "gyeongsang", "jeju"]).optional(),
         availableSlots: z.string().optional(),
         isActive: z.boolean().optional(),
       }))

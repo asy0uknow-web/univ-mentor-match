@@ -20,6 +20,8 @@ export default function MentorProfile() {
   const [grade, setGrade] = useState<"1" | "2" | "3" | "4" | "graduate">("1");
   const [bio, setBio] = useState("");
   const [hourlyRate, setHourlyRate] = useState("");
+  const [field, setField] = useState<"engineering" | "natural_science" | "business" | "humanities" | "education" | "liberal_arts" | "medicine" | undefined>();
+  const [region, setRegion] = useState<"seoul" | "gyeonggi" | "incheon" | "gangwon" | "chungcheong" | "jeolla" | "gyeongsang" | "jeju" | undefined>();
   const [dragActive, setDragActive] = useState(false);
   const [uploadedImages, setUploadedImages] = useState<Array<{ url: string; caption: string }>>([]);
   const [isUploading, setIsUploading] = useState(false);
@@ -180,6 +182,8 @@ export default function MentorProfile() {
         grade,
         bio,
         hourlyRate,
+        field,
+        region,
       });
     } else {
       createProfileMutation.mutate({
@@ -188,6 +192,8 @@ export default function MentorProfile() {
         grade,
         bio,
         hourlyRate,
+        field,
+        region,
       });
     }
   };
@@ -332,6 +338,43 @@ export default function MentorProfile() {
                           <SelectItem value="3">3학년</SelectItem>
                           <SelectItem value="4">4학년</SelectItem>
                           <SelectItem value="graduate">대학원생</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div>
+                      <Label htmlFor="field">분야 *</Label>
+                      <Select value={field || ""} onValueChange={(value) => setField(value as any || undefined)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="분야 선택" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="engineering">이공계</SelectItem>
+                          <SelectItem value="natural">자연계</SelectItem>
+                          <SelectItem value="business">상경계</SelectItem>
+                          <SelectItem value="humanities">어문계</SelectItem>
+                          <SelectItem value="education">사범계</SelectItem>
+                          <SelectItem value="liberal">문과계</SelectItem>
+                          <SelectItem value="medicine">의학계</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div>
+                      <Label htmlFor="region">지역 *</Label>
+                      <Select value={region || ""} onValueChange={(value) => setRegion(value as any || undefined)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="지역 선택" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="seoul">서울</SelectItem>
+                          <SelectItem value="gyeonggi">경기</SelectItem>
+                          <SelectItem value="incheon">인천</SelectItem>
+                          <SelectItem value="gangwon">강원</SelectItem>
+                          <SelectItem value="chungcheong">충청</SelectItem>
+                          <SelectItem value="jeolla">전라</SelectItem>
+                          <SelectItem value="gyeongsan">경상</SelectItem>
+                          <SelectItem value="jeju">제주</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
