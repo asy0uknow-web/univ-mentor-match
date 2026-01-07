@@ -1,0 +1,16 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /api/
+Disallow: /*.json$
+Disallow: /node_modules/
+
+Sitemap: https://univmatch-gy6raywm.manus.space/sitemap.xml
+
+User-agent: Googlebot
+Allow: /
+Disallow: /admin
+
+User-agent: Yeti
+Allow: /
+Disallow: /admin
