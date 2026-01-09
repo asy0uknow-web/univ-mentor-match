@@ -303,6 +303,11 @@ export default function MentorProfile() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
+                  <div className="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-lg">
+                    <p className="text-sm text-amber-900">
+                      <span className="font-semibold">필수 항목:</span> 아래 항목들(*)은 반드시 입력해야 멘토로 등록할 수 있습니다.
+                    </p>
+                  </div>
                   <form onSubmit={handleSubmit} className="space-y-6">
                     <div>
                       <Label htmlFor="university">대학명 *</Label>
@@ -405,7 +410,15 @@ export default function MentorProfile() {
                     <Button
                       type="submit"
                       className="w-full"
-                      disabled={createProfileMutation.isPending || updateProfileMutation.isPending}
+                      disabled={
+                        createProfileMutation.isPending ||
+                        updateProfileMutation.isPending ||
+                        !university ||
+                        !major ||
+                        !field ||
+                        !region ||
+                        !hourlyRate
+                      }
                     >
                       {createProfileMutation.isPending || updateProfileMutation.isPending
                         ? "저장 중..."
