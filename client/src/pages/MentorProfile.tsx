@@ -350,11 +350,11 @@ export default function MentorProfile() {
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="engineering">이공계</SelectItem>
-                          <SelectItem value="natural">자연계</SelectItem>
+                          <SelectItem value="natural_science">자연계</SelectItem>
                           <SelectItem value="business">상경계</SelectItem>
                           <SelectItem value="humanities">어문계</SelectItem>
                           <SelectItem value="education">사범계</SelectItem>
-                          <SelectItem value="liberal">문과계</SelectItem>
+                          <SelectItem value="liberal_arts">문과계</SelectItem>
                           <SelectItem value="medicine">의학계</SelectItem>
                         </SelectContent>
                       </Select>
