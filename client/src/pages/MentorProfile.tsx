@@ -306,6 +306,9 @@ export default function MentorProfile() {
                 </CardHeader>
                 <CardContent>
                   <form onSubmit={handleSubmit} className="space-y-6">
+                    <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-4">
+                      <p className="text-sm text-yellow-800">*표시된 항목은 필수 항목입니다.</p>
+                    </div>
                     <div>
                       <Label htmlFor="university">대학명 *</Label>
                       <Input
@@ -352,11 +355,11 @@ export default function MentorProfile() {
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="engineering">이공계</SelectItem>
-                          <SelectItem value="natural">자연계</SelectItem>
+                          <SelectItem value="natural_science">자연계</SelectItem>
                           <SelectItem value="business">상경계</SelectItem>
                           <SelectItem value="humanities">어문계</SelectItem>
                           <SelectItem value="education">사범계</SelectItem>
-                          <SelectItem value="liberal">문과계</SelectItem>
+                          <SelectItem value="liberal_arts">문과계</SelectItem>
                           <SelectItem value="medicine">의학계</SelectItem>
                         </SelectContent>
                       </Select>
@@ -375,7 +378,7 @@ export default function MentorProfile() {
                           <SelectItem value="gangwon">강원</SelectItem>
                           <SelectItem value="chungcheong">충청</SelectItem>
                           <SelectItem value="jeolla">전라</SelectItem>
-                          <SelectItem value="gyeongsan">경상</SelectItem>
+                          <SelectItem value="gyeongsang">경상</SelectItem>
                           <SelectItem value="jeju">제주</SelectItem>
                         </SelectContent>
                       </Select>
