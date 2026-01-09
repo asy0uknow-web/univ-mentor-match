@@ -36,6 +36,14 @@ export default function Mentors() {
   const [selectedField, setSelectedField] = useState<string | undefined>();
   const [selectedRegion, setSelectedRegion] = useState<string | undefined>();
 
+  const handleFieldChange = (value: string) => {
+    setSelectedField(value === "all" ? undefined : value);
+  };
+
+  const handleRegionChange = (value: string) => {
+    setSelectedRegion(value === "all" ? undefined : value);
+  };
+
   // 기본 멘토 목록
   const { data: allMentors, isLoading: isLoadingAll } = trpc.mentor.listAll.useQuery();
 
@@ -131,11 +139,12 @@ export default function Mentors() {
             {/* 분야 선택 */}
             <div>
               <label className="text-sm font-medium mb-2 block">분야</label>
-              <Select value={selectedField || ""} onValueChange={(value) => setSelectedField(value || undefined)}>
+              <Select value={selectedField || "all"} onValueChange={handleFieldChange}>
                 <SelectTrigger>
                   <SelectValue placeholder="분야 선택" />
                 </SelectTrigger>
                 <SelectContent>
+                  <SelectItem value="all">전체 분야</SelectItem>
                   {FIELDS.map((field) => (
                     <SelectItem key={field.value} value={field.value}>
                       {field.label}
@@ -148,11 +157,12 @@ export default function Mentors() {
             {/* 지역 선택 */}
             <div>
               <label className="text-sm font-medium mb-2 block">지역</label>
-              <Select value={selectedRegion || ""} onValueChange={(value) => setSelectedRegion(value || undefined)}>
+              <Select value={selectedRegion || "all"} onValueChange={handleRegionChange}>
                 <SelectTrigger>
                   <SelectValue placeholder="지역 선택" />
                 </SelectTrigger>
                 <SelectContent>
+                  <SelectItem value="all">전체 지역</SelectItem>
                   {REGIONS.map((region) => (
                     <SelectItem key={region.value} value={region.value}>
                       {region.label}
@@ -179,19 +189,17 @@ export default function Mentors() {
           </div>
 
           {/* Reset Button */}
-          {(selectedField || selectedRegion || searchTerm) && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => {
-                setSelectedField(undefined);
-                setSelectedRegion(undefined);
-                setSearchTerm("");
-              }}
-            >
-              필터 초기화
-            </Button>
-          )}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              setSelectedField(undefined);
+              setSelectedRegion(undefined);
+              setSearchTerm("");
+            }}
+          >
+            필터 초기화
+          </Button>
         </div>
 
         {/* Results Count */}
