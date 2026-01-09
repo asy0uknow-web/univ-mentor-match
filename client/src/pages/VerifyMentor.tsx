@@ -128,7 +128,7 @@ export default function VerifyMentor() {
                 <Button variant="ghost">내 프로필</Button>
               </Link>
               <Link href="/bookings">
-                <Button variant="ghost">내 예약</Button>
+                <Button variant="ghost">상담 문의</Button>
               </Link>
               <Link href="/notifications">
                 <Button variant="ghost">알림</Button>

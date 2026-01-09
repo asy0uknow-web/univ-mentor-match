@@ -214,7 +214,7 @@ export default function MentorProfile() {
                 <Button variant="ghost">멘토 찾기</Button>
               </Link>
               <Link href="/bookings">
-                <Button variant="ghost">내 예약</Button>
+                <Button variant="ghost">상담 문의</Button>
               </Link>
               <Link href="/my-profile">
                 <Button variant="ghost">내 프로필</Button>

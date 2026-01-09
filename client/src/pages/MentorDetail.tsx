@@ -20,10 +20,21 @@ export default function MentorDetail() {
   const [duration, setDuration] = useState("1");
   const [studentMessage, setStudentMessage] = useState("");
 
-  const mentorId = parseInt(id || "0");
-  const { data: mentor, isLoading } = trpc.mentor.getById.useQuery({ mentorId });
-  const { data: reviews } = trpc.review.getByMentor.useQuery({ mentorId });
-  const { data: gallery } = trpc.gallery.getByMentorId.useQuery({ mentorId });
+  const mentorId = id ? parseInt(id, 10) : 0;
+  const isValidMentorId = !isNaN(mentorId) && mentorId > 0;
+  
+  const { data: mentor, isLoading } = trpc.mentor.getById.useQuery(
+    { mentorId },
+    { enabled: isValidMentorId }
+  );
+  const { data: reviews } = trpc.review.getByMentor.useQuery(
+    { mentorId },
+    { enabled: isValidMentorId }
+  );
+  const { data: gallery } = trpc.gallery.getByMentorId.useQuery(
+    { mentorId },
+    { enabled: isValidMentorId }
+  );
 
   const createBookingMutation = trpc.booking.create.useMutation({
     onSuccess: async (data) => {
@@ -79,6 +90,17 @@ export default function MentorDetail() {
     });
   };
 
+  if (!isValidMentorId) {
+    return (
+      <div className="min-h-screen flex items-center justify-center flex-col gap-4">
+        <p className="text-muted-foreground">유효하지 않은 멘토 ID입니다.</p>
+        <Link href="/mentors">
+          <Button variant="outline">멘토 목록으로 돌아가기</Button>
+        </Link>
+      </div>
+    );
+  }
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -89,8 +111,11 @@ export default function MentorDetail() {
 
   if (!mentor) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center flex-col gap-4">
         <p className="text-muted-foreground">멘토를 찾을 수 없습니다.</p>
+        <Link href="/mentors">
+          <Button variant="outline">멘토 목록으로 돌아가기</Button>
+        </Link>
       </div>
     );
   }
@@ -116,7 +141,7 @@ export default function MentorDetail() {
                     <Button variant="ghost">멘토 찾기</Button>
                   </Link>
                   <Link href="/bookings">
-                    <Button variant="ghost">내 예약</Button>
+                    <Button variant="ghost">상담 문의</Button>
                   </Link>
                   <Link href="/my-profile">
                     <Button variant="ghost">내 프로필</Button>
