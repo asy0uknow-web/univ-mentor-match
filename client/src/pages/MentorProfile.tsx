@@ -83,6 +83,8 @@ export default function MentorProfile() {
       setGrade(profile.grade);
       setBio(profile.bio || "");
       setHourlyRate(profile.hourlyRate.toString());
+      setField(profile.field || undefined);
+      setRegion(profile.region || undefined);
     }
   }, [profile]);
 
@@ -303,11 +305,6 @@ export default function MentorProfile() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-lg">
-                    <p className="text-sm text-amber-900">
-                      <span className="font-semibold">필수 항목:</span> 아래 항목들(*)은 반드시 입력해야 멘토로 등록할 수 있습니다.
-                    </p>
-                  </div>
                   <form onSubmit={handleSubmit} className="space-y-6">
                     <div>
                       <Label htmlFor="university">대학명 *</Label>
@@ -355,11 +352,11 @@ export default function MentorProfile() {
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="engineering">이공계</SelectItem>
-                          <SelectItem value="natural_science">자연계</SelectItem>
+                          <SelectItem value="natural">자연계</SelectItem>
                           <SelectItem value="business">상경계</SelectItem>
                           <SelectItem value="humanities">어문계</SelectItem>
                           <SelectItem value="education">사범계</SelectItem>
-                          <SelectItem value="liberal_arts">문과계</SelectItem>
+                          <SelectItem value="liberal">문과계</SelectItem>
                           <SelectItem value="medicine">의학계</SelectItem>
                         </SelectContent>
                       </Select>
@@ -378,7 +375,7 @@ export default function MentorProfile() {
                           <SelectItem value="gangwon">강원</SelectItem>
                           <SelectItem value="chungcheong">충청</SelectItem>
                           <SelectItem value="jeolla">전라</SelectItem>
-                          <SelectItem value="gyeongsang">경상</SelectItem>
+                          <SelectItem value="gyeongsan">경상</SelectItem>
                           <SelectItem value="jeju">제주</SelectItem>
                         </SelectContent>
                       </Select>
@@ -410,15 +407,7 @@ export default function MentorProfile() {
                     <Button
                       type="submit"
                       className="w-full"
-                      disabled={
-                        createProfileMutation.isPending ||
-                        updateProfileMutation.isPending ||
-                        !university ||
-                        !major ||
-                        !field ||
-                        !region ||
-                        !hourlyRate
-                      }
+                      disabled={createProfileMutation.isPending || updateProfileMutation.isPending}
                     >
                       {createProfileMutation.isPending || updateProfileMutation.isPending
                         ? "저장 중..."
