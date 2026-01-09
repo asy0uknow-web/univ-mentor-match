@@ -30,11 +30,21 @@ const REGIONS = [
   { value: "jeju", label: "제주" },
 ];
 
+const SORT_OPTIONS = [
+  { value: "newest", label: "최신순" },
+  { value: "price_low", label: "시간당 요금 (낮은 순)" },
+  { value: "price_high", label: "시간당 요금 (높은 순)" },
+  { value: "rating", label: "평점 (높은 순)" },
+];
+
+type SortOption = "newest" | "price_low" | "price_high" | "rating";
+
 export default function Mentors() {
   const { isAuthenticated } = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedField, setSelectedField] = useState<string | undefined>();
   const [selectedRegion, setSelectedRegion] = useState<string | undefined>();
+  const [sortBy, setSortBy] = useState<SortOption>("newest");
 
   const handleFieldChange = (value: string) => {
     setSelectedField(value === "all" ? undefined : value);
@@ -42,6 +52,10 @@ export default function Mentors() {
 
   const handleRegionChange = (value: string) => {
     setSelectedRegion(value === "all" ? undefined : value);
+  };
+
+  const handleSortChange = (value: string) => {
+    setSortBy(value as SortOption);
   };
 
   // 기본 멘토 목록
@@ -87,6 +101,22 @@ export default function Mentors() {
       m.profile.major.toLowerCase().includes(searchLower) ||
       m.user.name?.toLowerCase().includes(searchLower)
     );
+  });
+
+  // 정렬 로직
+  const sortedMentors = [...(filteredMentors || [])].sort((a, b) => {
+    switch (sortBy) {
+      case "price_low":
+        return Number(a.profile.hourlyRate || 0) - Number(b.profile.hourlyRate || 0);
+      case "price_high":
+        return Number(b.profile.hourlyRate || 0) - Number(a.profile.hourlyRate || 0);
+      case "rating":
+        // 평점이 높은 순 (현재는 고정값 4.5이지만, 실제 평점 데이터가 있으면 사용)
+        return 0;
+      case "newest":
+      default:
+        return new Date(b.profile.createdAt || 0).getTime() - new Date(a.profile.createdAt || 0).getTime();
+    }
   });
 
   return (
@@ -135,7 +165,7 @@ export default function Mentors() {
         <div className="mb-8 p-6 bg-card rounded-lg border border-border">
           <h2 className="text-lg font-semibold mb-4">검색 필터</h2>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
             {/* 분야 선택 */}
             <div>
               <label className="text-sm font-medium mb-2 block">분야</label>
@@ -172,6 +202,23 @@ export default function Mentors() {
               </Select>
             </div>
 
+            {/* 정렬 선택 */}
+            <div>
+              <label className="text-sm font-medium mb-2 block">정렬</label>
+              <Select value={sortBy} onValueChange={handleSortChange}>
+                <SelectTrigger>
+                  <SelectValue placeholder="정렬 선택" />
+                </SelectTrigger>
+                <SelectContent>
+                  {SORT_OPTIONS.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
             {/* 검색 */}
             <div>
               <label className="text-sm font-medium mb-2 block">검색</label>
@@ -196,6 +243,7 @@ export default function Mentors() {
               setSelectedField(undefined);
               setSelectedRegion(undefined);
               setSearchTerm("");
+              setSortBy("newest");
             }}
           >
             필터 초기화
@@ -205,7 +253,7 @@ export default function Mentors() {
         {/* Results Count */}
         <div className="mb-6">
           <p className="text-sm text-muted-foreground">
-            {isLoading ? "로딩 중..." : `${filteredMentors?.length || 0}명의 멘토를 찾았습니다`}
+            {isLoading ? "로딩 중..." : `${sortedMentors?.length || 0}명의 멘토를 찾았습니다`}
           </p>
         </div>
 
@@ -214,9 +262,9 @@ export default function Mentors() {
           <div className="text-center py-12">
             <p className="text-muted-foreground">로딩 중...</p>
           </div>
-        ) : filteredMentors && filteredMentors.length > 0 ? (
+        ) : sortedMentors && sortedMentors.length > 0 ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredMentors.map((mentor) => (
+            {sortedMentors.map((mentor) => (
               <Link key={mentor.profile.id} href={`/mentor/${mentor.profile.id}`}>
                 <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full">
                   <CardHeader>
