@@ -26,6 +26,7 @@ export default function MentorProfile() {
   const [uploadedImages, setUploadedImages] = useState<Array<{ url: string; caption: string }>>([]);
   const [isUploading, setIsUploading] = useState(false);
   const [newCaption, setNewCaption] = useState("");
+  const [emptyFields, setEmptyFields] = useState<Set<string>>(new Set());
 
   const { data: profile, isLoading } = trpc.mentor.getMyProfile.useQuery(undefined, {
     enabled: isAuthenticated,
@@ -172,10 +173,24 @@ export default function MentorProfile() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!university || !major || !hourlyRate || !field || !region) {
-      toast.error("모든 필수 필드를 입력해주세요.");
+    const empty = new Set<string>();
+    if (!university) empty.add("university");
+    if (!major) empty.add("major");
+    if (!hourlyRate) empty.add("hourlyRate");
+    if (!field) empty.add("field");
+    if (!region) empty.add("region");
+
+    if (empty.size > 0) {
+      setEmptyFields(empty);
+      const firstEmptyField = Array.from(empty)[0];
+      const element = document.getElementById(firstEmptyField);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth", block: "center" });
+        element.focus();
+      }
       return;
     }
+    setEmptyFields(new Set());
 
     if (profile) {
       updateProfileMutation.mutate({
@@ -317,6 +332,7 @@ export default function MentorProfile() {
                         onChange={(e) => setUniversity(e.target.value)}
                         placeholder="예: 서울대학교"
                         required
+                        className={emptyFields.has("university") ? "border-red-500 border-2" : ""}
                       />
                     </div>
 
@@ -328,6 +344,7 @@ export default function MentorProfile() {
                         onChange={(e) => setMajor(e.target.value)}
                         placeholder="예: 컴퓨터공학과"
                         required
+                        className={emptyFields.has("major") ? "border-red-500 border-2" : ""}
                       />
                     </div>
 
@@ -350,7 +367,7 @@ export default function MentorProfile() {
                     <div>
                       <Label htmlFor="field">분야 *</Label>
                       <Select value={field || ""} onValueChange={(value) => setField(value as any || undefined)}>
-                        <SelectTrigger>
+                        <SelectTrigger id="field" className={emptyFields.has("field") ? "border-red-500 border-2" : ""}>
                           <SelectValue placeholder="분야 선택" />
                         </SelectTrigger>
                         <SelectContent>
@@ -368,7 +385,7 @@ export default function MentorProfile() {
                     <div>
                       <Label htmlFor="region">지역 *</Label>
                       <Select value={region || ""} onValueChange={(value) => setRegion(value as any || undefined)}>
-                        <SelectTrigger>
+                        <SelectTrigger id="region" className={emptyFields.has("region") ? "border-red-500 border-2" : ""}>
                           <SelectValue placeholder="지역 선택" />
                         </SelectTrigger>
                         <SelectContent>
@@ -393,6 +410,7 @@ export default function MentorProfile() {
                         onChange={(e) => setHourlyRate(e.target.value)}
                         placeholder="예: 30000"
                         required
+                        className={emptyFields.has("hourlyRate") ? "border-red-500 border-2" : ""}
                       />
                     </div>
 
