@@ -373,7 +373,7 @@ export default function MentorProfile() {
                           <SelectItem value="gangwon">강원</SelectItem>
                           <SelectItem value="chungcheong">충청</SelectItem>
                           <SelectItem value="jeolla">전라</SelectItem>
-                          <SelectItem value="gyeongsan">경상</SelectItem>
+                          <SelectItem value="gyeongsang">경상</SelectItem>
                           <SelectItem value="jeju">제주</SelectItem>
                         </SelectContent>
                       </Select>
