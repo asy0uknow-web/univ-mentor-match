@@ -331,7 +331,6 @@ export default function MentorProfile() {
                         value={university}
                         onChange={(e) => setUniversity(e.target.value)}
                         placeholder="예: 서울대학교"
-                        required
                         className={emptyFields.has("university") ? "border-red-500 border-2" : ""}
                       />
                     </div>
@@ -343,7 +342,6 @@ export default function MentorProfile() {
                         value={major}
                         onChange={(e) => setMajor(e.target.value)}
                         placeholder="예: 컴퓨터공학과"
-                        required
                         className={emptyFields.has("major") ? "border-red-500 border-2" : ""}
                       />
                     </div>
@@ -409,7 +407,6 @@ export default function MentorProfile() {
                         value={hourlyRate}
                         onChange={(e) => setHourlyRate(e.target.value)}
                         placeholder="예: 30000"
-                        required
                         className={emptyFields.has("hourlyRate") ? "border-red-500 border-2" : ""}
                       />
                     </div>
