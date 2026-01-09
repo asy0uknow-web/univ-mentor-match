@@ -172,7 +172,7 @@ export default function MentorProfile() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!university || !major || !hourlyRate) {
+    if (!university || !major || !hourlyRate || !field || !region) {
       toast.error("모든 필수 필드를 입력해주세요.");
       return;
     }
