@@ -133,8 +133,16 @@ export async function createMentorProfile(profile: InsertMentorProfile) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
   
-  const result = await db.insert(mentorProfiles).values(profile);
-  return result;
+  // 기존 프로필이 있는지 확인
+  const existingProfile = await getMentorProfileByUserId(profile.userId);
+  
+  if (existingProfile) {
+    // 기존 프로필이 있으면 업데이트
+    await db.update(mentorProfiles).set(profile).where(eq(mentorProfiles.userId, profile.userId));
+  } else {
+    // 기존 프로필이 없으면 새로 생성
+    await db.insert(mentorProfiles).values(profile);
+  }
 }
 
 export async function getMentorProfileByUserId(userId: number) {
