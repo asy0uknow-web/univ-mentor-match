@@ -512,6 +512,18 @@ export async function rejectMentorVerification(verificationId: number, adminNote
   }).where(eq(mentorProfiles.userId, verification[0].userId));
 }
 
+export async function updateMentorVerification(verificationId: number, updates: Partial<InsertMentorVerification>) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const result = await db
+    .update(mentorVerifications)
+    .set(updates)
+    .where(eq(mentorVerifications.id, verificationId));
+  
+  return result;
+}
+
 export async function updateMentorVerificationStatus(userId: number, status: "pending" | "approved" | "rejected") {
   const db = await getDb();
   if (!db) throw new Error("Database not available");

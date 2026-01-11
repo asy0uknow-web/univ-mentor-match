@@ -1,0 +1,17 @@
+{
+  "query": "SELECT mv.id, mv.userId, mv.status, u.name, u.email \nFROM mentor_verifications mv\nLEFT JOIN users u ON mv.userId = u.id\nWHERE mv.status = 'pending';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute SELECT mv.id, mv.userId, mv.status, u.name, u.email \nFROM mentor_verifications mv\nLEFT JOIN users u ON mv.userId = u.id\nWHERE mv.status = 'pending';",
+  "rows": [
+    {
+      "id": "60001",
+      "userId": "60003",
+      "status": "pending",
+      "name": "NULL",
+      "email": "NULL"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tuserId\tstatus\tname\temail\n60001\t60003\tpending\tNULL\tNULL\n",
+  "stderr": "",
+  "execution_time_ms": 1562
+}

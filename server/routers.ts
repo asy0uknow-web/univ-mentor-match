@@ -33,6 +33,7 @@ import {
   getPendingMentorVerifications,
   approveMentorVerification,
   rejectMentorVerification,
+  updateMentorVerification,
   getMentorsByField,
   getMentorsByRegion,
   getMentorsByFieldAndRegion,
@@ -385,6 +386,15 @@ export const appRouter = router({
         
         if (existingVerification && existingVerification.status === "pending") {
           throw new Error("이미 인증 요청이 진행 중입니다.");
+        }
+        
+        // 거부된 상태인 경우 기존 인증 요청 업데이트
+        if (existingVerification && existingVerification.status === "rejected") {
+          return await updateMentorVerification(existingVerification.id, {
+            studentIdImageUrl: input.studentIdImageUrl,
+            status: "pending",
+            adminNotes: null,
+          });
         }
         
         const result = await createMentorVerification({
