@@ -5,7 +5,7 @@ import { mentorProfiles } from '../drizzle/schema';
 import { eq } from 'drizzle-orm';
 
 describe('Mentor Profile Upsert', () => {
-  const testUserId = 9999;
+  const testUserId = Math.floor(Math.random() * 1000000) + 30000;
   
   beforeAll(async () => {
     // 테스트 시작 전 기존 데이터 정리

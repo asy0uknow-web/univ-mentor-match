@@ -34,8 +34,10 @@ function createAuthContext(userId: number = 1, role: "user" | "admin" = "user"):
 }
 
 describe("mentor verification system", () => {
+  const uniqueUserId = Math.floor(Math.random() * 1000000) + 10000;
+  
   it("should allow authenticated users to submit verification", async () => {
-    const { ctx } = createAuthContext(1);
+    const { ctx } = createAuthContext(uniqueUserId);
     const caller = appRouter.createCaller(ctx);
 
     const result = await caller.verification.submitVerification({
@@ -47,7 +49,7 @@ describe("mentor verification system", () => {
   });
 
   it("should retrieve user's verification status", async () => {
-    const { ctx } = createAuthContext(1);
+    const { ctx } = createAuthContext(uniqueUserId);
     const caller = appRouter.createCaller(ctx);
 
     const verification = await caller.verification.getMyVerification();
@@ -56,7 +58,7 @@ describe("mentor verification system", () => {
   });
 
   it("should allow admins to view pending verifications", async () => {
-    const { ctx } = createAuthContext(1, "admin");
+    const { ctx } = createAuthContext(uniqueUserId + 1, "admin");
     const caller = appRouter.createCaller(ctx);
 
     const verifications = await caller.verification.getPendingVerifications();
@@ -65,7 +67,7 @@ describe("mentor verification system", () => {
   });
 
   it("should prevent non-admins from viewing pending verifications", async () => {
-    const { ctx } = createAuthContext(1, "user");
+    const { ctx } = createAuthContext(uniqueUserId + 2, "user");
     const caller = appRouter.createCaller(ctx);
 
     try {
@@ -77,7 +79,7 @@ describe("mentor verification system", () => {
   });
 
   it("should allow admins to approve verification", async () => {
-    const { ctx } = createAuthContext(1, "admin");
+    const { ctx } = createAuthContext(uniqueUserId + 3, "admin");
     const caller = appRouter.createCaller(ctx);
 
     const result = await caller.verification.approveVerification({
@@ -88,7 +90,7 @@ describe("mentor verification system", () => {
   });
 
   it("should allow admins to reject verification", async () => {
-    const { ctx } = createAuthContext(1, "admin");
+    const { ctx } = createAuthContext(uniqueUserId + 4, "admin");
     const caller = appRouter.createCaller(ctx);
 
     const result = await caller.verification.rejectVerification({

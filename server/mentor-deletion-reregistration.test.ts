@@ -8,7 +8,7 @@ import { mentorProfiles } from '../drizzle/schema';
 import { eq } from 'drizzle-orm';
 
 describe('Mentor Profile Deletion and Re-registration', () => {
-  const testUserId = 9999;
+  const testUserId = Math.floor(Math.random() * 1000000) + 20000;
   
   beforeAll(async () => {
     // 테스트 시작 전 기존 데이터 정리

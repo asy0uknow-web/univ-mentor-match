@@ -272,3 +272,9 @@
 - [x] MentorDetail.tsx에서 금액 정보 제거 - 상담료 섹션 제거
 - [x] MentorProfile.tsx에서 금액 정보 제거 - hourlyRate 입력 필드 제거
 - [x] 기타 멘토 프로필 페이지에서 금액 정보 제거 - Mentors.tsx 금액 디스플레이 제거
+
+## 버그 수정 - 테스트 데이터 격리 개선
+- [x] verification.test.ts 테스트 데이터 격리 (고유 userId 사용)
+- [x] mentor-deletion-reregistration.test.ts 테스트 데이터 격리 (고유 userId 사용)
+- [x] mentor-profile-upsert.test.ts 테스트 데이터 격리 (고유 userId 사용)
+- [x] 전체 테스트 65개 모두 통과 (100%)
