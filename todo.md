@@ -204,3 +204,8 @@
 - [x] 멘토 등록하기 버튼 클릭 시 오류 발생 (useAuth import 중복)
 - [x] 오류 원인 분석 (MentorProfile.tsx에 useAuth import 중복)
 - [x] 오류 수정 (중복 import 제거)
+
+## 버그 수정 - "멘토 찾아보기" 버튼 null 값 문제
+- [x] "멘토 찾아보기" 버튼 클릭 시 null 값 전달 (selectedField/selectedRegion 초기값 및 처리 수정)
+- [x] 문제 원인 분석 (Mentors.tsx에서 undefined 대신 "" 사용)
+- [x] 문제 수정 (API 호출 시 빈 문자열을 undefined로 변환)

@@ -33,27 +33,27 @@ const REGIONS = [
 export default function Mentors() {
   const { isAuthenticated } = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedField, setSelectedField] = useState<string | undefined>(undefined);
-  const [selectedRegion, setSelectedRegion] = useState<string | undefined>(undefined);
+  const [selectedField, setSelectedField] = useState<string>("");
+  const [selectedRegion, setSelectedRegion] = useState<string>("");
 
   // 기본 멘토 목록
   const { data: allMentors, isLoading: isLoadingAll } = trpc.mentor.listAll.useQuery();
 
   // 분야별 검색
   const { data: fieldMentors, isLoading: isLoadingField } = trpc.mentorSearch.getByField.useQuery(
-    { field: selectedField as any },
+    { field: (selectedField || undefined) as any },
     { enabled: !!selectedField && !selectedRegion }
   );
 
   // 지역별 검색
   const { data: regionMentors, isLoading: isLoadingRegion } = trpc.mentorSearch.getByRegion.useQuery(
-    { region: selectedRegion as any },
+    { region: (selectedRegion || undefined) as any },
     { enabled: !!selectedRegion && !selectedField }
   );
 
   // 분야+지역 검색
   const { data: combinedMentors, isLoading: isLoadingCombined } = trpc.mentorSearch.getByFieldAndRegion.useQuery(
-    { field: selectedField as any, region: selectedRegion as any },
+    { field: (selectedField || undefined) as any, region: (selectedRegion || undefined) as any },
     { enabled: !!selectedField && !!selectedRegion }
   );
 
@@ -61,13 +61,13 @@ export default function Mentors() {
   let mentors = allMentors;
   let isLoading = isLoadingAll;
 
-  if (selectedField && selectedRegion) {
+  if (selectedField && selectedField !== "" && selectedRegion && selectedRegion !== "") {
     mentors = combinedMentors;
     isLoading = isLoadingCombined;
-  } else if (selectedField) {
+  } else if (selectedField && selectedField !== "") {
     mentors = fieldMentors;
     isLoading = isLoadingField;
-  } else if (selectedRegion) {
+  } else if (selectedRegion && selectedRegion !== "") {
     mentors = regionMentors;
     isLoading = isLoadingRegion;
   }
@@ -131,7 +131,7 @@ export default function Mentors() {
             {/* 분야 선택 */}
             <div>
               <label className="text-sm font-medium mb-2 block">분야</label>
-              <Select value={selectedField || ""} onValueChange={(value) => setSelectedField(value || undefined)}>
+              <Select value={selectedField} onValueChange={(value) => setSelectedField(value)}>
                 <SelectTrigger>
                   <SelectValue placeholder="분야 선택" />
                 </SelectTrigger>
@@ -149,7 +149,7 @@ export default function Mentors() {
             {/* 지역 선택 */}
             <div>
               <label className="text-sm font-medium mb-2 block">지역</label>
-              <Select value={selectedRegion || ""} onValueChange={(value) => setSelectedRegion(value || undefined)}>
+              <Select value={selectedRegion} onValueChange={(value) => setSelectedRegion(value)}>
                 <SelectTrigger>
                   <SelectValue placeholder="지역 선택" />
                 </SelectTrigger>
@@ -185,8 +185,8 @@ export default function Mentors() {
             variant="outline"
             size="sm"
             onClick={() => {
-              setSelectedField(undefined);
-              setSelectedRegion(undefined);
+              setSelectedField("");
+              setSelectedRegion("");
               setSearchTerm("");
             }}
           >
