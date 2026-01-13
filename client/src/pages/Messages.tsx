@@ -29,12 +29,19 @@ export default function Messages() {
 
   // 자동 스크롤 - 새 메시지가 추가되면 하단으로 스크롤
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   useEffect(() => {
-    scrollToBottom();
-  }, [conversation]);
+    // 대화 데이터가 변경될 때마다 스크롤
+    if (conversation && conversation.length > 0) {
+      setTimeout(() => {
+        scrollToBottom();
+      }, 50);
+    }
+  }, [conversation, conversation?.length]);
 
   const utils = trpc.useUtils();
 
@@ -44,6 +51,10 @@ export default function Messages() {
       toast.success("메시지가 전송되었습니다.");
       utils.message.getConversation.invalidate();
       utils.message.getInbox.invalidate();
+      // 메시지 전송 후 약간의 지연 후 스크롤
+      setTimeout(() => {
+        scrollToBottom();
+      }, 100);
     },
     onError: (error) => {
       toast.error(`메시지 전송 실패: ${error.message}`);
@@ -82,6 +93,11 @@ export default function Messages() {
       recipientId: selectedConversation,
       content: messageContent,
     });
+    
+    // 메시지 전송 후 입력창 포커스 유지
+    setTimeout(() => {
+      scrollToBottom();
+    }, 150);
   };
 
   const handleAcceptBooking = (bookingId: number) => {
