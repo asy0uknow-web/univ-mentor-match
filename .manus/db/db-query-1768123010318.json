@@ -1,0 +1,21 @@
+{
+  "query": "SELECT mv.id, mv.userId, mv.status, mv.adminNotes, u.name, u.email,\n       mp.id as profile_id, mp.university, mp.major\nFROM mentor_verifications mv\nINNER JOIN users u ON mv.userId = u.id\nLEFT JOIN mentor_profiles mp ON mv.userId = mp.userId\nWHERE mv.status = 'rejected';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute SELECT mv.id, mv.userId, mv.status, mv.adminNotes, u.name, u.email,\n       mp.id as profile_id, mp.university, mp.major\nFROM mentor_verifications mv\nINNER JOIN users u ON mv.userId = u.id\nLEFT JOIN mentor_profiles mp ON mv.userId = mp.userId\nWHERE mv.status = 'rejected';",
+  "rows": [
+    {
+      "id": "1",
+      "userId": "1",
+      "status": "rejected",
+      "adminNotes": "학생증이 명확하지 않습니다.",
+      "name": "2003yunho",
+      "email": "2003yunho@gmail.com",
+      "profile_id": "1",
+      "university": "한국대학교",
+      "major": "학과공학과"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tuserId\tstatus\tadminNotes\tname\temail\tprofile_id\tuniversity\tmajor\n1\t1\trejected\t학생증이 명확하지 않습니다.\t2003yunho\t2003yunho@gmail.com\t1\t한국대학교\t학과공학과\n",
+  "stderr": "",
+  "execution_time_ms": 1580
+}

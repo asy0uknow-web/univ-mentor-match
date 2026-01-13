@@ -60,11 +60,11 @@ export default function MentorProfile() {
 
   const createProfileMutation = trpc.mentor.createProfile.useMutation({
     onSuccess: () => {
-      toast.success("멘토 프로필이 생성되었습니다!");
+      toast.success("멘토로 등록되었습니다!");
       window.location.reload();
     },
     onError: (error) => {
-      toast.error(`프로필 생성 실패: ${error.message}`);
+      toast.error(`멘토 등록 실패: ${error.message}`);
     },
   });
 
@@ -247,7 +247,7 @@ export default function MentorProfile() {
       <div className="container mx-auto px-4 py-12">
         <div className="max-w-2xl mx-auto">
           <h1 className="text-4xl font-bold mb-8">
-            {profile ? "멘토 프로필 수정" : "멘토 프로필 등록"}
+            {profile ? "멘토 프로필 수정" : "멘토로 등록하기"}
           </h1>
 
           {isLoading ? (
@@ -297,13 +297,9 @@ export default function MentorProfile() {
                       </div>
                     ) : (
                       <div className="space-y-2">
-                        <p className="text-sm text-blue-900">
-                          {verification.status === "approved" && "당신의 멘토 프로필이 인증되었습니다."}
-                          {verification.status === "pending" && "관리자가 당신의 인증 요청을 검토 중입니다."}
-                          {verification.status === "rejected" && "인증이 거부되었습니다. 다시 신청해주세요."}
-                        </p>
+                        <p className="text-sm text-blue-900">당신의 멘토 프로필이 인증되었습니다.</p>
                         <Link href="/verify-mentor">
-                          <Button variant="outline" size="sm" className="w-full">
+                          <Button size="sm" variant="outline" className="w-full">
                             인증 상태 확인
                           </Button>
                         </Link>
@@ -312,18 +308,29 @@ export default function MentorProfile() {
                   </CardContent>
                 </Card>
               )}
-              <Card className="mb-6">
+
+              {!profile && (
+                <Card className="mb-6 border-amber-200 bg-amber-50">
+                  <CardHeader>
+                    <CardTitle className="text-base">멘토 등록 안내</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-amber-900">
+                      아래 정보를 입력하고 "멘토로 등록하기" 버튼을 클릭하면 멘토로 등록됩니다. 등록 후 학생증 인증을 완료해야 멘토로 활동할 수 있습니다.
+                    </p>
+                  </CardContent>
+                </Card>
+              )}
+
+              <Card>
                 <CardHeader>
                   <CardTitle>프로필 정보</CardTitle>
                   <CardDescription>
-                    멘토로 활동하기 위한 정보를 입력해주세요.
+                    멘토로 활동하기 위한 정보를 입력해주세요. *표시된 항목은 필수 항목입니다.
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <form onSubmit={handleSubmit} className="space-y-6">
-                    <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-4">
-                      <p className="text-sm text-yellow-800">*표시된 항목은 필수 항목입니다.</p>
-                    </div>
                     <div>
                       <Label htmlFor="university">대학명 *</Label>
                       <Input
@@ -349,8 +356,8 @@ export default function MentorProfile() {
                     <div>
                       <Label htmlFor="grade">학년 *</Label>
                       <Select value={grade} onValueChange={(value: any) => setGrade(value)}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="학년 선택" />
+                        <SelectTrigger id="grade">
+                          <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="1">1학년</SelectItem>
@@ -364,9 +371,9 @@ export default function MentorProfile() {
 
                     <div>
                       <Label htmlFor="field">분야 *</Label>
-                      <Select value={field || ""} onValueChange={(value) => setField(value as any || undefined)}>
-                        <SelectTrigger id="field" className={emptyFields.has("field") ? "border-red-500 border-2" : ""}>
-                          <SelectValue placeholder="분야 선택" />
+                      <Select value={field} onValueChange={(value: any) => setField(value)}>
+                        <SelectTrigger id="field">
+                          <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="engineering">이공계</SelectItem>
@@ -382,9 +389,9 @@ export default function MentorProfile() {
 
                     <div>
                       <Label htmlFor="region">지역 *</Label>
-                      <Select value={region || ""} onValueChange={(value) => setRegion(value as any || undefined)}>
-                        <SelectTrigger id="region" className={emptyFields.has("region") ? "border-red-500 border-2" : ""}>
-                          <SelectValue placeholder="지역 선택" />
+                      <Select value={region} onValueChange={(value: any) => setRegion(value)}>
+                        <SelectTrigger id="region">
+                          <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="seoul">서울</SelectItem>
@@ -422,133 +429,146 @@ export default function MentorProfile() {
                       />
                     </div>
 
-                    <Button
-                      type="submit"
-                      className="w-full"
-                      disabled={createProfileMutation.isPending || updateProfileMutation.isPending}
-                    >
-                      {createProfileMutation.isPending || updateProfileMutation.isPending
-                        ? "저장 중..."
-                        : profile
-                        ? "프로필 업데이트"
-                        : "멘토 등록하기"}
-                    </Button>
+                    <div className="flex gap-3">
+                      <Button
+                        type="submit"
+                        className="flex-1"
+                        disabled={createProfileMutation.isPending || updateProfileMutation.isPending}
+                      >
+                        {createProfileMutation.isPending || updateProfileMutation.isPending
+                          ? "저장 중..."
+                          : profile
+                          ? "프로필 업데이트"
+                          : "멘토로 등록하기"}
+                      </Button>
+                      {profile && (
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={() => setLocation("/")}
+                        >
+                          취소
+                        </Button>
+                      )}
+                    </div>
                   </form>
                 </CardContent>
               </Card>
 
-              <Card>
-                <CardHeader>
-                  <CardTitle>대학생활 갤러리</CardTitle>
-                  <CardDescription>
-                    당신의 대학생활을 보여주는 사진을 업로드해보세요. 멘티들이 당신을 더 잘 알 수 있습니다.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  <div
-                    className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
-                      dragActive
-                        ? "border-primary bg-primary/5"
-                        : "border-border hover:border-primary/50"
-                    }`}
-                    onDragEnter={handleDrag}
-                    onDragLeave={handleDrag}
-                    onDragOver={handleDrag}
-                    onDrop={handleDrop}
-                  >
-                    <Upload className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                    <p className="font-semibold mb-2">이미지를 드래그하거나 클릭하여 업로드</p>
-                    <p className="text-sm text-muted-foreground mb-4">JPG, PNG 형식 지원</p>
-                    <Input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleChange}
-                      className="hidden"
-                      id="gallery-upload"
-                    />
-                    <label htmlFor="gallery-upload">
-                      <Button asChild variant="outline">
-                        <span>파일 선택</span>
-                      </Button>
-                    </label>
-                  </div>
+              {profile && (
+                <Card className="mt-8">
+                  <CardHeader>
+                    <CardTitle>대학생활 갤러리</CardTitle>
+                    <CardDescription>
+                      당신의 대학생활을 보여주는 사진을 업로드해보세요. 멘티들이 당신을 더 잘 알 수 있습니다.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-6">
+                    <div
+                      className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
+                        dragActive
+                          ? "border-primary bg-primary/5"
+                          : "border-border hover:border-primary/50"
+                      }`}
+                      onDragEnter={handleDrag}
+                      onDragLeave={handleDrag}
+                      onDragOver={handleDrag}
+                      onDrop={handleDrop}
+                    >
+                      <Upload className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                      <p className="font-semibold mb-2">이미지를 드래그하거나 클릭하여 업로드</p>
+                      <p className="text-sm text-muted-foreground mb-4">JPG, PNG 형식 지원</p>
+                      <Input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleChange}
+                        className="hidden"
+                        id="gallery-upload"
+                      />
+                      <label htmlFor="gallery-upload">
+                        <Button asChild variant="outline">
+                          <span>파일 선택</span>
+                        </Button>
+                      </label>
+                    </div>
 
-                  {uploadedImages.length > 0 && (
-                    <div className="space-y-4">
-                      <div className="relative">
-                        <img
-                          src={uploadedImages[0].url}
-                          alt="Preview"
-                          className="w-full h-64 object-cover rounded-lg"
-                        />
-                        <button
-                          onClick={() => setUploadedImages([])}
-                          className="absolute top-2 right-2 bg-destructive text-white p-1 rounded-full hover:bg-destructive/90"
+                    {uploadedImages.length > 0 && (
+                      <div className="space-y-4">
+                        <div className="relative">
+                          <img
+                            src={uploadedImages[0].url}
+                            alt="Preview"
+                            className="w-full h-64 object-cover rounded-lg"
+                          />
+                          <button
+                            onClick={() => setUploadedImages([])}
+                            className="absolute top-2 right-2 bg-destructive text-white p-1 rounded-full hover:bg-destructive/90"
+                          >
+                            <X className="h-4 w-4" />
+                          </button>
+                        </div>
+
+                        <div>
+                          <Label htmlFor="caption">사진 설명</Label>
+                          <Textarea
+                            id="caption"
+                            placeholder="이 사진에 대한 설명을 입력해주세요 (선택사항)"
+                            value={newCaption}
+                            onChange={(e) => setNewCaption(e.target.value)}
+                            className="resize-none"
+                            rows={3}
+                          />
+                        </div>
+
+                        <Button
+                          onClick={handleUpload}
+                          disabled={isUploading}
+                          className="w-full"
                         >
-                          <X className="h-4 w-4" />
-                        </button>
+                          {isUploading ? (
+                            <>
+                              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                              업로드 중...
+                            </>
+                          ) : (
+                            "사진 업로드"
+                          )}
+                        </Button>
                       </div>
+                    )}
 
+                    {gallery && gallery.length > 0 && (
                       <div>
-                        <Label htmlFor="caption">사진 설명</Label>
-                        <Textarea
-                          id="caption"
-                          placeholder="이 사진에 대한 설명을 입력해주세요 (선택사항)"
-                          value={newCaption}
-                          onChange={(e) => setNewCaption(e.target.value)}
-                          className="resize-none"
-                          rows={3}
-                        />
+                        <h3 className="font-semibold mb-4">업로드된 사진</h3>
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                          {gallery.map((image) => (
+                            <div key={image.id} className="relative group">
+                              <img
+                                src={image.imageUrl}
+                                alt={image.caption || "Gallery image"}
+                                className="w-full h-40 object-cover rounded-lg"
+                              />
+                              {image.caption && (
+                                <p className="text-xs text-muted-foreground mt-2 line-clamp-2">
+                                  {image.caption}
+                                </p>
+                              )}
+                              <button
+                                onClick={() =>
+                                  deleteGalleryMutation.mutate({ imageId: image.id })
+                                }
+                                className="absolute top-2 right-2 bg-destructive text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                              >
+                                <X className="h-4 w-4" />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
                       </div>
-
-                      <Button
-                        onClick={handleUpload}
-                        disabled={isUploading}
-                        className="w-full"
-                      >
-                        {isUploading ? (
-                          <>
-                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                            업로드 중...
-                          </>
-                        ) : (
-                          "사진 업로드"
-                        )}
-                      </Button>
-                    </div>
-                  )}
-
-                  {gallery && gallery.length > 0 && (
-                    <div>
-                      <h3 className="font-semibold mb-4">업로드된 사진</h3>
-                      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                        {gallery.map((image) => (
-                          <div key={image.id} className="relative group">
-                            <img
-                              src={image.imageUrl}
-                              alt={image.caption || "Gallery image"}
-                              className="w-full h-40 object-cover rounded-lg"
-                            />
-                            {image.caption && (
-                              <p className="text-xs text-muted-foreground mt-2 line-clamp-2">
-                                {image.caption}
-                              </p>
-                            )}
-                            <button
-                              onClick={() =>
-                                deleteGalleryMutation.mutate({ imageId: image.id })
-                              }
-                              className="absolute top-2 right-2 bg-destructive text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                            >
-                              <X className="h-4 w-4" />
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
+                    )}
+                  </CardContent>
+                </Card>
+              )}
             </>
           )}
         </div>

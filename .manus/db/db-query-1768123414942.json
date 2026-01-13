@@ -1,0 +1,9 @@
+{
+  "query": "SELECT mp.id, mp.userId, mp.university, mp.major, mp.field, mp.region, \n       mp.isActive, mp.verificationStatus\nFROM mentor_profiles mp\nWHERE mp.isActive = true AND mp.verificationStatus = 'approved';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute SELECT mp.id, mp.userId, mp.university, mp.major, mp.field, mp.region, \n       mp.isActive, mp.verificationStatus\nFROM mentor_profiles mp\nWHERE mp.isActive = true AND mp.verificationStatus = 'approved';",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 1529
+}
