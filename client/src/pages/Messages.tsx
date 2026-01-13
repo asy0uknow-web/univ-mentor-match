@@ -266,7 +266,7 @@ export default function Messages() {
                 {/* Messages */}
                 <CardContent className="flex-1 overflow-y-auto py-4 space-y-4 flex flex-col">
                   {conversation && conversation.length > 0 ? (
-                    conversation.map((msg: any) => {
+                    [...conversation].sort((a: any, b: any) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()).map((msg: any) => {
                       const isConsultationRequest = msg.content.includes("[상담 신청]");
                       const isSentByMe = msg.senderId === user?.id;
                       
