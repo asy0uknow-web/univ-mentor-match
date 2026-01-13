@@ -148,14 +148,7 @@ export default function Bookings() {
                         <span>{item.booking.duration}시간</span>
                       </div>
                     </div>
-                    <div className="mt-4 pt-4 border-t border-border">
-                      <div className="flex justify-between items-center">
-                        <span className="text-lg font-semibold">총 금액</span>
-                        <span className="text-2xl font-bold text-primary">
-                          ₩{Number(item.booking.totalAmount).toLocaleString()}
-                        </span>
-                      </div>
-                    </div>
+
                     {item.booking.studentMessage && (
                       <div className="mt-4 p-3 bg-muted rounded-lg">
                         <p className="text-sm text-muted-foreground">전달 메시지</p>

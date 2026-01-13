@@ -214,3 +214,8 @@
 - [x] Radix UI Select에서 SelectItem의 value가 빈 문자열("")이 될 수 없음 ("all" 값으로 변경)
 - [x] "전체 지역", "전체 분야" SelectItem의 value를 변경 ("all"로 변경)
 - [x] Select value와 selectedField/selectedRegion 상태 동기화 수정 (초기값을 "all"로 변경)
+
+## 기능 개선 - 상담 예약 페이지 UI 개선
+- [x] 상담 예약 페이지에서 "예약하기" 칭 제거 (어내 상담 예약 내역에서 제거)
+- [x] 문의 메시지 대화ch에서 최근 대화가 아래에 표시되도록 수정 (스크롤 자동 하단으로)
+- [x] 대화 순서 확인 및 테스트 (메시지 역순 내림차순으로 정렬)

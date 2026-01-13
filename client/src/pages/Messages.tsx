@@ -172,9 +172,9 @@ export default function Messages() {
                 <CardHeader>
                   <CardTitle>대화</CardTitle>
                 </CardHeader>
-                <CardContent className="flex-1 overflow-y-auto space-y-4 mb-4">
+                <CardContent className="flex-1 overflow-y-auto space-y-4 mb-4 flex flex-col-reverse">
                   {conversation && conversation.length > 0 ? (
-                    conversation.map((msg) => (
+                    [...conversation].reverse().map((msg) => (
                       <div
                         key={msg.id}
                         className={`flex ${
