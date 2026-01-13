@@ -1,0 +1,34 @@
+{
+  "query": "SELECT mp.id, mp.userId, mp.university, mp.major, mp.field, mp.region, \n       mp.isActive, mp.verificationStatus, u.name, u.email\nFROM mentor_profiles mp\nINNER JOIN users u ON mp.userId = u.id\nWHERE mp.verificationStatus = 'approved';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute SELECT mp.id, mp.userId, mp.university, mp.major, mp.field, mp.region, \n       mp.isActive, mp.verificationStatus, u.name, u.email\nFROM mentor_profiles mp\nINNER JOIN users u ON mp.userId = u.id\nWHERE mp.verificationStatus = 'approved';",
+  "rows": [
+    {
+      "id": "1",
+      "userId": "1",
+      "university": "한국대학교",
+      "major": "학과공학과",
+      "field": "engineering",
+      "region": "seoul",
+      "isActive": "0",
+      "verificationStatus": "approved",
+      "name": "2003yunho",
+      "email": "2003yunho@gmail.com"
+    },
+    {
+      "id": "30001",
+      "userId": "210002",
+      "university": "고려대학교",
+      "major": "데이터과학과",
+      "field": "engineering",
+      "region": "gyeonggi",
+      "isActive": "0",
+      "verificationStatus": "approved",
+      "name": "주혁 양",
+      "email": "yjh032201@gmail.com"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tuserId\tuniversity\tmajor\tfield\tregion\tisActive\tverificationStatus\tname\temail\n1\t1\t한국대학교\t학과공학과\tengineering\tseoul\t0\tapproved\t2003yunho\t2003yunho@gmail.com\n30001\t210002\t고려대학교\t데이터과학과\tengineering\tgyeonggi\t0\tapproved\t주혁 양\tyjh032201@gmail.com\n",
+  "stderr": "",
+  "execution_time_ms": 1542
+}
