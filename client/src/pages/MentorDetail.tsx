@@ -5,6 +5,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { trpc } from "@/lib/trpc";
 import { Link, useParams, useLocation } from "wouter";
 import { GraduationCap, Star, Calendar, ArrowLeft, MessageCircle } from "lucide-react";
@@ -317,17 +318,17 @@ export default function MentorDetail() {
                       <div className="space-y-4">
                         <div>
                           <Label htmlFor="consultationType">상담 종류</Label>
-                          <select
-                            id="consultationType"
-                            value={consultationType}
-                            onChange={(e) => setConsultationType(e.target.value as "resume_consulting" | "career_counseling" | "academic_management" | "university_tour")}
-                            className="w-full px-3 py-2 border border-border rounded-md bg-background"
-                          >
-                            <option value="resume_consulting">생기부 컨설팅 (₩50,000/시간)</option>
-                            <option value="career_counseling">진로상담 (₩30,000/시간)</option>
-                            <option value="academic_management">학업관리 (₩40,000/시간)</option>
-                            <option value="university_tour">대학탐방 (₩50,000/시간)</option>
-                          </select>
+                          <Select value={consultationType} onValueChange={(value) => setConsultationType(value as "resume_consulting" | "career_counseling" | "academic_management" | "university_tour")}>
+                            <SelectTrigger>
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="resume_consulting">생기부 컨설팅 (₩50,000/시간)</SelectItem>
+                              <SelectItem value="career_counseling">진로상담 (₩30,000/시간)</SelectItem>
+                              <SelectItem value="academic_management">학업관리 (₩40,000/시간)</SelectItem>
+                              <SelectItem value="university_tour">대학탐방 (₩50,000/시간)</SelectItem>
+                            </SelectContent>
+                          </Select>
                         </div>
                         <div>
                           <Label htmlFor="scheduledAt">상담 일시</Label>
