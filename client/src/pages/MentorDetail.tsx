@@ -219,12 +219,7 @@ ${studentMessage ? `메시지: ${studentMessage}` : '추가 메시지 없음'}`;
                     </p>
                   </div>
 
-                  <div>
-                    <h3 className="text-xl font-bold mb-2">상담료</h3>
-                    <p className="text-2xl font-bold text-primary">
-                      시간당 ₩{Number(mentor.profile.hourlyRate).toLocaleString()}
-                    </p>
-                  </div>
+
                 </div>
               </CardContent>
             </Card>
@@ -365,16 +360,8 @@ ${studentMessage ? `메시지: ${studentMessage}` : '추가 메시지 없음'}`;
                             <span>{consultationLabels[consultationType]}</span>
                           </div>
                           <div className="flex justify-between mb-2">
-                            <span>시간당 상담료</span>
-                            <span>₩{hourlyRate.toLocaleString()}</span>
-                          </div>
-                          <div className="flex justify-between mb-2">
                             <span>상담 시간</span>
                             <span>{duration}시간</span>
-                          </div>
-                          <div className="flex justify-between font-bold text-lg">
-                            <span>총 금액</span>
-                            <span className="text-primary">₩{totalAmount.toLocaleString()}</span>
                           </div>
                         </div>
                       </div>

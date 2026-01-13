@@ -230,10 +230,7 @@ export default function Mentors() {
                       <p className="text-sm text-muted-foreground line-clamp-2">
                         {mentor.profile.bio || "소개 없음"}
                       </p>
-                      <div className="flex items-center justify-between pt-2 border-t border-border">
-                        <span className="text-lg font-bold text-primary">
-                          ₩{mentor.profile.hourlyRate?.toLocaleString() || "0"}/시간
-                        </span>
+                      <div className="flex items-center justify-end pt-2 border-t border-border">
                         <Button size="sm">상담 신청</Button>
                       </div>
                     </div>

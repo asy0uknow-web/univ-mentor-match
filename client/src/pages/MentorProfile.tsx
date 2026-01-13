@@ -198,7 +198,7 @@ export default function MentorProfile() {
         major,
         grade,
         bio,
-        hourlyRate,
+        hourlyRate: "30000",
         field,
         region,
       });
@@ -208,7 +208,7 @@ export default function MentorProfile() {
         major,
         grade,
         bio,
-        hourlyRate,
+        hourlyRate: "30000",
         field,
         region,
       });
@@ -404,18 +404,6 @@ export default function MentorProfile() {
                           <SelectItem value="jeju">제주</SelectItem>
                         </SelectContent>
                       </Select>
-                    </div>
-
-                    <div>
-                      <Label htmlFor="hourlyRate">시간당 상담료 (원) *</Label>
-                      <Input
-                        id="hourlyRate"
-                        type="number"
-                        value={hourlyRate}
-                        onChange={(e) => setHourlyRate(e.target.value)}
-                        placeholder="예: 30000"
-                        className={emptyFields.has("hourlyRate") ? "border-red-500 border-2" : ""}
-                      />
                     </div>
 
                     <div>
