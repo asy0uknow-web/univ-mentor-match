@@ -209,3 +209,8 @@
 - [x] "멘토 찾아보기" 버튼 클릭 시 null 값 전달 (selectedField/selectedRegion 초기값 및 처리 수정)
 - [x] 문제 원인 분석 (Mentors.tsx에서 undefined 대신 "" 사용)
 - [x] 문제 수정 (API 호출 시 빈 문자열을 undefined로 변환)
+
+## 버그 수정 - SelectItem value 에러
+- [x] Radix UI Select에서 SelectItem의 value가 빈 문자열("")이 될 수 없음 ("all" 값으로 변경)
+- [x] "전체 지역", "전체 분야" SelectItem의 value를 변경 ("all"로 변경)
+- [x] Select value와 selectedField/selectedRegion 상태 동기화 수정 (초기값을 "all"로 변경)
