@@ -33,8 +33,8 @@ const REGIONS = [
 export default function Mentors() {
   const { isAuthenticated } = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedField, setSelectedField] = useState<string | undefined>();
-  const [selectedRegion, setSelectedRegion] = useState<string | undefined>();
+  const [selectedField, setSelectedField] = useState<string | undefined>(undefined);
+  const [selectedRegion, setSelectedRegion] = useState<string | undefined>(undefined);
 
   // 기본 멘토 목록
   const { data: allMentors, isLoading: isLoadingAll } = trpc.mentor.listAll.useQuery();
@@ -136,6 +136,7 @@ export default function Mentors() {
                   <SelectValue placeholder="분야 선택" />
                 </SelectTrigger>
                 <SelectContent>
+                  <SelectItem value="">전체 분야</SelectItem>
                   {FIELDS.map((field) => (
                     <SelectItem key={field.value} value={field.value}>
                       {field.label}
@@ -153,6 +154,7 @@ export default function Mentors() {
                   <SelectValue placeholder="지역 선택" />
                 </SelectTrigger>
                 <SelectContent>
+                  <SelectItem value="">전체 지역</SelectItem>
                   {REGIONS.map((region) => (
                     <SelectItem key={region.value} value={region.value}>
                       {region.label}
@@ -179,19 +181,17 @@ export default function Mentors() {
           </div>
 
           {/* Reset Button */}
-          {(selectedField || selectedRegion || searchTerm) && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => {
-                setSelectedField(undefined);
-                setSelectedRegion(undefined);
-                setSearchTerm("");
-              }}
-            >
-              필터 초기화
-            </Button>
-          )}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              setSelectedField(undefined);
+              setSelectedRegion(undefined);
+              setSearchTerm("");
+            }}
+          >
+            필터 초기화
+          </Button>
         </div>
 
         {/* Results Count */}
