@@ -55,21 +55,14 @@ export default function MentorDetail() {
 
   const createBookingMutation = trpc.booking.create.useMutation({
     onSuccess: async (data) => {
-      toast.success("예약이 생성되었습니다. 결제 페이지로 이동합니다.");
+      toast.success("상담 신청이 완료되었습니다. 멘토에게 알림이 전송되었습니다.");
       setIsBookingOpen(false);
-      
-      // Create checkout session
-      const checkoutResult = await createCheckoutMutation.mutateAsync({
-        bookingId: data.bookingId,
-      });
-      
-      if (checkoutResult.checkoutUrl) {
-        window.open(checkoutResult.checkoutUrl, "_blank");
-        toast.info("결제 창이 새 탭에서 열렸습니다.");
-      }
+      setScheduledAt("");
+      setDuration("1");
+      setStudentMessage("");
     },
     onError: (error) => {
-      toast.error(`예약 실패: ${error.message}`);
+      toast.error(`상담 신청 실패: ${error.message}`);
     },
   });
 
@@ -87,11 +80,7 @@ export default function MentorDetail() {
     },
   });
 
-  const createCheckoutMutation = trpc.booking.createCheckoutSession.useMutation({
-    onError: (error) => {
-      toast.error(`결제 세션 생성 실패: ${error.message}`);
-    },
-  });
+
 
   const handleBooking = () => {
     if (!scheduledAt || !duration) {
@@ -99,11 +88,21 @@ export default function MentorDetail() {
       return;
     }
 
+    // 상담 신청 정보를 메시지로 전송
+    const consultationMessage = `[상담 신청]
+종류: ${consultationLabels[consultationType]}
+날짜: ${new Date(scheduledAt).toLocaleString('ko-KR')}
+시간: ${duration}시간
+요금: ₩${(consultationPrices[consultationType] * parseFloat(duration)).toLocaleString()}
+
+${studentMessage ? `메시지: ${studentMessage}` : '추가 메시지 없음'}`;
+
+    // 먼저 예약을 생성
     createBookingMutation.mutate({
       mentorId,
       scheduledAt,
       duration,
-      studentMessage,
+      studentMessage: consultationMessage,
       consultationType,
     });
   };
@@ -382,11 +381,11 @@ export default function MentorDetail() {
                       <DialogFooter>
                         <Button
                           onClick={handleBooking}
-                          disabled={createBookingMutation.isPending || createCheckoutMutation.isPending}
+                          disabled={createBookingMutation.isPending}
                         >
-                          {createBookingMutation.isPending || createCheckoutMutation.isPending
+                          {createBookingMutation.isPending
                             ? "처리 중..."
-                            : "예약 및 결제하기"}
+                            : "상담 신청하기"}
                         </Button>
                       </DialogFooter>
                     </DialogContent>
