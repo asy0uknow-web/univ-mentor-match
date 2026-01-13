@@ -6,7 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { trpc } from "@/lib/trpc";
 import { Link } from "wouter";
 import { GraduationCap, Send, MessageSquare, Check, X, Clock, CheckCircle2 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { getLoginUrl } from "@/const";
 import { toast } from "sonner";
 import { format } from "date-fns";
@@ -16,6 +16,7 @@ export default function Messages() {
   const { user, isAuthenticated } = useAuth();
   const [selectedConversation, setSelectedConversation] = useState<number | null>(null);
   const [messageContent, setMessageContent] = useState("");
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const { data: inbox } = trpc.message.getInbox.useQuery(undefined, {
     enabled: isAuthenticated,
@@ -25,6 +26,15 @@ export default function Messages() {
     { otherUserId: selectedConversation || 0 },
     { enabled: isAuthenticated && selectedConversation !== null }
   );
+
+  // 자동 스크롤 - 새 메시지가 추가되면 하단으로 스크롤
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [conversation]);
 
   const utils = trpc.useUtils();
 
@@ -238,9 +248,9 @@ export default function Messages() {
                 </CardHeader>
                 
                 {/* Messages */}
-                <CardContent className="flex-1 overflow-y-auto py-4 space-y-4 flex flex-col-reverse">
+                <CardContent className="flex-1 overflow-y-auto py-4 space-y-4 flex flex-col">
                   {conversation && conversation.length > 0 ? (
-                    [...conversation].reverse().map((msg: any) => {
+                    conversation.map((msg: any) => {
                       const isConsultationRequest = msg.content.includes("[상담 신청]");
                       const isSentByMe = msg.senderId === user?.id;
                       
@@ -289,6 +299,7 @@ export default function Messages() {
                       대화를 시작해보세요.
                     </p>
                   )}
+                  <div ref={messagesEndRef} />
                 </CardContent>
 
                 {/* Action Buttons for Consultation Request */}

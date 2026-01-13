@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { trpc } from "@/lib/trpc";
 import { Link, useLocation } from "wouter";
-import { GraduationCap, Calendar, Clock, MessageCircle } from "lucide-react";
+import { GraduationCap, Calendar, Clock, MessageCircle, User, BookOpen } from "lucide-react";
 import { getLoginUrl } from "@/const";
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
@@ -18,8 +18,8 @@ export default function Bookings() {
     enabled: isAuthenticated && user?.userType === "high_school_student",
   });
 
-  // 멘토 역할: 받은 메시지 조회 (상담 문의)
-  const { data: inbox, isLoading: inboxLoading } = trpc.message.getInbox.useQuery(undefined, {
+  // 멘토 역할: 받은 상담 신청 조회
+  const { data: mentorBookings, isLoading: mentorBookingsLoading } = trpc.booking.getMyBookings.useQuery(undefined, {
     enabled: isAuthenticated && user?.userType === "university_student",
   });
 
@@ -46,37 +46,32 @@ export default function Bookings() {
       case "pending":
         return <Badge variant="secondary">대기 중</Badge>;
       case "confirmed":
-        return <Badge className="bg-green-500">확정됨</Badge>;
+        return <Badge className="bg-green-500">수락됨</Badge>;
       case "completed":
         return <Badge className="bg-blue-500">완료됨</Badge>;
       case "cancelled":
-        return <Badge variant="destructive">취소됨</Badge>;
+        return <Badge variant="destructive">거절됨</Badge>;
       default:
         return <Badge>{status}</Badge>;
     }
   };
 
-  // 메시지를 대화로 그룹화 (멘토 역할)
-  const conversations = inbox?.reduce((acc: any, msg) => {
-    if (msg.recipientId === user?.id) {
-      const otherUserId = msg.senderId;
-      
-      if (!acc[otherUserId]) {
-        acc[otherUserId] = {
-          userId: otherUserId,
-          messages: [],
-          lastMessage: msg,
-        };
-      }
-      acc[otherUserId].messages.push(msg);
-      if (new Date(msg.createdAt) > new Date(acc[otherUserId].lastMessage.createdAt)) {
-        acc[otherUserId].lastMessage = msg;
-      }
+  const getConsultationTypeName = (type: string) => {
+    switch (type) {
+      case "resume_consulting":
+        return "생기부 컨설팅";
+      case "career_counseling":
+        return "진로상담";
+      case "academic_management":
+        return "학업관리";
+      case "university_tour":
+        return "대학탐방";
+      default:
+        return type;
     }
-    return acc;
-  }, {}) || {};
+  };
 
-  const handleStartConversation = (otherUserId: number) => {
+  const handleStartConversation = (studentId: number) => {
     setLocation("/messages");
   };
 
@@ -136,7 +131,7 @@ export default function Bookings() {
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <div className="grid md:grid-cols-2 gap-4">
+                    <div className="grid md:grid-cols-2 gap-4 mb-4">
                       <div className="flex items-center gap-2 text-muted-foreground">
                         <Calendar className="h-4 w-4" />
                         <span>
@@ -147,12 +142,16 @@ export default function Bookings() {
                         <Clock className="h-4 w-4" />
                         <span>{item.booking.duration}시간</span>
                       </div>
+                      <div className="flex items-center gap-2 text-muted-foreground">
+                        <BookOpen className="h-4 w-4" />
+                        <span>{getConsultationTypeName(item.booking.consultationType)}</span>
+                      </div>
                     </div>
 
                     {item.booking.studentMessage && (
                       <div className="mt-4 p-3 bg-muted rounded-lg">
                         <p className="text-sm text-muted-foreground">전달 메시지</p>
-                        <p className="mt-1">{item.booking.studentMessage}</p>
+                        <p className="mt-1 text-sm whitespace-pre-wrap">{item.booking.studentMessage}</p>
                       </div>
                     )}
                   </CardContent>
@@ -209,41 +208,79 @@ export default function Bookings() {
       <div className="container mx-auto px-4 py-12">
         <h1 className="text-4xl font-bold mb-8">상담 문의</h1>
 
-        {inboxLoading ? (
+        {mentorBookingsLoading ? (
           <p className="text-muted-foreground">로딩 중...</p>
-        ) : Object.keys(conversations).length > 0 ? (
+        ) : mentorBookings && mentorBookings.length > 0 ? (
           <div className="space-y-4">
-            {Object.values(conversations).map((conv: any) => (
-              <Card key={conv.userId}>
+            {mentorBookings.map((item: any) => (
+              <Card key={item.booking.id} className={item.booking.status === "pending" ? "border-amber-200 bg-amber-50/30" : ""}>
                 <CardHeader>
                   <div className="flex items-start justify-between">
                     <div>
-                      <CardTitle className="text-xl">
-                        학생 ID: {conv.userId}
-                      </CardTitle>
+                      <div className="flex items-center gap-2 mb-2">
+                        <User className="h-4 w-4 text-muted-foreground" />
+                        <CardTitle className="text-xl">
+                          {item.mentor?.name || "학생"}
+                        </CardTitle>
+                      </div>
                       <CardDescription>
-                        {conv.messages.length}개의 메시지
+                        {item.mentor?.email}
                       </CardDescription>
                     </div>
+                    {getStatusBadge(item.booking.status)}
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="mb-4 p-3 bg-muted rounded-lg">
-                    <p className="text-sm text-muted-foreground">최근 메시지</p>
-                    <p className="mt-1 text-sm line-clamp-2">
-                      {conv.lastMessage.content}
-                    </p>
-                    <p className="mt-2 text-xs text-muted-foreground">
-                      {format(new Date(conv.lastMessage.createdAt), "PPP p", { locale: ko })}
-                    </p>
+                  <div className="space-y-4">
+                    {/* 상담 정보 */}
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div className="flex items-center gap-2 text-muted-foreground">
+                        <Calendar className="h-4 w-4" />
+                        <span>
+                          {format(new Date(item.booking.scheduledAt), "PPP", { locale: ko })}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2 text-muted-foreground">
+                        <Clock className="h-4 w-4" />
+                        <span>{item.booking.duration}시간</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-muted-foreground">
+                        <BookOpen className="h-4 w-4" />
+                        <span>{getConsultationTypeName(item.booking.consultationType)}</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-muted-foreground font-semibold">
+                        <span className="text-primary">₩{parseInt(item.booking.totalAmount).toLocaleString()}</span>
+                      </div>
+                    </div>
+
+                    {/* 학생 메시지 */}
+                    {item.booking.studentMessage && (
+                      <div className="p-3 bg-muted rounded-lg border-l-4 border-primary">
+                        <p className="text-sm text-muted-foreground mb-2">학생 메시지</p>
+                        <p className="text-sm whitespace-pre-wrap">{item.booking.studentMessage}</p>
+                      </div>
+                    )}
+
+                    {/* 액션 버튼 */}
+                    <div className="flex gap-2 pt-2">
+                      <Button 
+                        onClick={() => handleStartConversation(item.mentor?.id || 0)}
+                        className="flex-1"
+                      >
+                        <MessageCircle className="h-4 w-4 mr-2" />
+                        메시지 열기
+                      </Button>
+                      {item.booking.status === "pending" && (
+                        <Button 
+                          variant="outline"
+                          className="flex-1"
+                          disabled
+                        >
+                          메시지에서 응답
+                        </Button>
+                      )}
+                    </div>
                   </div>
-                  <Button 
-                    onClick={() => handleStartConversation(conv.userId)}
-                    className="w-full"
-                  >
-                    <MessageCircle className="h-4 w-4 mr-2" />
-                    대화 열기
-                  </Button>
                 </CardContent>
               </Card>
             ))}
@@ -252,9 +289,6 @@ export default function Bookings() {
           <Card>
             <CardContent className="py-12 text-center">
               <p className="text-muted-foreground mb-4">아직 상담 문의가 없습니다.</p>
-              <Link href="/mentors">
-                <Button variant="outline">멘토 프로필 확인</Button>
-              </Link>
             </CardContent>
           </Card>
         )}
