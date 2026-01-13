@@ -177,8 +177,8 @@ export default function Messages() {
               <Link href="/my-profile">
                 <Button variant="ghost">내 프로필</Button>
               </Link>
-              <Link href="/messages">
-                <Button variant="ghost">메시지</Button>
+              <Link href="/notifications">
+                <Button variant="ghost">알림</Button>
               </Link>
             </div>
           </div>
@@ -186,8 +186,11 @@ export default function Messages() {
       </nav>
 
       {/* Content */}
-      <div className="container mx-auto px-4 py-12">
-        <h1 className="text-4xl font-bold mb-8">메시지</h1>
+      <div className="container mx-auto px-4 py-8">
+        <div className="mb-6">
+          <h1 className="text-3xl font-bold">메시지</h1>
+          <p className="text-muted-foreground mt-1">멘토와의 상담 신청 및 메시지를 관리하세요</p>
+        </div>
 
         <div className="grid lg:grid-cols-3 gap-6">
           {/* Conversations List */}

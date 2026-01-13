@@ -41,6 +41,7 @@ export default function Bookings() {
     );
   }
 
+  // 상담 신청 상태 배지
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "pending":
