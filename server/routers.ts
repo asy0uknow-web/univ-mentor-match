@@ -217,6 +217,41 @@ export const appRouter = router({
         return { success: true };
       }),
 
+    acceptBooking: protectedProcedure
+      .input(z.object({
+        bookingId: z.number(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const booking = await getBookingById(input.bookingId);
+        if (!booking) throw new Error("Booking not found");
+        
+        const mentor = await getMentorById(booking.mentorId);
+        if (!mentor || mentor.profile.userId !== ctx.user.id) {
+          throw new Error("Unauthorized: Only the mentor can accept this booking");
+        }
+
+        await updateBookingStatus(input.bookingId, "confirmed");
+        return { success: true };
+      }),
+
+    rejectBooking: protectedProcedure
+      .input(z.object({
+        bookingId: z.number(),
+        reason: z.string().optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const booking = await getBookingById(input.bookingId);
+        if (!booking) throw new Error("Booking not found");
+        
+        const mentor = await getMentorById(booking.mentorId);
+        if (!mentor || mentor.profile.userId !== ctx.user.id) {
+          throw new Error("Unauthorized: Only the mentor can reject this booking");
+        }
+
+        await updateBookingStatus(input.bookingId, "cancelled");
+        return { success: true };
+      }),
+
     createCheckoutSession: protectedProcedure
       .input(z.object({ bookingId: z.number() }))
       .mutation(async ({ ctx, input }) => {
