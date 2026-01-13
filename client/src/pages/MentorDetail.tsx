@@ -19,6 +19,22 @@ export default function MentorDetail() {
   const [scheduledAt, setScheduledAt] = useState("");
   const [duration, setDuration] = useState("1");
   const [studentMessage, setStudentMessage] = useState("");
+  const [consultationType, setConsultationType] = useState<"resume_consulting" | "career_counseling" | "academic_management" | "university_tour">("career_counseling");
+
+  // 상담 종류별 시간당 요금
+  const consultationPrices: Record<string, number> = {
+    "resume_consulting": 50000,      // 생기부 컨설팅
+    "career_counseling": 30000,      // 진로상담
+    "academic_management": 40000,    // 학업관리
+    "university_tour": 50000,        // 대학탐방
+  };
+
+  const consultationLabels: Record<string, string> = {
+    "resume_consulting": "생기부 컨설팅",
+    "career_counseling": "진로상담",
+    "academic_management": "학업관리",
+    "university_tour": "대학탐방",
+  };
 
   const mentorId = id ? parseInt(id, 10) : 0;
   const isValidMentorId = !isNaN(mentorId) && mentorId > 0;
@@ -87,6 +103,7 @@ export default function MentorDetail() {
       scheduledAt,
       duration,
       studentMessage,
+      consultationType,
     });
   };
 
@@ -120,7 +137,8 @@ export default function MentorDetail() {
     );
   }
 
-  const totalAmount = parseFloat(mentor.profile.hourlyRate) * parseFloat(duration);
+  const hourlyRate = consultationPrices[consultationType] || 30000;
+  const totalAmount = hourlyRate * parseFloat(duration);
 
   return (
     <div className="min-h-screen">
@@ -298,6 +316,20 @@ export default function MentorDetail() {
                       </DialogHeader>
                       <div className="space-y-4">
                         <div>
+                          <Label htmlFor="consultationType">상담 종류</Label>
+                          <select
+                            id="consultationType"
+                            value={consultationType}
+                            onChange={(e) => setConsultationType(e.target.value as "resume_consulting" | "career_counseling" | "academic_management" | "university_tour")}
+                            className="w-full px-3 py-2 border border-border rounded-md bg-background"
+                          >
+                            <option value="resume_consulting">생기부 컨설팅 (₩50,000/시간)</option>
+                            <option value="career_counseling">진로상담 (₩30,000/시간)</option>
+                            <option value="academic_management">학업관리 (₩40,000/시간)</option>
+                            <option value="university_tour">대학탐방 (₩50,000/시간)</option>
+                          </select>
+                        </div>
+                        <div>
                           <Label htmlFor="scheduledAt">상담 일시</Label>
                           <Input
                             id="scheduledAt"
@@ -329,8 +361,12 @@ export default function MentorDetail() {
                         </div>
                         <div className="border-t border-border pt-4">
                           <div className="flex justify-between mb-2">
+                            <span>상담 종류</span>
+                            <span>{consultationLabels[consultationType]}</span>
+                          </div>
+                          <div className="flex justify-between mb-2">
                             <span>시간당 상담료</span>
-                            <span>₩{Number(mentor.profile.hourlyRate).toLocaleString()}</span>
+                            <span>₩{hourlyRate.toLocaleString()}</span>
                           </div>
                           <div className="flex justify-between mb-2">
                             <span>상담 시간</span>

@@ -77,6 +77,8 @@ export const bookings = mysqlTable("bookings", {
   duration: decimal("duration", { precision: 3, scale: 1 }).notNull(),
   // Total amount to be paid
   totalAmount: decimal("totalAmount", { precision: 10, scale: 2 }).notNull(),
+  // Consultation type: resume_consulting, career_counseling, academic_management, university_tour
+  consultationType: mysqlEnum("consultationType", ["resume_consulting", "career_counseling", "academic_management", "university_tour"]).default("career_counseling").notNull(),
   // Booking status
   status: mysqlEnum("status", ["pending", "confirmed", "completed", "cancelled"]).default("pending").notNull(),
   // Stripe Payment Intent ID

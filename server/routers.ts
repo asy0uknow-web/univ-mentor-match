@@ -156,6 +156,7 @@ export const appRouter = router({
         mentorId: z.number(),
         scheduledAt: z.string(),
         duration: z.string(),
+        consultationType: z.enum(["resume_consulting", "career_counseling", "academic_management", "university_tour"]).default("career_counseling"),
         studentMessage: z.string().optional(),
       }))
       .mutation(async ({ ctx, input }) => {
@@ -167,7 +168,15 @@ export const appRouter = router({
           throw new Error(`Duration must be between ${MIN_BOOKING_DURATION} and ${MAX_BOOKING_DURATION} hours`);
         }
 
-        const hourlyRate = parseFloat(mentor.profile.hourlyRate);
+        // 상담 종류별 시간당 요금
+        const consultationPrices: Record<string, number> = {
+          "resume_consulting": 50000,
+          "career_counseling": 30000,
+          "academic_management": 40000,
+          "university_tour": 50000,
+        };
+
+        const hourlyRate = consultationPrices[input.consultationType] || 30000;
         const totalAmount = (hourlyRate * duration).toFixed(2);
 
         const result = await createBooking({
@@ -176,6 +185,7 @@ export const appRouter = router({
           scheduledAt: new Date(input.scheduledAt),
           duration: input.duration,
           totalAmount,
+          consultationType: input.consultationType,
           studentMessage: input.studentMessage,
         });
 
