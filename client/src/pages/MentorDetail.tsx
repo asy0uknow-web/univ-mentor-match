@@ -324,14 +324,28 @@ ${studentMessage ? `메시지: ${studentMessage}` : '추가 메시지 없음'}`;
                             </SelectContent>
                           </Select>
                         </div>
-                        <div>
-                          <Label htmlFor="scheduledAt">상담 일시</Label>
+                        <div className="space-y-2">
+                          <Label htmlFor="scheduledDate">상담 날짜</Label>
                           <Input
-                            id="scheduledAt"
-                            type="datetime-local"
-                            value={scheduledAt}
-                            onChange={(e) => setScheduledAt(e.target.value)}
-                            step="3600"
+                            id="scheduledDate"
+                            type="date"
+                            value={scheduledAt.split('T')[0] || ''}
+                            onChange={(e) => {
+                              const time = scheduledAt.split('T')[1] || '09:00';
+                              setScheduledAt(e.target.value ? `${e.target.value}T${time}` : '');
+                            }}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="scheduledTime">상담 시간</Label>
+                          <Input
+                            id="scheduledTime"
+                            type="time"
+                            value={scheduledAt.split('T')[1] || '09:00'}
+                            onChange={(e) => {
+                              const date = scheduledAt.split('T')[0] || new Date().toISOString().split('T')[0];
+                              setScheduledAt(`${date}T${e.target.value}`);
+                            }}
                           />
                         </div>
                         <div>
