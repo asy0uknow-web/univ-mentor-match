@@ -278,3 +278,8 @@
 - [x] mentor-deletion-reregistration.test.ts 테스트 데이터 격리 (고유 userId 사용)
 - [x] mentor-profile-upsert.test.ts 테스트 데이터 격리 (고유 userId 사용)
 - [x] 전체 테스트 65개 모두 통과 (100%)
+
+## 기능 개선 - 상담 일시 입력 UI 개선
+- [x] 상담 일시 입력에서 분 단위 제거 (시간 단위까지만 표시) - step="3600" 추가
+- [x] datetime-local input 타입 커스터마이징 - HTML step 속성 사용
+- [x] 사용자 경험 개선

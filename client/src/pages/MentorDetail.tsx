@@ -331,6 +331,7 @@ ${studentMessage ? `메시지: ${studentMessage}` : '추가 메시지 없음'}`;
                             type="datetime-local"
                             value={scheduledAt}
                             onChange={(e) => setScheduledAt(e.target.value)}
+                            step="3600"
                           />
                         </div>
                         <div>
