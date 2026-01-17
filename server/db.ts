@@ -201,7 +201,7 @@ export async function getMentorById(mentorId: number) {
     .innerJoin(users, eq(mentorProfiles.userId, users.id))
     .where(
       and(
-        eq(mentorProfiles.userId, mentorId),
+        eq(mentorProfiles.id, mentorId),
         eq(mentorProfiles.isDeleted, false)
       )
     )
