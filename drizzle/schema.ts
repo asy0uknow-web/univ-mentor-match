@@ -32,9 +32,12 @@ export type InsertUser = typeof users.$inferInsert;
 /**
  * University student mentor profiles
  */
+// Hybrid approach: UNIQUE userId + isDeleted flag for soft delete
+// - Only one active profile per userId (enforced by UNIQUE constraint)
+// - Deleted profiles kept for history (isDeleted = true)
 export const mentorProfiles = mysqlTable("mentor_profiles", {
   id: int("id").autoincrement().primaryKey(),
-  userId: int("userId").notNull(), // References users.id
+  userId: int("userId").notNull().unique(), // References users.id - UNIQUE constraint to ensure one active profile per user
   university: varchar("university", { length: 255 }).notNull(),
   major: varchar("major", { length: 255 }).notNull(),
   // Field of study: 이공계, 자연계, 상경계, 어문계, 사범계, 문과계, 의학계
@@ -51,6 +54,8 @@ export const mentorProfiles = mysqlTable("mentor_profiles", {
   isActive: boolean("isActive").default(true).notNull(),
   // Verification status: pending, approved, rejected
   verificationStatus: mysqlEnum("verificationStatus", ["pending", "approved", "rejected"]).default("pending").notNull(),
+  // Soft delete flag: true = deleted/archived, false = active
+  isDeleted: boolean("isDeleted").default(false).notNull(),
   // Average rating (calculated from reviews)
   averageRating: decimal("averageRating", { precision: 3, scale: 2 }).default("0.00"),
   // Total number of reviews

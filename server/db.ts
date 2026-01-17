@@ -149,7 +149,12 @@ export async function getMentorProfileByUserId(userId: number) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
   
-  const result = await db.select().from(mentorProfiles).where(eq(mentorProfiles.userId, userId)).limit(1);
+  const result = await db.select().from(mentorProfiles).where(
+    and(
+      eq(mentorProfiles.userId, userId),
+      eq(mentorProfiles.isDeleted, false)
+    )
+  ).limit(1);
   return result.length > 0 ? result[0] : null;
 }
 
@@ -174,7 +179,8 @@ export async function getAllActiveMentors() {
     .where(
       and(
         eq(mentorProfiles.isActive, true),
-        eq(mentorProfiles.verificationStatus, "approved")
+        eq(mentorProfiles.verificationStatus, "approved"),
+        eq(mentorProfiles.isDeleted, false)
       )
     )
     .orderBy(desc(mentorProfiles.averageRating));
@@ -193,7 +199,12 @@ export async function getMentorById(mentorId: number) {
     })
     .from(mentorProfiles)
     .innerJoin(users, eq(mentorProfiles.userId, users.id))
-    .where(eq(mentorProfiles.userId, mentorId))
+    .where(
+      and(
+        eq(mentorProfiles.userId, mentorId),
+        eq(mentorProfiles.isDeleted, false)
+      )
+    )
     .limit(1);
   
   return result.length > 0 ? result[0] : null;

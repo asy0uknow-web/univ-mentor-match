@@ -289,3 +289,11 @@
 - [x] 검색 필터에서 특정 분야/지역 선택 시 멘토가 보이지 않는 문제 해결 - Mentors.tsx 로직 수정
 - [x] 검색 필터 로직 검증 및 수정 - 단순 로직 정리
 - [x] 전체 테스트 65/65 통과
+
+## 기능 개선 - 멘토 프로필 스키마 하이브리드 방식 수정
+- [x] mentorProfiles 테이블에 UNIQUE 제약 추가 (userId) - 복합 UNIQUE (userId, isDeleted)
+- [x] mentorProfiles 테이블에 isDeleted 플래그 추가 - schema.ts 수정
+- [x] 데이터베이스 마이그레이션 실행 - 중복 데이터 정리 및 UNIQUE 제약 추가
+- [x] 백엔드 쿼리 로직 수정 (isDeleted = false 조건 추가) - db.ts 수정
+- [x] 프로필 삭제 로직 수정 (물리적 삭제 → 논리적 삭제) - isDeleted 플래그 사용
+- [x] 테스트 및 검증 - 65/65 테스트 모두 통과
