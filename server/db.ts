@@ -171,7 +171,12 @@ export async function getAllActiveMentors() {
     })
     .from(mentorProfiles)
     .innerJoin(users, eq(mentorProfiles.userId, users.id))
-    .where(eq(mentorProfiles.isActive, true))
+    .where(
+      and(
+        eq(mentorProfiles.isActive, true),
+        eq(mentorProfiles.verificationStatus, "approved")
+      )
+    )
     .orderBy(desc(mentorProfiles.averageRating));
   
   return result;

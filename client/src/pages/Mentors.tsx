@@ -39,35 +39,35 @@ export default function Mentors() {
   // 기본 멘토 목록
   const { data: allMentors, isLoading: isLoadingAll } = trpc.mentor.listAll.useQuery();
 
-  // 분야별 검색
+  // 분야+지역 검색 (둘 다 선택되었을 때)
+  const { data: combinedMentors, isLoading: isLoadingCombined } = trpc.mentorSearch.getByFieldAndRegion.useQuery(
+    { field: (selectedField !== "all" ? selectedField : undefined) as any, region: (selectedRegion !== "all" ? selectedRegion : undefined) as any },
+    { enabled: selectedField !== "all" && selectedRegion !== "all" }
+  );
+
+  // 분야별 검색 (분야만 선택되었을 때)
   const { data: fieldMentors, isLoading: isLoadingField } = trpc.mentorSearch.getByField.useQuery(
     { field: (selectedField !== "all" ? selectedField : undefined) as any },
     { enabled: selectedField !== "all" && selectedRegion === "all" }
   );
 
-  // 지역별 검색
+  // 지역별 검색 (지역만 선택되었을 때)
   const { data: regionMentors, isLoading: isLoadingRegion } = trpc.mentorSearch.getByRegion.useQuery(
     { region: (selectedRegion !== "all" ? selectedRegion : undefined) as any },
     { enabled: selectedRegion !== "all" && selectedField === "all" }
-  );
-
-  // 분야+지역 검색
-  const { data: combinedMentors, isLoading: isLoadingCombined } = trpc.mentorSearch.getByFieldAndRegion.useQuery(
-    { field: (selectedField !== "all" ? selectedField : undefined) as any, region: (selectedRegion !== "all" ? selectedRegion : undefined) as any },
-    { enabled: selectedField !== "all" && selectedRegion !== "all" }
   );
 
   // 현재 표시할 멘토 목록 결정
   let mentors = allMentors;
   let isLoading = isLoadingAll;
 
-  if (selectedField && selectedField !== "all" && selectedRegion && selectedRegion !== "all") {
+  if (selectedField !== "all" && selectedRegion !== "all") {
     mentors = combinedMentors;
     isLoading = isLoadingCombined;
-  } else if (selectedField && selectedField !== "all") {
+  } else if (selectedField !== "all") {
     mentors = fieldMentors;
     isLoading = isLoadingField;
-  } else if (selectedRegion && selectedRegion !== "all") {
+  } else if (selectedRegion !== "all") {
     mentors = regionMentors;
     isLoading = isLoadingRegion;
   }
