@@ -168,16 +168,17 @@ export const appRouter = router({
           throw new Error(`Duration must be between ${MIN_BOOKING_DURATION} and ${MAX_BOOKING_DURATION} hours`);
         }
 
-        // 상담 종류별 시간당 요금
-        const consultationPrices: Record<string, number> = {
-          "resume_consulting": 50000,
-          "career_counseling": 30000,
-          "academic_management": 40000,
-          "university_tour": 50000,
+        // 상담 종류별 기본 1시간 비용 및 추가 시간 비용
+        const consultationPrices: Record<string, { base: number; additional: number }> = {
+          "resume_consulting": { base: 50000, additional: 30000 },
+          "career_counseling": { base: 30000, additional: 20000 },
+          "academic_management": { base: 40000, additional: 25000 },
+          "university_tour": { base: 50000, additional: 30000 },
         };
 
-        const hourlyRate = consultationPrices[input.consultationType] || 30000;
-        const totalAmount = (hourlyRate * duration).toFixed(2);
+        const pricing = consultationPrices[input.consultationType] || { base: 30000, additional: 20000 };
+        // 총 금액 = 기본 1시간 비용 + (입력된 시간 - 1) * 추가 시간 비용
+        const totalAmount = (pricing.base + (duration - 1) * pricing.additional).toFixed(2);
 
         const result = await createBooking({
           studentId: ctx.user.id,
@@ -194,6 +195,11 @@ export const appRouter = router({
           success: true,
           bookingId,
           totalAmount,
+          pricing: {
+            base: pricing.base,
+            additional: pricing.additional,
+            duration: duration,
+          },
         };
       }),
 

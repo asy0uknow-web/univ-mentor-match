@@ -22,12 +22,12 @@ export default function MentorDetail() {
   const [studentMessage, setStudentMessage] = useState("");
   const [consultationType, setConsultationType] = useState<"resume_consulting" | "career_counseling" | "academic_management" | "university_tour">("career_counseling");
 
-  // 상담 종류별 시간당 요금
-  const consultationPrices: Record<string, number> = {
-    "resume_consulting": 50000,      // 생기부 컨설팅
-    "career_counseling": 30000,      // 진로상담
-    "academic_management": 40000,    // 학업관리
-    "university_tour": 50000,        // 대학탐방
+  // 상담 종류별 기본 1시간 비용 및 추가 시간 비용
+  const consultationPrices: Record<string, { base: number; additional: number }> = {
+    "resume_consulting": { base: 50000, additional: 30000 },      // 생기부 컨설팅
+    "career_counseling": { base: 30000, additional: 20000 },      // 진로상담
+    "academic_management": { base: 40000, additional: 25000 },    // 학업관리
+    "university_tour": { base: 50000, additional: 30000 },        // 대학탐방
   };
 
   const consultationLabels: Record<string, string> = {
@@ -89,11 +89,14 @@ export default function MentorDetail() {
     }
 
     // 상담 신청 정보를 메시지로 전송
+    const durationNum = parseFloat(duration);
+    const pricing = consultationPrices[consultationType] || { base: 30000, additional: 20000 };
+    const totalPrice = pricing.base + (durationNum - 1) * pricing.additional;
     const consultationMessage = `[상담 신청]
 종류: ${consultationLabels[consultationType]}
 날짜: ${new Date(scheduledAt).toLocaleString('ko-KR')}
 시간: ${duration}시간
-요금: ₩${(consultationPrices[consultationType] * parseFloat(duration)).toLocaleString()}
+요금: ₩${totalPrice.toLocaleString()}
 
 ${studentMessage ? `메시지: ${studentMessage}` : '추가 메시지 없음'}`;
 
@@ -137,8 +140,9 @@ ${studentMessage ? `메시지: ${studentMessage}` : '추가 메시지 없음'}`;
     );
   }
 
-  const hourlyRate = consultationPrices[consultationType] || 30000;
-  const totalAmount = hourlyRate * parseFloat(duration);
+  const durationNum = parseFloat(duration);
+  const pricing = consultationPrices[consultationType] || { base: 30000, additional: 20000 };
+  const totalAmount = pricing.base + (durationNum - 1) * pricing.additional;
 
   return (
     <div className="min-h-screen">
@@ -317,10 +321,10 @@ ${studentMessage ? `메시지: ${studentMessage}` : '추가 메시지 없음'}`;
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="resume_consulting">생기부 컨설팅 (₩50,000/시간)</SelectItem>
-                              <SelectItem value="career_counseling">진로상담 (₩30,000/시간)</SelectItem>
-                              <SelectItem value="academic_management">학업관리 (₩40,000/시간)</SelectItem>
-                              <SelectItem value="university_tour">대학탐방 (₩50,000/시간)</SelectItem>
+                              <SelectItem value="resume_consulting">생기부 컨설팅 (기본 50K + 추가 30K)</SelectItem>
+                              <SelectItem value="career_counseling">진로상담 (기본 30K + 추가 20K)</SelectItem>
+                              <SelectItem value="academic_management">학업관리 (기본 40K + 추가 25K)</SelectItem>
+                              <SelectItem value="university_tour">대학탐방 (기본 50K + 추가 30K)</SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
@@ -369,14 +373,28 @@ ${studentMessage ? `메시지: ${studentMessage}` : '추가 메시지 없음'}`;
                             onChange={(e) => setStudentMessage(e.target.value)}
                           />
                         </div>
-                        <div className="border-t border-border pt-4">
-                          <div className="flex justify-between mb-2">
+                        <div className="border-t border-border pt-4 space-y-2">
+                          <div className="flex justify-between">
                             <span>상담 종류</span>
                             <span>{consultationLabels[consultationType]}</span>
                           </div>
-                          <div className="flex justify-between mb-2">
+                          <div className="flex justify-between">
                             <span>상담 시간</span>
                             <span>{duration}시간</span>
+                          </div>
+                          <div className="flex justify-between text-sm text-muted-foreground">
+                            <span>기본 요금</span>
+                            <span>₩{pricing.base.toLocaleString()}</span>
+                          </div>
+                          {durationNum > 1 && (
+                            <div className="flex justify-between text-sm text-muted-foreground">
+                              <span>추가 요금</span>
+                              <span>₩{((durationNum - 1) * pricing.additional).toLocaleString()}</span>
+                            </div>
+                          )}
+                          <div className="flex justify-between font-bold text-lg border-t border-border pt-2">
+                            <span>최종 금액</span>
+                            <span className="text-primary">₩{totalAmount.toLocaleString()}</span>
                           </div>
                         </div>
                       </div>
