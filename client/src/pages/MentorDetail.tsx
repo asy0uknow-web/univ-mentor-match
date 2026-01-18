@@ -321,10 +321,10 @@ ${studentMessage ? `메시지: ${studentMessage}` : '추가 메시지 없음'}`;
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="resume_consulting">생기부 컨설팅 (기본 50K + 추가 30K)</SelectItem>
-                              <SelectItem value="career_counseling">진로상담 (기본 30K + 추가 20K)</SelectItem>
-                              <SelectItem value="academic_management">학업관리 (기본 40K + 추가 25K)</SelectItem>
-                              <SelectItem value="university_tour">대학탐방 (기본 50K + 추가 30K)</SelectItem>
+                              <SelectItem value="resume_consulting">생기부 컨설팅 (기본 50,000원 + 추가 30,000원)</SelectItem>
+                              <SelectItem value="career_counseling">진로상담 (기본 30,000원 + 추가 20,000원)</SelectItem>
+                              <SelectItem value="academic_management">학업관리 (기본 40,000원 + 추가 25,000원)</SelectItem>
+                              <SelectItem value="university_tour">대학탐방 (기본 50,000원 + 추가 30,000원)</SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
@@ -345,6 +345,7 @@ ${studentMessage ? `메시지: ${studentMessage}` : '추가 메시지 없음'}`;
                           <Input
                             id="scheduledTime"
                             type="time"
+                            step="600"
                             value={scheduledAt.split('T')[1] || '09:00'}
                             onChange={(e) => {
                               const date = scheduledAt.split('T')[0] || new Date().toISOString().split('T')[0];
