@@ -332,6 +332,38 @@ ${studentMessage ? `메시지: ${studentMessage}` : '추가 메시지 없음'}`;
                             </SelectContent>
                           </Select>
                         </div>
+                        
+                        {/* 가격 가이드라인 Info Box */}
+                        <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 space-y-3">
+                          <div>
+                            <p className="text-sm text-amber-900">
+                              💡 기본 1시간 비용 이후에는 시간당 추가 할인이 적용됩니다.
+                            </p>
+                          </div>
+                          <details className="cursor-pointer">
+                            <summary className="text-xs font-medium text-amber-800 hover:text-amber-900 transition-colors">
+                              자세히 보기 ▼
+                            </summary>
+                            <div className="mt-3 pt-3 border-t border-amber-200 space-y-2 text-xs text-amber-800">
+                              <div className="flex justify-between">
+                                <span>생기부 컨설팅:</span>
+                                <span>기본 50,000원 + 추가 30,000원/시간</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span>진로상담:</span>
+                                <span>기본 30,000원 + 추가 20,000원/시간</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span>학업관리:</span>
+                                <span>기본 40,000원 + 추가 25,000원/시간</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span>대학탐방:</span>
+                                <span>기본 50,000원 + 추가 30,000원/시간</span>
+                              </div>
+                            </div>
+                          </details>
+                        </div>
                         <div className="space-y-2">
                           <Label htmlFor="scheduledDate">상담 날짜</Label>
                           <Input
