@@ -18,6 +18,7 @@ export default function MentorDetail() {
   const { user, isAuthenticated } = useAuth();
   const [isBookingOpen, setIsBookingOpen] = useState(false);
   const [scheduledAt, setScheduledAt] = useState("");
+  const [scheduledMinute, setScheduledMinute] = useState("00");
   const [duration, setDuration] = useState("1");
   const [studentMessage, setStudentMessage] = useState("");
   const [consultationType, setConsultationType] = useState<"resume_consulting" | "career_counseling" | "academic_management" | "university_tour">("career_counseling");
@@ -83,7 +84,7 @@ export default function MentorDetail() {
 
 
   const handleBooking = () => {
-    if (!scheduledAt || !duration) {
+    if (!scheduledAt || !duration || !scheduledMinute) {
       toast.error("모든 필드를 입력해주세요.");
       return;
     }
@@ -92,9 +93,12 @@ export default function MentorDetail() {
     const durationNum = parseFloat(duration);
     const pricing = consultationPrices[consultationType] || { base: 30000, additional: 20000 };
     const totalPrice = pricing.base + (durationNum - 1) * pricing.additional;
+    const [date, time] = scheduledAt.split('T');
+    const [hour] = time.split(':');
+    const scheduledDateTime = `${date}T${hour}:${scheduledMinute}`;
     const consultationMessage = `[상담 신청]
 종류: ${consultationLabels[consultationType]}
-날짜: ${new Date(scheduledAt).toLocaleString('ko-KR')}
+날짜: ${new Date(scheduledDateTime).toLocaleString('ko-KR')}
 시간: ${duration}시간
 요금: ₩${totalPrice.toLocaleString()}
 
@@ -103,7 +107,7 @@ ${studentMessage ? `메시지: ${studentMessage}` : '추가 메시지 없음'}`;
     // 먼저 예약을 생성
     createBookingMutation.mutate({
       mentorId,
-      scheduledAt,
+      scheduledAt: scheduledDateTime,
       duration,
       studentMessage: consultationMessage,
       consultationType,
@@ -341,17 +345,33 @@ ${studentMessage ? `메시지: ${studentMessage}` : '추가 메시지 없음'}`;
                           />
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="scheduledTime">상담 시간</Label>
-                          <Input
-                            id="scheduledTime"
-                            type="time"
-                            step="600"
-                            value={scheduledAt.split('T')[1] || '09:00'}
-                            onChange={(e) => {
-                              const date = scheduledAt.split('T')[0] || new Date().toISOString().split('T')[0];
-                              setScheduledAt(`${date}T${e.target.value}`);
-                            }}
-                          />
+                          <Label htmlFor="scheduledHour">상담 시간 (시:분)</Label>
+                          <div className="flex gap-2">
+                            <Input
+                              id="scheduledHour"
+                              type="time"
+                              value={scheduledAt.split('T')[1]?.substring(0, 5) || '09:00'}
+                              onChange={(e) => {
+                                const date = scheduledAt.split('T')[0] || new Date().toISOString().split('T')[0];
+                                const [hour] = e.target.value.split(':');
+                                setScheduledAt(`${date}T${hour}:${scheduledMinute}`);
+                              }}
+                              style={{ flex: 1 }}
+                            />
+                            <Select value={scheduledMinute} onValueChange={setScheduledMinute}>
+                              <SelectTrigger style={{ flex: 1 }}>
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="00">00분</SelectItem>
+                                <SelectItem value="10">10분</SelectItem>
+                                <SelectItem value="20">20분</SelectItem>
+                                <SelectItem value="30">30분</SelectItem>
+                                <SelectItem value="40">40분</SelectItem>
+                                <SelectItem value="50">50분</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
                         </div>
                         <div>
                           <Label htmlFor="duration">상담 시간 (시간)</Label>
