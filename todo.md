@@ -325,3 +325,9 @@
 - [x] MentorDetail.tsx의 시간 선택 필드 수정
 - [x] 시간과 분을 분리하여 Select 컴포넌트로 분 선택 구현
 - [x] handleBooking 함수에서 분 단위 처리 추가
+
+## UI 개선 - 상담 시간 선택을 완전한 드롭다운으로 변경
+- [x] time input을 Select 컴포넌트로 변경
+- [x] 시간 드롭다운 옵션 추가 (09~22시)
+- [x] 시간과 분을 나란히 배치한 드롭다운 UI 구성
+- [x] handleBooking 함수에서 시간 처리 확인

@@ -18,6 +18,7 @@ export default function MentorDetail() {
   const { user, isAuthenticated } = useAuth();
   const [isBookingOpen, setIsBookingOpen] = useState(false);
   const [scheduledAt, setScheduledAt] = useState("");
+  const [scheduledHour, setScheduledHour] = useState("09");
   const [scheduledMinute, setScheduledMinute] = useState("00");
   const [duration, setDuration] = useState("1");
   const [studentMessage, setStudentMessage] = useState("");
@@ -84,7 +85,7 @@ export default function MentorDetail() {
 
 
   const handleBooking = () => {
-    if (!scheduledAt || !duration || !scheduledMinute) {
+    if (!scheduledAt || !duration || !scheduledHour || !scheduledMinute) {
       toast.error("모든 필드를 입력해주세요.");
       return;
     }
@@ -93,9 +94,8 @@ export default function MentorDetail() {
     const durationNum = parseFloat(duration);
     const pricing = consultationPrices[consultationType] || { base: 30000, additional: 20000 };
     const totalPrice = pricing.base + (durationNum - 1) * pricing.additional;
-    const [date, time] = scheduledAt.split('T');
-    const [hour] = time.split(':');
-    const scheduledDateTime = `${date}T${hour}:${scheduledMinute}`;
+    const [date] = scheduledAt.split('T');
+    const scheduledDateTime = `${date}T${scheduledHour}:${scheduledMinute}`;
     const consultationMessage = `[상담 신청]
 종류: ${consultationLabels[consultationType]}
 날짜: ${new Date(scheduledDateTime).toLocaleString('ko-KR')}
@@ -345,19 +345,29 @@ ${studentMessage ? `메시지: ${studentMessage}` : '추가 메시지 없음'}`;
                           />
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="scheduledHour">상담 시간 (시:분)</Label>
+                          <Label htmlFor="scheduledTime">상담 시간 (시:분)</Label>
                           <div className="flex gap-2">
-                            <Input
-                              id="scheduledHour"
-                              type="time"
-                              value={scheduledAt.split('T')[1]?.substring(0, 5) || '09:00'}
-                              onChange={(e) => {
-                                const date = scheduledAt.split('T')[0] || new Date().toISOString().split('T')[0];
-                                const [hour] = e.target.value.split(':');
-                                setScheduledAt(`${date}T${hour}:${scheduledMinute}`);
-                              }}
-                              style={{ flex: 1 }}
-                            />
+                            <Select value={scheduledHour} onValueChange={setScheduledHour}>
+                              <SelectTrigger style={{ flex: 1 }}>
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="09">09시</SelectItem>
+                                <SelectItem value="10">10시</SelectItem>
+                                <SelectItem value="11">11시</SelectItem>
+                                <SelectItem value="12">12시</SelectItem>
+                                <SelectItem value="13">13시</SelectItem>
+                                <SelectItem value="14">14시</SelectItem>
+                                <SelectItem value="15">15시</SelectItem>
+                                <SelectItem value="16">16시</SelectItem>
+                                <SelectItem value="17">17시</SelectItem>
+                                <SelectItem value="18">18시</SelectItem>
+                                <SelectItem value="19">19시</SelectItem>
+                                <SelectItem value="20">20시</SelectItem>
+                                <SelectItem value="21">21시</SelectItem>
+                                <SelectItem value="22">22시</SelectItem>
+                              </SelectContent>
+                            </Select>
                             <Select value={scheduledMinute} onValueChange={setScheduledMinute}>
                               <SelectTrigger style={{ flex: 1 }}>
                                 <SelectValue />
