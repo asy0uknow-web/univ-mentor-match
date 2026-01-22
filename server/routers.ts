@@ -47,7 +47,7 @@ import {
 import { CONSULTATION_PRODUCT, MIN_BOOKING_DURATION, MAX_BOOKING_DURATION } from "./products";
 import { storagePut } from "./storage";
 import { eq } from "drizzle-orm";
-import { mentorGallery } from "../drizzle/schema";
+import { mentorGallery, messages, notifications, bookings, reviews, mentorProfiles, mentorVerifications, users } from "../drizzle/schema";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2025-12-15.clover",
@@ -73,6 +73,32 @@ export const appRouter = router({
         success: true,
       } as const;
     }),
+    deleteAccount: protectedProcedure
+      .mutation(async ({ ctx }) => {
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+
+        const userId = ctx.user.id;
+
+        // 사용자의 모든 데이터 삭제
+        await db.delete(messages).where(eq(messages.senderId, userId));
+        await db.delete(messages).where(eq(messages.recipientId, userId));
+        await db.delete(notifications).where(eq(notifications.userId, userId));
+        await db.delete(bookings).where(eq(bookings.studentId, userId));
+        await db.delete(bookings).where(eq(bookings.mentorId, userId));
+        await db.delete(reviews).where(eq(reviews.studentId, userId));
+        await db.delete(reviews).where(eq(reviews.mentorId, userId));
+        await db.delete(mentorGallery).where(eq(mentorGallery.mentorId, userId));
+        await db.delete(mentorProfiles).where(eq(mentorProfiles.userId, userId));
+        await db.delete(mentorVerifications).where(eq(mentorVerifications.userId, userId));
+        await db.delete(users).where(eq(users.id, userId));
+
+        // 쿠키 삭제
+        const cookieOptions = getSessionCookieOptions(ctx.req);
+        ctx.res.clearCookie(COOKIE_NAME, { ...cookieOptions, maxAge: -1 });
+
+        return { success: true };
+      }),
     setUserType: protectedProcedure
       .input(z.object({
         userType: z.enum(["high_school_student", "university_student"]),
