@@ -47,7 +47,7 @@ import {
 import { CONSULTATION_PRODUCT, MIN_BOOKING_DURATION, MAX_BOOKING_DURATION } from "./products";
 import { storagePut } from "./storage";
 import { eq } from "drizzle-orm";
-import { mentorGallery, messages, notifications, bookings, reviews, mentorProfiles, mentorVerifications, users } from "../drizzle/schema";
+import { mentorGallery, messages, notifications, bookings, reviews, mentorProfiles, mentorVerifications, users, bugReports } from "../drizzle/schema";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2025-12-15.clover",
@@ -730,7 +730,69 @@ export const appRouter = router({
         await updateGalleryImageOrder(input.imageId, input.displayOrder);
         return { success: true };
       }),
+   }),
+  bugReport: router({
+    create: protectedProcedure
+      .input(z.object({
+        title: z.string().min(1, "제목을 입력해주세요"),
+        description: z.string().min(10, "설명은 최소 10자 이상이어야 합니다"),
+        severity: z.enum(["low", "medium", "high", "critical"]).default("medium"),
+        page: z.string().optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const database = await getDb();
+        if (!database) throw new Error("Database not available");
+        
+        const userAgent = ctx.req?.headers["user-agent"] || "";
+        
+        const result = await database.insert(bugReports).values({
+          userId: ctx.user!.id,
+          title: input.title,
+          description: input.description,
+          severity: input.severity,
+          page: input.page,
+          userAgent,
+          status: "new",
+        });
+
+        return { success: true, id: result[0] };
+      }),
+    getAll: publicProcedure
+      .input(z.object({
+        status: z.enum(["new", "acknowledged", "in_progress", "resolved", "wont_fix"]).optional(),
+      }).optional())
+      .query(async () => {
+        const database = await getDb();
+        if (!database) throw new Error("Database not available");
+        
+        const reports = await database.select().from(bugReports).orderBy(bugReports.createdAt);
+        return reports;
+      }),
+    updateStatus: protectedProcedure
+      .input(z.object({
+        id: z.number(),
+        status: z.enum(["new", "acknowledged", "in_progress", "resolved", "wont_fix"]),
+        adminNotes: z.string().optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const database = await getDb();
+        if (!database) throw new Error("Database not available");
+        
+        const user = await database.select().from(users).where(eq(users.id, ctx.user!.id)).limit(1);
+        if (!user || user[0]?.role !== "admin") {
+          throw new Error("Unauthorized: Admin access required");
+        }
+        
+        await database.update(bugReports)
+          .set({
+            status: input.status,
+            adminNotes: input.adminNotes,
+            updatedAt: new Date(),
+          })
+          .where(eq(bugReports.id, input.id));
+
+        return { success: true };
+      }),
   }),
 });
-
 export type AppRouter = typeof appRouter;

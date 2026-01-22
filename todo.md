@@ -370,3 +370,11 @@
 - [x] 내비게이션 메뉴에 설정/탐퇴 링크 추가
 - [x] 탐퇴 페이지에 단계별 안내 추가
 - [x] 테스트 실행 (모든 테스트 통과)
+
+## 기능 구옄 - 버그 신고 시스템
+- [x] 데이터베이스 스키마 추가 (bug_reports 테이블)
+- [x] 백엔드 버그 신고 API 구옄 (create, getAll, updateStatus)
+- [x] 프론트엔드 버그 신고 폰 UI 구옄
+- [x] 어드민 페이지 버그 신고 리스트 추가
+- [x] 버그 신고 상태 관리 (new, acknowledged, in_progress, resolved, wont_fix)
+- [x] 테스트 실행 (모든 테스트 통과)

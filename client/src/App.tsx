@@ -14,6 +14,7 @@ import Messages from "./pages/Messages";
 import VerifyMentor from "./pages/VerifyMentor";
 import AdminDashboard from "./pages/AdminDashboard";
 import DeleteAccount from "./pages/DeleteAccount";
+import AdminBugReports from "./pages/AdminBugReports";
 import { useEffect } from "react";
 
 function Router() {
@@ -29,6 +30,7 @@ function Router() {
       <Route path={"/verify-mentor"} component={VerifyMentor} />
       <Route path={"/admin"} component={AdminDashboard} />
       <Route path={"/delete-account"} component={DeleteAccount} />
+      <Route path={"/admin/bug-reports"} component={AdminBugReports} />
       <Route path={"/404"} component={NotFound} />
       <Route component={NotFound} />
     </Switch>

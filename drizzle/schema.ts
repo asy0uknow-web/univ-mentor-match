@@ -187,3 +187,28 @@ export const mentorGallery = mysqlTable("mentor_gallery", {
 
 export type MentorGallery = typeof mentorGallery.$inferSelect;
 export type InsertMentorGallery = typeof mentorGallery.$inferInsert;
+
+
+/**
+ * Bug reports from users
+ */
+export const bugReports = mysqlTable("bug_reports", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(), // References users.id
+  title: varchar("title", { length: 255 }).notNull(),
+  description: text("description").notNull(),
+  // Severity level: low, medium, high, critical
+  severity: mysqlEnum("severity", ["low", "medium", "high", "critical"]).default("medium").notNull(),
+  // Page or feature where bug occurred
+  page: varchar("page", { length: 255 }),
+  // User agent for browser/device info
+  userAgent: text("userAgent"),
+  // Status: new, acknowledged, in_progress, resolved, wont_fix
+  status: mysqlEnum("status", ["new", "acknowledged", "in_progress", "resolved", "wont_fix"]).default("new").notNull(),
+  // Admin notes
+  adminNotes: text("adminNotes"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+export type BugReport = typeof bugReports.$inferSelect;
+export type InsertBugReport = typeof bugReports.$inferInsert;
