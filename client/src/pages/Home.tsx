@@ -3,13 +3,15 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getLoginUrl } from "@/const";
 import { Link } from "wouter";
-import { GraduationCap, Users, Star, Calendar, LogOut, Trash2, ChevronDown } from "lucide-react";
+import { GraduationCap, Users, Star, Calendar, LogOut, Trash2, ChevronDown, Bug } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { trpc } from "@/lib/trpc";
+import BugReportModal from "@/components/BugReportModal";
 
 export default function Home() {
   const { user, isAuthenticated } = useAuth();
+  const [showBugReport, setShowBugReport] = useState(false);
   const logoutMutation = trpc.auth.logout.useMutation({
     onSuccess: () => {
       window.location.href = "/";
@@ -59,6 +61,11 @@ export default function Home() {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
+                      <DropdownMenuItem onClick={() => setShowBugReport(true)}>
+                        <Bug className="h-4 w-4 mr-2" />
+                        버그 신고
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
                       <DropdownMenuItem onClick={() => logoutMutation.mutate()}>
                         <LogOut className="h-4 w-4 mr-2" />
                         로그아웃
@@ -264,6 +271,9 @@ export default function Home() {
           <p>&copy; 2026 대학 멘토 매칭. All rights reserved.</p>
         </div>
       </footer>
+      
+      {/* Bug Report Modal */}
+      <BugReportModal isOpen={showBugReport} onClose={() => setShowBugReport(false)} />
     </div>
   );
 }
