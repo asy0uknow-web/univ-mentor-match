@@ -45,7 +45,35 @@ export default function DeleteAccount() {
           돌아가기
         </button>
 
-        <Card className="border-destructive/50">
+                {/* 단계별 안내 */}
+        <div className="mb-8 space-y-4">
+          <h2 className="text-lg font-semibold">계정 탈퇴 절차</h2>
+          <div className="space-y-3">
+            <div className="flex gap-4">
+              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-semibold">1</div>
+              <div>
+                <p className="font-medium">탈퇴 정보 확인</p>
+                <p className="text-sm text-muted-foreground">아래에서 삭제될 데이터를 확인하세요</p>
+              </div>
+            </div>
+            <div className="flex gap-4">
+              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-semibold">2</div>
+              <div>
+                <p className="font-medium">동의 체크박스</p>
+                <p className="text-sm text-muted-foreground">탈퇴에 동의하는 체크박스를 체크하세요</p>
+              </div>
+            </div>
+            <div className="flex gap-4">
+              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-semibold">3</div>
+              <div>
+                <p className="font-medium">계정 삭제 실행</p>
+                <p className="text-sm text-muted-foreground">아래 단추를 눌러 계정을 완전히 삭제합니다</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+<Card className="border-destructive/50">
           <CardHeader>
             <div className="flex items-start gap-3">
               <AlertCircle className="w-6 h-6 text-destructive mt-1 flex-shrink-0" />

@@ -3,11 +3,18 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getLoginUrl } from "@/const";
 import { Link } from "wouter";
-import { GraduationCap, Users, Star, Calendar } from "lucide-react";
+import { GraduationCap, Users, Star, Calendar, LogOut, Trash2, ChevronDown } from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { useEffect } from "react";
+import { trpc } from "@/lib/trpc";
 
 export default function Home() {
   const { user, isAuthenticated } = useAuth();
+  const logoutMutation = trpc.auth.logout.useMutation({
+    onSuccess: () => {
+      window.location.href = "/";
+    },
+  });
   
   useEffect(() => {
     document.title = "대학 멘토 매칭 - 고등학생을 위한 대학생 멘토 상담 플랫폼";
@@ -44,6 +51,27 @@ export default function Home() {
                   <Link href="/notifications">
                     <Button variant="ghost">알림</Button>
                   </Link>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" className="gap-2">
+                        메뉴
+                        <ChevronDown className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem onClick={() => logoutMutation.mutate()}>
+                        <LogOut className="h-4 w-4 mr-2" />
+                        로그아웃
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem asChild>
+                        <Link href="/delete-account">
+                          <Trash2 className="h-4 w-4 mr-2" />
+                          계정 탈퇴
+                        </Link>
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </>
               ) : (
                 <a href={getLoginUrl()}>

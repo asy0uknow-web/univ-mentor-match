@@ -557,6 +557,21 @@ export default function MentorProfile() {
                   </CardContent>
                 </Card>
               )}
+
+              {/* 계정 관리 섹션 */}
+              <Card className="border-destructive/50">
+                <CardHeader>
+                  <CardTitle className="text-destructive">계정 관리</CardTitle>
+                  <CardDescription>계정 설정 및 탈퇴</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Link href="/delete-account">
+                    <Button variant="destructive" className="w-full">
+                      계정 탈퇴
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
             </>
           )}
         </div>
