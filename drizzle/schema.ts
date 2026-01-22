@@ -120,7 +120,7 @@ export type InsertReview = typeof reviews.$inferInsert;
 export const notifications = mysqlTable("notifications", {
   id: int("id").autoincrement().primaryKey(),
   userId: int("userId").notNull(), // References users.id
-  type: mysqlEnum("type", ["booking_confirmed", "booking_cancelled", "schedule_changed", "review_received"]).notNull(),
+  type: mysqlEnum("type", ["booking_request", "booking_confirmed", "booking_cancelled", "schedule_changed", "review_received"]).notNull(),
   title: varchar("title", { length: 255 }).notNull(),
   message: text("message").notNull(),
   isRead: boolean("isRead").default(false).notNull(),

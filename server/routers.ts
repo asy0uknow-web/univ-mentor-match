@@ -19,6 +19,7 @@ import {
   createReview,
   getReviewsByMentor,
   getReviewByBooking,
+  createNotification,
   getNotificationsByUser,
   markNotificationAsRead,
   getUnreadNotificationCount,
@@ -191,6 +192,28 @@ export const appRouter = router({
         });
 
         const bookingId = Number((result as any).insertId);
+
+        // 멘토에게 알림 생성
+        const consultationTypeLabels: Record<string, string> = {
+          "resume_consulting": "생기부 컨설팅",
+          "career_counseling": "진로상담",
+          "academic_management": "학업관리",
+          "university_tour": "대학탐방",
+        };
+        const consultationLabel = consultationTypeLabels[input.consultationType] || "상담";
+        const scheduledDate = new Date(input.scheduledAt);
+        const formattedDate = scheduledDate.toLocaleDateString('ko-KR', { month: '2-digit', day: '2-digit' });
+        const formattedTime = scheduledDate.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', hour12: false });
+
+        await createNotification({
+          userId: input.mentorId,
+          type: "booking_request",
+          title: "새로운 상담 예약 신청",
+          message: `${consultationLabel} 예약이 신청되었습니다. (${formattedDate} ${formattedTime}, ${duration}시간)`,
+          relatedId: bookingId,
+          isRead: false,
+        });
+
         return { 
           success: true,
           bookingId,
