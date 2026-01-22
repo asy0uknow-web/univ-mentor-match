@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { trpc } from "@/lib/trpc";
 import { Link } from "wouter";
-import { GraduationCap, Search, CheckCircle, XCircle, AlertCircle, Edit, Trash2, Clock } from "lucide-react";
+import { GraduationCap, Search, CheckCircle, XCircle, AlertCircle, Edit, Trash2, Clock, Bug } from "lucide-react";
 import { useState } from "react";
 import { getLoginUrl } from "@/const";
 import { toast } from "sonner";
@@ -23,6 +23,14 @@ export default function AdminDashboard() {
   const { data: pendingVerifications } = trpc.admin.getPendingVerifications.useQuery(undefined, {
     enabled: isAuthenticated && user?.role === "admin",
   });
+
+  const { data: bugReports } = trpc.bugReport.getAll.useQuery({
+    status: undefined,
+  }, {
+    enabled: isAuthenticated && user?.role === "admin",
+  });
+
+  const newBugCount = bugReports?.filter((report: any) => report.status === "new").length || 0;
 
   const approveMutation = trpc.admin.approveVerification.useMutation({
     onSuccess: () => {
@@ -124,6 +132,44 @@ export default function AdminDashboard() {
       </nav>
 
       <div className="container mx-auto px-4 py-12">
+        {/* 대시보드 카드 */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-medium text-muted-foreground">대기 중인 인증</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold">{pendingVerifications?.length || 0}</div>
+              <p className="text-xs text-muted-foreground mt-1">승인 대기 중</p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-medium text-muted-foreground">등록된 멘토</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold">{mentors?.length || 0}</div>
+              <p className="text-xs text-muted-foreground mt-1">활성 멘토</p>
+            </CardContent>
+          </Card>
+
+          <Link href="/admin/bug-reports">
+            <Card className="cursor-pointer hover:shadow-lg transition-shadow">
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-sm font-medium text-muted-foreground">버그 신고</CardTitle>
+                  <Bug className="h-5 w-5 text-red-500" />
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold text-red-600">{newBugCount}</div>
+                <p className="text-xs text-muted-foreground mt-1">신규 신고</p>
+              </CardContent>
+            </Card>
+          </Link>
+        </div>
+
         <Tabs defaultValue="mentors" className="w-full">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="mentors">멘토 프로필 관리</TabsTrigger>
