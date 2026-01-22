@@ -13,6 +13,7 @@ import Notifications from "./pages/Notifications";
 import Messages from "./pages/Messages";
 import VerifyMentor from "./pages/VerifyMentor";
 import AdminDashboard from "./pages/AdminDashboard";
+import { useEffect } from "react";
 
 function Router() {
   return (
