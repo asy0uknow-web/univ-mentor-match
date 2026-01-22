@@ -55,17 +55,17 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* Hero Section with Sacred Geometry */}
-      <section className="relative py-20 md:py-32 overflow-hidden sacred-pattern">
+      {/* Hero Section */}
+      <section className="relative py-24 md:py-40 overflow-hidden bg-gradient-to-br from-background via-background to-primary/5">
         <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center geometric-circles">
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6">
+          <div className="max-w-3xl mx-auto text-center">
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
               당신의 꿈을 향한
               <br />
               <span className="text-primary">완벽한 멘토</span>를 만나세요
             </h1>
-            <p className="subtitle text-xl md:text-2xl mb-8">
-              대학생 선배와의 1:1 상담으로 진로를 설계하세요
+            <p className="text-lg md:text-xl text-muted-foreground mb-8 leading-relaxed max-w-2xl mx-auto">
+              대학생 선배와의 1:1 상담으로 입시 준비부터 대학 생활까지 모든 것을 배워보세요
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/mentors">
@@ -86,13 +86,16 @@ export default function Home() {
       </section>
 
       {/* Features Section */}
-      <section className="py-20 bg-card">
+      <section className="py-24 bg-secondary/30">
         <div className="container mx-auto px-4">
-          <h2 className="text-4xl font-bold text-center mb-12">
+          <h2 className="text-4xl md:text-5xl font-bold text-center mb-4">
             왜 <span className="text-primary">대학 멘토 매칭</span>인가요?
           </h2>
+          <p className="text-center text-muted-foreground mb-16 max-w-2xl mx-auto">
+            검증된 멘토들과 신뢰할 수 있는 상담 경험을 만나보세요
+          </p>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Card className="border-2 hover:border-primary transition-colors">
+            <Card className="border-0 shadow-sm hover:shadow-md transition-shadow bg-white">
               <CardHeader>
                 <Users className="h-12 w-12 text-primary mb-4" />
                 <CardTitle>검증된 멘토</CardTitle>
@@ -104,7 +107,7 @@ export default function Home() {
               </CardContent>
             </Card>
 
-            <Card className="border-2 hover:border-primary transition-colors">
+            <Card className="border-0 shadow-sm hover:shadow-md transition-shadow bg-white">
               <CardHeader>
                 <GraduationCap className="h-12 w-12 text-primary mb-4" />
                 <CardTitle>맞춤형 상담</CardTitle>
@@ -116,7 +119,7 @@ export default function Home() {
               </CardContent>
             </Card>
 
-            <Card className="border-2 hover:border-primary transition-colors">
+            <Card className="border-0 shadow-sm hover:shadow-md transition-shadow bg-white">
               <CardHeader>
                 <Star className="h-12 w-12 text-primary mb-4" />
                 <CardTitle>리뷰 시스템</CardTitle>
@@ -128,7 +131,7 @@ export default function Home() {
               </CardContent>
             </Card>
 
-            <Card className="border-2 hover:border-primary transition-colors">
+            <Card className="border-0 shadow-sm hover:shadow-md transition-shadow bg-white">
               <CardHeader>
                 <Calendar className="h-12 w-12 text-primary mb-4" />
                 <CardTitle>간편한 예약</CardTitle>
