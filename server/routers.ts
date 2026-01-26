@@ -188,6 +188,18 @@ export const appRouter = router({
       await updateMentorProfile(ctx.user.id, { isActive: true });
       return { success: true };
     }),
+
+    deactivateProfile: protectedProcedure.mutation(async ({ ctx }) => {
+      const existingProfile = await getMentorProfileByUserId(ctx.user.id);
+      if (!existingProfile) {
+        throw new Error("등록된 멘토 프로필이 없습니다");
+      }
+      if (!existingProfile.isActive) {
+        throw new Error("이미 비활성화된 프로필입니다");
+      }
+      await updateMentorProfile(ctx.user.id, { isActive: false });
+      return { success: true };
+    }),
   }),
 
   booking: router({
