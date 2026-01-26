@@ -175,6 +175,19 @@ export const appRouter = router({
     getMyBookings: protectedProcedure.query(async ({ ctx }) => {
       return await getBookingsByMentor(ctx.user.id);
     }),
+
+    reactivateProfile: protectedProcedure.mutation(async ({ ctx }) => {
+      const existingProfile = await getMentorProfileByUserId(ctx.user.id);
+      if (!existingProfile) {
+        throw new Error("등록된 멘토 프로필이 없습니다");
+      }
+      if (existingProfile.isActive) {
+        throw new Error("이미 활성화된 프로필입니다");
+      }
+      // 프로필을 다시 활성화
+      await updateMentorProfile(ctx.user.id, { isActive: true });
+      return { success: true };
+    }),
   }),
 
   booking: router({

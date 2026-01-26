@@ -77,6 +77,16 @@ export default function MentorProfile() {
     },
   });
 
+  const reactivateProfileMutation = trpc.mentor.reactivateProfile.useMutation({
+    onSuccess: () => {
+      toast.success("멘토 프로필이 다시 활성화되었습니다!");
+      window.location.reload();
+    },
+    onError: (error) => {
+      toast.error(`멘토 재등록 실패: ${error.message}`);
+    },
+  });
+
   useEffect(() => {
     if (profile) {
       setUniversity(profile.university);
@@ -254,6 +264,35 @@ export default function MentorProfile() {
             <p className="text-muted-foreground">로딩 중...</p>
           ) : (
             <>
+              {profile && !profile.isActive && (
+                <Card className="mb-6 border-red-200 bg-red-50">
+                  <CardHeader>
+                    <CardTitle className="flex items-center justify-between text-base">
+                      <span>멘토 상태</span>
+                      <div className="flex items-center gap-2">
+                        <AlertCircle className="h-5 w-5 text-red-500" />
+                        <span className="text-sm font-normal text-red-700">비활성화됨</span>
+                      </div>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-3">
+                      <p className="text-sm text-red-900">
+                        멘토 프로필이 비활성화 상태입니다. 아래 버튼으로 멘토 활동을 다시 시작할 수 있습니다.
+                      </p>
+                      <Button 
+                        size="sm" 
+                        className="w-full"
+                        onClick={() => reactivateProfileMutation.mutate()}
+                        disabled={reactivateProfileMutation.isPending}
+                      >
+                        {reactivateProfileMutation.isPending ? "단추 중..." : "멘토 다시 등록하기"}
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
               {profile && (
                 <Card className="mb-6 border-blue-200 bg-blue-50">
                   <CardHeader>
@@ -331,247 +370,229 @@ export default function MentorProfile() {
                 </CardHeader>
                 <CardContent>
                   <form onSubmit={handleSubmit} className="space-y-6">
-                    <div>
-                      <Label htmlFor="university">대학명 *</Label>
-                      <Input
-                        id="university"
-                        value={university}
-                        onChange={(e) => setUniversity(e.target.value)}
-                        placeholder="예: 서울대학교"
-                        className={emptyFields.has("university") ? "border-red-500 border-2" : ""}
-                      />
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="university" className="text-sm font-medium">
+                          대학교 *
+                        </Label>
+                        <Input
+                          id="university"
+                          placeholder="예: 서울대학교"
+                          value={university}
+                          onChange={(e) => setUniversity(e.target.value)}
+                          className={emptyFields.has("university") ? "border-red-500" : ""}
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="major" className="text-sm font-medium">
+                          전공 *
+                        </Label>
+                        <Input
+                          id="major"
+                          placeholder="예: 컴퓨터공학"
+                          value={major}
+                          onChange={(e) => setMajor(e.target.value)}
+                          className={emptyFields.has("major") ? "border-red-500" : ""}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="grade" className="text-sm font-medium">
+                          학년
+                        </Label>
+                        <Select value={grade} onValueChange={(value: any) => setGrade(value)}>
+                          <SelectTrigger id="grade">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="1">1학년</SelectItem>
+                            <SelectItem value="2">2학년</SelectItem>
+                            <SelectItem value="3">3학년</SelectItem>
+                            <SelectItem value="4">4학년</SelectItem>
+                            <SelectItem value="graduate">대학원</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div>
+                        <Label htmlFor="hourlyRate" className="text-sm font-medium">
+                          시간당 상담료 (원) *
+                        </Label>
+                        <Input
+                          id="hourlyRate"
+                          placeholder="30000"
+                          value={hourlyRate}
+                          onChange={(e) => setHourlyRate(e.target.value)}
+                          disabled
+                          className={emptyFields.has("hourlyRate") ? "border-red-500" : ""}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="field" className="text-sm font-medium">
+                          분야 *
+                        </Label>
+                        <Select value={field || ""} onValueChange={(value: any) => setField(value || undefined)}>
+                          <SelectTrigger id="field">
+                            <SelectValue placeholder="분야 선택" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="engineering">공학</SelectItem>
+                            <SelectItem value="natural_science">자연과학</SelectItem>
+                            <SelectItem value="business">경영/경제</SelectItem>
+                            <SelectItem value="humanities">인문학</SelectItem>
+                            <SelectItem value="education">교육</SelectItem>
+                            <SelectItem value="liberal_arts">교양</SelectItem>
+                            <SelectItem value="medicine">의학</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div>
+                        <Label htmlFor="region" className="text-sm font-medium">
+                          지역 *
+                        </Label>
+                        <Select value={region || ""} onValueChange={(value: any) => setRegion(value || undefined)}>
+                          <SelectTrigger id="region">
+                            <SelectValue placeholder="지역 선택" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="seoul">서울</SelectItem>
+                            <SelectItem value="gyeonggi">경기</SelectItem>
+                            <SelectItem value="incheon">인천</SelectItem>
+                            <SelectItem value="gangwon">강원</SelectItem>
+                            <SelectItem value="chungcheong">충청</SelectItem>
+                            <SelectItem value="jeolla">전라</SelectItem>
+                            <SelectItem value="gyeongsang">경상</SelectItem>
+                            <SelectItem value="jeju">제주</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
                     </div>
 
                     <div>
-                      <Label htmlFor="major">전공 *</Label>
-                      <Input
-                        id="major"
-                        value={major}
-                        onChange={(e) => setMajor(e.target.value)}
-                        placeholder="예: 컴퓨터공학과"
-                        className={emptyFields.has("major") ? "border-red-500 border-2" : ""}
-                      />
-                    </div>
-
-                    <div>
-                      <Label htmlFor="grade">학년 *</Label>
-                      <Select value={grade} onValueChange={(value: any) => setGrade(value)}>
-                        <SelectTrigger id="grade">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="1">1학년</SelectItem>
-                          <SelectItem value="2">2학년</SelectItem>
-                          <SelectItem value="3">3학년</SelectItem>
-                          <SelectItem value="4">4학년</SelectItem>
-                          <SelectItem value="graduate">대학원생</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    <div>
-                      <Label htmlFor="field">분야 *</Label>
-                      <Select value={field} onValueChange={(value: any) => setField(value)}>
-                        <SelectTrigger id="field">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="engineering">이공계</SelectItem>
-                          <SelectItem value="natural_science">자연계</SelectItem>
-                          <SelectItem value="business">상경계</SelectItem>
-                          <SelectItem value="humanities">어문계</SelectItem>
-                          <SelectItem value="education">사범계</SelectItem>
-                          <SelectItem value="liberal_arts">문과계</SelectItem>
-                          <SelectItem value="medicine">의학계</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    <div>
-                      <Label htmlFor="region">지역 *</Label>
-                      <Select value={region} onValueChange={(value: any) => setRegion(value)}>
-                        <SelectTrigger id="region">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="seoul">서울</SelectItem>
-                          <SelectItem value="gyeonggi">경기</SelectItem>
-                          <SelectItem value="incheon">인천</SelectItem>
-                          <SelectItem value="gangwon">강원</SelectItem>
-                          <SelectItem value="chungcheong">충청</SelectItem>
-                          <SelectItem value="jeolla">전라</SelectItem>
-                          <SelectItem value="gyeongsang">경상</SelectItem>
-                          <SelectItem value="jeju">제주</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    <div>
-                      <Label htmlFor="bio">자기소개</Label>
+                      <Label htmlFor="bio" className="text-sm font-medium">
+                        자기소개
+                      </Label>
                       <Textarea
                         id="bio"
+                        placeholder="당신의 멘토링 스타일과 경험을 소개해주세요."
                         value={bio}
                         onChange={(e) => setBio(e.target.value)}
-                        placeholder="자신의 경험과 상담 가능한 내용을 소개해주세요."
-                        rows={6}
+                        rows={4}
                       />
                     </div>
 
-                    <div className="flex gap-3">
-                      <Button
-                        type="submit"
-                        className="flex-1"
-                        disabled={createProfileMutation.isPending || updateProfileMutation.isPending}
-                      >
-                        {createProfileMutation.isPending || updateProfileMutation.isPending
-                          ? "저장 중..."
-                          : profile
-                          ? "프로필 업데이트"
-                          : "멘토로 등록하기"}
-                      </Button>
-                      {profile && (
-                        <Button
-                          type="button"
-                          variant="outline"
-                          onClick={() => setLocation("/")}
-                        >
-                          취소
-                        </Button>
-                      )}
-                    </div>
+                    <Button 
+                      type="submit" 
+                      className="w-full"
+                      disabled={createProfileMutation.isPending || updateProfileMutation.isPending}
+                    >
+                      {createProfileMutation.isPending || updateProfileMutation.isPending 
+                        ? "처리 중..." 
+                        : profile ? "프로필 수정" : "멘토로 등록하기"}
+                    </Button>
                   </form>
                 </CardContent>
               </Card>
 
-              {profile && (
-                <Card className="mt-8">
+              {profile && gallery && gallery.length > 0 && (
+                <Card className="mt-6">
                   <CardHeader>
-                    <CardTitle>대학생활 갤러리</CardTitle>
-                    <CardDescription>
-                      당신의 대학생활을 보여주는 사진을 업로드해보세요. 멘티들이 당신을 더 잘 알 수 있습니다.
-                    </CardDescription>
+                    <CardTitle>갤러리</CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-6">
-                    <div
-                      className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
-                        dragActive
-                          ? "border-primary bg-primary/5"
-                          : "border-border hover:border-primary/50"
-                      }`}
-                      onDragEnter={handleDrag}
-                      onDragLeave={handleDrag}
-                      onDragOver={handleDrag}
-                      onDrop={handleDrop}
-                    >
-                      <Upload className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                      <p className="font-semibold mb-2">이미지를 드래그하거나 클릭하여 업로드</p>
-                      <p className="text-sm text-muted-foreground mb-4">JPG, PNG 형식 지원</p>
-                      <Input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleChange}
-                        className="hidden"
-                        id="gallery-upload"
-                      />
-                      <label htmlFor="gallery-upload">
-                        <Button asChild variant="outline">
-                          <span>파일 선택</span>
-                        </Button>
-                      </label>
-                    </div>
-
-                    {uploadedImages.length > 0 && (
-                      <div className="space-y-4">
-                        <div className="relative">
-                          <img
-                            src={uploadedImages[0].url}
-                            alt="Preview"
-                            className="w-full h-64 object-cover rounded-lg"
+                  <CardContent>
+                    <div className="grid grid-cols-2 gap-4">
+                      {gallery.map((image: any) => (
+                        <div key={image.id} className="relative group">
+                          <img 
+                            src={image.imageUrl} 
+                            alt={image.caption || "Gallery"} 
+                            className="w-full h-40 object-cover rounded-lg"
                           />
                           <button
-                            onClick={() => setUploadedImages([])}
-                            className="absolute top-2 right-2 bg-destructive text-white p-1 rounded-full hover:bg-destructive/90"
+                            onClick={() => deleteGalleryMutation.mutate({ imageId: image.id })}
+                            className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded opacity-0 group-hover:opacity-100 transition-opacity"
                           >
                             <X className="h-4 w-4" />
                           </button>
                         </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
 
-                        <div>
-                          <Label htmlFor="caption">사진 설명</Label>
-                          <Textarea
-                            id="caption"
-                            placeholder="이 사진에 대한 설명을 입력해주세요 (선택사항)"
-                            value={newCaption}
-                            onChange={(e) => setNewCaption(e.target.value)}
-                            className="resize-none"
-                            rows={3}
-                          />
-                        </div>
+              {profile && (
+                <Card className="mt-6">
+                  <CardHeader>
+                    <CardTitle>갤러리 이미지 추가</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div
+                      onDragEnter={handleDrag}
+                      onDragLeave={handleDrag}
+                      onDragOver={handleDrag}
+                      onDrop={handleDrop}
+                      className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors ${
+                        dragActive ? "border-primary bg-primary/10" : "border-gray-300"
+                      }`}
+                    >
+                      <Upload className="h-8 w-8 mx-auto mb-2 text-gray-400" />
+                      <p className="text-sm text-gray-600">
+                        이미지를 드래그하거나 클릭하여 업로드
+                      </p>
+                      <input
+                        type="file"
+                        multiple
+                        accept="image/*"
+                        onChange={handleChange}
+                        className="hidden"
+                        id="file-input"
+                      />
+                      <label htmlFor="file-input" className="cursor-pointer">
+                        <span className="text-xs text-gray-500">JPG, PNG, GIF 등</span>
+                      </label>
+                    </div>
 
-                        <Button
+                    {uploadedImages.length > 0 && (
+                      <div className="mt-4 space-y-3">
+                        {uploadedImages.map((image, idx) => (
+                          <div key={idx} className="flex gap-3 items-center">
+                            <img 
+                              src={image.url} 
+                              alt="preview" 
+                              className="h-16 w-16 object-cover rounded"
+                            />
+                            <Input
+                              placeholder="이미지 설명 (선택사항)"
+                              value={newCaption}
+                              onChange={(e) => setNewCaption(e.target.value)}
+                              className="flex-1"
+                            />
+                            <button
+                              onClick={() => setUploadedImages(uploadedImages.filter((_, i) => i !== idx))}
+                              className="text-red-500 hover:text-red-700"
+                            >
+                              <X className="h-5 w-5" />
+                            </button>
+                          </div>
+                        ))}
+                        <Button 
                           onClick={handleUpload}
                           disabled={isUploading}
                           className="w-full"
                         >
-                          {isUploading ? (
-                            <>
-                              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                              업로드 중...
-                            </>
-                          ) : (
-                            "사진 업로드"
-                          )}
+                          {isUploading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+                          이미지 업로드
                         </Button>
-                      </div>
-                    )}
-
-                    {gallery && gallery.length > 0 && (
-                      <div>
-                        <h3 className="font-semibold mb-4">업로드된 사진</h3>
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                          {gallery.map((image) => (
-                            <div key={image.id} className="relative group">
-                              <img
-                                src={image.imageUrl}
-                                alt={image.caption || "Gallery image"}
-                                className="w-full h-40 object-cover rounded-lg"
-                              />
-                              {image.caption && (
-                                <p className="text-xs text-muted-foreground mt-2 line-clamp-2">
-                                  {image.caption}
-                                </p>
-                              )}
-                              <button
-                                onClick={() =>
-                                  deleteGalleryMutation.mutate({ imageId: image.id })
-                                }
-                                className="absolute top-2 right-2 bg-destructive text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                              >
-                                <X className="h-4 w-4" />
-                              </button>
-                            </div>
-                          ))}
-                        </div>
                       </div>
                     )}
                   </CardContent>
                 </Card>
               )}
-
-              {/* 계정 관리 섹션 */}
-              <Card className="border-destructive/50">
-                <CardHeader>
-                  <CardTitle className="text-destructive">계정 관리</CardTitle>
-                  <CardDescription>계정 설정 및 탈퇴</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Link href="/delete-account">
-                    <Button variant="destructive" className="w-full">
-                      계정 탈퇴
-                    </Button>
-                  </Link>
-                </CardContent>
-              </Card>
             </>
           )}
         </div>
