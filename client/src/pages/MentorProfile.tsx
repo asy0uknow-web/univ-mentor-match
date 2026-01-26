@@ -500,28 +500,45 @@ export default function MentorProfile() {
                     </div>
 
                     <div className="space-y-2">
-                      <Button 
-                        type="submit" 
-                        className="w-full"
-                        disabled={createProfileMutation.isPending || updateProfileMutation.isPending}
-                      >
-                        {createProfileMutation.isPending || updateProfileMutation.isPending 
-                          ? "처리 중..." 
-                          : profile ? "프로필 수정" : "멘토로 등록하기"}
-                      </Button>
-                      {profile && profile.isActive && (
+                      {!profile || profile.isActive ? (
+                        <>
+                          <Button 
+                            type="submit" 
+                            className="w-full"
+                            disabled={createProfileMutation.isPending || updateProfileMutation.isPending}
+                          >
+                            {createProfileMutation.isPending || updateProfileMutation.isPending 
+                              ? "처리 중..." 
+                              : profile ? "프로필 수정" : "멘토로 등록하기"}
+                          </Button>
+                          {profile && profile.isActive && (
+                            <Button 
+                              type="button"
+                              variant="destructive"
+                              className="w-full"
+                              onClick={() => {
+                                if (confirm("정말로 멘토 활동을 중지하시겠습니까? 나중에 다시 시작할 수 있습니다.")) {
+                                  deactivateProfileMutation.mutate();
+                                }
+                              }}
+                              disabled={deactivateProfileMutation.isPending}
+                            >
+                              {deactivateProfileMutation.isPending ? "처리 중..." : "멘토 활동 중지"}
+                            </Button>
+                          )}
+                        </>
+                      ) : (
                         <Button 
                           type="button"
-                          variant="destructive"
                           className="w-full"
                           onClick={() => {
-                            if (confirm("정말로 멘토 활동을 중지하시겠습니까? 나중에 다시 시작할 수 있습니다.")) {
-                              deactivateProfileMutation.mutate();
+                            if (confirm("정말로 멘토 활동을 재개하시겠습니까?")) {
+                              reactivateProfileMutation.mutate();
                             }
                           }}
-                          disabled={deactivateProfileMutation.isPending}
+                          disabled={reactivateProfileMutation.isPending}
                         >
-                          {deactivateProfileMutation.isPending ? "처리 중..." : "멘토 활동 중지"}
+                          {reactivateProfileMutation.isPending ? "처리 중..." : "멘토 활동 재개"}
                         </Button>
                       )}
                     </div>
