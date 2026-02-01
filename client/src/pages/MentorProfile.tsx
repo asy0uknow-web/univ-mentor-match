@@ -438,7 +438,7 @@ export default function MentorProfile() {
                           placeholder="30000"
                           value={hourlyRate}
                           onChange={(e) => setHourlyRate(e.target.value)}
-                          disabled
+                          type="number"
                           className={emptyFields.has("hourlyRate") ? "border-red-500" : ""}
                         />
                       </div>
