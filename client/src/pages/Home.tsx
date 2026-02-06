@@ -34,7 +34,7 @@ export default function Home() {
           <div className="flex items-center justify-between">
             <Link href="/">
               <div className="flex items-center gap-2 cursor-pointer">
-                <img src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663280786037/czOeilxqffLpHOEH.png" alt="Univ Match" className="h-8 sm:h-10 w-auto" />
+                <img src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663280786037/NKTGEEZSEiKoOXaU.png" alt="Univ Match" className="h-10 sm:h-12 w-auto" />
               </div>
             </Link>
             <div className="flex items-center gap-2 sm:gap-4">
@@ -135,6 +135,42 @@ export default function Home() {
             <p className="text-xs sm:text-sm text-muted-foreground mt-6 sm:mt-8">
               실제 재학생만 참여 · 홍보 목적 상담 없음
             </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Problem Definition Section */}
+      <section className="py-12 sm:py-20 bg-white border-t border-border">
+        <div className="container mx-auto px-4">
+          <div className="max-w-3xl mx-auto">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 sm:mb-8 text-center">
+              왜 전공 선택은 항상 늦게 후회될까
+            </h2>
+            
+            <div className="space-y-6 text-base sm:text-lg text-muted-foreground leading-relaxed">
+              <p>
+                학과 정보는 많지만 실제 생활 정보는 거의 없습니다. 커리큘럼, 분위기, 적성 여부는 입학 후에야 알게 되고, 합격 후기와 커뮤니티 글은 결과 중심이고 편향되어 있습니다.
+              </p>
+              
+              <p>
+                "이 선택을 해도 되는지" 미리 확인할 방법이 없습니다. 정보 검색으로는 충분하지 않은 이유입니다.
+              </p>
+              
+              <div className="bg-accent/10 border border-accent/20 rounded-lg p-4 sm:p-6 mt-6">
+                <p className="font-semibold text-foreground mb-3">
+                  전공 선택은 고관여 의사결정이 되었지만, 검증 수단은 여전히 부족합니다.
+                </p>
+                <p className="text-sm sm:text-base">
+                  전공 세분화가 심화되고, 전과·자퇴·반수가 증가하는 이유입니다. 이제 입시 실패보다 전공 미스매치의 비용이 더 커졌습니다.
+                </p>
+              </div>
+              
+              <p className="text-center font-semibold text-foreground mt-8">
+                그래서 전공 선택에는<br className="hidden sm:block" />
+                정보보다 먼저<br className="hidden sm:block" />
+                <span className="text-primary">확인이 필요해졌습니다.</span>
+              </p>
+            </div>
           </div>
         </div>
       </section>
