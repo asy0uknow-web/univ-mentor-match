@@ -34,7 +34,7 @@ export default function Home() {
           <div className="flex items-center justify-between">
             <Link href="/">
               <div className="flex items-center gap-2 cursor-pointer">
-                <img src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663280786037/NKTGEEZSEiKoOXaU.png" alt="Univ Match" className="h-10 sm:h-12 w-auto" />
+                <img src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663280786037/SPxbaeRMjBqMqqlh.png" alt="Univ Match" className="h-10 sm:h-12 w-auto" />
               </div>
             </Link>
             <div className="flex items-center gap-2 sm:gap-4">
@@ -147,13 +147,25 @@ export default function Home() {
               왜 전공 선택은 항상 늦게 후회될까
             </h2>
             
-            <div className="space-y-6 text-base sm:text-lg text-muted-foreground leading-relaxed">
-              <p>
-                학과 정보는 많지만 실제 생활 정보는 거의 없습니다. 커리큘럼, 분위기, 적성 여부는 입학 후에야 알게 되고, 합격 후기와 커뮤니티 글은 결과 중심이고 편향되어 있습니다.
+            <div className="space-y-8 text-base sm:text-lg text-muted-foreground leading-relaxed">
+              <p className="space-y-3">
+                학과 정보는 많지만<br />
+                실제 생활 정보는 거의 없습니다.
+                <br />
+                <br />
+                커리큘럼, 분위기, 적성 여부는<br />
+                입학 후에야 알게 되고,<br />
+                합격 후기와 커뮤니티 글은<br />
+                결과 중심이고 편향되어 있습니다.
               </p>
               
-              <p>
-                "이 선택을 해도 되는지" 미리 확인할 방법이 없습니다. 정보 검색으로는 충분하지 않은 이유입니다.
+              <p className="space-y-3">
+                "이 선택을 해도 되는지"<br />
+                미리 확인할 방법이 없습니다.
+                <br />
+                <br />
+                정보 검색으로는<br />
+                충분하지 않은 이유입니다.
               </p>
               
               <div className="bg-accent/10 border border-accent/20 rounded-lg p-4 sm:p-6 mt-6">
@@ -178,9 +190,6 @@ export default function Home() {
       {/* Features Section */}
       <section className="py-12 sm:py-20 bg-card">
         <div className="container mx-auto px-4">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-8 sm:mb-12">
-            왜 <span className="text-primary">대학 멘토 매칭</span>인가요?
-          </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             <Card className="border-2 hover:border-primary transition-colors">
               <CardHeader>
