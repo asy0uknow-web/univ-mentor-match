@@ -41,16 +41,16 @@ export default function Home() {
               {isAuthenticated ? (
                 <>
                   <Link href="/mentors" className="hidden md:block">
-                    <Button variant="ghost" size="sm" className="text-base font-medium hover:bg-primary hover:text-white">멘토 찾기</Button>
+                    <Button variant="ghost" size="sm" className="text-base font-medium hover:bg-blue-100 hover:text-primary">멘토 찾기</Button>
                   </Link>
                   <Link href="/bookings" className="hidden md:block">
-                    <Button variant="ghost" size="sm" className="text-base font-medium hover:bg-primary hover:text-white">상담 문의</Button>
+                    <Button variant="ghost" size="sm" className="text-base font-medium hover:bg-blue-100 hover:text-primary">상담 문의</Button>
                   </Link>
                   <Link href="/my-profile" className="hidden md:block">
-                    <Button variant="ghost" size="sm" className="text-base font-medium hover:bg-primary hover:text-white">내 프로필</Button>
+                    <Button variant="ghost" size="sm" className="text-base font-medium hover:bg-blue-100 hover:text-primary">내 프로필</Button>
                   </Link>
                   <Link href="/notifications" className="hidden md:block">
-                    <Button variant="ghost" size="sm" className="text-base font-medium hover:bg-primary hover:text-white">알림</Button>
+                    <Button variant="ghost" size="sm" className="text-base font-medium hover:bg-blue-100 hover:text-primary">알림</Button>
                   </Link>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -59,8 +59,8 @@ export default function Home() {
                         <ChevronDown className="h-4 w-4" />
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-48">
-                      <DropdownMenuItem onClick={() => setShowBugReport(true)}>
+                    <DropdownMenuContent align="end" className="w-48 bg-white">
+                      <DropdownMenuItem onClick={() => setShowBugReport(true)} className="hover:bg-blue-100 hover:text-primary">
                         <Bug className="h-4 w-4 mr-2" />
                         버그 신고
                       </DropdownMenuItem>
@@ -122,7 +122,7 @@ export default function Home() {
               </Link>
               {isAuthenticated && (
                 <Link href="/my-profile" className="w-full sm:w-auto">
-                  <Button size="lg" className="w-full sm:w-auto text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 bg-purple-600 hover:bg-purple-700 text-white font-bold">
+                  <Button size="lg" className="w-full sm:w-auto text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 bg-gray-300 hover:bg-gray-400 text-black font-bold">
                     멘토로 참여하기
                   </Button>
                 </Link>
@@ -141,8 +141,8 @@ export default function Home() {
           <div className="max-w-3xl mx-auto">
             <div className="bg-accent/10 border border-accent/20 rounded-lg p-6 sm:p-8 mb-12">
               <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-8 text-foreground">
-                <span className="text-primary">전공 선택이 복잡해졌습니다.</span><br className="hidden sm:block" />
-                <span className="text-primary">확인할 방법이 없을 뿐입니다.</span>
+                <span className="text-primary">왜 전공 선택은 항상 늦게 후회될까</span><br className="hidden sm:block" />
+                <span className="text-primary">학과 정보는 많지만 실제 생활은 모릅니다.</span>
               </h2>
               <p className="text-lg sm:text-xl md:text-2xl text-muted-foreground mt-8">
                 전공 세분화가 심화되고, 전과·자퇴·반수가 증가하는 이유입니다.<br className="hidden sm:block" />
@@ -151,7 +151,7 @@ export default function Home() {
             </div>
             
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 sm:mb-8 text-center">
-              왜 전공 선택은 항상 늦게 후회될까
+              검색만으론 전공을 알 수 없습니다.
             </h2>
             
             <div className="space-y-8 text-base sm:text-lg leading-relaxed">
