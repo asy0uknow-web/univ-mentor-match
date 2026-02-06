@@ -29,28 +29,28 @@ export default function Home() {
   return (
     <div className="min-h-screen">
       {/* Navigation */}
-      <nav className="border-b border-border bg-white sticky top-0 z-50">
-        <div className="container mx-auto px-3 sm:px-4 py-3 sm:py-4">
+      <nav className="border-b border-border bg-slate-50 sticky top-0 z-50">
+        <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-5">
           <div className="flex items-center justify-between">
             <Link href="/">
               <div className="flex items-center gap-2 cursor-pointer">
-                <img src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663280786037/SPxbaeRMjBqMqqlh.png" alt="Univ Match" className="h-12 sm:h-16 w-auto" />
+                <img src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663280786037/SPxbaeRMjBqMqqlh.png" alt="Univ Match" className="h-14 sm:h-20 w-auto" />
               </div>
             </Link>
             <div className="flex items-center gap-2 sm:gap-4">
               {isAuthenticated ? (
                 <>
                   <Link href="/mentors" className="hidden md:block">
-                    <Button variant="ghost" size="sm">멘토 찾기</Button>
+                    <Button variant="ghost" size="sm" className="text-base hover:bg-primary hover:text-white">멘토 찾기</Button>
                   </Link>
                   <Link href="/bookings" className="hidden md:block">
-                    <Button variant="ghost" size="sm">상담 문의</Button>
+                    <Button variant="ghost" size="sm" className="text-base hover:bg-primary hover:text-white">상담 문의</Button>
                   </Link>
                   <Link href="/my-profile" className="hidden md:block">
-                    <Button variant="ghost" size="sm">내 프로필</Button>
+                    <Button variant="ghost" size="sm" className="text-base hover:bg-primary hover:text-white">내 프로필</Button>
                   </Link>
                   <Link href="/notifications" className="hidden md:block">
-                    <Button variant="ghost" size="sm">알림</Button>
+                    <Button variant="ghost" size="sm" className="text-base hover:bg-primary hover:text-white">알림</Button>
                   </Link>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -139,6 +139,22 @@ export default function Home() {
         </div>
       </section>
 
+      {/* New Headline Section */}
+      <section className="py-12 sm:py-20 bg-slate-50 border-t border-border">
+        <div className="container mx-auto px-4">
+          <div className="max-w-3xl mx-auto text-center">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 sm:mb-6 leading-relaxed">
+              <span className="text-primary">전공 선택은 고관여 의사결정</span>이 되었지만,<br className="hidden sm:block" />
+              <span className="text-primary">검증 수단은 여전히 부족합니다.</span>
+            </h2>
+            <p className="text-lg sm:text-xl text-muted-foreground mt-4 sm:mt-6">
+              전공 세분화가 심화되고, 전과·자퇴·반수가 증가하는 이유입니다.<br className="hidden sm:block" />
+              이제 입시 실패보다 <span className="font-semibold">전공 미스매치의 비용이 더 커졌습니다.</span>
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* Problem Definition Section */}
       <section className="py-12 sm:py-20 bg-white border-t border-border">
         <div className="container mx-auto px-4">
@@ -159,14 +175,7 @@ export default function Home() {
                 결과 중심이고 편향되어 있습니다.
               </p>
               
-              <p className="space-y-3">
-                "이 선택을 해도 되는지"<br />
-                미리 확인할 방법이 없습니다.
-                <br />
-                <br />
-                정보 검색으로는<br />
-                충분하지 않은 이유입니다.
-              </p>
+
               
               <div className="bg-accent/10 border border-accent/20 rounded-lg p-4 sm:p-6 mt-6">
                 <p className="font-semibold text-foreground mb-3">
