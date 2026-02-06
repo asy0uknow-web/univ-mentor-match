@@ -475,3 +475,16 @@
   - 모든 스타일 속성 홈페이지와 완벽 일치
 - [x] 모든 페이지에 동일한 네비게이션 바 적용 (Home.tsx 기준)
 - [x] 71개 테스트 모두 통과 확인
+
+## 모든 페이지 네비게이션 바 통일 (pt 0.8 → 0.9)
+- [x] Home.tsx 기준 네비게이션 바 코드 추출
+- [x] Bookings.tsx 네비게이션 바 교체 및 import 추가
+- [x] Notifications.tsx 네비게이션 바 교체 및 import 추가
+- [x] Messages.tsx 네비게이션 바 교체 및 import 추가
+- [x] MentorDetail.tsx 네비게이션 바 교체 및 import 추가
+- [x] MentorProfile.tsx 네비게이션 바 교체 및 import 추가
+- [x] 모든 페이지에 showBugReport 상태 변수 추가
+- [x] 모든 페이지에 logoutMutation 추가
+- [x] 모든 페이지에 BugReportModal 컴포넌트 통합
+- [x] 모든 페이지 네비게이션 바 일치 확인 (로고, 배경색, 메뉴 동일)
+- [x] TypeScript 컴파일 에러 해결
