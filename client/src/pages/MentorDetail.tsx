@@ -164,8 +164,7 @@ ${studentMessage ? `메시지: ${studentMessage}` : '추가 메시지 없음'}`;
           <div className="flex items-center justify-between">
             <Link href="/">
               <div className="flex items-center gap-2 cursor-pointer">
-                <img src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663280786037/SPxbaeRMjBqMqqlh.png" alt="Univ Match" className="h-10 sm:h-14 md:h-16 lg:h-20 w-auto" />
-                <span className="hidden sm:inline font-bold text-lg md:text-xl text-foreground">유니브매치</span>
+                <img src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663280786037/SPxbaeRMjBqMqqlh.png" alt="Univ Match" className="h-14 sm:h-20 w-auto" />
               </div>
             </Link>
             <div className="flex items-center gap-2 sm:gap-4">
