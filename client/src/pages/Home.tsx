@@ -34,8 +34,7 @@ export default function Home() {
           <div className="flex items-center justify-between">
             <Link href="/">
               <div className="flex items-center gap-2 cursor-pointer">
-                <GraduationCap className="h-6 sm:h-8 w-6 sm:w-8 text-primary" />
-                <span className="text-lg sm:text-2xl font-bold text-foreground hidden sm:inline">대학 멘토 매칭</span>
+                <img src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663280786037/czOeilxqffLpHOEH.png" alt="Univ Match" className="h-8 sm:h-10 w-auto" />
               </div>
             </Link>
             <div className="flex items-center gap-2 sm:gap-4">
@@ -108,16 +107,16 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center geometric-circles">
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 leading-tight">
-              <span className="text-primary">입시 성공</span>과 <span className="text-primary">전공 만족</span>은
+              <span className="text-primary">전공 선택</span>은
               <br />
-              다른 문제입니다.
+              단순한 정보 선택이 아닙니다.
             </h1>
             <p className="subtitle text-base sm:text-lg md:text-xl lg:text-xl mb-6 sm:mb-8 text-muted-foreground leading-relaxed">
-              학과 정보는 많지만,<br className="hidden sm:block" />
-              그 학과를 실제로 다니는 사람의 이야기는 찾기 어렵습니다.
+              대학 중도 내 남은 시간을 어떻게 보내는지,<br className="hidden sm:block" />
+              내 적성에 매나는지 알 수 없다면 더 진단이 필요합니다.
               <br className="hidden sm:block" />
               <br className="hidden sm:block" />
-              입시는 합격으로 끝이 아닙니다. 전공 선택이 시작입니다.
+              다른 대학생들은 어떻게 다니고 있을까요?
             </p>
             <div className="flex flex-col gap-3 sm:gap-4 justify-center">
               <Link href="/mentors" className="w-full sm:w-auto">
