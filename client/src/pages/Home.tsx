@@ -35,6 +35,7 @@ export default function Home() {
             <Link href="/">
               <div className="flex items-center gap-2 cursor-pointer">
                 <img src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663280786037/SPxbaeRMjBqMqqlh.png" alt="Univ Match" className="h-10 sm:h-14 md:h-16 lg:h-20 w-auto" />
+                <span className="hidden sm:inline font-bold text-lg md:text-xl text-foreground">유니브매치</span>
               </div>
             </Link>
             <div className="flex items-center gap-2 sm:gap-4">
@@ -93,9 +94,14 @@ export default function Home() {
                   </DropdownMenu>
                 </>
               ) : (
-                <a href={getLoginUrl()}>
-                  <Button size="sm">로그인</Button>
-                </a>
+                <div className="flex items-center gap-2">
+                  <a href={getLoginUrl()}>
+                    <Button variant="ghost" size="sm" className="text-base font-medium hover:bg-blue-100 hover:text-primary">로그인</Button>
+                  </a>
+                  <a href={getLoginUrl()}>
+                    <Button size="sm">회원가입</Button>
+                  </a>
+                </div>
               )}
             </div>
           </div>
@@ -140,9 +146,9 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto">
             <div className="bg-accent/10 border border-accent/20 rounded-lg p-6 sm:p-8 mb-12">
-              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-8 text-foreground">
-                <span className="text-primary">전공 세분화로 각 전공의 정보는 얕아져갑니다.</span><br className="hidden sm:block" />
-                <span className="text-primary">전과, 자퇴, 반수는 늘어만갑니다.</span>
+              <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-8 text-foreground space-y-3">
+                <div className="text-black">전공 세분화로 각 전공의 정보는 얕아져갑니다.</div>
+                <div className="text-black">전과, 자퇴, 반수는 늘어만갑니다.</div>
               </h2>
               <p className="text-lg sm:text-xl md:text-2xl text-muted-foreground mt-8">
                 이제 입시 실패보다 <span className="font-semibold">전공 미스매치의 비용이 더 커졌습니다.</span>
