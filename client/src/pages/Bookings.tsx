@@ -154,9 +154,14 @@ export default function Bookings() {
                   </DropdownMenu>
                 </>
               ) : (
-                <a href={getLoginUrl()}>
-                  <Button size="sm">로그인</Button>
-                </a>
+                <div className="flex items-center gap-2">
+                  <a href={getLoginUrl()}>
+                    <Button variant="ghost" size="sm" className="text-base font-medium hover:bg-blue-100 hover:text-primary">로그인</Button>
+                  </a>
+                  <a href={getLoginUrl()}>
+                    <Button size="sm">회원가입</Button>
+                  </a>
+                </div>
               )}
             </div>
           </div>
