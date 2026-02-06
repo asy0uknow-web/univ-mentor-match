@@ -107,28 +107,35 @@ export default function Home() {
       <section className="relative py-12 sm:py-20 md:py-32 overflow-hidden sacred-pattern">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center geometric-circles">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold mb-4 sm:mb-6 leading-tight">
-              당신의 꿈을 향한
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 leading-tight">
+              입시는 합격으로 끝이 아닙니다.
               <br />
-              <span className="text-primary">완벽한 멘토</span>를 만나세요
+              <span className="text-primary">전공 선택</span>이 시작입니다.
             </h1>
-            <p className="subtitle text-base sm:text-lg md:text-xl lg:text-2xl mb-6 sm:mb-8 text-muted-foreground">
-              대학생 선배와의 1:1 상담으로 진로를 설계하세요
+            <p className="subtitle text-base sm:text-lg md:text-xl lg:text-xl mb-6 sm:mb-8 text-muted-foreground leading-relaxed">
+              학과 정보는 많지만,<br className="hidden sm:block" />
+              그 학과를 실제로 다니는 사람의 이야기는 찾기 어렵습니다.
+              <br className="hidden sm:block" />
+              <br className="hidden sm:block" />
+              입시 성공과 전공 만족은 다른 문제입니다.
             </p>
             <div className="flex flex-col gap-3 sm:gap-4 justify-center">
               <Link href="/mentors" className="w-full sm:w-auto">
                 <Button size="lg" className="w-full sm:w-auto text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6">
-                  멘토 찾아보기
+                  전공 선택 전에, 이야기부터 들어보기
                 </Button>
               </Link>
               {isAuthenticated && (
                 <Link href="/my-profile" className="w-full sm:w-auto">
                   <Button size="lg" variant="outline" className="w-full sm:w-auto text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6">
-                    멘토로 등록하기
+                    멘토로 참여하기
                   </Button>
                 </Link>
               )}
             </div>
+            <p className="text-xs sm:text-sm text-muted-foreground mt-6 sm:mt-8">
+              실제 재학생만 참여 · 홍보 목적 상담 없음
+            </p>
           </div>
         </div>
       </section>
