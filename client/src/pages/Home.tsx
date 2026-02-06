@@ -29,7 +29,7 @@ export default function Home() {
   return (
     <div className="min-h-screen">
       {/* Navigation */}
-      <nav className="border-b border-border bg-[#fdfcfd] sticky top-0 z-50">
+      <nav className="border-b border-border bg-[#fdfcfd] sticky top-0 z-50 shadow-sm">
         <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-5">
           <div className="flex items-center justify-between">
             <Link href="/">
@@ -41,16 +41,16 @@ export default function Home() {
               {isAuthenticated ? (
                 <>
                   <Link href="/mentors" className="hidden md:block">
-                    <Button variant="ghost" size="sm" className="text-base hover:bg-primary hover:text-white">멘토 찾기</Button>
+                    <Button variant="ghost" size="sm" className="text-base font-medium hover:bg-primary hover:text-white">멘토 찾기</Button>
                   </Link>
                   <Link href="/bookings" className="hidden md:block">
-                    <Button variant="ghost" size="sm" className="text-base hover:bg-primary hover:text-white">상담 문의</Button>
+                    <Button variant="ghost" size="sm" className="text-base font-medium hover:bg-primary hover:text-white">상담 문의</Button>
                   </Link>
                   <Link href="/my-profile" className="hidden md:block">
-                    <Button variant="ghost" size="sm" className="text-base hover:bg-primary hover:text-white">내 프로필</Button>
+                    <Button variant="ghost" size="sm" className="text-base font-medium hover:bg-primary hover:text-white">내 프로필</Button>
                   </Link>
                   <Link href="/notifications" className="hidden md:block">
-                    <Button variant="ghost" size="sm" className="text-base hover:bg-primary hover:text-white">알림</Button>
+                    <Button variant="ghost" size="sm" className="text-base font-medium hover:bg-primary hover:text-white">알림</Button>
                   </Link>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -116,13 +116,13 @@ export default function Home() {
             </p>
             <div className="flex flex-col gap-3 sm:gap-4 justify-center">
               <Link href="/mentors" className="w-full sm:w-auto">
-                <Button size="lg" className="w-full sm:w-auto text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6">
+                <Button size="lg" className="w-full sm:w-auto text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 font-bold">
                   전공 선택 전에, 이야기부터 들어보기
                 </Button>
               </Link>
               {isAuthenticated && (
                 <Link href="/my-profile" className="w-full sm:w-auto">
-                  <Button size="lg" className="w-full sm:w-auto text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 bg-yellow-500 hover:bg-yellow-600 text-white">
+                  <Button size="lg" className="w-full sm:w-auto text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 bg-purple-600 hover:bg-purple-700 text-white font-bold">
                     멘토로 참여하기
                   </Button>
                 </Link>
@@ -139,12 +139,12 @@ export default function Home() {
       <section className="py-12 sm:py-20 bg-slate-50 border-t border-border">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto">
-            <div className="bg-accent/10 border border-accent/20 rounded-lg p-6 sm:p-8 mb-8">
-              <h2 className="text-lg sm:text-xl md:text-2xl font-bold mb-4 text-foreground">
+            <div className="bg-accent/10 border border-accent/20 rounded-lg p-6 sm:p-8 mb-12">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-8 text-foreground">
                 <span className="text-primary">전공 선택이 복잡해졌습니다.</span><br className="hidden sm:block" />
                 <span className="text-primary">확인할 방법이 없을 뿐입니다.</span>
               </h2>
-              <p className="text-2xl sm:text-3xl md:text-4xl font-bold text-muted-foreground mt-4">
+              <p className="text-lg sm:text-xl md:text-2xl text-muted-foreground mt-8">
                 전공 세분화가 심화되고, 전과·자퇴·반수가 증가하는 이유입니다.<br className="hidden sm:block" />
                 이제 입시 실패보다 <span className="font-semibold">전공 미스매치의 비용이 더 커졌습니다.</span>
               </p>
@@ -154,8 +154,8 @@ export default function Home() {
               왜 전공 선택은 항상 늦게 후회될까
             </h2>
             
-            <div className="space-y-8 text-base sm:text-lg text-muted-foreground leading-relaxed">
-              <p className="space-y-3">
+            <div className="space-y-8 text-base sm:text-lg leading-relaxed">
+              <p className="space-y-3 text-gray-700 font-medium">
                 학과 정보는 많지만<br />
                 실제 생활 정보는 거의 없습니다.
                 <br />
@@ -166,7 +166,7 @@ export default function Home() {
                 결과 중심이고 편향되어 있습니다.
               </p>
               
-              <p className="text-center font-semibold text-foreground mt-8">
+              <p className="text-center font-bold text-foreground mt-12 text-2xl sm:text-3xl md:text-4xl">
                 <span className="text-primary">유니브매치</span>는<br className="hidden sm:block" />
                 이 문제를 해결합니다.
               </p>
