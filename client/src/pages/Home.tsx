@@ -108,16 +108,16 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center geometric-circles">
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 leading-tight">
-              입시는 합격으로 끝이 아닙니다.
+              <span className="text-primary">입시 성공</span>과 <span className="text-primary">전공 만족</span>은
               <br />
-              <span className="text-primary">전공 선택</span>이 시작입니다.
+              다른 문제입니다.
             </h1>
             <p className="subtitle text-base sm:text-lg md:text-xl lg:text-xl mb-6 sm:mb-8 text-muted-foreground leading-relaxed">
               학과 정보는 많지만,<br className="hidden sm:block" />
               그 학과를 실제로 다니는 사람의 이야기는 찾기 어렵습니다.
               <br className="hidden sm:block" />
               <br className="hidden sm:block" />
-              입시 성공과 전공 만족은 다른 문제입니다.
+              입시는 합격으로 끝이 아닙니다. 전공 선택이 시작입니다.
             </p>
             <div className="flex flex-col gap-3 sm:gap-4 justify-center">
               <Link href="/mentors" className="w-full sm:w-auto">
