@@ -8,12 +8,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { trpc } from "@/lib/trpc";
 import { Link, useParams, useLocation } from "wouter";
-import { GraduationCap, Star, Calendar, ArrowLeft, MessageCircle, LogOut, Trash2, ChevronDown, Bug } from "lucide-react";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
+import { GraduationCap, Star, Calendar, ArrowLeft, MessageCircle, Trash2, ChevronDown } from "lucide-react";
 import BugReportModal from "@/components/BugReportModal";
 import { useState } from "react";
 import { getLoginUrl } from "@/const";
 import { toast } from "sonner";
+import { PageLayout } from "@/components/layout";
 
 export default function MentorDetail() {
   const { id } = useParams();
@@ -25,13 +25,6 @@ export default function MentorDetail() {
   const [duration, setDuration] = useState("1");
   const [studentMessage, setStudentMessage] = useState("");
   const [consultationType, setConsultationType] = useState<"resume_consulting" | "career_counseling" | "academic_management" | "university_tour">("career_counseling");
-  const [showBugReport, setShowBugReport] = useState(false);
-  const logoutMutation = trpc.auth.logout.useMutation({
-    onSuccess: () => {
-      window.location.href = "/";
-    },
-  });
-
   // 상담 종류별 기본 1시간 비용 및 추가 시간 비용
   const consultationPrices: Record<string, { base: number; additional: number }> = {
     "resume_consulting": { base: 50000, additional: 30000 },      // 생기부 컨설팅
@@ -157,86 +150,7 @@ ${studentMessage ? `메시지: ${studentMessage}` : '추가 메시지 없음'}`;
   const totalAmount = pricing.base + (durationNum - 1) * pricing.additional;
 
   return (
-    <div className="min-h-screen">
-      {/* Navigation */}
-      <nav className="border-b border-border bg-[#fdfcfd] sticky top-0 z-50 shadow-sm">
-        <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-5">
-          <div className="flex items-center justify-between">
-            <Link href="/">
-              <div className="flex items-center gap-2 cursor-pointer">
-                <img src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663280786037/SPxbaeRMjBqMqqlh.png" alt="Univ Match" className="h-14 sm:h-20 w-auto" />
-              </div>
-            </Link>
-            <div className="flex items-center gap-2 sm:gap-4">
-              {isAuthenticated ? (
-                <>
-                  <Link href="/mentors" className="hidden md:block">
-                    <Button variant="ghost" size="sm" className="text-base font-medium hover:bg-blue-100 hover:text-primary">멘토 찾기</Button>
-                  </Link>
-                  <Link href="/bookings" className="hidden md:block">
-                    <Button variant="ghost" size="sm" className="text-base font-medium hover:bg-blue-100 hover:text-primary">상담 문의</Button>
-                  </Link>
-                  <Link href="/my-profile" className="hidden md:block">
-                    <Button variant="ghost" size="sm" className="text-base font-medium hover:bg-blue-100 hover:text-primary">내 프로필</Button>
-                  </Link>
-                  <Link href="/notifications" className="hidden md:block">
-                    <Button variant="ghost" size="sm" className="text-base font-medium hover:bg-blue-100 hover:text-primary">알림</Button>
-                  </Link>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="sm" className="gap-2">
-                        <span className="hidden sm:inline">메뉴</span>
-                        <ChevronDown className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-48 bg-white">
-                      <DropdownMenuItem onClick={() => setShowBugReport(true)} className="hover:bg-blue-100 hover:text-primary">
-                        <Bug className="h-4 w-4 mr-2" />
-                        버그 신고
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem asChild className="md:hidden">
-                        <Link href="/mentors">멘토 찾기</Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild className="md:hidden">
-                        <Link href="/bookings">상담 문의</Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild className="md:hidden">
-                        <Link href="/my-profile">내 프로필</Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild className="md:hidden">
-                        <Link href="/notifications">알림</Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator className="md:hidden" />
-                      <DropdownMenuItem onClick={() => logoutMutation.mutate()}>
-                        <LogOut className="h-4 w-4 mr-2" />
-                        로그아웃
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem asChild>
-                        <Link href="/delete-account">
-                          <Trash2 className="h-4 w-4 mr-2" />
-                          계정 탈퇴
-                        </Link>
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </>
-              ) : (
-                <div className="flex items-center gap-2">
-                  <a href={getLoginUrl()}>
-                    <Button variant="ghost" size="sm" className="text-base font-medium hover:bg-blue-100 hover:text-primary">로그인</Button>
-                  </a>
-                  <a href={getLoginUrl()}>
-                    <Button size="sm">회원가입</Button>
-                  </a>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      </nav>
-
+    <PageLayout>
       {/* Content */}
       <div className="container mx-auto px-4 py-12">
         <Link href="/mentors">
@@ -552,7 +466,6 @@ ${studentMessage ? `메시지: ${studentMessage}` : '추가 메시지 없음'}`;
           </div>
         </div>
       </div>
-      {showBugReport && <BugReportModal isOpen={showBugReport} onClose={() => setShowBugReport(false)} />}
-    </div>
+    </PageLayout>
   );
 }

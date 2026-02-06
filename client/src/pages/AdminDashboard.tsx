@@ -10,6 +10,7 @@ import { GraduationCap, Search, CheckCircle, XCircle, AlertCircle, Edit, Trash2,
 import { useState } from "react";
 import { getLoginUrl } from "@/const";
 import { toast } from "sonner";
+import { PageLayout } from "@/components/layout";
 
 export default function AdminDashboard() {
   const { user, isAuthenticated } = useAuth();
@@ -112,25 +113,7 @@ export default function AdminDashboard() {
   ) || [];
 
   return (
-    <div className="min-h-screen">
-      <nav className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <Link href="/">
-              <div className="flex items-center gap-2 cursor-pointer">
-                <GraduationCap className="h-8 w-8 text-primary" />
-                <span className="text-2xl font-bold text-foreground">관리자 대시보드</span>
-              </div>
-            </Link>
-            <div className="flex items-center gap-4">
-              <Link href="/">
-                <Button variant="ghost">홈</Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </nav>
-
+    <PageLayout>
       <div className="container mx-auto px-4 py-12">
         {/* 대시보드 카드 */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
@@ -373,6 +356,6 @@ export default function AdminDashboard() {
           </TabsContent>
         </Tabs>
       </div>
-    </div>
+    </PageLayout>
   );
 }

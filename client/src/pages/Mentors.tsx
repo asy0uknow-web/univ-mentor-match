@@ -2,14 +2,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { trpc } from "@/lib/trpc";
 import { Link } from "wouter";
-import { useAuth } from "@/_core/hooks/useAuth";
-import { GraduationCap, Star, Search, LogOut, Trash2, ChevronDown, Bug } from "lucide-react";
+import { Star, Search } from "lucide-react";
 import { useState } from "react";
-import { getLoginUrl } from "@/const";
-import BugReportModal from "@/components/BugReportModal";
+import { PageLayout } from "@/components/layout";
 
 const FIELDS = [
   { value: "engineering", label: "이공계" },
@@ -33,39 +30,27 @@ const REGIONS = [
 ];
 
 export default function Mentors() {
-  const { user, isAuthenticated } = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedField, setSelectedField] = useState<string>("all");
   const [selectedRegion, setSelectedRegion] = useState<string>("all");
-  const [showBugReport, setShowBugReport] = useState(false);
-  const logoutMutation = trpc.auth.logout.useMutation({
-    onSuccess: () => {
-      window.location.href = "/";
-    },
-  });
 
-  // 기본 멘토 목록
   const { data: allMentors, isLoading: isLoadingAll } = trpc.mentor.listAll.useQuery();
 
-  // 분야+지역 검색 (둘 다 선택되었을 때)
   const { data: combinedMentors, isLoading: isLoadingCombined } = trpc.mentorSearch.getByFieldAndRegion.useQuery(
     { field: (selectedField !== "all" ? selectedField : undefined) as any, region: (selectedRegion !== "all" ? selectedRegion : undefined) as any },
     { enabled: selectedField !== "all" && selectedRegion !== "all" }
   );
 
-  // 분야별 검색 (분야만 선택되었을 때)
   const { data: fieldMentors, isLoading: isLoadingField } = trpc.mentorSearch.getByField.useQuery(
     { field: (selectedField !== "all" ? selectedField : undefined) as any },
     { enabled: selectedField !== "all" && selectedRegion === "all" }
   );
 
-  // 지역별 검색 (지역만 선택되었을 때)
   const { data: regionMentors, isLoading: isLoadingRegion } = trpc.mentorSearch.getByRegion.useQuery(
     { region: (selectedRegion !== "all" ? selectedRegion : undefined) as any },
     { enabled: selectedRegion !== "all" && selectedField === "all" }
   );
 
-  // 현재 표시할 멘토 목록 결정
   let mentors = allMentors;
   let isLoading = isLoadingAll;
 
@@ -90,87 +75,7 @@ export default function Mentors() {
   });
 
   return (
-    <div className="min-h-screen">
-      {/* Navigation */}
-      <nav className="border-b border-border bg-[#fdfcfd] sticky top-0 z-50 shadow-sm">
-        <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-5">
-          <div className="flex items-center justify-between">
-            <Link href="/">
-              <div className="flex items-center gap-2 cursor-pointer">
-                <img src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663280786037/SPxbaeRMjBqMqqlh.png" alt="Univ Match" className="h-14 sm:h-20 w-auto" />
-              </div>
-            </Link>
-            <div className="flex items-center gap-2 sm:gap-4">
-              {isAuthenticated ? (
-                <>
-                  <Link href="/mentors" className="hidden md:block">
-                    <Button variant="ghost" size="sm" className="text-base font-medium hover:bg-blue-100 hover:text-primary">멘토 찾기</Button>
-                  </Link>
-                  <Link href="/bookings" className="hidden md:block">
-                    <Button variant="ghost" size="sm" className="text-base font-medium hover:bg-blue-100 hover:text-primary">상담 문의</Button>
-                  </Link>
-                  <Link href="/my-profile" className="hidden md:block">
-                    <Button variant="ghost" size="sm" className="text-base font-medium hover:bg-blue-100 hover:text-primary">내 프로필</Button>
-                  </Link>
-                  <Link href="/notifications" className="hidden md:block">
-                    <Button variant="ghost" size="sm" className="text-base font-medium hover:bg-blue-100 hover:text-primary">알림</Button>
-                  </Link>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="sm" className="gap-2">
-                        <span className="hidden sm:inline">메뉴</span>
-                        <ChevronDown className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-48 bg-white">
-                      <DropdownMenuItem onClick={() => setShowBugReport(true)} className="hover:bg-blue-100 hover:text-primary">
-                        <Bug className="h-4 w-4 mr-2" />
-                        버그 신고
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem asChild className="md:hidden">
-                        <Link href="/mentors">멘토 찾기</Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild className="md:hidden">
-                        <Link href="/bookings">상담 문의</Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild className="md:hidden">
-                        <Link href="/my-profile">내 프로필</Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild className="md:hidden">
-                        <Link href="/notifications">알림</Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator className="md:hidden" />
-                      <DropdownMenuItem onClick={() => logoutMutation.mutate()}>
-                        <LogOut className="h-4 w-4 mr-2" />
-                        로그아웃
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem asChild>
-                        <Link href="/delete-account">
-                          <Trash2 className="h-4 w-4 mr-2" />
-                          계정 탈퇴
-                        </Link>
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </>
-              ) : (
-                <div className="flex items-center gap-2">
-                  <a href={getLoginUrl()}>
-                    <Button variant="ghost" size="sm" className="text-base font-medium hover:bg-blue-100 hover:text-primary">로그인</Button>
-                  </a>
-                  <a href={getLoginUrl()}>
-                    <Button size="sm">회원가입</Button>
-                  </a>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      </nav>
-
-      {/* Content */}
+    <PageLayout>
       <div className="container mx-auto px-4 py-12">
         <h1 className="text-4xl font-bold mb-8">멘토 찾기</h1>
 
@@ -179,7 +84,6 @@ export default function Mentors() {
           <h2 className="text-lg font-semibold mb-4">검색 필터</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-            {/* 분야 선택 */}
             <div>
               <label className="text-sm font-medium mb-2 block">분야</label>
               <Select value={selectedField} onValueChange={(value) => setSelectedField(value)}>
@@ -197,7 +101,6 @@ export default function Mentors() {
               </Select>
             </div>
 
-            {/* 지역 선택 */}
             <div>
               <label className="text-sm font-medium mb-2 block">지역</label>
               <Select value={selectedRegion} onValueChange={(value) => setSelectedRegion(value)}>
@@ -215,7 +118,6 @@ export default function Mentors() {
               </Select>
             </div>
 
-            {/* 검색 */}
             <div>
               <label className="text-sm font-medium mb-2 block">검색</label>
               <div className="relative">
@@ -231,7 +133,6 @@ export default function Mentors() {
             </div>
           </div>
 
-          {/* Reset Button */}
           <Button
             variant="outline"
             size="sm"
@@ -245,14 +146,12 @@ export default function Mentors() {
           </Button>
         </div>
 
-        {/* Results Count */}
         <div className="mb-6">
           <p className="text-sm text-muted-foreground">
             {isLoading ? "로딩 중..." : `${filteredMentors?.length || 0}명의 멘토를 찾았습니다`}
           </p>
         </div>
 
-        {/* Mentors Grid */}
         {isLoading ? (
           <div className="text-center py-12">
             <p className="text-muted-foreground">로딩 중...</p>
@@ -296,7 +195,6 @@ export default function Mentors() {
           </div>
         )}
       </div>
-      {showBugReport && <BugReportModal isOpen={showBugReport} onClose={() => setShowBugReport(false)} />}
-    </div>
+    </PageLayout>
   );
 }

@@ -9,6 +9,7 @@ import { GraduationCap, Upload, CheckCircle, AlertCircle, Clock, X } from "lucid
 import { useState } from "react";
 import { getLoginUrl } from "@/const";
 import { toast } from "sonner";
+import { PageLayout } from "@/components/layout";
 
 export default function VerifyMentor() {
   const { user, isAuthenticated } = useAuth();
@@ -110,34 +111,7 @@ export default function VerifyMentor() {
   }
 
   return (
-    <div className="min-h-screen">
-      <nav className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <Link href="/">
-              <div className="flex items-center gap-2 cursor-pointer">
-                <GraduationCap className="h-8 w-8 text-primary" />
-                <span className="text-2xl font-bold text-foreground">대학 멘토 매칭</span>
-              </div>
-            </Link>
-            <div className="flex items-center gap-4">
-              <Link href="/mentors">
-                <Button variant="ghost">멘토 찾기</Button>
-              </Link>
-              <Link href="/my-profile">
-                <Button variant="ghost">내 프로필</Button>
-              </Link>
-              <Link href="/bookings">
-                <Button variant="ghost">상담 문의</Button>
-              </Link>
-              <Link href="/notifications">
-                <Button variant="ghost">알림</Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </nav>
-
+    <PageLayout>
       <div className="container mx-auto px-4 py-12">
         <div className="max-w-2xl mx-auto">
           <h1 className="text-4xl font-bold mb-8">멘토 인증</h1>
@@ -261,6 +235,6 @@ export default function VerifyMentor() {
           )}
         </div>
       </div>
-    </div>
+    </PageLayout>
   );
 }

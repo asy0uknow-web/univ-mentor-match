@@ -1,22 +1,11 @@
 import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { getLoginUrl } from "@/const";
 import { Link } from "wouter";
-import { GraduationCap, Users, Star, Calendar, LogOut, Trash2, ChevronDown, Bug } from "lucide-react";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
-import { useEffect, useState } from "react";
-import { trpc } from "@/lib/trpc";
-import BugReportModal from "@/components/BugReportModal";
+import { useEffect } from "react";
+import { PageLayout } from "@/components/layout";
 
 export default function Home() {
-  const { user, isAuthenticated } = useAuth();
-  const [showBugReport, setShowBugReport] = useState(false);
-  const logoutMutation = trpc.auth.logout.useMutation({
-    onSuccess: () => {
-      window.location.href = "/";
-    },
-  });
+  const { isAuthenticated } = useAuth();
   
   useEffect(() => {
     document.title = "유니브매치 - 고등학생을 위한 대학생 멘토 상담 플랫폼";
@@ -27,86 +16,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="min-h-screen">
-      {/* Navigation */}
-      <nav className="border-b border-border bg-[#fdfcfd] sticky top-0 z-50 shadow-sm">
-        <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-5">
-          <div className="flex items-center justify-between">
-            <Link href="/">
-              <div className="flex items-center gap-2 cursor-pointer">
-                <img src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663280786037/SPxbaeRMjBqMqqlh.png" alt="Univ Match" className="h-14 sm:h-20 w-auto" />
-              </div>
-            </Link>
-            <div className="flex items-center gap-2 sm:gap-4">
-              {isAuthenticated ? (
-                <>
-                  <Link href="/mentors" className="hidden md:block">
-                    <Button variant="ghost" size="sm" className="text-base font-medium hover:bg-blue-100 hover:text-primary">멘토 찾기</Button>
-                  </Link>
-                  <Link href="/bookings" className="hidden md:block">
-                    <Button variant="ghost" size="sm" className="text-base font-medium hover:bg-blue-100 hover:text-primary">상담 문의</Button>
-                  </Link>
-                  <Link href="/my-profile" className="hidden md:block">
-                    <Button variant="ghost" size="sm" className="text-base font-medium hover:bg-blue-100 hover:text-primary">내 프로필</Button>
-                  </Link>
-                  <Link href="/notifications" className="hidden md:block">
-                    <Button variant="ghost" size="sm" className="text-base font-medium hover:bg-blue-100 hover:text-primary">알림</Button>
-                  </Link>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="sm" className="gap-2">
-                        <span className="hidden sm:inline">메뉴</span>
-                        <ChevronDown className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-48 bg-white">
-                      <DropdownMenuItem onClick={() => setShowBugReport(true)} className="hover:bg-blue-100 hover:text-primary">
-                        <Bug className="h-4 w-4 mr-2" />
-                        버그 신고
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem asChild className="md:hidden">
-                        <Link href="/mentors">멘토 찾기</Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild className="md:hidden">
-                        <Link href="/bookings">상담 문의</Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild className="md:hidden">
-                        <Link href="/my-profile">내 프로필</Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild className="md:hidden">
-                        <Link href="/notifications">알림</Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator className="md:hidden" />
-                      <DropdownMenuItem onClick={() => logoutMutation.mutate()}>
-                        <LogOut className="h-4 w-4 mr-2" />
-                        로그아웃
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem asChild>
-                        <Link href="/delete-account">
-                          <Trash2 className="h-4 w-4 mr-2" />
-                          계정 탈퇴
-                        </Link>
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </>
-              ) : (
-                <div className="flex items-center gap-2">
-                  <a href={getLoginUrl()}>
-                    <Button variant="ghost" size="sm" className="text-base font-medium hover:bg-blue-100 hover:text-primary">로그인</Button>
-                  </a>
-                  <a href={getLoginUrl()}>
-                    <Button size="sm">회원가입</Button>
-                  </a>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      </nav>
-
+    <PageLayout showFooter>
       {/* Hero Section with Sacred Geometry */}
       <section className="relative py-12 sm:py-20 md:py-32 overflow-hidden sacred-pattern">
         <div className="container mx-auto px-4">
@@ -179,8 +89,6 @@ export default function Home() {
         </div>
       </section>
 
-
-
       {/* How It Works */}
       <section className="py-12 sm:py-20">
         <div className="container mx-auto px-4">
@@ -188,41 +96,21 @@ export default function Home() {
             <span className="text-primary">이용 방법</span>
           </h2>
           <div className="max-w-4xl mx-auto space-y-6 sm:space-y-8">
-            <div className="flex gap-4 sm:gap-6 items-start">
-              <div className="flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-lg sm:text-xl">
-                1
+            {[
+              { step: 1, title: "멘토 검색", desc: "원하는 대학, 전공, 학년으로 필터링하여 나에게 맞는 멘토를 찾으세요" },
+              { step: 2, title: "상담 예약", desc: "멘토의 프로필과 리뷰를 확인하고 원하는 시간에 상담을 예약하세요" },
+              { step: 3, title: "1:1 상담", desc: "예약된 시간에 멘토와 만나 진로에 대한 조언을 받으세요" },
+            ].map(({ step, title, desc }) => (
+              <div key={step} className="flex gap-4 sm:gap-6 items-start">
+                <div className="flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-lg sm:text-xl">
+                  {step}
+                </div>
+                <div>
+                  <h3 className="text-lg sm:text-xl md:text-2xl font-bold mb-2">{title}</h3>
+                  <p className="text-muted-foreground text-sm sm:text-base md:text-lg">{desc}</p>
+                </div>
               </div>
-              <div>
-                <h3 className="text-lg sm:text-xl md:text-2xl font-bold mb-2">멘토 검색</h3>
-                <p className="text-muted-foreground text-sm sm:text-base md:text-lg">
-                  원하는 대학, 전공, 학년으로 필터링하여 나에게 맞는 멘토를 찾으세요
-                </p>
-              </div>
-            </div>
-
-            <div className="flex gap-4 sm:gap-6 items-start">
-              <div className="flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-lg sm:text-xl">
-                2
-              </div>
-              <div>
-                <h3 className="text-lg sm:text-xl md:text-2xl font-bold mb-2">상담 예약</h3>
-                <p className="text-muted-foreground text-sm sm:text-base md:text-lg">
-                  멘토의 프로필과 리뷰를 확인하고 원하는 시간에 상담을 예약하세요
-                </p>
-              </div>
-            </div>
-
-            <div className="flex gap-4 sm:gap-6 items-start">
-              <div className="flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-lg sm:text-xl">
-                3
-              </div>
-              <div>
-                <h3 className="text-lg sm:text-xl md:text-2xl font-bold mb-2">1:1 상담</h3>
-                <p className="text-muted-foreground text-sm sm:text-base md:text-lg">
-                  예약된 시간에 멘토와 만나 진로에 대한 조언을 받으세요
-                </p>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </section>
@@ -243,16 +131,6 @@ export default function Home() {
           </Link>
         </div>
       </section>
-
-      {/* Footer */}
-      <footer className="py-6 sm:py-8 border-t border-border bg-card">
-        <div className="container mx-auto px-4 text-center text-muted-foreground text-sm sm:text-base">
-          <p>&copy; 2026 유니브매치. All rights reserved.</p>
-        </div>
-      </footer>
-      
-      {/* Bug Report Modal */}
-      <BugReportModal isOpen={showBugReport} onClose={() => setShowBugReport(false)} />
-    </div>
+    </PageLayout>
   );
 }
