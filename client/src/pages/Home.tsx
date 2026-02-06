@@ -187,60 +187,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="py-12 sm:py-20 bg-card">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-            <Card className="border-2 hover:border-primary transition-colors">
-              <CardHeader>
-                <Users className="h-12 w-12 text-primary mb-4" />
-                <CardTitle>검증된 멘토</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription>
-                  현직 대학생들이 직접 경험한 입시와 대학 생활을 공유합니다
-                </CardDescription>
-              </CardContent>
-            </Card>
 
-            <Card className="border-2 hover:border-primary transition-colors">
-              <CardHeader>
-                <GraduationCap className="h-12 w-12 text-primary mb-4" />
-                <CardTitle>맞춤형 상담</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription>
-                  원하는 대학과 전공의 선배를 직접 선택하여 상담받으세요
-                </CardDescription>
-              </CardContent>
-            </Card>
-
-            <Card className="border-2 hover:border-primary transition-colors">
-              <CardHeader>
-                <Star className="h-12 w-12 text-primary mb-4" />
-                <CardTitle>리뷰 시스템</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription>
-                  실제 상담 후기를 통해 신뢰할 수 있는 멘토를 선택하세요
-                </CardDescription>
-              </CardContent>
-            </Card>
-
-            <Card className="border-2 hover:border-primary transition-colors">
-              <CardHeader>
-                <Calendar className="h-12 w-12 text-primary mb-4" />
-                <CardTitle>간편한 예약</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription>
-                  원하는 시간에 바로 예약하고 안전하게 결제하세요
-                </CardDescription>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
 
       {/* How It Works */}
       <section className="py-12 sm:py-20">
@@ -278,33 +225,9 @@ export default function Home() {
                 3
               </div>
               <div>
-                <h3 className="text-lg sm:text-xl md:text-2xl font-bold mb-2">안전한 결제</h3>
-                <p className="text-muted-foreground text-sm sm:text-base md:text-lg">
-                  Stripe를 통한 안전한 결제로 상담료를 지불하세요
-                </p>
-              </div>
-            </div>
-
-            <div className="flex gap-4 sm:gap-6 items-start">
-              <div className="flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-lg sm:text-xl">
-                4
-              </div>
-              <div>
                 <h3 className="text-lg sm:text-xl md:text-2xl font-bold mb-2">1:1 상담</h3>
                 <p className="text-muted-foreground text-sm sm:text-base md:text-lg">
                   예약된 시간에 멘토와 만나 진로에 대한 조언을 받으세요
-                </p>
-              </div>
-            </div>
-
-            <div className="flex gap-4 sm:gap-6 items-start">
-              <div className="flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-lg sm:text-xl">
-                5
-              </div>
-              <div>
-                <h3 className="text-lg sm:text-xl md:text-2xl font-bold mb-2">리뷰 작성</h3>
-                <p className="text-muted-foreground text-sm sm:text-base md:text-lg">
-                  상담 후 리뷰를 남겨 다른 학생들에게 도움을 주세요
                 </p>
               </div>
             </div>
