@@ -29,7 +29,7 @@ export default function Home() {
   return (
     <div className="min-h-screen">
       {/* Navigation */}
-      <nav className="border-b border-border bg-white sticky top-0 z-50">
+      <nav className="border-b border-border bg-[#fdfcfd] sticky top-0 z-50">
         <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-5">
           <div className="flex items-center justify-between">
             <Link href="/">
@@ -109,10 +109,10 @@ export default function Home() {
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 leading-tight">
               <span className="text-primary">전공 선택</span>은
               <br />
-              단순한 정보 선택이 아닙니다.
+              그저 입시 전략이 아닙니다.
             </h1>
             <p className="subtitle text-base sm:text-lg md:text-xl lg:text-xl mb-6 sm:mb-8 text-muted-foreground leading-relaxed">
-              입시 성공과 전공 만족은 다른 문제입니다.
+              입시 성공과 적성 일치는 다른 문제입니다.
             </p>
             <div className="flex flex-col gap-3 sm:gap-4 justify-center">
               <Link href="/mentors" className="w-full sm:w-auto">
@@ -122,7 +122,7 @@ export default function Home() {
               </Link>
               {isAuthenticated && (
                 <Link href="/my-profile" className="w-full sm:w-auto">
-                  <Button size="lg" variant="outline" className="w-full sm:w-auto text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6">
+                  <Button size="lg" className="w-full sm:w-auto text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 bg-yellow-500 hover:bg-yellow-600 text-white">
                     멘토로 참여하기
                   </Button>
                 </Link>
@@ -140,11 +140,11 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto">
             <div className="bg-accent/10 border border-accent/20 rounded-lg p-6 sm:p-8 mb-8">
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 text-foreground">
-                <span className="text-primary">전공 선택은 고관여 의사결정</span>이 되었지만,<br className="hidden sm:block" />
-                <span className="text-primary">검증 수단은 여전히 부족합니다.</span>
+              <h2 className="text-lg sm:text-xl md:text-2xl font-bold mb-4 text-foreground">
+                <span className="text-primary">전공 선택이 복잡해졌습니다.</span><br className="hidden sm:block" />
+                <span className="text-primary">확인할 방법이 없을 뿐입니다.</span>
               </h2>
-              <p className="text-lg sm:text-xl text-muted-foreground mt-4">
+              <p className="text-2xl sm:text-3xl md:text-4xl font-bold text-muted-foreground mt-4">
                 전공 세분화가 심화되고, 전과·자퇴·반수가 증가하는 이유입니다.<br className="hidden sm:block" />
                 이제 입시 실패보다 <span className="font-semibold">전공 미스매치의 비용이 더 커졌습니다.</span>
               </p>
@@ -234,7 +234,7 @@ export default function Home() {
           </p>
           <Link href="/mentors" className="inline-block">
             <Button size="lg" className="text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6">
-              멘토 찾아보기
+              전공 선택 전에, 이야기부터 들어보기
             </Button>
           </Link>
         </div>
