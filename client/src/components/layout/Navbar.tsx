@@ -11,6 +11,7 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { trpc } from "@/lib/trpc";
+import { useEffect, useRef } from "react";
 
 interface NavbarProps {
   onBugReport: () => void;
@@ -23,6 +24,13 @@ const NAVBAR_MENU = [
   { href: "/notifications", label: "알림" },
 ] as const;
 
+// 홈페이지 메뉴 (스크롤 이동)
+const HOME_MENU = [
+  { id: "hero", label: "전공 선택" },
+  { id: "service-intro", label: "서비스 소개" },
+  { id: "how-it-works", label: "이용 방법" },
+] as const;
+
 // 원래 유니브매치 로고 URL (환경변수 무시)
 const LOGO_URL = "https://files.manuscdn.com/user_upload_by_module/session_file/310519663280786037/SPxbaeRMjBqMqqlh.png";
 
@@ -33,6 +41,22 @@ export default function Navbar({ onBugReport }: NavbarProps) {
       window.location.href = "/";
     },
   });
+
+  const isHomePage = typeof window !== "undefined" && window.location.pathname === "/";
+
+  const handleSmoothScroll = (elementId: string) => {
+    const element = document.getElementById(elementId);
+    if (element) {
+      const navHeight = 80; // 네비게이션 바 높이 (px)
+      const elementPosition = element.getBoundingClientRect().top + window.scrollY;
+      const offsetPosition = elementPosition - navHeight;
+      
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: "smooth"
+      });
+    }
+  };
 
   return (
     <nav
@@ -47,22 +71,31 @@ export default function Navbar({ onBugReport }: NavbarProps) {
             <img
               src={LOGO_URL}
               alt="유니브매치 로고"
-              className="h-10 sm:h-14 md:h-16 lg:h-20 w-auto cursor-pointer"
+              className="h-10 sm:h-14 md:h-16 lg:h-20 w-auto cursor-pointer flex-shrink-0"
               width={80}
               height={80}
               loading="eager"
             />
           </Link>
 
-          {/* 중앙: 유니브매치 텍스트 */}
-          <div className="flex-1 flex items-center justify-center">
-            <span className="text-lg sm:text-xl md:text-2xl font-bold text-primary">
-              유니브매치
-            </span>
-          </div>
+          {/* 중앙: 메뉴 (홈페이지에서만 표시) */}
+          {isHomePage && (
+            <div className="hidden md:flex items-center gap-8 flex-1 justify-center">
+              {HOME_MENU.map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => handleSmoothScroll(item.id)}
+                  className="text-sm sm:text-base font-medium text-foreground hover:text-primary transition-colors"
+                  aria-label={`${item.label} 섹션으로 이동`}
+                >
+                  {item.label}
+                </button>
+              ))}
+            </div>
+          )}
 
-          {/* 오른쪽: 메뉴 */}
-          <div className="flex items-center gap-2 sm:gap-4">
+          {/* 오른쪽: CTA 또는 메뉴 */}
+          <div className="flex items-center gap-4">
             {isAuthenticated ? (
               <>
                 {NAVBAR_MENU.map((item) => (
@@ -130,19 +163,26 @@ export default function Navbar({ onBugReport }: NavbarProps) {
                 </DropdownMenu>
               </>
             ) : (
-              <div className="flex items-center gap-1 sm:gap-2">
-                <a href={getLoginUrl()} aria-label="로그인 페이지로 이동">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="text-xs sm:text-base font-medium hover:bg-blue-100 hover:text-primary px-2 sm:px-3"
-                  >
-                    로그인
-                  </Button>
+              <div className="flex items-center gap-3 sm:gap-4">
+                {/* 로그인 텍스트 링크 */}
+                <a 
+                  href={getLoginUrl()} 
+                  className="text-sm sm:text-base font-medium text-foreground hover:text-primary transition-colors"
+                  aria-label="로그인 페이지로 이동"
+                >
+                  로그인
                 </a>
+                
+                {/* 구분선 (데스크톱에서만) */}
+                <div className="hidden sm:block w-px h-6 bg-border"></div>
+                
+                {/* CTA 버튼 */}
                 <a href={getLoginUrl()} aria-label="회원가입 페이지로 이동">
-                  <Button size="sm" className="text-xs sm:text-base px-2 sm:px-3">
-                    회원가입
+                  <Button 
+                    size="lg" 
+                    className="rounded-full bg-primary hover:bg-primary/90 text-white font-semibold px-6 sm:px-8 py-2 sm:py-3 text-sm sm:text-base"
+                  >
+                    무료로 시작하기
                   </Button>
                 </a>
               </div>
