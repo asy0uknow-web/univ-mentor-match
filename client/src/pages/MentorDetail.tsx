@@ -10,10 +10,11 @@ import { trpc } from "@/lib/trpc";
 import { Link, useParams, useLocation } from "wouter";
 import { GraduationCap, Star, Calendar, ArrowLeft, MessageCircle, Trash2, ChevronDown } from "lucide-react";
 import BugReportModal from "@/components/BugReportModal";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { getLoginUrl } from "@/const";
 import { toast } from "sonner";
 import { PageLayout } from "@/components/layout";
+import { setPageMeta, PAGE_META } from "@/lib/seo";
 
 export default function MentorDetail() {
   const { id } = useParams();
@@ -47,6 +48,15 @@ export default function MentorDetail() {
     { mentorId },
     { enabled: isValidMentorId }
   );
+
+  useEffect(() => {
+    if (mentor?.profile) {
+      const major = mentor.profile.major;
+      const meta = PAGE_META.mentorDetail(mentor.user.name, major);
+      setPageMeta(meta);
+    }
+  }, [mentor]);
+
   const { data: reviews } = trpc.review.getByMentor.useQuery(
     { mentorId },
     { enabled: isValidMentorId }

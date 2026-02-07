@@ -519,3 +519,14 @@
 - [x] lib/seo.ts 메타 태그 설정 유틸리티 생성
 - [x] Home.tsx 메타 태그 동적 설정 적용
 - [x] 카톡 공유 메타 태그 테스트 및 확인 (로고, 설명, 제목 표시 확인)
+
+## 나머지 8개 페이지 메타 태그 적용 (pt 1.1 → pt 1.2)
+- [ ] lib/seo.ts 페이지 메타 정보 확장 (Mentors, MentorDetail, Bookings, Messages, Notifications, MyProfile, AdminBugReports)
+- [ ] Mentors.tsx 메타 태그 적용
+- [ ] MentorDetail.tsx 메타 태그 적용 (멘토 이름/전공 동적 설정)
+- [ ] Bookings.tsx 메타 태그 적용
+- [ ] Messages.tsx 메타 태그 적용
+- [ ] Notifications.tsx 메타 태그 적용
+- [ ] MyProfile.tsx 메타 태그 적용
+- [ ] AdminBugReports.tsx 메타 태그 적용
+- [ ] 모든 페이지 메타 태그 테스트 및 확인

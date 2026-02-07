@@ -6,14 +6,19 @@ import { trpc } from "@/lib/trpc";
 import { Link } from "wouter";
 import { GraduationCap, Bell, Check, Trash2, ChevronDown } from "lucide-react";
 import BugReportModal from "@/components/BugReportModal";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { getLoginUrl } from "@/const";
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
 import { toast } from "sonner";
 import { PageLayout } from "@/components/layout";
+import { setPageMeta, PAGE_META } from "@/lib/seo";
 
 export default function Notifications() {
+
+  useEffect(() => {
+    setPageMeta(PAGE_META.notifications);
+  }, []);
   const { user, isAuthenticated } = useAuth();
   const utils = trpc.useUtils();
   const { data: notifications, isLoading } = trpc.notification.getAll.useQuery(undefined, {

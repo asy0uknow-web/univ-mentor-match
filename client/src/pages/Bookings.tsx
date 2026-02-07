@@ -6,15 +6,20 @@ import { trpc } from "@/lib/trpc";
 import { Link, useLocation } from "wouter";
 import { GraduationCap, Calendar, Clock, MessageCircle, User, BookOpen, Trash2, ChevronDown } from "lucide-react";
 import BugReportModal from "@/components/BugReportModal";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { getLoginUrl } from "@/const";
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
 import { PageLayout } from "@/components/layout";
+import { setPageMeta, PAGE_META } from "@/lib/seo";
 
 export default function Bookings() {
   const { user, isAuthenticated } = useAuth();
   const [, setLocation] = useLocation();
+
+  useEffect(() => {
+    setPageMeta(PAGE_META.bookings);
+  }, []);
   // 학생 역할: 예약 조회
   const { data: bookings, isLoading: bookingsLoading } = trpc.booking.getMyBookings.useQuery(undefined, {
     enabled: isAuthenticated && user?.userType === "high_school_student",

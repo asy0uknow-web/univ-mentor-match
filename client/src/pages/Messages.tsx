@@ -13,8 +13,13 @@ import { toast } from "sonner";
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
 import { PageLayout } from "@/components/layout";
+import { setPageMeta, PAGE_META } from "@/lib/seo";
 
 export default function Messages() {
+
+  useEffect(() => {
+    setPageMeta(PAGE_META.messages);
+  }, []);
   const { user, isAuthenticated } = useAuth();
   const [selectedConversation, setSelectedConversation] = useState<number | null>(null);
   const [messageContent, setMessageContent] = useState("");

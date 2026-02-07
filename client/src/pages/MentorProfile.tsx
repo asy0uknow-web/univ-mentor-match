@@ -12,8 +12,13 @@ import { useState, useEffect } from "react";
 import { getLoginUrl } from "@/const";
 import { toast } from "sonner";
 import { PageLayout } from "@/components/layout";
+import { setPageMeta, PAGE_META } from "@/lib/seo";
 
 export default function MentorProfile() {
+
+  useEffect(() => {
+    setPageMeta(PAGE_META.profile);
+  }, []);
   const { user, isAuthenticated } = useAuth();
   const [, setLocation] = useLocation();
   const [university, setUniversity] = useState("");

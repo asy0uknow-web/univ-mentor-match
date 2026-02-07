@@ -5,8 +5,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { trpc } from "@/lib/trpc";
 import { Link } from "wouter";
 import { Star, Search } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { PageLayout } from "@/components/layout";
+import { setPageMeta, PAGE_META } from "@/lib/seo";
 
 const FIELDS = [
   { value: "engineering", label: "이공계" },
@@ -33,6 +34,10 @@ export default function Mentors() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedField, setSelectedField] = useState<string>("all");
   const [selectedRegion, setSelectedRegion] = useState<string>("all");
+
+  useEffect(() => {
+    setPageMeta(PAGE_META.mentors);
+  }, []);
 
   const { data: allMentors, isLoading: isLoadingAll } = trpc.mentor.listAll.useQuery();
 

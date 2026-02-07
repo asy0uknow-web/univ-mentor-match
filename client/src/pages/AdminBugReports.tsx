@@ -10,7 +10,9 @@ import {
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { AlertCircle, CheckCircle, Clock, Bug, CheckCircle2, XCircle } from "lucide-react";
+import { useEffect } from "react";
 import { trpc } from "@/lib/trpc";
+import { setPageMeta, PAGE_META } from "@/lib/seo";
 
 const severityColors = {
   low: "bg-blue-50 text-blue-700 border border-blue-200",
@@ -51,6 +53,10 @@ const statusIcons: Record<string, React.ReactNode> = {
 };
 
 export default function AdminBugReports() {
+
+  useEffect(() => {
+    setPageMeta(PAGE_META.adminBugReports);
+  }, []);
   const [statusFilter, setStatusFilter] = useState<string | undefined>();
   const [sortBy, setSortBy] = useState<"newest" | "oldest" | "critical">("newest");
   const { data: bugReports, isLoading, refetch } = trpc.bugReport.getAll.useQuery({
