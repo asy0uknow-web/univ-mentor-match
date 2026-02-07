@@ -41,19 +41,27 @@ export default function Navbar({ onBugReport }: NavbarProps) {
       aria-label="메인 네비게이션"
     >
       <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-5">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-4">
+          {/* 왼쪽: 로고 */}
           <Link href="/" aria-label="유니브매치 홈으로 이동">
-            <div className="flex items-center gap-2 cursor-pointer">
-              <img
-                src={LOGO_URL}
-                alt="유니브매치 로고"
-                className="h-10 sm:h-14 md:h-16 lg:h-20 w-auto"
-                width={80}
-                height={80}
-                loading="eager"
-              />
-            </div>
+            <img
+              src={LOGO_URL}
+              alt="유니브매치 로고"
+              className="h-10 sm:h-14 md:h-16 lg:h-20 w-auto cursor-pointer"
+              width={80}
+              height={80}
+              loading="eager"
+            />
           </Link>
+
+          {/* 중앙: 유니브매치 텍스트 */}
+          <div className="flex-1 flex items-center justify-center">
+            <span className="text-lg sm:text-xl md:text-2xl font-bold text-primary">
+              유니브매치
+            </span>
+          </div>
+
+          {/* 오른쪽: 메뉴 */}
           <div className="flex items-center gap-2 sm:gap-4">
             {isAuthenticated ? (
               <>
@@ -122,18 +130,20 @@ export default function Navbar({ onBugReport }: NavbarProps) {
                 </DropdownMenu>
               </>
             ) : (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1 sm:gap-2">
                 <a href={getLoginUrl()} aria-label="로그인 페이지로 이동">
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="text-base font-medium hover:bg-blue-100 hover:text-primary"
+                    className="text-xs sm:text-base font-medium hover:bg-blue-100 hover:text-primary px-2 sm:px-3"
                   >
                     로그인
                   </Button>
                 </a>
                 <a href={getLoginUrl()} aria-label="회원가입 페이지로 이동">
-                  <Button size="sm">회원가입</Button>
+                  <Button size="sm" className="text-xs sm:text-base px-2 sm:px-3">
+                    회원가입
+                  </Button>
                 </a>
               </div>
             )}
