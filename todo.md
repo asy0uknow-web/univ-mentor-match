@@ -513,3 +513,9 @@
 - [ ] TypeScript 에러 없이 빌드 확인
 - [ ] 기존 테스트 통과 확인
 - [ ] 리팩토링 전/후 비교 보고서 작성
+
+## 웹페이지 메타 태그 개편 (pt 1.0 → pt 1.1 - 카톡 공유 최적화)
+- [x] index.html 메타 태그 개편 (og:title, og:description, og:image, twitter card)
+- [x] lib/seo.ts 메타 태그 설정 유틸리티 생성
+- [x] Home.tsx 메타 태그 동적 설정 적용
+- [x] 카톡 공유 메타 태그 테스트 및 확인 (로고, 설명, 제목 표시 확인)

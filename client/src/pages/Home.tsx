@@ -3,16 +3,13 @@ import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { useEffect } from "react";
 import { PageLayout } from "@/components/layout";
+import { setPageMeta, PAGE_META } from "@/lib/seo";
 
 export default function Home() {
   const { isAuthenticated } = useAuth();
-  
+
   useEffect(() => {
-    document.title = "유니브매치 - 고등학생을 위한 대학생 멘토 상담 플랫폼";
-    const metaDescription = document.querySelector('meta[name="description"]');
-    if (metaDescription) {
-      metaDescription.setAttribute('content', '고등학생이 대학생 멘토로부터 입시 상담, 학과 정보, 대학생활 조언을 받을 수 있는 1:1 매칭 플랫폼입니다.');
-    }
+    setPageMeta(PAGE_META.home);
   }, []);
 
   return (
