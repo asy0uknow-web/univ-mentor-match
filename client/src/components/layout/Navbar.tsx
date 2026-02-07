@@ -23,9 +23,8 @@ const NAVBAR_MENU = [
   { href: "/notifications", label: "알림" },
 ] as const;
 
-const LOGO_URL =
-  import.meta.env.VITE_APP_LOGO ||
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663280786037/SPxbaeRMjBqMqqlh.png";
+// 원래 유니브매치 로고 URL (환경변수 무시)
+const LOGO_URL = "https://files.manuscdn.com/user_upload_by_module/session_file/310519663280786037/SPxbaeRMjBqMqqlh.png";
 
 export default function Navbar({ onBugReport }: NavbarProps) {
   const { isAuthenticated } = useAuth();
