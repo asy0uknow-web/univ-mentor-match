@@ -1,4 +1,3 @@
-import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -12,6 +11,7 @@ import { format } from "date-fns";
 import { ko } from "date-fns/locale";
 import { PageLayout } from "@/components/layout";
 import { setPageMeta, PAGE_META } from "@/lib/seo";
+import { useAuth } from "@/_core/hooks/useAuth";
 
 export default function Bookings() {
   const { user, isAuthenticated } = useAuth();

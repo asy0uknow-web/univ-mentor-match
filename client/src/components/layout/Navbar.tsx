@@ -16,6 +16,17 @@ interface NavbarProps {
   onBugReport: () => void;
 }
 
+const NAVBAR_MENU = [
+  { href: "/mentors", label: "멘토 찾기" },
+  { href: "/bookings", label: "상담 문의" },
+  { href: "/my-profile", label: "내 프로필" },
+  { href: "/notifications", label: "알림" },
+] as const;
+
+const LOGO_URL =
+  import.meta.env.VITE_APP_LOGO ||
+  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663280786037/SPxbaeRMjBqMqqlh.png";
+
 export default function Navbar({ onBugReport }: NavbarProps) {
   const { isAuthenticated } = useAuth();
   const logoutMutation = trpc.auth.logout.useMutation({
@@ -25,75 +36,86 @@ export default function Navbar({ onBugReport }: NavbarProps) {
   });
 
   return (
-    <nav className="border-b border-border bg-[#fdfcfd] sticky top-0 z-50 shadow-sm">
+    <nav
+      className="border-b border-border bg-[#fdfcfd] sticky top-0 z-50 shadow-sm"
+      role="navigation"
+      aria-label="메인 네비게이션"
+    >
       <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-5">
         <div className="flex items-center justify-between">
-          <Link href="/">
+          <Link href="/" aria-label="유니브매치 홈으로 이동">
             <div className="flex items-center gap-2 cursor-pointer">
               <img
-                src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663280786037/SPxbaeRMjBqMqqlh.png"
-                alt="Univ Match"
-                className="h-14 sm:h-20 w-auto"
+                src={LOGO_URL}
+                alt="유니브매치 로고"
+                className="h-10 sm:h-14 md:h-16 lg:h-20 w-auto"
+                width={80}
+                height={80}
+                loading="eager"
               />
             </div>
           </Link>
           <div className="flex items-center gap-2 sm:gap-4">
             {isAuthenticated ? (
               <>
-                <Link href="/mentors" className="hidden md:block">
-                  <Button variant="ghost" size="sm" className="text-base font-medium hover:bg-blue-100 hover:text-primary">
-                    멘토 찾기
-                  </Button>
-                </Link>
-                <Link href="/bookings" className="hidden md:block">
-                  <Button variant="ghost" size="sm" className="text-base font-medium hover:bg-blue-100 hover:text-primary">
-                    상담 문의
-                  </Button>
-                </Link>
-                <Link href="/my-profile" className="hidden md:block">
-                  <Button variant="ghost" size="sm" className="text-base font-medium hover:bg-blue-100 hover:text-primary">
-                    내 프로필
-                  </Button>
-                </Link>
-                <Link href="/notifications" className="hidden md:block">
-                  <Button variant="ghost" size="sm" className="text-base font-medium hover:bg-blue-100 hover:text-primary">
-                    알림
-                  </Button>
-                </Link>
+                {NAVBAR_MENU.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className="hidden md:block"
+                    aria-label={`${item.label} 페이지로 이동`}
+                  >
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="text-base font-medium hover:bg-blue-100 hover:text-primary"
+                    >
+                      {item.label}
+                    </Button>
+                  </Link>
+                ))}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="sm" className="gap-2">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="gap-2"
+                      aria-label="네비게이션 메뉴 열기"
+                    >
                       <span className="hidden sm:inline">메뉴</span>
-                      <ChevronDown className="h-4 w-4" />
+                      <ChevronDown className="h-4 w-4" aria-hidden="true" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-48 bg-white">
-                    <DropdownMenuItem onClick={onBugReport} className="hover:bg-blue-100 hover:text-primary">
-                      <Bug className="h-4 w-4 mr-2" />
+                    <DropdownMenuItem
+                      onClick={onBugReport}
+                      className="hover:bg-blue-100 hover:text-primary"
+                    >
+                      <Bug className="h-4 w-4 mr-2" aria-hidden="true" />
                       버그 신고
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem asChild className="md:hidden">
-                      <Link href="/mentors">멘토 찾기</Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild className="md:hidden">
-                      <Link href="/bookings">상담 문의</Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild className="md:hidden">
-                      <Link href="/my-profile">내 프로필</Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild className="md:hidden">
-                      <Link href="/notifications">알림</Link>
-                    </DropdownMenuItem>
+                    {NAVBAR_MENU.map((item) => (
+                      <DropdownMenuItem
+                        key={item.href}
+                        asChild
+                        className="md:hidden"
+                      >
+                        <Link href={item.href}>{item.label}</Link>
+                      </DropdownMenuItem>
+                    ))}
                     <DropdownMenuSeparator className="md:hidden" />
-                    <DropdownMenuItem onClick={() => logoutMutation.mutate()}>
-                      <LogOut className="h-4 w-4 mr-2" />
-                      로그아웃
+                    <DropdownMenuItem
+                      onClick={() => logoutMutation.mutate()}
+                      disabled={logoutMutation.isPending}
+                    >
+                      <LogOut className="h-4 w-4 mr-2" aria-hidden="true" />
+                      {logoutMutation.isPending ? "로그아웃 중..." : "로그아웃"}
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem asChild>
                       <Link href="/delete-account">
-                        <Trash2 className="h-4 w-4 mr-2" />
+                        <Trash2 className="h-4 w-4 mr-2" aria-hidden="true" />
                         계정 탈퇴
                       </Link>
                     </DropdownMenuItem>
@@ -102,12 +124,16 @@ export default function Navbar({ onBugReport }: NavbarProps) {
               </>
             ) : (
               <div className="flex items-center gap-2">
-                <a href={getLoginUrl()}>
-                  <Button variant="ghost" size="sm" className="text-base font-medium hover:bg-blue-100 hover:text-primary">
+                <a href={getLoginUrl()} aria-label="로그인 페이지로 이동">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-base font-medium hover:bg-blue-100 hover:text-primary"
+                  >
                     로그인
                   </Button>
                 </a>
-                <a href={getLoginUrl()}>
+                <a href={getLoginUrl()} aria-label="회원가입 페이지로 이동">
                   <Button size="sm">회원가입</Button>
                 </a>
               </div>

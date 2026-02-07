@@ -521,12 +521,25 @@
 - [x] 카톡 공유 메타 태그 테스트 및 확인 (로고, 설명, 제목 표시 확인)
 
 ## 나머지 8개 페이지 메타 태그 적용 (pt 1.1 → pt 1.2)
-- [ ] lib/seo.ts 페이지 메타 정보 확장 (Mentors, MentorDetail, Bookings, Messages, Notifications, MyProfile, AdminBugReports)
-- [ ] Mentors.tsx 메타 태그 적용
-- [ ] MentorDetail.tsx 메타 태그 적용 (멘토 이름/전공 동적 설정)
-- [ ] Bookings.tsx 메타 태그 적용
-- [ ] Messages.tsx 메타 태그 적용
-- [ ] Notifications.tsx 메타 태그 적용
-- [ ] MyProfile.tsx 메타 태그 적용
-- [ ] AdminBugReports.tsx 메타 태그 적용
-- [ ] 모든 페이지 메타 태그 테스트 및 확인
+- [x] lib/seo.ts 페이지 메타 정보 확장 (Mentors, MentorDetail, Bookings, Messages, Notifications, MyProfile, AdminBugReports)
+- [x] Mentors.tsx 메타 태그 적용
+- [x] MentorDetail.tsx 메타 태그 적용 (멘토 이름/전공 동적 설정)
+- [x] Bookings.tsx 메타 태그 적용
+- [x] Messages.tsx 메타 태그 적용
+- [x] Notifications.tsx 메타 태그 적용
+- [x] MyProfile.tsx 메타 태그 적용
+- [x] AdminBugReports.tsx 메타 태그 적용
+- [x] 모든 페이지 메타 태그 테스트 및 확인
+
+## 시니어 리뷰어 리팩토링 패치 적용 (pt 1.3 → pt 1.4)
+- [x] P0: MentorDetail.tsx 에러 처리 강화 (isError 추가 + 에러 UI)
+- [x] P0: 환경 변수 검증 로직 추가 (env.ts)
+- [x] P1: Navbar.tsx 메뉴 중복 제거 + aria-label + 로고 최적화
+- [x] P1: Mentors.tsx API 호출 통합 (4개 → 2개 조건부 호출) + useMemo 필터링
+- [x] P1: 검색 디바운스 적용 (300ms)
+- [x] P2: Home.tsx 섹션별 aria-label 추가
+- [x] P2: Footer.tsx aria-label 추가
+- [x] P2: console.log 제거 (클라이언트)
+- [x] TypeScript 에러 0건 확인
+- [x] 71개 테스트 전체 통과
+- [x] 브라우저 검증 완료 (홈, 멘토 찾기, 에러 페이지)

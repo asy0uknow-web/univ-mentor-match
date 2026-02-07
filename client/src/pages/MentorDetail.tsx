@@ -44,9 +44,9 @@ export default function MentorDetail() {
   const mentorId = id ? parseInt(id, 10) : 0;
   const isValidMentorId = !isNaN(mentorId) && mentorId > 0;
   
-  const { data: mentor, isLoading } = trpc.mentor.getById.useQuery(
+  const { data: mentor, isLoading, isError, error } = trpc.mentor.getById.useQuery(
     { mentorId },
-    { enabled: isValidMentorId }
+    { enabled: isValidMentorId, retry: 2 }
   );
 
   useEffect(() => {
@@ -138,20 +138,44 @@ ${studentMessage ? `메시지: ${studentMessage}` : '추가 메시지 없음'}`;
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p className="text-muted-foreground">로딩 중...</p>
-      </div>
+      <PageLayout>
+        <div className="container mx-auto px-4 py-24 flex items-center justify-center">
+          <div className="text-center space-y-4">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto" />
+            <p className="text-muted-foreground">멘토 정보를 불러오는 중...</p>
+          </div>
+        </div>
+      </PageLayout>
+    );
+  }
+
+  if (isError) {
+    return (
+      <PageLayout>
+        <div className="container mx-auto px-4 py-24 flex items-center justify-center flex-col gap-4">
+          <p className="text-destructive font-medium">멘토 정보를 불러오는 데 실패했습니다.</p>
+          <p className="text-muted-foreground text-sm">{error?.message || "네트워크 오류가 발생했습니다."}</p>
+          <div className="flex gap-3">
+            <Button variant="outline" onClick={() => window.location.reload()}>다시 시도</Button>
+            <Link href="/mentors">
+              <Button variant="outline">멘토 목록으로 돌아가기</Button>
+            </Link>
+          </div>
+        </div>
+      </PageLayout>
     );
   }
 
   if (!mentor) {
     return (
-      <div className="min-h-screen flex items-center justify-center flex-col gap-4">
-        <p className="text-muted-foreground">멘토를 찾을 수 없습니다.</p>
-        <Link href="/mentors">
-          <Button variant="outline">멘토 목록으로 돌아가기</Button>
-        </Link>
-      </div>
+      <PageLayout>
+        <div className="container mx-auto px-4 py-24 flex items-center justify-center flex-col gap-4">
+          <p className="text-muted-foreground">멘토를 찾을 수 없습니다.</p>
+          <Link href="/mentors">
+            <Button variant="outline">멘토 목록으로 돌아가기</Button>
+          </Link>
+        </div>
+      </PageLayout>
     );
   }
 

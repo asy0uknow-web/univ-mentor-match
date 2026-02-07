@@ -15,7 +15,7 @@ export default function Home() {
   return (
     <PageLayout showFooter>
       {/* Hero Section with Sacred Geometry */}
-      <section className="relative py-12 sm:py-20 md:py-32 overflow-hidden sacred-pattern">
+      <section className="relative py-12 sm:py-20 md:py-32 overflow-hidden sacred-pattern" aria-label="히어로 섹션">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center geometric-circles">
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 leading-tight">
@@ -27,7 +27,7 @@ export default function Home() {
               입시 성공과 적성 일치는 다른 문제입니다.
             </p>
             <div className="flex flex-col gap-3 sm:gap-4 justify-center">
-              <Link href="/mentors" className="w-full sm:w-auto">
+              <Link href="/mentors" className="w-full sm:w-auto" aria-label="멘토 찾기 페이지로 이동">
                 <Button size="lg" className="w-full sm:w-auto text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 font-bold">
                   전공 선택 전에, 이야기부터 들어보기
                 </Button>
@@ -48,7 +48,7 @@ export default function Home() {
       </section>
 
       {/* Problem Definition Section */}
-      <section className="py-12 sm:py-20 bg-slate-50 border-t border-border">
+      <section className="py-12 sm:py-20 bg-slate-50 border-t border-border" aria-label="문제 정의">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto">
             <div className="bg-accent/10 border border-accent/20 rounded-lg p-6 sm:p-8 mb-12">
@@ -87,7 +87,7 @@ export default function Home() {
       </section>
 
       {/* How It Works */}
-      <section className="py-12 sm:py-20">
+      <section className="py-12 sm:py-20" aria-label="이용 방법">
         <div className="container mx-auto px-4">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-8 sm:mb-12">
             <span className="text-primary">이용 방법</span>
@@ -113,7 +113,7 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-12 sm:py-20 bg-primary/10 golden-spiral">
+      <section className="py-12 sm:py-20 bg-primary/10 golden-spiral" aria-label="시작하기">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 sm:mb-6">
             지금 바로 시작하세요
