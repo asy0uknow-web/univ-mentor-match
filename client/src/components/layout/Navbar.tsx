@@ -21,6 +21,7 @@ const NAVBAR_MENU = [
   { href: "/mentors", label: "멘토 찾기" },
   { href: "/bookings", label: "상담 문의" },
   { href: "/my-profile", label: "내 프로필" },
+  { href: "/my-info", label: "내 정보" },
   { href: "/notifications", label: "알림" },
 ] as const;
 

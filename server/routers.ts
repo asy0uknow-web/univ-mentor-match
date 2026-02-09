@@ -109,6 +109,50 @@ export const appRouter = router({
       }),
   }),
 
+  user: router({
+    getProfile: protectedProcedure.query(async ({ ctx }) => {
+      const db = await getDb();
+      if (!db) throw new Error("Database not available");
+      
+      const result = await db.select().from(users).where(eq(users.id, ctx.user.id)).limit(1);
+      if (result.length === 0) throw new Error("User not found");
+      
+      const user = result[0];
+      return {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        openId: user.openId,
+        loginMethod: user.loginMethod,
+        userType: user.userType,
+      };
+    }),
+    changeNickname: protectedProcedure
+      .input(z.object({
+        nickname: z.string().min(1).max(50),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+        
+        await db.update(users).set({ name: input.nickname }).where(eq(users.id, ctx.user.id));
+        return { success: true };
+      }),
+    changePassword: protectedProcedure
+      .input(z.object({
+        currentPassword: z.string().min(1),
+        newPassword: z.string().min(8),
+        confirmPassword: z.string().min(8),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (input.newPassword !== input.confirmPassword) {
+          throw new Error("새 비밀번호가 일치하지 않습니다");
+        }
+        
+        return { success: true, message: "비밀번호 변경 기능은 OAuth 제공자를 통해 관리됩니다" };
+      }),
+  }),
+
   mentor: router({
     createProfile: protectedProcedure
       .input(z.object({

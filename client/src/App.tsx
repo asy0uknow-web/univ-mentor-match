@@ -18,6 +18,7 @@ const VerifyMentor = lazy(() => import("./pages/VerifyMentor"));
 const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
 const DeleteAccount = lazy(() => import("./pages/DeleteAccount"));
 const AdminBugReports = lazy(() => import("./pages/AdminBugReports"));
+const MyProfile = lazy(() => import("./pages/MyProfile"));
 
 function Router() {
   return (
@@ -27,6 +28,7 @@ function Router() {
         <Route path={"/mentors"} component={Mentors} />
         <Route path={"/mentor/:id"} component={MentorDetail} />
         <Route path={"/my-profile"} component={MentorProfile} />
+        <Route path={"/my-info"} component={MyProfile} />
         <Route path={"/bookings"} component={Bookings} />
         <Route path={"/notifications"} component={Notifications} />
         <Route path={"/messages"} component={Messages} />

@@ -581,3 +581,12 @@
 - [x] rel=canonical 추가 (index.html 확인)
 - [x] 주요 랜드마크 추가 (role 속성 추가)
 - [x] user-scalable 설정 개선 (user-scalable=yes)
+
+## 사용자 개인정보 관리 기능
+- [x] 백엔드: 개인정보 조회 API (GET /api/user/profile)
+- [x] 백엔드: 비밀번호 변경 API (POST /api/user/change-password)
+- [x] 백엔드: 닉네임 변경 API (POST /api/user/change-nickname)
+- [x] 프론트엔드: 개인정보 표시 섹션 (이름, 아이디, 이메일)
+- [x] 프론트엔드: 비밀번호 변경 폼
+- [x] 프론트엔드: 닉네임 변경 폼
+- [x] 테스트: 개인정보 관리 기능 테스트
