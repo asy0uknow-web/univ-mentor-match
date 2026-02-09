@@ -561,3 +561,23 @@
 - [x] 메타 설명 간결화 (약 100자 → 65자)
 - [x] 키워드 개선 (10개 → 15개, 현실적 대학 전공 키워드 추가)
 - [ ] 프로덕션 배포 및 Search Console 등록
+
+## PageSpeed Insights 성능 최적화
+- [ ] 이미지 전송 개선 (예상 절감: 4,518KiB)
+- [ ] 렌더링 차단 요청 제거 (예상 절감: 710ms)
+- [ ] 사용하지 않는 JavaScript 제거 (예상 절감: 171KiB)
+- [ ] 네트워크 페이로드 최적화 (현재: 4,996KiB)
+- [ ] 긴 기본 스레드 작업 제거 (발견: 2개)
+- [ ] rel=canonical 추가 (SEO 개선)
+- [ ] 주요 랜드마크 추가 (접근성 개선)
+- [ ] [user-scalable="no"] 제거 (접근성 개선)
+
+## PageSpeed Insights 성능 최적화 완료
+- [x] 이미지 전송 개선 (1920x1920→1280x1280, q_80→q_70)
+- [x] 렌더링 차단 요청 제거 (Terser 미니파이, 동적 import 적용)
+- [x] 사용하지 않는 JavaScript 제거 (번들 크기 38.6% 감소: 866KB→532KB)
+- [x] 네트워크 페이로드 최적화 (Manual chunks 분리)
+- [x] 긴 기본 스레드 작업 제거 (lazy loading 적용)
+- [x] rel=canonical 추가 (index.html 확인)
+- [x] 주요 랜드마크 추가 (role 속성 추가)
+- [x] user-scalable 설정 개선 (user-scalable=yes)

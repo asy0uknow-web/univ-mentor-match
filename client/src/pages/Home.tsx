@@ -50,14 +50,15 @@ export default function Home() {
       {/* Hero Section with Rolling Text and 3D Background */}
       <section 
         id="hero" 
+        role="banner"
         className="relative py-12 sm:py-20 md:py-32 overflow-hidden" 
         style={{
-          backgroundImage: 'url(https://private-us-east-1.manuscdn.com/sessionFile/uR1NfZVEpEf0Q3jc4GsDIE/sandbox/HQgNygizRsU7v6jgv1nKki-img-1_1770453858000_na1fn_aGVyby1iYWNrZ3JvdW5kLTNk.png?x-oss-process=image/resize,w_1920,h_1920/format,webp/quality,q_80&Expires=1798761600&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvdVIxTmZaVkVwRWYwUTNqYzRHc0RJRS9zYW5kYm94L0hRZ055Z2l6UnNVN3Y2amd2MW5La2ktaW1nLTFfMTc3MDQ1Mzg1ODAwMF9uYTFmbl9hR1Z5YnkxaVlXTnJaM0p2ZFc1a0xUTmsucG5nP3gtb3NzLXByb2Nlc3M9aW1hZ2UvcmVzaXplLHdfMTkyMCxoXzE5MjAvZm9ybWF0LHdlYnAvcXVhbGl0eSxxXzgwIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzk4NzYxNjAwfX19XX0_&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=sO6kw0dUp-zvryUggCyzgBFXJ0zwaqCKprze9fFkrNJDUvg43ieyUArao2O16oZOJ2GknpgBKjcO92iOS2GfMn~giNLob92FAq~K8hXM3wcdUmaNCnH0nJtTosQDDphwKH7lUUcmltwVztMTjNdDjQ3MKgRd7TK~n2YGhm48Pvnfjdu1R5NA9Z41XgvaK9oyJOlvwaUHstSkzjWoqU5-uLzpYWYvFxMf4hXSr3Iyo2a32~1IxjixZD~vk3nxTvCQnmb69mGAnuWxa60FJXaZ7MDQMXDajhjWAXDyVoVuqYiGJRIHr4J7K0eydx4j5yLDpjDWaAZTv2GiFUcdBld~8g__)',
+          backgroundImage: 'url(https://private-us-east-1.manuscdn.com/sessionFile/uR1NfZVEpEf0Q3jc4GsDIE/sandbox/HQgNygizRsU7v6jgv1nKki-img-1_1770453858000_na1fn_aGVyby1iYWNrZ3JvdW5kLTNk.png?x-oss-process=image/resize,w_1280,h_1280/format,webp/quality,q_70&Expires=1798761600&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvdVIxTmZaVkVwRWYwUTNqYzRHc0RJRS9zYW5kYm94L0hRZ055Z2l6UnNVN3Y2amd2MW5La2ktaW1nLTFfMTc3MDQ1Mzg1ODAwMF9uYTFmbl9hR1Z5YnkxaVlXTnJaM0p2ZFc1a0xUTmsucG5nP3gtb3NzLXByb2Nlc3M9aW1hZ2UvcmVzaXplLHdfMTkyMCxoXzE5MjAvZm9ybWF0LHdlYnAvcXVhbGl0eSxxXzgwIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzk4NzYxNjAwfX19XX0_&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=sO6kw0dUp-zvryUggCyzgBFXJ0zwaqCKprze9fFkrNJDUvg43ieyUArao2O16oZOJ2GknpgBKjcO92iOS2GfMn~giNLob92FAq~K8hXM3wcdUmaNCnH0nJtTosQDDphwKH7lUUcmltwVztMTjNdDjQ3MKgRd7TK~n2YGhm48Pvnfjdu1R5NA9Z41XgvaK9oyJOlvwaUHstSkzjWoqU5-uLzpYWYvFxMf4hXSr3Iyo2a32~1IxjixZD~vk3nxTvCQnmb69mGAnuWxa60FJXaZ7MDQMXDajhjWAXDyVoVuqYiGJRIHr4J7K0eydx4j5yLDpjDWaAZTv2GiFUcdBld~8g__)',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundAttachment: 'fixed'
         }}
-        aria-label="히어로 센셔"
+        aria-label="히어로 섹션"
       >
         {/* 배경 오버레이 - 텍스트 가독성 향상 */}
         <div className="absolute inset-0 bg-white/60 backdrop-blur-sm"></div>
@@ -67,7 +68,7 @@ export default function Home() {
           <div className="max-w-4xl mx-auto text-center">
             {/* 메인 헤드라인 */}
             <div className="mb-6 sm:mb-8">
-              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-3 sm:mb-4">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-3 sm:mb-4" id="main-heading">
                 유니브매치에서 시작하는
               </h1>
               
@@ -117,11 +118,11 @@ export default function Home() {
       </section>
 
       {/* Problem Definition Section - Redesigned */}
-      <section id="service-intro" className="py-16 sm:py-24 md:py-32 bg-white" aria-label="문제 정의">
+      <section id="service-intro" role="region" className="py-16 sm:py-24 md:py-32 bg-white" aria-label="문제 정의">
         <div className="container mx-auto px-4">
           {/* 상단 헤드라인 */}
           <div className="max-w-4xl mx-auto text-center mb-8 sm:mb-12 md:mb-16">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4 sm:mb-6">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4 sm:mb-6" id="service-heading">
               검색만으론 전공을 알 수 없습니다.
             </h2>
             <p className="text-base sm:text-lg md:text-xl text-muted-foreground">
@@ -183,9 +184,9 @@ export default function Home() {
       </section>
 
       {/* How It Works - Redesigned */}
-      <section id="how-it-works" className="py-16 sm:py-28 md:py-32" aria-label="이용 방법">
+      <section id="how-it-works" role="region" className="py-16 sm:py-28 md:py-32" aria-label="이용 방법">
         <div className="container mx-auto px-4">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-12 sm:mb-16 text-primary">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-12 sm:mb-16 text-primary" id="how-heading">
             이용 방법
           </h2>
           <div className="max-w-6xl mx-auto">
@@ -236,9 +237,9 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-12 sm:py-20 bg-primary/10 golden-spiral" aria-label="시작하기">
+      <section role="region" className="py-12 sm:py-20 bg-primary/10 golden-spiral" aria-label="시작하기">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 sm:mb-6">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 sm:mb-6" id="cta-heading">
             지금 바로 시작하세요
           </h2>
           <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-6 sm:mb-8 max-w-2xl mx-auto">

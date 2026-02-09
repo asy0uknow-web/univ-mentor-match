@@ -4,36 +4,40 @@ import NotFound from "@/pages/NotFound";
 import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
+import { lazy, Suspense } from "react";
+
+// 주요 페이지는 즉시 로드, 나머지는 동적 로드
 import Home from "./pages/Home";
-import Mentors from "./pages/Mentors";
-import MentorDetail from "./pages/MentorDetail";
-import MentorProfile from "./pages/MentorProfile";
-import Bookings from "./pages/Bookings";
-import Notifications from "./pages/Notifications";
-import Messages from "./pages/Messages";
-import VerifyMentor from "./pages/VerifyMentor";
-import AdminDashboard from "./pages/AdminDashboard";
-import DeleteAccount from "./pages/DeleteAccount";
-import AdminBugReports from "./pages/AdminBugReports";
-import { useEffect } from "react";
+const Mentors = lazy(() => import("./pages/Mentors"));
+const MentorDetail = lazy(() => import("./pages/MentorDetail"));
+const MentorProfile = lazy(() => import("./pages/MentorProfile"));
+const Bookings = lazy(() => import("./pages/Bookings"));
+const Notifications = lazy(() => import("./pages/Notifications"));
+const Messages = lazy(() => import("./pages/Messages"));
+const VerifyMentor = lazy(() => import("./pages/VerifyMentor"));
+const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
+const DeleteAccount = lazy(() => import("./pages/DeleteAccount"));
+const AdminBugReports = lazy(() => import("./pages/AdminBugReports"));
 
 function Router() {
   return (
-    <Switch>
-      <Route path={"/"} component={Home} />
-      <Route path={"/mentors"} component={Mentors} />
-      <Route path={"/mentor/:id"} component={MentorDetail} />
-      <Route path={"/my-profile"} component={MentorProfile} />
-      <Route path={"/bookings"} component={Bookings} />
-      <Route path={"/notifications"} component={Notifications} />
-      <Route path={"/messages"} component={Messages} />
-      <Route path={"/verify-mentor"} component={VerifyMentor} />
-      <Route path={"/admin"} component={AdminDashboard} />
-      <Route path={"/delete-account"} component={DeleteAccount} />
-      <Route path={"/admin/bug-reports"} component={AdminBugReports} />
-      <Route path={"/404"} component={NotFound} />
-      <Route component={NotFound} />
-    </Switch>
+    <Suspense fallback={<div className="flex items-center justify-center min-h-screen">로딩 중...</div>}>
+      <Switch>
+        <Route path={"\\"} component={Home} />
+        <Route path={"/mentors"} component={Mentors} />
+        <Route path={"/mentor/:id"} component={MentorDetail} />
+        <Route path={"/my-profile"} component={MentorProfile} />
+        <Route path={"/bookings"} component={Bookings} />
+        <Route path={"/notifications"} component={Notifications} />
+        <Route path={"/messages"} component={Messages} />
+        <Route path={"/verify-mentor"} component={VerifyMentor} />
+        <Route path={"/admin"} component={AdminDashboard} />
+        <Route path={"/delete-account"} component={DeleteAccount} />
+        <Route path={"/admin/bug-reports"} component={AdminBugReports} />
+        <Route path={"/404"} component={NotFound} />
+        <Route component={NotFound} />
+      </Switch>
+    </Suspense>
   );
 }
 
