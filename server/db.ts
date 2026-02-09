@@ -133,15 +133,48 @@ export async function createMentorProfile(profile: InsertMentorProfile) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
   
-  // 기존 프로필이 있는지 확인
+  // 기존 활성 프로필이 있는지 확인 (isDeleted=false)
   const existingProfile = await getMentorProfileByUserId(profile.userId);
   
   if (existingProfile) {
-    // 기존 프로필이 있으면 업데이트
-    await db.update(mentorProfiles).set(profile).where(eq(mentorProfiles.userId, profile.userId));
+    // 기존 활성 프로필이 있으면 업데이트
+    await db.update(mentorProfiles).set({
+      ...profile,
+      verificationStatus: "pending",
+      isActive: true,
+      isDeleted: false,
+    }).where(
+      and(
+        eq(mentorProfiles.userId, profile.userId),
+        eq(mentorProfiles.isDeleted, false)
+      )
+    );
   } else {
-    // 기존 프로필이 없으면 새로 생성
-    await db.insert(mentorProfiles).values(profile);
+    // 삭제된 프로필이 있는지 확인
+    const deletedProfile = await db.select().from(mentorProfiles).where(
+      and(
+        eq(mentorProfiles.userId, profile.userId),
+        eq(mentorProfiles.isDeleted, true)
+      )
+    ).limit(1);
+    
+    if (deletedProfile.length > 0) {
+      // 삭제된 프로필이 있으면 복원 (재등록)
+      await db.update(mentorProfiles).set({
+        ...profile,
+        verificationStatus: "pending",
+        isActive: true,
+        isDeleted: false,
+      }).where(eq(mentorProfiles.id, deletedProfile[0].id));
+    } else {
+      // 완전히 새로운 프로필 생성
+      await db.insert(mentorProfiles).values({
+        ...profile,
+        verificationStatus: "pending",
+        isActive: true,
+        isDeleted: false,
+      });
+    }
   }
 }
 
@@ -162,7 +195,12 @@ export async function updateMentorProfile(userId: number, updates: Partial<Inser
   const db = await getDb();
   if (!db) throw new Error("Database not available");
   
-  await db.update(mentorProfiles).set(updates).where(eq(mentorProfiles.userId, userId));
+  await db.update(mentorProfiles).set(updates).where(
+    and(
+      eq(mentorProfiles.userId, userId),
+      eq(mentorProfiles.isDeleted, false)
+    )
+  );
 }
 
 export async function getAllActiveMentors() {
@@ -473,7 +511,10 @@ export async function getPendingMentorVerifications() {
     })
     .from(mentorVerifications)
     .innerJoin(users, eq(mentorVerifications.userId, users.id))
-    .leftJoin(mentorProfiles, eq(mentorVerifications.userId, mentorProfiles.userId))
+    .leftJoin(mentorProfiles, and(
+      eq(mentorVerifications.userId, mentorProfiles.userId),
+      eq(mentorProfiles.isDeleted, false)
+    ))
     .where(eq(mentorVerifications.status, "pending"))
     .orderBy(desc(mentorVerifications.createdAt));
   
@@ -498,10 +539,16 @@ export async function approveMentorVerification(verificationId: number) {
     verifiedAt: new Date(),
   }).where(eq(mentorVerifications.id, verificationId));
   
-  // Update mentor profile verification status
+  // Update mentor profile verification status (only active profiles)
   await db.update(mentorProfiles).set({
     verificationStatus: "approved",
-  }).where(eq(mentorProfiles.userId, verification[0].userId));
+    isActive: true,
+  }).where(
+    and(
+      eq(mentorProfiles.userId, verification[0].userId),
+      eq(mentorProfiles.isDeleted, false)
+    )
+  );
 }
 
 export async function rejectMentorVerification(verificationId: number, adminNotes: string) {
@@ -522,10 +569,15 @@ export async function rejectMentorVerification(verificationId: number, adminNote
     adminNotes,
   }).where(eq(mentorVerifications.id, verificationId));
   
-  // Update mentor profile verification status
+  // Update mentor profile verification status (only active profiles)
   await db.update(mentorProfiles).set({
     verificationStatus: "rejected",
-  }).where(eq(mentorProfiles.userId, verification[0].userId));
+  }).where(
+    and(
+      eq(mentorProfiles.userId, verification[0].userId),
+      eq(mentorProfiles.isDeleted, false)
+    )
+  );
 }
 
 export async function updateMentorVerification(verificationId: number, updates: Partial<InsertMentorVerification>) {
@@ -546,7 +598,12 @@ export async function updateMentorVerificationStatus(userId: number, status: "pe
   
   await db.update(mentorProfiles).set({
     verificationStatus: status,
-  }).where(eq(mentorProfiles.userId, userId));
+  }).where(
+    and(
+      eq(mentorProfiles.userId, userId),
+      eq(mentorProfiles.isDeleted, false)
+    )
+  );
 }
 
 // Mentor filtering queries

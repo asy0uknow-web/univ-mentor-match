@@ -127,15 +127,12 @@ export const appRouter = router({
           userId: ctx.user.id,
           ...input,
         });
-        try {
-          await createMentorVerification({
-            userId: ctx.user.id,
-            studentIdImageUrl: "",
-            status: "pending",
-          });
-        } catch (error) {
-          console.warn("Verification record already exists", ctx.user.id);
-        }
+        // Always create a new verification request for (re-)registration
+        await createMentorVerification({
+          userId: ctx.user.id,
+          studentIdImageUrl: "",
+          status: "pending",
+        });
         return { success: true };
       }),
 
