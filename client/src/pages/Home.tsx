@@ -112,12 +112,17 @@ export default function Home() {
       <section 
         id="hero" 
         role="banner"
-        className="relative py-12 sm:py-20 md:py-32 overflow-hidden bg-white" 
+        className="relative py-12 sm:py-20 md:py-32 overflow-hidden" 
+        style={{
+          backgroundImage: 'url(https://private-us-east-1.manuscdn.com/sessionFile/uR1NfZVEpEf0Q3jc4GsDIE/sandbox/HQgNygizRsU7v6jgv1nKki-img-1_1770453858000_na1fn_aGVyby1iYWNrZ3JvdW5kLTNk.png?x-oss-process=image/resize,w_1920,h_1920/format,webp/quality,q_80)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundAttachment: 'fixed'
+        }}
         aria-label="히어로 섹션"
       >
-        {/* Organic Blobs Background */}
-        <div className="organic-blob blob-1" style={{ top: '-100px', left: '-100px' }}></div>
-        <div className="organic-blob blob-2" style={{ top: '50px', right: '-50px' }}></div>
+        {/* 배경 오버레이 - 텍스트 가독성 향상 */}
+        <div className="absolute inset-0 bg-white/60 backdrop-blur-sm"></div>
         
         {/* Content */}
         <div className="container mx-auto px-4 relative z-10">
