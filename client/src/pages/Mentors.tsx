@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -8,6 +7,7 @@ import { Search } from "lucide-react";
 import { useState, useEffect, useMemo } from "react";
 import { PageLayout } from "@/components/layout";
 import { setPageMeta, PAGE_META } from "@/lib/seo";
+import { Button } from "@/components/ui/button";
 
 const FIELDS = [
   { value: "engineering", label: "이공계" },
@@ -97,18 +97,18 @@ export default function Mentors() {
         {/* Filters Section - 모바일 최적화 */}
         <div className="mb-4 sm:mb-8 p-2 sm:p-4 bg-card rounded-lg border border-border" role="search" aria-label="멘토 검색 필터">
           <h2 className="text-sm sm:text-lg font-semibold mb-2 sm:mb-3">검색 필터</h2>
-          
           <div className="space-y-2 sm:space-y-3">
-            {/* 첫 번째 행: 분야, 지역 */}
+            {/* 분야와 지역을 2열 그리드로 배치 */}
             <div className="grid grid-cols-2 gap-2 sm:gap-3">
+              {/* 분야 선택 */}
               <div>
-                <label htmlFor="field-select" className="text-xs font-medium mb-1 block">분야</label>
-                <Select value={selectedField} onValueChange={(value) => setSelectedField(value)}>
-                  <SelectTrigger id="field-select" aria-label="분야 선택" className="text-xs sm:text-sm h-8 sm:h-10">
-                    <SelectValue placeholder="분야" />
+                <label className="text-xs sm:text-sm font-medium block mb-1">분야</label>
+                <Select value={selectedField} onValueChange={setSelectedField}>
+                  <SelectTrigger className="h-8 sm:h-10 text-xs sm:text-sm">
+                    <SelectValue placeholder="분야 선택" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">전체</SelectItem>
+                    <SelectItem value="all">전체 분야</SelectItem>
                     {FIELDS.map((field) => (
                       <SelectItem key={field.value} value={field.value}>
                         {field.label}
@@ -118,14 +118,15 @@ export default function Mentors() {
                 </Select>
               </div>
 
+              {/* 지역 선택 */}
               <div>
-                <label htmlFor="region-select" className="text-xs font-medium mb-1 block">지역</label>
-                <Select value={selectedRegion} onValueChange={(value) => setSelectedRegion(value)}>
-                  <SelectTrigger id="region-select" aria-label="지역 선택" className="text-xs sm:text-sm h-8 sm:h-10">
-                    <SelectValue placeholder="지역" />
+                <label className="text-xs sm:text-sm font-medium block mb-1">지역</label>
+                <Select value={selectedRegion} onValueChange={setSelectedRegion}>
+                  <SelectTrigger className="h-8 sm:h-10 text-xs sm:text-sm">
+                    <SelectValue placeholder="지역 선택" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">전체</SelectItem>
+                    <SelectItem value="all">전체 지역</SelectItem>
                     {REGIONS.map((region) => (
                       <SelectItem key={region.value} value={region.value}>
                         {region.label}
@@ -136,18 +137,17 @@ export default function Mentors() {
               </div>
             </div>
 
-            {/* 두 번째 행: 검색 */}
+            {/* 검색 입력 */}
             <div>
-              <label htmlFor="search-input" className="text-xs font-medium mb-1 block">검색</label>
+              <label className="text-xs sm:text-sm font-medium block mb-1">검색</label>
               <div className="relative">
-                <Search className="absolute left-2 sm:left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-3.5 w-3.5 sm:h-4 sm:w-4" aria-hidden="true" />
+                <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
-                  id="search-input"
                   type="text"
                   placeholder="대학, 전공..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-7 sm:pl-9 text-xs sm:text-sm h-8 sm:h-10"
+                  className="pl-8 h-8 sm:h-10 text-xs sm:text-sm"
                   aria-label="멘토 검색"
                 />
               </div>
@@ -186,7 +186,7 @@ export default function Mentors() {
             {filteredMentors.map((mentor) => (
               <Link key={mentor.profile.id} href={`/mentor/${mentor.profile.id}`}>
                 <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full flex flex-col">
-                  <CardHeader className="pb-2 sm:pb-3">
+                  <CardHeader className="pb-2 sm:pb-2">
                     <div className="space-y-1">
                       <CardTitle className="text-base sm:text-lg">{mentor.user.name || "멘토"}</CardTitle>
                       <CardDescription className="text-xs sm:text-sm">
@@ -194,39 +194,50 @@ export default function Mentors() {
                       </CardDescription>
                     </div>
                   </CardHeader>
-                  <CardContent className="flex-1 flex flex-col gap-2 sm:gap-3 text-xs sm:text-sm">
-                    {/* 전공 정보 */}
-                    <div>
-                      <p className="font-medium">{mentor.profile.major}</p>
-                      <p className="text-muted-foreground text-xs">
+                  <CardContent className="flex-1 flex flex-col gap-1.5 sm:gap-2 text-xs sm:text-sm pt-0 sm:pt-1">
+                    {/* 태그 섹션 - 알약 모양 배지 */}
+                    <div className="flex flex-wrap gap-1">
+                      {/* 전공 배지 */}
+                      <span className="inline-block px-2 sm:px-2.5 py-1 bg-gray-100 text-gray-700 rounded-full text-xs">
+                        {mentor.profile.major}
+                      </span>
+
+                      {/* 학년 배지 */}
+                      <span className="inline-block px-2 sm:px-2.5 py-1 bg-gray-100 text-gray-700 rounded-full text-xs">
                         {GRADES.find(g => g.value === mentor.profile.grade)?.label || "학년 정보 없음"}
-                      </p>
+                      </span>
+
+                      {/* 지역 배지 */}
+                      {mentor.profile.region && (
+                        <span className="inline-block px-2 sm:px-2.5 py-1 bg-gray-100 text-gray-700 rounded-full text-xs">
+                          {REGIONS.find(r => r.value === mentor.profile.region)?.label || "지역 정보 없음"}
+                        </span>
+                      )}
+
+                      {/* 분야 배지 */}
+                      {mentor.profile.field && (
+                        <span className="inline-block px-2 sm:px-2.5 py-1 bg-gray-100 text-gray-700 rounded-full text-xs">
+                          {FIELDS.find(f => f.value === mentor.profile.field)?.label || "분야 정보 없음"}
+                        </span>
+                      )}
                     </div>
-
-                    {/* 지역 정보 */}
-                    {mentor.profile.region && (
-                      <p className="text-muted-foreground">
-                        📍 {REGIONS.find(r => r.value === mentor.profile.region)?.label || "지역 정보 없음"}
-                      </p>
-                    )}
-
-                    {/* 분야 정보 */}
-                    {mentor.profile.field && (
-                      <p className="text-muted-foreground">
-                        🎓 {FIELDS.find(f => f.value === mentor.profile.field)?.label || "분야 정보 없음"}
-                      </p>
-                    )}
 
                     {/* 자기소개 */}
                     {mentor.profile.bio && (
-                      <p className="text-muted-foreground line-clamp-2 pt-1 sm:pt-2 border-t border-border">
+                      <p className="text-muted-foreground line-clamp-2 text-xs">
                         {mentor.profile.bio}
                       </p>
                     )}
 
-                    {/* 상담 신청 버튼 */}
-                    <div className="flex items-center justify-end pt-2 sm:pt-3 border-t border-border mt-auto">
-                      <Button size="sm" className="text-xs sm:text-sm h-7 sm:h-9">상담 신청</Button>
+                    {/* 상담 신청 버튼 - Outlined Button */}
+                    <div className="flex items-center justify-end pt-1 sm:pt-1.5 mt-auto">
+                      <Button 
+                        size="sm" 
+                        variant="outline"
+                        className="text-xs sm:text-sm h-7 sm:h-8 hover:bg-primary hover:text-white transition-colors"
+                      >
+                        상담 신청
+                      </Button>
                     </div>
                   </CardContent>
                 </Card>
