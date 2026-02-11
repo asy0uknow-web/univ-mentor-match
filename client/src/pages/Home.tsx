@@ -5,6 +5,42 @@ import { useEffect, useState } from "react";
 import { PageLayout } from "@/components/layout";
 import { setPageMeta, PAGE_META } from "@/lib/seo";
 
+// Line Art Icons Component
+const SearchIcon = () => (
+  <svg className="w-16 h-16 sm:w-20 sm:h-20" viewBox="0 0 48 48" fill="none" stroke="#2E4A33" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="20" cy="20" r="12" />
+    <path d="M32 32L42 42" />
+  </svg>
+);
+
+const CalendarIcon = () => (
+  <svg className="w-16 h-16 sm:w-20 sm:h-20" viewBox="0 0 48 48" fill="none" stroke="#2E4A33" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="8" y="10" width="32" height="28" rx="2" />
+    <path d="M16 6v8M32 6v8" />
+    <path d="M8 18h32" />
+    <circle cx="16" cy="28" r="1.5" fill="#2E4A33" />
+    <circle cx="28" cy="28" r="1.5" fill="#2E4A33" />
+  </svg>
+);
+
+const ChatIcon = () => (
+  <svg className="w-16 h-16 sm:w-20 sm:h-20" viewBox="0 0 48 48" fill="none" stroke="#2E4A33" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M8 12C8 10.9 8.9 10 10 10h28c1.1 0 2 0.9 2 2v20c0 1.1-0.9 2-2 2H12l-4 4v-4H10c-1.1 0-2-0.9-2-2V12Z" />
+  </svg>
+);
+
+// Organic Blob Background Component
+const BlobBackground = ({ idx }: { idx: number }) => (
+  <svg className="absolute inset-0 w-full h-full" viewBox="0 0 120 120" preserveAspectRatio="xMidYMid meet">
+    <defs>
+      <filter id={`blob-blur-${idx}`}>
+        <feGaussianBlur in="SourceGraphic" stdDeviation="2" />
+      </filter>
+    </defs>
+    <path d="M60,20 Q90,20 100,50 Q110,80 80,100 Q50,110 30,90 Q10,70 20,40 Q30,15 60,20 Z" fill="#E0E8D9" opacity="0.6" filter={`url(#blob-blur-${idx})`} />
+  </svg>
+);
+
 export default function Home() {
   const { isAuthenticated } = useAuth();
   const [currentKeywordIndex, setCurrentKeywordIndex] = useState(0);
@@ -190,27 +226,32 @@ export default function Home() {
                 { 
                   title: "멘토 검색", 
                   desc: "원하는 대학, 전공, 학년으로 필터링하여 나에게 맞는 멘토를 찾으세요",
-                  icon: "🔍"
+                  iconComponent: SearchIcon
                 },
                 { 
                   title: "상담 예약", 
                   desc: "멘토의 프로필과 리뷰를 확인하고 원하는 시간에 상담을 예약하세요",
-                  icon: "📅"
+                  iconComponent: CalendarIcon
                 },
                 { 
                   title: "1:1 상담", 
                   desc: "예약된 시간에 멘토와 만나 진로에 대한 조언을 받으세요",
-                  icon: "💬"
+                  iconComponent: ChatIcon
                 },
-              ].map(({ title, desc, icon }, idx) => (
+              ].map(({ title, desc, iconComponent: IconComponent }, idx) => (
                 <div 
                   key={idx} 
                   className="bg-white rounded-3xl p-8 sm:p-10 shadow-md hover:shadow-xl transition-all duration-300 hover:scale-105 cursor-pointer"
                 >
                   <div className="flex flex-col items-center text-center h-full justify-center">
-                    <div className="text-6xl sm:text-7xl md:text-8xl mb-8 transform group-hover:scale-110 transition-transform duration-300">
-                      {icon}
+                    {/* Icon with Blob Background */}
+                    <div className="relative w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 mb-8 flex items-center justify-center">
+                      <BlobBackground idx={idx} />
+                      <div className="relative z-10">
+                        <IconComponent />
+                      </div>
                     </div>
+                    
                     <h3 className="text-2xl sm:text-3xl font-bold mb-6 text-foreground">
                       {title}
                     </h3>
