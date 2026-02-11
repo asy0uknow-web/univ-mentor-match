@@ -55,11 +55,11 @@
   --chart-4: oklch(0.45 0.20 260); /* Dark blue */
   --chart-5: oklch(0.35 0.22 260); /* Darker blue */
   --radius: 0.5rem;
-  --background: oklch(1 0 0); /* Pure white */
+  --background: oklch(0.97 0.03 45); /* White with subtle terracotta */
   --foreground: oklch(0.25 0.03 240); /* Deep navy */
-  --card: oklch(1 0 0); /* Pure white */
+  --card: oklch(0.98 0.02 45); /* Almost white with terracotta tone */
   --card-foreground: oklch(0.25 0.03 240);
-  --popover: oklch(1 0 0); /* Pure white */
+  --popover: oklch(0.98 0.02 45); /* Almost white with terracotta tone */
   --popover-foreground: oklch(0.25 0.03 240);
   --secondary: oklch(0.55 0.18 150); /* Green */
   --secondary-foreground: oklch(0.25 0.03 240);
@@ -72,7 +72,7 @@
   --border: oklch(0.88 0.02 75);
   --input: oklch(0.88 0.02 75);
   --ring: oklch(0.50 0.20 260); /* Blue ring */
-  --sidebar: oklch(1 0 0); /* Pure white */
+  --sidebar: oklch(0.98 0.02 45); /* Almost white with terracotta tone */
   --sidebar-foreground: oklch(0.25 0.03 240);
   --sidebar-accent: oklch(0.90 0.02 75);
   --sidebar-accent-foreground: oklch(0.25 0.03 240);
