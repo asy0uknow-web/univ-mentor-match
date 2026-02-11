@@ -114,7 +114,7 @@ export default function Home() {
         role="banner"
         className="relative py-12 sm:py-20 md:py-32 overflow-hidden" 
         style={{
-          backgroundImage: 'url(https://private-us-east-1.manuscdn.com/sessionFile/uR1NfZVEpEf0Q3jc4GsDIE/sandbox/HQgNygizRsU7v6jgv1nKki-img-1_1770453858000_na1fn_aGVyby1iYWNrZ3JvdW5kLTNk.png?x-oss-process=image/resize,w_1920,h_1920/format,webp/quality,q_80)',
+          backgroundImage: 'url(https://private-us-east-1.manuscdn.com/sessionFile/uR1NfZVEpEf0Q3jc4GsDIE/sandbox/kkhznDCMTxjUcFoZRqsZfJ-img-1_1770798947000_na1fn_aGVyby1iYWNrZ3JvdW5kLTNk.png?x-oss-process=image/resize,w_1920,h_1920/format,webp/quality,q_80&Expires=1798761600&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvdVIxTmZaVkVwRWYwUTNqYzRHc0RJRS9zYW5kYm94L2traHpuRENNVHhqVWNGb1pScXNaZkotaW1nLTFfMTc3MDc5ODk0NzAwMF9uYTFmbl9hR1Z5YnkxaVlXTnJaM0p2ZFc1a0xUTmsucG5nP3gtb3NzLXByb2Nlc3M9aW1hZ2UvcmVzaXplLHdfMTkyMCxoXzE5MjAvZm9ybWF0LHdlYnAvcXVhbGl0eSxxXzgwIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzk4NzYxNjAwfX19XX0_&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=aFeQKHn-zVK6XIjFXQxhhEFTn1vqNWucnlz~eIlKiPqETvAsL4cIaXDoktOrt-8rR534D05ak-9sQKXu6X5z7tZuRXuL1jEx4KKwwxN2AAj70o6JB6CN1CaIdH42GSGkVJoWyt8IQSQRN7s5eeF-6WeuwgPuiHt~vIoIL2sVoQo0I0uSQY4Ba6BbQVisIjYYl4yU6tEnmr9hbL3HSKQTS53ijk0t8de-C0PT05SBF8eB1T5np9Jhq7-rr2CuH5kW9CPP2CI3V8f7YZ0JoNmkXQsHWWav7C~YGTXHJr10QRI3qPvB9hbrdT-oyTcbTTRU0tzczPaVhrwIv435DAc3xQ__)',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundAttachment: 'fixed'
