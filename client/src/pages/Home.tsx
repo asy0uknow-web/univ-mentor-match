@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { PageLayout } from "@/components/layout";
 import { setPageMeta, PAGE_META } from "@/lib/seo";
 
-// Line Art Icons Component
+// Line Art Icons Component - How It Works Section
 const SearchIcon = () => (
   <svg className="w-16 h-16 sm:w-20 sm:h-20" viewBox="0 0 48 48" fill="none" stroke="#2E4A33" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <circle cx="20" cy="20" r="12" />
@@ -26,6 +26,31 @@ const CalendarIcon = () => (
 const ChatIcon = () => (
   <svg className="w-16 h-16 sm:w-20 sm:h-20" viewBox="0 0 48 48" fill="none" stroke="#2E4A33" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M8 12C8 10.9 8.9 10 10 10h28c1.1 0 2 0.9 2 2v20c0 1.1-0.9 2-2 2H12l-4 4v-4H10c-1.1 0-2-0.9-2-2V12Z" />
+  </svg>
+);
+
+// Line Art Icons Component - Service Intro Section
+const InfoIcon = () => (
+  <svg className="w-16 h-16 sm:w-20 sm:h-20" viewBox="0 0 48 48" fill="none" stroke="#2E4A33" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="24" cy="24" r="18" />
+    <path d="M24 16v8" />
+    <circle cx="24" cy="34" r="1" fill="#2E4A33" />
+  </svg>
+);
+
+const TrustIcon = () => (
+  <svg className="w-16 h-16 sm:w-20 sm:h-20" viewBox="0 0 48 48" fill="none" stroke="#2E4A33" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M24 4L8 12v12c0 8 16 14 16 14s16-6 16-14V12L24 4Z" />
+    <path d="M16 24l6 6 10-10" />
+  </svg>
+);
+
+const CostIcon = () => (
+  <svg className="w-16 h-16 sm:w-20 sm:h-20" viewBox="0 0 48 48" fill="none" stroke="#2E4A33" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="24" cy="24" r="16" />
+    <path d="M24 16v16" />
+    <path d="M20 20h8" />
+    <path d="M20 28h8" />
   </svg>
 );
 
@@ -173,38 +198,41 @@ export default function Home() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
               {[
                 {
-                  icon: "🔍",
+                  iconComponent: InfoIcon,
                   title: "파편화된 정보",
                   desc: "전공 세분화로 정보는 얇아지고, 실제 생활 정보는 검색으로 찾기 어렵습니다."
                 },
                 {
-                  icon: "⚖️",
+                  iconComponent: TrustIcon,
                   title: "신뢰하기 힘든 합격담",
                   desc: "커뮤니티의 합격 후기는 결과 중심이고 성공담에만 편향되어 있습니다."
                 },
                 {
-                  icon: "⚠️",
+                  iconComponent: CostIcon,
                   title: "늘어나는 미스매치 비용",
                   desc: "입학 후에야 적성을 알게 되어 전과, 자퇴, 반수를 선택하는 비율이 늘고 있습니다."
                 }
-              ].map((card, idx) => (
+              ].map(({ iconComponent: IconComponent, title, desc }, idx) => (
                 <div
                   key={idx}
                   className="bg-white rounded-2xl p-6 sm:p-8 shadow-md hover:shadow-lg transition-shadow duration-300"
                 >
-                  {/* Icon */}
-                  <div className="text-4xl sm:text-5xl mb-6 sm:mb-8">
-                    {card.icon}
+                  {/* Icon with Blob Background */}
+                  <div className="relative w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 mb-6 sm:mb-8 flex items-center justify-center">
+                    <BlobBackground idx={idx + 100} />
+                    <div className="relative z-10">
+                      <IconComponent />
+                    </div>
                   </div>
                   
                   {/* Title */}
                   <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-foreground mb-3 sm:mb-4 text-left">
-                    {card.title}
+                    {title}
                   </h3>
                   
                   {/* Description */}
                   <p className="text-sm sm:text-base text-muted-foreground leading-relaxed text-left">
-                    {card.desc}
+                    {desc}
                   </p>
                 </div>
               ))}
