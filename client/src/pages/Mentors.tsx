@@ -190,18 +190,13 @@ export default function Mentors() {
                     <div className="space-y-1">
                       <CardTitle className="text-base sm:text-lg">{mentor.user.name || "멘토"}</CardTitle>
                       <CardDescription className="text-xs sm:text-sm">
-                        {mentor.profile.university}
+                        {mentor.profile.university} · {mentor.profile.major}
                       </CardDescription>
                     </div>
                   </CardHeader>
                   <CardContent className="flex-1 flex flex-col gap-1.5 sm:gap-2 text-xs sm:text-sm pt-0 sm:pt-1">
                     {/* 태그 섹션 - 알약 모양 배지 */}
                     <div className="flex flex-wrap gap-1">
-                      {/* 전공 배지 */}
-                      <span className="inline-block px-2 sm:px-2.5 py-1 bg-gray-100 text-gray-700 rounded-full text-xs">
-                        {mentor.profile.major}
-                      </span>
-
                       {/* 학년 배지 */}
                       <span className="inline-block px-2 sm:px-2.5 py-1 bg-gray-100 text-gray-700 rounded-full text-xs">
                         {GRADES.find(g => g.value === mentor.profile.grade)?.label || "학년 정보 없음"}
