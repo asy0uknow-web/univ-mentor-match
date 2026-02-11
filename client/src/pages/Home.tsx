@@ -23,7 +23,7 @@ export default function Home() {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentKeywordIndex((prev) => (prev + 1) % keywords.length);
-    }, 2500); // 2.5초마다 변경
+    }, 2500);
     
     return () => clearInterval(interval);
   }, []);
@@ -47,32 +47,27 @@ export default function Home() {
         }
       `}</style>
 
-      {/* Hero Section with Rolling Text and 3D Background */}
+      {/* Hero Section with Organic Blobs */}
       <section 
         id="hero" 
         role="banner"
-        className="relative py-12 sm:py-20 md:py-32 overflow-hidden" 
-        style={{
-          backgroundImage: 'url(https://private-us-east-1.manuscdn.com/sessionFile/uR1NfZVEpEf0Q3jc4GsDIE/sandbox/HQgNygizRsU7v6jgv1nKki-img-1_1770453858000_na1fn_aGVyby1iYWNrZ3JvdW5kLTNk.png?x-oss-process=image/resize,w_1280,h_1280/format,webp/quality,q_70&Expires=1798761600&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvdVIxTmZaVkVwRWYwUTNqYzRHc0RJRS9zYW5kYm94L0hRZ055Z2l6UnNVN3Y2amd2MW5La2ktaW1nLTFfMTc3MDQ1Mzg1ODAwMF9uYTFmbl9hR1Z5YnkxaVlXTnJaM0p2ZFc1a0xUTmsucG5nP3gtb3NzLXByb2Nlc3M9aW1hZ2UvcmVzaXplLHdfMTkyMCxoXzE5MjAvZm9ybWF0LHdlYnAvcXVhbGl0eSxxXzgwIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzk4NzYxNjAwfX19XX0_&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=sO6kw0dUp-zvryUggCyzgBFXJ0zwaqCKprze9fFkrNJDUvg43ieyUArao2O16oZOJ2GknpgBKjcO92iOS2GfMn~giNLob92FAq~K8hXM3wcdUmaNCnH0nJtTosQDDphwKH7lUUcmltwVztMTjNdDjQ3MKgRd7TK~n2YGhm48Pvnfjdu1R5NA9Z41XgvaK9oyJOlvwaUHstSkzjWoqU5-uLzpYWYvFxMf4hXSr3Iyo2a32~1IxjixZD~vk3nxTvCQnmb69mGAnuWxa60FJXaZ7MDQMXDajhjWAXDyVoVuqYiGJRIHr4J7K0eydx4j5yLDpjDWaAZTv2GiFUcdBld~8g__)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundAttachment: 'fixed'
-        }}
+        className="relative py-12 sm:py-20 md:py-32 overflow-hidden bg-white" 
         aria-label="히어로 섹션"
       >
-        {/* 배경 오버레이 - 텍스트 가독성 향상 */}
-        <div className="absolute inset-0 bg-white/60 backdrop-blur-sm"></div>
+        {/* Organic Blobs Background */}
+        <div className="organic-blob blob-1" style={{ top: '-100px', left: '-100px' }}></div>
+        <div className="organic-blob blob-2" style={{ top: '50px', right: '-50px' }}></div>
         
-        {/* 콘텐츠 */}
+        {/* Content */}
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
-            {/* 메인 헤드라인 */}
+            {/* Main Headline */}
             <div className="mb-6 sm:mb-8">
               <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-3 sm:mb-4" id="main-heading">
                 유니브매치에서 시작하는
               </h1>
               
-              {/* 롤링 텍스트 */}
+              {/* Rolling Text */}
               <div className="relative h-12 sm:h-14 md:h-16 lg:h-20 overflow-hidden flex items-center justify-center">
                 <div 
                   key={currentKeywordIndex} 
@@ -83,7 +78,7 @@ export default function Home() {
               </div>
             </div>
 
-            {/* 서브 헤드라인 */}
+            {/* Sub Headline */}
             <div className="mb-3 sm:mb-4 space-y-2">
               <h2 className="text-base sm:text-lg md:text-xl lg:text-2xl font-semibold text-foreground">
                 전공 선택은 그저 입시 전략이 아닙니다.
@@ -93,23 +88,23 @@ export default function Home() {
               </p>
             </div>
 
-            {/* CTA 버튼 */}
+            {/* CTA Buttons */}
             <div className="flex flex-col gap-3 sm:gap-4 justify-center mb-6 sm:mb-8 mt-4 sm:mt-5">
               <Link href="/mentors" className="w-full sm:w-auto" aria-label="멘토 찾기 페이지로 이동">
-                <Button size="lg" className="w-full sm:w-auto text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 font-bold">
+                <Button size="lg" className="w-full sm:w-auto text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 font-bold shadow-lg hover:shadow-xl transition-shadow">
                   전공 선택 전에, 이야기부터 들어보기
                 </Button>
               </Link>
               {isAuthenticated && (
                 <Link href="/my-profile" className="w-full sm:w-auto">
-                  <Button size="lg" className="w-full sm:w-auto text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 bg-gray-300 hover:bg-gray-400 text-black font-bold">
+                  <Button size="lg" className="w-full sm:w-auto text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 bg-gray-300 hover:bg-gray-400 text-black font-bold shadow-lg hover:shadow-xl transition-shadow">
                     멘토로 참여하기
                   </Button>
                 </Link>
               )}
             </div>
 
-            {/* 하단 텍스트 */}
+            {/* Footer Text */}
             <p className="text-xs sm:text-sm text-muted-foreground">
               실제 재학생만 참여 · 홍보 목적 상담 없음
             </p>
@@ -117,10 +112,10 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Problem Definition Section - Redesigned */}
+      {/* Problem Definition Section */}
       <section id="service-intro" role="region" className="py-16 sm:py-24 md:py-32 bg-white" aria-label="문제 정의">
         <div className="container mx-auto px-4">
-          {/* 상단 헤드라인 */}
+          {/* Top Headline */}
           <div className="max-w-4xl mx-auto text-center mb-8 sm:mb-12 md:mb-16">
             <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4 sm:mb-6" id="service-heading">
               검색만으론 전공을 알 수 없습니다.
@@ -130,14 +125,14 @@ export default function Home() {
             </p>
           </div>
 
-          {/* 하단 연결 문구 */}
+          {/* Connection Text */}
           <div className="text-center mb-10 sm:mb-14 md:mb-16">
             <p className="text-base sm:text-lg md:text-xl font-semibold text-primary">
               유니브매치는 이 문제를 해결합니다 ↓
             </p>
           </div>
 
-          {/* 3단 그리드 카드 */}
+          {/* 3 Column Grid Cards */}
           <div className="max-w-6xl mx-auto mb-12 sm:mb-16 md:mb-20">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
               {[
@@ -159,19 +154,19 @@ export default function Home() {
               ].map((card, idx) => (
                 <div
                   key={idx}
-                  className="bg-white rounded-2xl p-6 sm:p-8 shadow-sm hover:shadow-lg transition-shadow duration-300 border border-gray-100"
+                  className="bg-white rounded-2xl p-6 sm:p-8 shadow-md hover:shadow-lg transition-shadow duration-300"
                 >
-                  {/* 아이콘 */}
+                  {/* Icon */}
                   <div className="text-4xl sm:text-5xl mb-6 sm:mb-8">
                     {card.icon}
                   </div>
                   
-                  {/* 제목 */}
+                  {/* Title */}
                   <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-foreground mb-3 sm:mb-4 text-left">
                     {card.title}
                   </h3>
                   
-                  {/* 설명 */}
+                  {/* Description */}
                   <p className="text-sm sm:text-base text-muted-foreground leading-relaxed text-left">
                     {card.desc}
                   </p>
@@ -183,10 +178,10 @@ export default function Home() {
         </div>
       </section>
 
-      {/* How It Works - Redesigned */}
-      <section id="how-it-works" role="region" className="py-16 sm:py-28 md:py-32" aria-label="이용 방법">
+      {/* How It Works */}
+      <section id="how-it-works" role="region" className="py-16 sm:py-28 md:py-32 bg-white" aria-label="이용 방법">
         <div className="container mx-auto px-4">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-12 sm:mb-16 text-primary" id="how-heading">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-12 sm:mb-16 text-foreground" id="how-heading">
             이용 방법
           </h2>
           <div className="max-w-6xl mx-auto">
@@ -210,13 +205,7 @@ export default function Home() {
               ].map(({ title, desc, icon }, idx) => (
                 <div 
                   key={idx} 
-                  className="group relative bg-white rounded-3xl p-8 sm:p-10 transition-all duration-300 hover:shadow-2xl hover:scale-105 cursor-pointer"
-                  style={{
-                    border: '3px solid transparent',
-                    backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #0066FF 0%, #00D4FF 100%)',
-                    backgroundOrigin: 'border-box',
-                    backgroundClip: 'padding-box, border-box',
-                  }}
+                  className="bg-white rounded-3xl p-8 sm:p-10 shadow-md hover:shadow-xl transition-all duration-300 hover:scale-105 cursor-pointer"
                 >
                   <div className="flex flex-col items-center text-center h-full justify-center">
                     <div className="text-6xl sm:text-7xl md:text-8xl mb-8 transform group-hover:scale-110 transition-transform duration-300">
@@ -236,17 +225,21 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section role="region" className="py-12 sm:py-20 bg-primary/10 golden-spiral" aria-label="시작하기">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 sm:mb-6" id="cta-heading">
+      {/* CTA Section with Blobs */}
+      <section role="region" className="relative py-12 sm:py-20 bg-white overflow-hidden" aria-label="시작하기">
+        {/* Organic Blobs Background */}
+        <div className="organic-blob blob-1" style={{ bottom: '-100px', left: '-100px', opacity: 0.06 }}></div>
+        <div className="organic-blob blob-2" style={{ bottom: '50px', right: '-50px', opacity: 0.06 }}></div>
+        
+        <div className="container mx-auto px-4 text-center relative z-10">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 sm:mb-6 text-foreground" id="cta-heading">
             지금 바로 시작하세요
           </h2>
           <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-6 sm:mb-8 max-w-2xl mx-auto">
             수많은 고등학생들이 유니브매치를 통해 꿈에 한 걸음 더 다가가고 있습니다
           </p>
           <Link href="/mentors" className="inline-block">
-            <Button size="lg" className="text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6">
+            <Button size="lg" className="text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 shadow-lg hover:shadow-xl transition-shadow">
               전공 선택 전에, 이야기부터 들어보기
             </Button>
           </Link>

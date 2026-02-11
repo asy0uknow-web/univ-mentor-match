@@ -44,40 +44,40 @@
 }
 
 :root {
-  /* Univ Match Theme - Blue, Green, Yellow */
-  --primary: oklch(0.50 0.20 260); /* Deep blue #0052CC */
-  --primary-foreground: oklch(0.98 0.01 75); /* White */
-  --sidebar-primary: oklch(0.50 0.20 260);
-  --sidebar-primary-foreground: oklch(0.98 0.01 75);
-  --chart-1: oklch(0.50 0.20 260); /* Blue */
-  --chart-2: oklch(0.55 0.18 150); /* Green */
-  --chart-3: oklch(0.75 0.15 90); /* Yellow */
-  --chart-4: oklch(0.45 0.20 260); /* Dark blue */
-  --chart-5: oklch(0.35 0.22 260); /* Darker blue */
-  --radius: 0.5rem;
-  --background: oklch(0.97 0.03 45); /* White with subtle terracotta */
-  --foreground: oklch(0.25 0.03 240); /* Deep navy */
-  --card: oklch(0.98 0.02 45); /* Almost white with terracotta tone */
-  --card-foreground: oklch(0.25 0.03 240);
-  --popover: oklch(0.98 0.02 45); /* Almost white with terracotta tone */
-  --popover-foreground: oklch(0.25 0.03 240);
-  --secondary: oklch(0.55 0.18 150); /* Green */
-  --secondary-foreground: oklch(0.25 0.03 240);
-  --muted: oklch(0.92 0.02 75);
-  --muted-foreground: oklch(0.50 0.02 240);
-  --accent: oklch(0.75 0.15 90); /* Yellow */
-  --accent-foreground: oklch(0.25 0.03 240);
+  /* Sage Green Theme - Clean, Calm, Trustworthy */
+  --primary: oklch(0.55 0.12 160); /* Sage Green */
+  --primary-foreground: oklch(1 0 0); /* Pure White */
+  --sidebar-primary: oklch(0.55 0.12 160);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --chart-1: oklch(0.55 0.12 160); /* Sage Green */
+  --chart-2: oklch(0.50 0.10 165); /* Darker Sage */
+  --chart-3: oklch(0.65 0.08 155); /* Light Sage */
+  --chart-4: oklch(0.45 0.08 170); /* Deep Forest Green */
+  --chart-5: oklch(0.35 0.08 175); /* Very Dark Green */
+  --radius: 1rem; /* High border radius for soft feel */
+  --background: oklch(1 0 0); /* Pure White */
+  --foreground: oklch(0.30 0.05 170); /* Deep Forest Green */
+  --card: oklch(1 0 0); /* Pure White */
+  --card-foreground: oklch(0.30 0.05 170);
+  --popover: oklch(1 0 0); /* Pure White */
+  --popover-foreground: oklch(0.30 0.05 170);
+  --secondary: oklch(0.55 0.12 160); /* Sage Green */
+  --secondary-foreground: oklch(0.30 0.05 170);
+  --muted: oklch(0.95 0.02 160);
+  --muted-foreground: oklch(0.50 0.05 170);
+  --accent: oklch(0.55 0.12 160); /* Sage Green */
+  --accent-foreground: oklch(1 0 0);
   --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(0.88 0.02 75);
-  --input: oklch(0.88 0.02 75);
-  --ring: oklch(0.50 0.20 260); /* Blue ring */
-  --sidebar: oklch(0.98 0.02 45); /* Almost white with terracotta tone */
-  --sidebar-foreground: oklch(0.25 0.03 240);
-  --sidebar-accent: oklch(0.90 0.02 75);
-  --sidebar-accent-foreground: oklch(0.25 0.03 240);
-  --sidebar-border: oklch(0.88 0.02 75);
-  --sidebar-ring: oklch(0.50 0.20 260);
+  --destructive-foreground: oklch(1 0 0);
+  --border: oklch(0.95 0.01 160); /* Very light sage */
+  --input: oklch(0.98 0.01 160); /* Almost white with hint of sage */
+  --ring: oklch(0.55 0.12 160); /* Sage Green ring */
+  --sidebar: oklch(1 0 0); /* Pure White */
+  --sidebar-foreground: oklch(0.30 0.05 170);
+  --sidebar-accent: oklch(0.95 0.02 160);
+  --sidebar-accent-foreground: oklch(0.30 0.05 170);
+  --sidebar-border: oklch(0.95 0.01 160);
+  --sidebar-ring: oklch(0.55 0.12 160);
 }
 
 .dark {
@@ -215,11 +215,42 @@
   }
 }
 
+/* Organic Blobs - Sage Green */
+.organic-blob {
+  position: absolute;
+  opacity: 0.08;
+  filter: blur(40px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.blob-1 {
+  width: 400px;
+  height: 400px;
+  background: oklch(0.55 0.12 160);
+  border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+  animation: blob-animation 8s infinite;
+}
+
+.blob-2 {
+  width: 300px;
+  height: 300px;
+  background: oklch(0.55 0.12 160);
+  border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+  animation: blob-animation 10s infinite reverse;
+}
+
+@keyframes blob-animation {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(30px, -50px) scale(1.1); }
+  66% { transform: translate(-20px, 20px) scale(0.9); }
+}
+
 /* Sacred geometry patterns */
 .sacred-pattern {
   background-image: 
-    radial-gradient(circle at 20% 30%, oklch(0.65 0.15 75 / 0.05) 1px, transparent 1px),
-    radial-gradient(circle at 80% 70%, oklch(0.65 0.15 75 / 0.05) 1px, transparent 1px);
+    radial-gradient(circle at 20% 30%, oklch(0.55 0.12 160 / 0.05) 1px, transparent 1px),
+    radial-gradient(circle at 80% 70%, oklch(0.55 0.12 160 / 0.05) 1px, transparent 1px);
   background-size: 50px 50px;
 }
 
