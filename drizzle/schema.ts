@@ -63,8 +63,11 @@ export const mentorProfiles = mysqlTable("mentor_profiles", {
   region: mysqlEnum("region", ["seoul", "gyeonggi", "incheon", "gangwon", "chungcheong", "jeolla", "gyeongsang", "jeju"]),
   grade: mysqlEnum("grade", ["1", "2", "3", "4", "graduate"]).notNull(),
   bio: text("bio"),
-  // Hourly consultation fee in KRW
+  // Hourly consultation fee in KRW (legacy, kept for backward compatibility)
   hourlyRate: decimal("hourlyRate", { precision: 10, scale: 2 }).notNull(),
+  // Specialty services: JSON array of service types the mentor specializes in
+  // e.g. ["resume_consulting", "career_counseling", "university_tour"]
+  specialtyServices: text("specialtyServices"),
   // Available time slots (stored as JSON string)
   availableSlots: text("availableSlots"),
   // Profile visibility

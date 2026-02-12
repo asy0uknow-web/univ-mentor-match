@@ -247,16 +247,19 @@ export const appRouter = router({
         major: z.string().min(1),
         grade: z.enum(["1", "2", "3", "4", "graduate"]),
         bio: z.string().optional(),
-        hourlyRate: z.string().min(1),
         field: z.enum(["engineering", "natural_science", "business", "humanities", "education", "liberal_arts", "medicine"]).optional(),
         region: z.enum(["seoul", "gyeonggi", "incheon", "gangwon", "chungcheong", "jeolla", "gyeongsang", "jeju"]).optional(),
         availableSlots: z.string().optional(),
+        specialtyServices: z.array(z.enum(["resume_consulting", "career_counseling", "academic_management", "university_tour"])).min(1, "주력 서비스를 최소 1개 선택해주세요"),
       }))
       .mutation(async ({ ctx, input }) => {
         await updateUserType(ctx.user.id, "university_student");
+        const { specialtyServices, ...rest } = input;
         await createMentorProfile({
           userId: ctx.user.id,
-          ...input,
+          ...rest,
+          hourlyRate: "0",
+          specialtyServices: JSON.stringify(specialtyServices),
         });
         // Always create a new verification request for (re-)registration
         await createMentorVerification({
@@ -277,14 +280,19 @@ export const appRouter = router({
         major: z.string().min(1).optional(),
         grade: z.enum(["1", "2", "3", "4", "graduate"]).optional(),
         bio: z.string().optional(),
-        hourlyRate: z.string().optional(),
         field: z.enum(["engineering", "natural_science", "business", "humanities", "education", "liberal_arts", "medicine"]).optional(),
+        specialtyServices: z.array(z.enum(["resume_consulting", "career_counseling", "academic_management", "university_tour"])).optional(),
         region: z.enum(["seoul", "gyeonggi", "incheon", "gangwon", "chungcheong", "jeolla", "gyeongsang", "jeju"]).optional(),
         availableSlots: z.string().optional(),
         isActive: z.boolean().optional(),
       }))
       .mutation(async ({ ctx, input }) => {
-        await updateMentorProfile(ctx.user.id, input);
+        const { specialtyServices, ...rest } = input;
+        const updates: any = { ...rest };
+        if (specialtyServices) {
+          updates.specialtyServices = JSON.stringify(specialtyServices);
+        }
+        await updateMentorProfile(ctx.user.id, updates);
         return { success: true };
       }),
 

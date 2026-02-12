@@ -79,22 +79,46 @@ describe("mentor verification system", () => {
   });
 
   it("should allow admins to approve verification", async () => {
+    // First, get the verification created by the submit test above
+    const { ctx: userCtx } = createAuthContext(uniqueUserId);
+    const userCaller = appRouter.createCaller(userCtx);
+    const myVerification = await userCaller.verification.getMyVerification();
+    
+    if (!myVerification) {
+      // If no verification exists, submit one first
+      await userCaller.verification.submitVerification({
+        studentIdImageUrl: "https://example.com/student-id-approve.jpg",
+      });
+    }
+    const verificationAfter = await userCaller.verification.getMyVerification();
+    expect(verificationAfter).toBeDefined();
+
     const { ctx } = createAuthContext(uniqueUserId + 3, "admin");
     const caller = appRouter.createCaller(ctx);
 
     const result = await caller.verification.approveVerification({
-      verificationId: 1,
+      verificationId: verificationAfter!.id,
     });
 
     expect(result).toEqual({ success: true });
   });
 
   it("should allow admins to reject verification", async () => {
+    // Create a new verification to reject
+    const rejectUserId = uniqueUserId + 10;
+    const { ctx: userCtx } = createAuthContext(rejectUserId);
+    const userCaller = appRouter.createCaller(userCtx);
+    await userCaller.verification.submitVerification({
+      studentIdImageUrl: "https://example.com/student-id-reject.jpg",
+    });
+    const myVerification = await userCaller.verification.getMyVerification();
+    expect(myVerification).toBeDefined();
+
     const { ctx } = createAuthContext(uniqueUserId + 4, "admin");
     const caller = appRouter.createCaller(ctx);
 
     const result = await caller.verification.rejectVerification({
-      verificationId: 1,
+      verificationId: myVerification!.id,
       adminNotes: "학생증이 명확하지 않습니다.",
     });
 

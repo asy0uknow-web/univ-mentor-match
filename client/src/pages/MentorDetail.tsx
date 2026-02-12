@@ -226,6 +226,33 @@ ${studentMessage ? `메시지: ${studentMessage}` : '추가 메시지 없음'}`;
                     </p>
                   </div>
 
+                  {/* 주력 서비스 표시 */}
+                  {mentor.profile.specialtyServices && (() => {
+                    try {
+                      const services = JSON.parse(mentor.profile.specialtyServices);
+                      const serviceLabels: Record<string, string> = {
+                        "resume_consulting": "생기부 컨설팅",
+                        "career_counseling": "진로상담",
+                        "academic_management": "학업관리",
+                        "university_tour": "대학탐방",
+                      };
+                      if (Array.isArray(services) && services.length > 0) {
+                        return (
+                          <div>
+                            <h3 className="text-xl font-bold mb-2">주력 서비스</h3>
+                            <div className="flex flex-wrap gap-2">
+                              {services.map((s: string) => (
+                                <span key={s} className="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-primary/10 text-primary border border-primary/20">
+                                  {serviceLabels[s] || s}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        );
+                      }
+                    } catch { /* ignore parse errors */ }
+                    return null;
+                  })()}
 
                 </div>
               </CardContent>

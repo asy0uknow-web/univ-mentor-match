@@ -1,11 +1,10 @@
 import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { trpc } from "@/lib/trpc";
 import { Link } from "wouter";
-import { GraduationCap, Upload, CheckCircle, AlertCircle, Clock, X } from "lucide-react";
+import { Upload, CheckCircle, AlertCircle, Clock, X, FileImage, ShieldCheck } from "lucide-react";
 import { useState } from "react";
 import { getLoginUrl } from "@/const";
 import { toast } from "sonner";
@@ -22,7 +21,7 @@ export default function VerifyMentor() {
 
   const uploadStudentIdMutation = trpc.verification.uploadStudentId.useMutation({
     onSuccess: (data) => {
-      toast.success("학생증 이미지가 S3에 업로드되었습니다.");
+      toast.success("인증 이미지가 S3에 업로드되었습니다.");
       submitVerificationMutation.mutate({
         studentIdImageUrl: data.imageUrl,
       });
@@ -65,7 +64,7 @@ export default function VerifyMentor() {
 
   const handleSubmit = async () => {
     if (!selectedFile) {
-      toast.error("학생증 이미지를 선택해주세요.");
+      toast.error("인증 이미지를 선택해주세요.");
       return;
     }
 
@@ -114,7 +113,10 @@ export default function VerifyMentor() {
     <PageLayout>
       <div className="container mx-auto px-4 py-12">
         <div className="max-w-2xl mx-auto">
-          <h1 className="text-4xl font-bold mb-8">멘토 인증</h1>
+          <h1 className="text-4xl font-bold mb-8 flex items-center gap-3">
+            <ShieldCheck className="h-9 w-9" />
+            멘토 학적 인증
+          </h1>
 
           {verification && (
             <Card className="mb-6 border-blue-200 bg-blue-50">
@@ -145,8 +147,8 @@ export default function VerifyMentor() {
               </CardHeader>
               <CardContent className="space-y-2">
                 <p className="text-sm text-blue-900">
-                  {verification.status === "approved" && "당신의 멘토 프로필이 인증되었습니다."}
-                  {verification.status === "pending" && "당신의 인증 요청이 검토 중입니다."}
+                  {verification.status === "approved" && "멘토 학적 인증이 완료되었습니다."}
+                  {verification.status === "pending" && "인증 요청이 관리자 검토 중입니다. 승인까지 1~2일 소요될 수 있습니다."}
                   {verification.status === "rejected" && `인증이 거부되었습니다. 사유: ${verification.adminNotes || "명시되지 않음"}`}
                 </p>
               </CardContent>
@@ -156,14 +158,42 @@ export default function VerifyMentor() {
           {!verification || verification.status === "rejected" ? (
             <Card>
               <CardHeader>
-                <CardTitle>학생증 인증</CardTitle>
+                <CardTitle>학적 인증 신청</CardTitle>
                 <CardDescription>
-                  멘토로 활동하기 위해 현재 재학 중인 학과의 학생증을 업로드해주세요.
+                  멘토로 활동하기 위해 현재 재학 중인 학교의 학적 인증을 진행해주세요.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
+                {/* 인증 가능한 서류 안내 */}
+                <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 space-y-3">
+                  <p className="text-sm font-medium text-amber-900 flex items-center gap-2">
+                    <FileImage className="h-5 w-5" />
+                    인증 가능한 서류
+                  </p>
+                  <ul className="text-sm text-amber-800 space-y-2 ml-7 list-disc">
+                    <li>
+                      <strong>대학 포털 학적인증 캡쳐본</strong>
+                      <br />
+                      <span className="text-xs text-amber-700">학번, 이름, 학과가 보이도록 캡쳐해주세요</span>
+                    </li>
+                    <li>
+                      <strong>모바일 또는 실물 학생증 사진</strong>
+                      <br />
+                      <span className="text-xs text-amber-700">학생증 앞면이 선명하게 보이도록 촬영해주세요</span>
+                    </li>
+                  </ul>
+                  <div className="border-t border-amber-200 pt-2 mt-2">
+                    <p className="text-xs text-amber-700">
+                      * 주민등록번호 등 민감한 개인정보는 반드시 가려서 제출해주세요.
+                    </p>
+                    <p className="text-xs text-amber-700">
+                      * 이미지는 안전하게 암호화되어 저장되며, 관리자만 접근할 수 있습니다.
+                    </p>
+                  </div>
+                </div>
+
                 <div>
-                  <Label htmlFor="student-id">학생증 이미지</Label>
+                  <Label htmlFor="student-id">인증 이미지 첨부</Label>
                   <div className="mt-2 border-2 border-dashed border-border rounded-lg p-8 text-center hover:border-primary/50 transition-colors cursor-pointer">
                     <input
                       id="student-id"
@@ -184,7 +214,7 @@ export default function VerifyMentor() {
                   <div className="space-y-3">
                     <Label>미리보기</Label>
                     <div className="relative border border-border rounded-lg overflow-hidden">
-                      <img src={previewUrl} alt="Preview" className="w-full h-auto max-h-64 object-cover" />
+                      <img src={previewUrl} alt="Preview" className="w-full h-auto max-h-64 object-contain bg-gray-50" />
                       <button
                         onClick={handleClearFile}
                         className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded hover:bg-red-600"
@@ -205,14 +235,8 @@ export default function VerifyMentor() {
                 >
                   {uploadStudentIdMutation.isPending || submitVerificationMutation.isPending
                     ? "업로드 중..."
-                    : "학생증 인증 신청"}
+                    : "학적 인증 신청"}
                 </Button>
-
-                <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
-                  <p className="text-sm text-amber-900">
-                    <strong>주의:</strong> 학생증 이미지는 S3 클라우드 저장소에 안전하게 저장되며, 관리자만 접근할 수 있습니다.
-                  </p>
-                </div>
               </CardContent>
             </Card>
           ) : (
@@ -223,7 +247,7 @@ export default function VerifyMentor() {
               <CardContent className="space-y-4">
                 <div className="flex items-center gap-3 text-green-700">
                   <CheckCircle className="h-6 w-6" />
-                  <p>당신의 멘토 프로필이 인증되었습니다!</p>
+                  <p>멘토 학적 인증이 완료되었습니다!</p>
                 </div>
                 <Link href="/my-profile">
                   <Button variant="outline" className="w-full">
