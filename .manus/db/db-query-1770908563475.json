@@ -1,0 +1,17 @@
+{
+  "query": "SELECT id, openId, name, email, loginMethod FROM users WHERE name LIKE '%yunho%' OR openId LIKE '%yunho%' LIMIT 5;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute SELECT id, openId, name, email, loginMethod FROM users WHERE name LIKE '%yunho%' OR openId LIKE '%yunho%' LIMIT 5;",
+  "rows": [
+    {
+      "id": "1",
+      "openId": "jNpicDk7jMFQGMZMFUDRwn",
+      "name": "2003yunho",
+      "email": "2003yunho@gmail.com",
+      "loginMethod": "email"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\topenId\tname\temail\tloginMethod\n1\tjNpicDk7jMFQGMZMFUDRwn\t2003yunho\t2003yunho@gmail.com\temail\n",
+  "stderr": "",
+  "execution_time_ms": 1758
+}

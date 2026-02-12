@@ -639,3 +639,13 @@
 - [x] 배경 원 제거 및 Blob 배경으로 통일
 - [x] 이용 방법 섹션과 동일한 스타일 적용
 - [x] 테스트 및 검증
+
+## 로그인/회원가입 시스템 전면 개편
+- [x] DB 스키마 수정 (username, password, realName, university, major, grade, phone 컨럼 추가)
+- [x] DB 마이그레이션 실행
+- [x] OAuth 콜백 플로우 수정 (신규 사용자 → 회원가입 페이지 리다이렉트)
+- [x] 회원가입 완료 API 구현 (completeRegistration)
+- [x] getProfile API 수정 (새 필드 반환)
+- [x] 회원가입 페이지 프론트엔드 구현 (8개 필드 입력 폼)
+- [x] 내 정보 페이지 수정 (새 필드 표시, openId 제거)
+- [x] 테스트 작성 및 검증

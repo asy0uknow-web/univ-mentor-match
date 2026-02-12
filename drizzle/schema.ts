@@ -13,12 +13,29 @@ export const users = mysqlTable("users", {
   id: int("id").autoincrement().primaryKey(),
   /** Manus OAuth identifier (openId) returned from the OAuth callback. Unique per user. */
   openId: varchar("openId", { length: 64 }).notNull().unique(),
+  /** User-defined username (아이디) - set during registration */
+  username: varchar("username", { length: 50 }).unique(),
+  /** Hashed password (bcrypt) - set during registration */
+  passwordHash: varchar("passwordHash", { length: 255 }),
+  /** Display name from OAuth (닉네임) */
   name: text("name"),
+  /** Real name (실명) - set during registration */
+  realName: varchar("realName", { length: 100 }),
   email: varchar("email", { length: 320 }),
+  /** Phone number (전화번호) - set during registration */
+  phone: varchar("phone", { length: 20 }),
+  /** University name (대학교) - set during registration */
+  university: varchar("university", { length: 255 }),
+  /** Major (전공) - set during registration */
+  major: varchar("major", { length: 255 }),
+  /** Grade/year (학년) - set during registration */
+  grade: mysqlEnum("userGrade", ["1", "2", "3", "4", "graduate"]),
   loginMethod: varchar("loginMethod", { length: 64 }),
   role: mysqlEnum("role", ["user", "admin"]).default("user").notNull(),
   // User type: high_school_student or university_student
   userType: mysqlEnum("userType", ["high_school_student", "university_student"]),
+  /** Whether user has completed registration form after OAuth login */
+  isRegistrationComplete: boolean("isRegistrationComplete").default(false).notNull(),
   // Stripe customer ID for payment processing
   stripeCustomerId: varchar("stripeCustomerId", { length: 255 }),
   createdAt: timestamp("createdAt").defaultNow().notNull(),

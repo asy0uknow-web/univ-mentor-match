@@ -28,6 +28,9 @@ export function registerOAuthRoutes(app: Express) {
         return;
       }
 
+      // Check if user already exists in DB
+      const existingUser = await db.getUserByOpenId(userInfo.openId);
+
       await db.upsertUser({
         openId: userInfo.openId,
         name: userInfo.name || null,
@@ -44,7 +47,12 @@ export function registerOAuthRoutes(app: Express) {
       const cookieOptions = getSessionCookieOptions(req);
       res.cookie(COOKIE_NAME, sessionToken, { ...cookieOptions, maxAge: ONE_YEAR_MS });
 
-      res.redirect(302, "/");
+      // If new user (no existing record) or registration not complete, redirect to registration page
+      if (!existingUser || !existingUser.isRegistrationComplete) {
+        res.redirect(302, "/register");
+      } else {
+        res.redirect(302, "/");
+      }
     } catch (error) {
       console.error("[OAuth] Callback failed", error);
       res.status(500).json({ error: "OAuth callback failed" });
