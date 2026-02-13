@@ -327,8 +327,7 @@ function MentorCard({
   const universityLogo = getUniversityLogo(mentor.profile.university);
 
   return (
-    <Link href={`/mentor/${mentor.profile.id}`}>
-      <a className="block p-4 rounded-lg border border-border hover:border-primary hover:shadow-md transition-all cursor-pointer bg-card">
+    <Link href={`/mentor/${mentor.profile.id}`} className="block p-4 rounded-lg border border-border hover:border-primary hover:shadow-md transition-all cursor-pointer bg-card">
         <div className="flex gap-3 mb-3">
           <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center flex-shrink-0">
             {universityLogo ? (
@@ -380,7 +379,6 @@ function MentorCard({
         {mentor.profile.isVerified && (
           <div className="mt-2 text-xs text-green-600 font-medium">✓ 인증됨</div>
         )}
-      </a>
     </Link>
   );
 }
