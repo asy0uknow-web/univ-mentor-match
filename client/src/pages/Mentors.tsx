@@ -36,6 +36,8 @@ export default function Mentors() {
   const [selectedMajors, setSelectedMajors] = useState<string[]>([]);
   const [showMajorPanel, setShowMajorPanel] = useState(false);
   const [tempSelectedMajors, setTempSelectedMajors] = useState<string[]>([]);
+  const [showRegionPanel, setShowRegionPanel] = useState(false);
+  const [tempSelectedRegion, setTempSelectedRegion] = useState<string>("all");
 
   useEffect(() => {
     setPageMeta(PAGE_META.mentors);
@@ -61,6 +63,28 @@ export default function Mentors() {
   // 학과 패널 닫기
   const closeMajorPanel = () => {
     setShowMajorPanel(false);
+  };
+
+  // 지역 패널 열기
+  const openRegionPanel = () => {
+    setTempSelectedRegion(selectedRegion);
+    setShowRegionPanel(true);
+  };
+
+  // 지역 패널 닫기
+  const closeRegionPanel = () => {
+    setShowRegionPanel(false);
+  };
+
+  // 지역 선택 적용
+  const applyRegionSelection = () => {
+    setSelectedRegion(tempSelectedRegion);
+    setShowRegionPanel(false);
+  };
+
+  // 지역 선택 초기화
+  const resetRegionSelection = () => {
+    setTempSelectedRegion("all");
   };
 
   // 계열 전체 선택
@@ -140,27 +164,20 @@ export default function Mentors() {
               <div>
                 <button
                   onClick={openMajorPanel}
-                  className="w-full h-8 px-3 text-xs font-medium text-left bg-background border border-border rounded-md hover:bg-muted transition-colors flex items-center justify-between"
+                  className="w-fit h-8 px-[calc(0.75rem+5px)] text-xs font-medium text-left bg-background border border-border rounded-md hover:bg-muted transition-colors flex items-center justify-between"
                 >
                   <span>학과</span>
                   <ChevronRight className="h-4 w-4" />
                 </button>
               </div>
               <div>
-                <label className="text-xs font-medium text-muted-foreground">지역</label>
-                <Select value={selectedRegion} onValueChange={setSelectedRegion}>
-                  <SelectTrigger className="h-8 text-xs">
-                    <SelectValue placeholder="지역" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">전체 지역</SelectItem>
-                    {REGIONS.map((region) => (
-                      <SelectItem key={region.value} value={region.value}>
-                        {region.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <button
+                  onClick={openRegionPanel}
+                  className="w-fit h-8 px-[calc(0.75rem+5px)] text-xs font-medium text-left bg-background border border-border rounded-md hover:bg-muted transition-colors flex items-center justify-between"
+                >
+                  <span>지역</span>
+                  <ChevronRight className="h-4 w-4" />
+                </button>
               </div>
             </div>
             <div>
@@ -275,6 +292,85 @@ export default function Mentors() {
                 </Button>
                 <Button
                   onClick={applyMajorSelection}
+                  variant="default"
+                  className="flex-1 h-8 text-xs"
+                >
+                  선택
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* 지역 선택 사이드 패널 */}
+        {showRegionPanel && (
+          <div className="fixed inset-0 z-50 bg-black/50">
+            <div className="fixed right-0 top-0 bottom-0 w-full sm:w-96 bg-background shadow-lg flex flex-col">
+              {/* 헤더 */}
+              <div className="flex items-center justify-between p-4 border-b border-border">
+                <h3 className="text-lg font-semibold">지역 선택</h3>
+                <button
+                  onClick={closeRegionPanel}
+                  className="p-1 hover:bg-muted rounded-md transition-colors"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+
+              {/* 지역 목록 (스크롤 가능) */}
+              <div className="flex-1 overflow-y-auto p-4 space-y-2">
+                <label className="flex items-center gap-2 p-2 rounded-md hover:bg-muted cursor-pointer transition-colors">
+                  <input
+                    type="radio"
+                    name="region"
+                    value="all"
+                    checked={tempSelectedRegion === "all"}
+                    onChange={(e) => setTempSelectedRegion(e.target.value)}
+                    className="rounded"
+                  />
+                  <span className="text-xs">전체 지역</span>
+                </label>
+                {REGIONS.map((region) => (
+                  <label
+                    key={region.value}
+                    className="flex items-center gap-2 p-2 rounded-md hover:bg-muted cursor-pointer transition-colors"
+                  >
+                    <input
+                      type="radio"
+                      name="region"
+                      value={region.value}
+                      checked={tempSelectedRegion === region.value}
+                      onChange={(e) => setTempSelectedRegion(e.target.value)}
+                      className="rounded"
+                    />
+                    <span className="text-xs">{region.label}</span>
+                  </label>
+                ))}
+              </div>
+
+              {/* 선택된 지역 표시 (고정) */}
+              {tempSelectedRegion !== "all" && (
+                <div className="border-t border-border p-4 bg-muted/50">
+                  <p className="text-xs font-medium text-muted-foreground mb-2">선택된 지역</p>
+                  <div className="flex flex-wrap gap-2">
+                    <span className="inline-block px-2 py-1 bg-primary text-primary-foreground text-xs rounded-full">
+                      {REGIONS.find((r) => r.value === tempSelectedRegion)?.label || tempSelectedRegion}
+                    </span>
+                  </div>
+                </div>
+              )}
+
+              {/* 버튼 (고정) */}
+              <div className="border-t border-border p-4 flex gap-2">
+                <Button
+                  onClick={resetRegionSelection}
+                  variant="outline"
+                  className="h-8 text-xs"
+                >
+                  초기화
+                </Button>
+                <Button
+                  onClick={applyRegionSelection}
                   variant="default"
                   className="flex-1 h-8 text-xs"
                 >
