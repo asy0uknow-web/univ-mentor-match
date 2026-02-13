@@ -19,7 +19,6 @@ const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
 const DeleteAccount = lazy(() => import("./pages/DeleteAccount"));
 const AdminBugReports = lazy(() => import("./pages/AdminBugReports"));
 const MyProfile = lazy(() => import("./pages/MyProfile"));
-const Register = lazy(() => import("./pages/Register"));
 
 function Router() {
   return (
@@ -35,7 +34,6 @@ function Router() {
         <Route path={"/messages"} component={Messages} />
         <Route path={"/verify-mentor"} component={VerifyMentor} />
         <Route path={"/admin"} component={AdminDashboard} />
-        <Route path={"/register"} component={Register} />
         <Route path={"/delete-account"} component={DeleteAccount} />
         <Route path={"/admin/bug-reports"} component={AdminBugReports} />
         <Route path={"/404"} component={NotFound} />

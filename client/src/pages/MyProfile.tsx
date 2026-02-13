@@ -8,15 +8,7 @@ import { PageLayout } from "@/components/layout";
 import { setPageMeta, PAGE_META } from "@/lib/seo";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
-import { User, Lock, Edit2, Loader2, GraduationCap, Phone, Building2 } from "lucide-react";
-
-const GRADE_LABELS: Record<string, string> = {
-  "1": "1학년",
-  "2": "2학년",
-  "3": "3학년",
-  "4": "4학년",
-  "graduate": "대학원",
-};
+import { User, Lock, Edit2, Loader2 } from "lucide-react";
 
 export default function MyProfile() {
   useEffect(() => {
@@ -51,7 +43,7 @@ export default function MyProfile() {
   // 비밀번호 변경 mutation
   const changePasswordMutation = trpc.user.changePassword.useMutation({
     onSuccess: () => {
-      toast.success("비밀번호가 변경되었습니다!");
+      toast.success("비밀번호 변경 요청이 처리되었습니다!");
       setIsEditingPassword(false);
       setCurrentPassword("");
       setNewPassword("");
@@ -79,9 +71,8 @@ export default function MyProfile() {
       toast.error("새 비밀번호를 입력해주세요");
       return;
     }
-    const passwordRegex = /^(?=.*[a-zA-Z])(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{9,12}$/;
-    if (!passwordRegex.test(newPassword)) {
-      toast.error("새 비밀번호는 영문, 특수문자를 포함한 9~12자리여야 합니다");
+    if (newPassword.length < 8) {
+      toast.error("새 비밀번호는 최소 8자 이상이어야 합니다");
       return;
     }
     if (newPassword !== confirmPassword) {
@@ -93,16 +84,6 @@ export default function MyProfile() {
       newPassword,
       confirmPassword,
     });
-  };
-
-  // 전화번호 포맷팅
-  const formatPhone = (phone: string | null | undefined) => {
-    if (!phone) return "설정되지 않음";
-    const digits = phone.replace(/\D/g, "");
-    if (digits.length === 11) {
-      return `${digits.slice(0, 3)}-${digits.slice(3, 7)}-${digits.slice(7)}`;
-    }
-    return phone;
   };
 
   if (!isAuthenticated) {
@@ -137,27 +118,21 @@ export default function MyProfile() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  {/* 아이디 */}
+                  {/* 이름 */}
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium">이름</Label>
+                    <div className="p-3 bg-muted rounded-md">
+                      <p className="text-sm">{profile?.name || "설정되지 않음"}</p>
+                    </div>
+                  </div>
+
+                  {/* 아이디 (openId) */}
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">아이디</Label>
                     <div className="p-3 bg-muted rounded-md">
-                      <p className="text-sm">{profile?.username || "설정되지 않음"}</p>
-                    </div>
-                  </div>
-
-                  {/* 이름 (실명) */}
-                  <div className="space-y-2">
-                    <Label className="text-sm font-medium">이름 (실명)</Label>
-                    <div className="p-3 bg-muted rounded-md">
-                      <p className="text-sm">{profile?.realName || "설정되지 않음"}</p>
-                    </div>
-                  </div>
-
-                  {/* 닉네임 */}
-                  <div className="space-y-2">
-                    <Label className="text-sm font-medium">닉네임</Label>
-                    <div className="p-3 bg-muted rounded-md">
-                      <p className="text-sm">{profile?.name || "설정되지 않음"}</p>
+                      <p className="text-sm font-mono text-xs break-all">
+                        {profile?.openId || "설정되지 않음"}
+                      </p>
                     </div>
                   </div>
 
@@ -169,56 +144,12 @@ export default function MyProfile() {
                     </div>
                   </div>
 
-                  {/* 전화번호 */}
+                  {/* 로그인 방식 */}
                   <div className="space-y-2">
-                    <Label className="text-sm font-medium flex items-center gap-1">
-                      <Phone className="h-3.5 w-3.5" />
-                      전화번호
-                    </Label>
-                    <div className="p-3 bg-muted rounded-md">
-                      <p className="text-sm">{formatPhone(profile?.phone)}</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* 학교 정보 섹션 */}
-              <Card className="mb-6">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <GraduationCap className="h-5 w-5" />
-                    학교 정보
-                  </CardTitle>
-                  <CardDescription>
-                    등록된 학교 정보를 확인하세요
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {/* 대학교 */}
-                  <div className="space-y-2">
-                    <Label className="text-sm font-medium flex items-center gap-1">
-                      <Building2 className="h-3.5 w-3.5" />
-                      대학교
-                    </Label>
-                    <div className="p-3 bg-muted rounded-md">
-                      <p className="text-sm">{profile?.university || "설정되지 않음"}</p>
-                    </div>
-                  </div>
-
-                  {/* 전공 */}
-                  <div className="space-y-2">
-                    <Label className="text-sm font-medium">전공</Label>
-                    <div className="p-3 bg-muted rounded-md">
-                      <p className="text-sm">{profile?.major || "설정되지 않음"}</p>
-                    </div>
-                  </div>
-
-                  {/* 학년 */}
-                  <div className="space-y-2">
-                    <Label className="text-sm font-medium">학년</Label>
+                    <Label className="text-sm font-medium">로그인 방식</Label>
                     <div className="p-3 bg-muted rounded-md">
                       <p className="text-sm">
-                        {profile?.grade ? GRADE_LABELS[profile.grade] || profile.grade : "설정되지 않음"}
+                        {profile?.loginMethod === "oauth" ? "OAuth (소셜 로그인)" : "기타"}
                       </p>
                     </div>
                   </div>
@@ -334,13 +265,10 @@ export default function MyProfile() {
                         <Input
                           id="new-password"
                           type="password"
-                          placeholder="영문, 특수문자 포함 9~12자리"
+                          placeholder="새 비밀번호를 입력하세요 (최소 8자)"
                           value={newPassword}
                           onChange={(e) => setNewPassword(e.target.value)}
                         />
-                        <p className="text-xs text-muted-foreground">
-                          영문, 특수문자를 포함한 9~12자리
-                        </p>
                       </div>
 
                       <div className="space-y-2">
@@ -380,6 +308,14 @@ export default function MyProfile() {
                           취소
                         </Button>
                       </div>
+
+                      {profile?.loginMethod === "oauth" && (
+                        <div className="p-3 bg-blue-50 border border-blue-200 rounded-md">
+                          <p className="text-sm text-blue-900">
+                            💡 OAuth(소셜 로그인)로 가입하신 경우, 해당 서비스 제공자의 계정 설정에서 비밀번호를 관리하세요.
+                          </p>
+                        </div>
+                      )}
                     </>
                   ) : (
                     <Button

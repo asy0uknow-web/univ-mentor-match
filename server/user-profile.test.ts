@@ -38,7 +38,7 @@ describe("User Profile Management", () => {
     await db.delete(users).where(eq(users.openId, testOpenId));
   });
 
-  it("should retrieve user profile with new fields", async () => {
+  it("should retrieve user profile", async () => {
     const db = await getDb();
     if (!db) throw new Error("Database not available");
 
@@ -46,13 +46,6 @@ describe("User Profile Management", () => {
     expect(result.length).toBe(1);
     expect(result[0].name).toBe("테스트 사용자");
     expect(result[0].email).toBe("test@example.com");
-    // New fields should be null by default
-    expect(result[0].username).toBeNull();
-    expect(result[0].realName).toBeNull();
-    expect(result[0].phone).toBeNull();
-    expect(result[0].university).toBeNull();
-    expect(result[0].major).toBeNull();
-    expect(result[0].grade).toBeNull();
   });
 
   it("should update user nickname", async () => {
@@ -72,30 +65,23 @@ describe("User Profile Management", () => {
     expect(nickname.length).toBeLessThanOrEqual(50);
   });
 
-  it("should validate password requirements (9-12 chars, letters + special)", () => {
-    const passwordRegex = /^(?=.*[a-zA-Z])(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{9,12}$/;
+  it("should validate password requirements", () => {
+    const password = "password123";
+    const confirmPassword = "password123";
     
-    // Valid passwords
-    expect(passwordRegex.test("Abcde@1234")).toBe(true);
-    expect(passwordRegex.test("Test!pass1")).toBe(true);
-    
-    // Invalid: too short
-    expect(passwordRegex.test("Ab@12345")).toBe(false);
-    // Invalid: too long
-    expect(passwordRegex.test("Abcdefgh@12345")).toBe(false);
-    // Invalid: no special char
-    expect(passwordRegex.test("Abcde12345")).toBe(false);
+    expect(password.length).toBeGreaterThanOrEqual(8);
+    expect(password).toBe(confirmPassword);
   });
 
   it("should reject mismatched passwords", () => {
-    const password = "Test@1234!";
-    const confirmPassword = "Test@5678!";
+    const password = "password123";
+    const confirmPassword = "password456";
     
     expect(password).not.toBe(confirmPassword);
   });
 
   it("should reject short passwords", () => {
-    const password = "Ab@12";
-    expect(password.length).toBeLessThan(9);
+    const password = "short";
+    expect(password.length).toBeLessThan(8);
   });
 });

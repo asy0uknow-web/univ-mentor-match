@@ -1,1 +1,0 @@
-ALTER TABLE `mentor_profiles` ADD `specialtyServices` text;

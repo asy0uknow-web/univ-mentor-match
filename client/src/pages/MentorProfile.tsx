@@ -7,21 +7,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { trpc } from "@/lib/trpc";
 import { Link, useLocation } from "wouter";
-import { GraduationCap, CheckCircle, AlertCircle, Clock, Upload, X, Loader2, ChevronDown, Trash2, ShieldCheck, FileImage } from "lucide-react";
+import { GraduationCap, CheckCircle, AlertCircle, Clock, Upload, X, Loader2, ChevronDown, Trash2 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { getLoginUrl } from "@/const";
 import { toast } from "sonner";
 import { PageLayout } from "@/components/layout";
 import { setPageMeta, PAGE_META } from "@/lib/seo";
-
-const SERVICE_OPTIONS = [
-  { value: "resume_consulting", label: "생기부 컨설팅" },
-  { value: "career_counseling", label: "진로상담" },
-  { value: "academic_management", label: "학업관리" },
-  { value: "university_tour", label: "대학탐방" },
-] as const;
-
-type ServiceType = "resume_consulting" | "career_counseling" | "academic_management" | "university_tour";
 
 export default function MentorProfile() {
 
@@ -34,18 +25,14 @@ export default function MentorProfile() {
   const [major, setMajor] = useState("");
   const [grade, setGrade] = useState<"1" | "2" | "3" | "4" | "graduate">("1");
   const [bio, setBio] = useState("");
+  const [hourlyRate, setHourlyRate] = useState("");
   const [field, setField] = useState<"engineering" | "natural_science" | "business" | "humanities" | "education" | "liberal_arts" | "medicine" | undefined>();
   const [region, setRegion] = useState<"seoul" | "gyeonggi" | "incheon" | "gangwon" | "chungcheong" | "jeolla" | "gyeongsang" | "jeju" | undefined>();
-  const [specialtyServices, setSpecialtyServices] = useState<ServiceType[]>([]);
   const [dragActive, setDragActive] = useState(false);
   const [uploadedImages, setUploadedImages] = useState<Array<{ url: string; caption: string }>>([]);
   const [isUploading, setIsUploading] = useState(false);
   const [newCaption, setNewCaption] = useState("");
   const [emptyFields, setEmptyFields] = useState<Set<string>>(new Set());
-
-  // Verification image states
-  const [verificationFile, setVerificationFile] = useState<File | null>(null);
-  const [verificationPreview, setVerificationPreview] = useState<string | null>(null);
 
   const { data: profile, isLoading } = trpc.mentor.getMyProfile.useQuery(undefined, {
     enabled: isAuthenticated,
@@ -79,7 +66,7 @@ export default function MentorProfile() {
 
   const createProfileMutation = trpc.mentor.createProfile.useMutation({
     onSuccess: () => {
-      toast.success("멘토로 등록되었습니다! 이제 학적 인증을 진행해주세요.");
+      toast.success("멘토로 등록되었습니다!");
       window.location.reload();
     },
     onError: (error) => {
@@ -116,50 +103,15 @@ export default function MentorProfile() {
     },
   });
 
-  // Verification mutations
-  const uploadStudentIdMutation = trpc.verification.uploadStudentId.useMutation({
-    onSuccess: (data) => {
-      toast.success("인증 이미지가 업로드되었습니다.");
-      submitVerificationMutation.mutate({
-        studentIdImageUrl: data.imageUrl,
-      });
-    },
-    onError: (error) => {
-      toast.error(`업로드 실패: ${error.message}`);
-    },
-  });
-
-  const submitVerificationMutation = trpc.verification.submitVerification.useMutation({
-    onSuccess: () => {
-      toast.success("인증 요청이 제출되었습니다. 관리자 검토를 기다려주세요.");
-      setVerificationFile(null);
-      setVerificationPreview(null);
-      window.location.reload();
-    },
-    onError: (error) => {
-      toast.error(`인증 제출 실패: ${error.message}`);
-    },
-  });
-
   useEffect(() => {
     if (profile) {
       setUniversity(profile.university);
       setMajor(profile.major);
       setGrade(profile.grade);
       setBio(profile.bio || "");
+      setHourlyRate(profile.hourlyRate.toString());
       setField(profile.field || undefined);
       setRegion(profile.region || undefined);
-      // Parse specialtyServices from JSON string
-      if (profile.specialtyServices) {
-        try {
-          const parsed = JSON.parse(profile.specialtyServices);
-          if (Array.isArray(parsed)) {
-            setSpecialtyServices(parsed as ServiceType[]);
-          }
-        } catch {
-          setSpecialtyServices([]);
-        }
-      }
     }
   }, [profile]);
 
@@ -244,74 +196,18 @@ export default function MentorProfile() {
     }
   };
 
-  const toggleService = (service: ServiceType) => {
-    setSpecialtyServices(prev => {
-      if (prev.includes(service)) {
-        return prev.filter(s => s !== service);
-      }
-      return [...prev, service];
-    });
-  };
-
-  const handleVerificationFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      if (file.size > 5 * 1024 * 1024) {
-        toast.error("파일 크기는 5MB 이하여야 합니다.");
-        return;
-      }
-      if (!file.type.startsWith("image/")) {
-        toast.error("이미지 파일만 업로드 가능합니다.");
-        return;
-      }
-      setVerificationFile(file);
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setVerificationPreview(e.target?.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const handleVerificationSubmit = async () => {
-    if (!verificationFile) {
-      toast.error("인증 이미지를 선택해주세요.");
-      return;
-    }
-
-    try {
-      const reader = new FileReader();
-      reader.onload = async (e) => {
-        const base64Data = (e.target?.result as string).split(",")[1];
-        if (base64Data) {
-          await uploadStudentIdMutation.mutateAsync({
-            fileData: base64Data,
-            fileName: verificationFile.name,
-            mimeType: verificationFile.type,
-          });
-        }
-      };
-      reader.readAsDataURL(verificationFile);
-    } catch (error) {
-      toast.error("파일 읽기에 실패했습니다.");
-    }
-  };
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     const empty = new Set<string>();
     if (!university) empty.add("university");
     if (!major) empty.add("major");
+    if (!hourlyRate) empty.add("hourlyRate");
     if (!field) empty.add("field");
     if (!region) empty.add("region");
-    if (specialtyServices.length === 0) empty.add("specialtyServices");
 
     if (empty.size > 0) {
       setEmptyFields(empty);
-      if (specialtyServices.length === 0) {
-        toast.error("주력 서비스를 최소 1개 선택해주세요.");
-      }
       const firstEmptyField = Array.from(empty)[0];
       const element = document.getElementById(firstEmptyField);
       if (element) {
@@ -328,9 +224,9 @@ export default function MentorProfile() {
         major,
         grade,
         bio,
+        hourlyRate: "30000",
         field,
         region,
-        specialtyServices,
       });
     } else {
       createProfileMutation.mutate({
@@ -338,9 +234,9 @@ export default function MentorProfile() {
         major,
         grade,
         bio,
+        hourlyRate: "30000",
         field,
         region,
-        specialtyServices,
       });
     }
   };
@@ -383,22 +279,18 @@ export default function MentorProfile() {
                     }}
                     disabled={reactivateProfileMutation.isPending}
                   >
-                    {reactivateProfileMutation.isPending ? "처리 중..." : "멘토 다시 등록하기"}
+                    {reactivateProfileMutation.isPending ? "단추 중..." : "멘토 다시 등록하기"}
                   </Button>
                     </div>
                   </CardContent>
                 </Card>
               )}
 
-              {/* 인증 상태 및 인증 요청 카드 */}
               {profile && (
                 <Card className="mb-6 border-blue-200 bg-blue-50">
                   <CardHeader>
                     <CardTitle className="flex items-center justify-between text-base">
-                      <span className="flex items-center gap-2">
-                        <ShieldCheck className="h-5 w-5" />
-                        학적 인증
-                      </span>
+                      <span>인증 상태</span>
                       {verification && (
                         <div className="flex items-center gap-2">
                           {verification.status === "approved" && (
@@ -424,85 +316,25 @@ export default function MentorProfile() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    {verification?.status === "approved" ? (
-                      <div className="space-y-2">
-                        <p className="text-sm text-green-800">멘토 학적 인증이 완료되었습니다.</p>
-                      </div>
-                    ) : verification?.status === "pending" ? (
-                      <div className="space-y-2">
-                        <p className="text-sm text-yellow-800">인증 요청이 관리자 검토 중입니다. 승인까지 1~2일 소요될 수 있습니다.</p>
+                    {!verification ? (
+                      <div className="space-y-3">
+                        <p className="text-sm text-blue-900">
+                          멘토로 활동하기 위해 학과 재학 인증이 필요합니다.
+                        </p>
+                        <Link href="/verify-mentor">
+                          <Button size="sm" className="w-full">
+                            인증하기
+                          </Button>
+                        </Link>
                       </div>
                     ) : (
-                      <div className="space-y-4">
-                        {verification?.status === "rejected" && (
-                          <div className="bg-red-100 border border-red-200 rounded-lg p-3">
-                            <p className="text-sm text-red-800">
-                              이전 인증이 거부되었습니다. 사유: {verification.adminNotes || "명시되지 않음"}
-                            </p>
-                          </div>
-                        )}
-                        <div className="bg-white/60 rounded-lg p-4 space-y-3">
-                          <p className="text-sm text-blue-900 font-medium">
-                            멘토로 활동하기 위해 학적 인증이 필요합니다.
-                          </p>
-                          <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 space-y-2">
-                            <p className="text-sm font-medium text-amber-900 flex items-center gap-1.5">
-                              <FileImage className="h-4 w-4" />
-                              인증 가능한 서류
-                            </p>
-                            <ul className="text-xs text-amber-800 space-y-1 ml-5.5 list-disc">
-                              <li>대학 포털 학적인증 캡쳐본 (학번, 이름, 학과가 보이도록)</li>
-                              <li>모바일/실물 학생증 사진 (앞면)</li>
-                            </ul>
-                            <p className="text-xs text-amber-700 mt-1">
-                              * 개인정보(주민번호 등)는 가려서 제출해주세요.
-                            </p>
-                          </div>
-
-                          <div className="mt-3">
-                            <Label htmlFor="verification-image" className="text-sm font-medium">인증 이미지 첨부</Label>
-                            <div className="mt-2 border-2 border-dashed border-blue-300 rounded-lg p-6 text-center hover:border-blue-400 transition-colors cursor-pointer bg-white/50">
-                              <input
-                                id="verification-image"
-                                type="file"
-                                accept="image/*"
-                                onChange={handleVerificationFileSelect}
-                                className="hidden"
-                              />
-                              <label htmlFor="verification-image" className="cursor-pointer">
-                                <Upload className="h-8 w-8 mx-auto mb-2 text-blue-400" />
-                                <p className="text-sm font-medium text-blue-700">클릭하여 이미지를 선택하세요</p>
-                                <p className="text-xs text-blue-500 mt-1">JPG, PNG, WebP (최대 5MB)</p>
-                              </label>
-                            </div>
-                          </div>
-
-                          {verificationPreview && (
-                            <div className="space-y-2">
-                              <div className="relative border border-blue-200 rounded-lg overflow-hidden">
-                                <img src={verificationPreview} alt="인증 미리보기" className="w-full h-auto max-h-48 object-contain bg-white" />
-                                <button
-                                  onClick={() => { setVerificationFile(null); setVerificationPreview(null); }}
-                                  className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded hover:bg-red-600"
-                                >
-                                  <X className="h-4 w-4" />
-                                </button>
-                              </div>
-                              <p className="text-xs text-blue-700">파일명: {verificationFile?.name}</p>
-                            </div>
-                          )}
-
-                          <Button
-                            onClick={handleVerificationSubmit}
-                            disabled={!verificationFile || uploadStudentIdMutation.isPending || submitVerificationMutation.isPending}
-                            className="w-full"
-                            size="sm"
-                          >
-                            {uploadStudentIdMutation.isPending || submitVerificationMutation.isPending
-                              ? "업로드 중..."
-                              : "학적 인증 신청"}
+                      <div className="space-y-2">
+                        <p className="text-sm text-blue-900">당신의 멘토 프로필이 인증되었습니다.</p>
+                        <Link href="/verify-mentor">
+                          <Button size="sm" variant="outline" className="w-full">
+                            인증 상태 확인
                           </Button>
-                        </div>
+                        </Link>
                       </div>
                     )}
                   </CardContent>
@@ -514,12 +346,9 @@ export default function MentorProfile() {
                   <CardHeader>
                     <CardTitle className="text-base">멘토 등록 안내</CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-3">
+                  <CardContent>
                     <p className="text-sm text-amber-900">
-                      아래 정보를 입력하고 "멘토로 등록하기" 버튼을 클릭하면 멘토로 등록됩니다.
-                    </p>
-                    <p className="text-sm text-amber-900">
-                      등록 후 <strong>대학 포털 학적인증 캡쳐본</strong> 또는 <strong>학생증 사진</strong>을 첨부하여 인증을 완료해야 멘토로 활동할 수 있습니다.
+                      아래 정보를 입력하고 "멘토로 등록하기" 버튼을 클릭하면 멘토로 등록됩니다. 등록 후 학생증 인증을 완료해야 멘토로 활동할 수 있습니다.
                     </p>
                   </CardContent>
                 </Card>
@@ -580,6 +409,22 @@ export default function MentorProfile() {
                         </Select>
                       </div>
                       <div>
+                        <Label htmlFor="hourlyRate" className="text-sm font-medium">
+                          시간당 상담료 (원) *
+                        </Label>
+                        <Input
+                          id="hourlyRate"
+                          placeholder="30000"
+                          value={hourlyRate}
+                          onChange={(e) => setHourlyRate(e.target.value)}
+                          type="number"
+                          className={emptyFields.has("hourlyRate") ? "border-red-500" : ""}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
                         <Label htmlFor="field" className="text-sm font-medium">
                           분야 *
                         </Label>
@@ -598,64 +443,26 @@ export default function MentorProfile() {
                           </SelectContent>
                         </Select>
                       </div>
-                    </div>
-
-                    <div>
-                      <Label htmlFor="region" className="text-sm font-medium">
-                        지역 *
-                      </Label>
-                      <Select value={region || ""} onValueChange={(value: any) => setRegion(value || undefined)}>
-                        <SelectTrigger id="region">
-                          <SelectValue placeholder="지역 선택" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="seoul">서울</SelectItem>
-                          <SelectItem value="gyeonggi">경기</SelectItem>
-                          <SelectItem value="incheon">인천</SelectItem>
-                          <SelectItem value="gangwon">강원</SelectItem>
-                          <SelectItem value="chungcheong">충청</SelectItem>
-                          <SelectItem value="jeolla">전라</SelectItem>
-                          <SelectItem value="gyeongsang">경상</SelectItem>
-                          <SelectItem value="jeju">제주</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    {/* 주력 서비스 다중 선택 */}
-                    <div id="specialtyServices">
-                      <Label className="text-sm font-medium">
-                        주력 서비스 * <span className="text-muted-foreground font-normal">(복수 선택 가능)</span>
-                      </Label>
-                      <p className="text-xs text-muted-foreground mt-1 mb-3">
-                        멘티에게 제공할 수 있는 서비스를 선택해주세요.
-                      </p>
-                      <div className="grid grid-cols-2 gap-3">
-                        {SERVICE_OPTIONS.map((service) => {
-                          const isSelected = specialtyServices.includes(service.value);
-                          return (
-                            <button
-                              key={service.value}
-                              type="button"
-                              onClick={() => toggleService(service.value)}
-                              className={`flex items-center justify-center gap-2 px-4 py-3 rounded-lg border-2 text-sm font-medium transition-all ${
-                                isSelected
-                                  ? "border-primary bg-primary/10 text-primary"
-                                  : emptyFields.has("specialtyServices")
-                                  ? "border-red-300 bg-white text-muted-foreground hover:border-primary/50"
-                                  : "border-border bg-white text-muted-foreground hover:border-primary/50"
-                              }`}
-                            >
-                              {isSelected && <CheckCircle className="h-4 w-4" />}
-                              {service.label}
-                            </button>
-                          );
-                        })}
+                      <div>
+                        <Label htmlFor="region" className="text-sm font-medium">
+                          지역 *
+                        </Label>
+                        <Select value={region || ""} onValueChange={(value: any) => setRegion(value || undefined)}>
+                          <SelectTrigger id="region">
+                            <SelectValue placeholder="지역 선택" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="seoul">서울</SelectItem>
+                            <SelectItem value="gyeonggi">경기</SelectItem>
+                            <SelectItem value="incheon">인천</SelectItem>
+                            <SelectItem value="gangwon">강원</SelectItem>
+                            <SelectItem value="chungcheong">충청</SelectItem>
+                            <SelectItem value="jeolla">전라</SelectItem>
+                            <SelectItem value="gyeongsang">경상</SelectItem>
+                            <SelectItem value="jeju">제주</SelectItem>
+                          </SelectContent>
+                        </Select>
                       </div>
-                      {specialtyServices.length > 0 && (
-                        <p className="text-xs text-primary mt-2">
-                          {specialtyServices.length}개 서비스 선택됨
-                        </p>
-                      )}
                     </div>
 
                     <div>

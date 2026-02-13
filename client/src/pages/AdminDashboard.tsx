@@ -222,7 +222,7 @@ export default function AdminDashboard() {
                       </CardHeader>
                       <CardContent className="space-y-2">
                         <p className="text-sm"><strong>학년:</strong> {mentor.profile.grade}</p>
-                        <p className="text-sm"><strong>주력 서비스:</strong> {mentor.profile.specialtyServices ? JSON.parse(mentor.profile.specialtyServices).map((s: string) => ({"resume_consulting": "생기부 컨설팅", "career_counseling": "진로상담", "academic_management": "학업관리", "university_tour": "대학탐방"}[s] || s)).join(", ") : "미설정"}</p>
+                        <p className="text-sm"><strong>시간당 상담료:</strong> ₩{mentor.profile.hourlyRate}</p>
                         <p className="text-sm"><strong>자기소개:</strong> {mentor.profile.bio}</p>
                         <p className="text-sm">
                           <strong>상태:</strong> {mentor.profile.isActive ? "활성" : "비활성"}
@@ -254,8 +254,8 @@ export default function AdminDashboard() {
                     <Input defaultValue={editingMentor.profile.grade} />
                   </div>
                   <div>
-                    <Label>주력 서비스</Label>
-                    <p className="text-sm text-muted-foreground">{editingMentor.profile.specialtyServices ? JSON.parse(editingMentor.profile.specialtyServices).map((s: string) => ({"resume_consulting": "생기부 컨설팅", "career_counseling": "진로상담", "academic_management": "학업관리", "university_tour": "대학탐방"}[s] || s)).join(", ") : "미설정"}</p>
+                    <Label>시간당 상담료</Label>
+                    <Input defaultValue={editingMentor.profile.hourlyRate} />
                   </div>
                   <div>
                     <Label>자기소개</Label>

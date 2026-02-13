@@ -4,7 +4,6 @@ import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
 import { z } from "zod";
 import Stripe from "stripe";
-import bcrypt from "bcryptjs";
 import {
   updateUserType,
   createMentorProfile,
@@ -121,74 +120,13 @@ export const appRouter = router({
       const user = result[0];
       return {
         id: user.id,
-        username: user.username,
-        realName: user.realName,
         name: user.name,
         email: user.email,
-        phone: user.phone,
-        university: user.university,
-        major: user.major,
-        grade: user.grade,
+        openId: user.openId,
         loginMethod: user.loginMethod,
         userType: user.userType,
-        isRegistrationComplete: user.isRegistrationComplete,
       };
     }),
-    checkUsername: publicProcedure
-      .input(z.object({
-        username: z.string().min(1).max(50),
-      }))
-      .query(async ({ input }) => {
-        const db = await getDb();
-        if (!db) throw new Error("Database not available");
-        
-        const result = await db.select().from(users).where(eq(users.username, input.username)).limit(1);
-        return { available: result.length === 0 };
-      }),
-    completeRegistration: protectedProcedure
-      .input(z.object({
-        username: z.string().min(1).max(50),
-        password: z.string().min(9).max(12),
-        realName: z.string().min(1).max(100),
-        university: z.string().min(1).max(255),
-        major: z.string().min(1).max(255),
-        grade: z.enum(["1", "2", "3", "4", "graduate"]),
-        phone: z.string().min(1).max(20),
-      }))
-      .mutation(async ({ ctx, input }) => {
-        const db = await getDb();
-        if (!db) throw new Error("Database not available");
-        
-        // Validate password: 영문 + 특수문자 포함 9~12자리
-        const passwordRegex = /^(?=.*[a-zA-Z])(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{9,12}$/;
-        if (!passwordRegex.test(input.password)) {
-          throw new Error("비밀번호는 영문, 특수문자를 포함한 9~12자리여야 합니다");
-        }
-        
-        // Check username uniqueness
-        const existingUser = await db.select().from(users).where(eq(users.username, input.username)).limit(1);
-        if (existingUser.length > 0) {
-          throw new Error("이미 사용 중인 아이디입니다");
-        }
-        
-        // Hash password
-        const passwordHash = await bcrypt.hash(input.password, 12);
-        
-        // Update user record
-        await db.update(users).set({
-          username: input.username,
-          passwordHash,
-          realName: input.realName,
-          university: input.university,
-          major: input.major,
-          grade: input.grade,
-          phone: input.phone,
-          userType: "university_student",
-          isRegistrationComplete: true,
-        }).where(eq(users.id, ctx.user.id));
-        
-        return { success: true };
-      }),
     changeNickname: protectedProcedure
       .input(z.object({
         nickname: z.string().min(1).max(50),
@@ -203,40 +141,15 @@ export const appRouter = router({
     changePassword: protectedProcedure
       .input(z.object({
         currentPassword: z.string().min(1),
-        newPassword: z.string().min(9).max(12),
-        confirmPassword: z.string().min(9).max(12),
+        newPassword: z.string().min(8),
+        confirmPassword: z.string().min(8),
       }))
       .mutation(async ({ ctx, input }) => {
-        const db = await getDb();
-        if (!db) throw new Error("Database not available");
-        
         if (input.newPassword !== input.confirmPassword) {
           throw new Error("새 비밀번호가 일치하지 않습니다");
         }
         
-        // Validate new password format
-        const passwordRegex = /^(?=.*[a-zA-Z])(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{9,12}$/;
-        if (!passwordRegex.test(input.newPassword)) {
-          throw new Error("비밀번호는 영문, 특수문자를 포함한 9~12자리여야 합니다");
-        }
-        
-        const result = await db.select().from(users).where(eq(users.id, ctx.user.id)).limit(1);
-        if (result.length === 0) throw new Error("User not found");
-        
-        const user = result[0];
-        
-        // Verify current password
-        if (user.passwordHash) {
-          const isValid = await bcrypt.compare(input.currentPassword, user.passwordHash);
-          if (!isValid) {
-            throw new Error("현재 비밀번호가 올바르지 않습니다");
-          }
-        }
-        
-        const newHash = await bcrypt.hash(input.newPassword, 12);
-        await db.update(users).set({ passwordHash: newHash }).where(eq(users.id, ctx.user.id));
-        
-        return { success: true, message: "비밀번호가 변경되었습니다" };
+        return { success: true, message: "비밀번호 변경 기능은 OAuth 제공자를 통해 관리됩니다" };
       }),
   }),
 
@@ -247,19 +160,16 @@ export const appRouter = router({
         major: z.string().min(1),
         grade: z.enum(["1", "2", "3", "4", "graduate"]),
         bio: z.string().optional(),
+        hourlyRate: z.string().min(1),
         field: z.enum(["engineering", "natural_science", "business", "humanities", "education", "liberal_arts", "medicine"]).optional(),
         region: z.enum(["seoul", "gyeonggi", "incheon", "gangwon", "chungcheong", "jeolla", "gyeongsang", "jeju"]).optional(),
         availableSlots: z.string().optional(),
-        specialtyServices: z.array(z.enum(["resume_consulting", "career_counseling", "academic_management", "university_tour"])).min(1, "주력 서비스를 최소 1개 선택해주세요"),
       }))
       .mutation(async ({ ctx, input }) => {
         await updateUserType(ctx.user.id, "university_student");
-        const { specialtyServices, ...rest } = input;
         await createMentorProfile({
           userId: ctx.user.id,
-          ...rest,
-          hourlyRate: "0",
-          specialtyServices: JSON.stringify(specialtyServices),
+          ...input,
         });
         // Always create a new verification request for (re-)registration
         await createMentorVerification({
@@ -280,19 +190,14 @@ export const appRouter = router({
         major: z.string().min(1).optional(),
         grade: z.enum(["1", "2", "3", "4", "graduate"]).optional(),
         bio: z.string().optional(),
+        hourlyRate: z.string().optional(),
         field: z.enum(["engineering", "natural_science", "business", "humanities", "education", "liberal_arts", "medicine"]).optional(),
-        specialtyServices: z.array(z.enum(["resume_consulting", "career_counseling", "academic_management", "university_tour"])).optional(),
         region: z.enum(["seoul", "gyeonggi", "incheon", "gangwon", "chungcheong", "jeolla", "gyeongsang", "jeju"]).optional(),
         availableSlots: z.string().optional(),
         isActive: z.boolean().optional(),
       }))
       .mutation(async ({ ctx, input }) => {
-        const { specialtyServices, ...rest } = input;
-        const updates: any = { ...rest };
-        if (specialtyServices) {
-          updates.specialtyServices = JSON.stringify(specialtyServices);
-        }
-        await updateMentorProfile(ctx.user.id, updates);
+        await updateMentorProfile(ctx.user.id, input);
         return { success: true };
       }),
 

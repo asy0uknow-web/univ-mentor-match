@@ -49,13 +49,16 @@ export default function Mentors() {
     setPageMeta(PAGE_META.mentors);
   }, []);
 
-  // 검색어 디바운스 (300ms)
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedSearch(searchTerm);
-    }, 300);
-    return () => clearTimeout(timer);
-  }, [searchTerm]);
+  // 검색 버튼 클릭 또는 Enter 키 처리
+  const handleSearch = () => {
+    setDebouncedSearch(searchTerm);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      handleSearch();
+    }
+  };
 
   // 단일 API 호출: getByFieldAndRegion은 optional 파라미터를 받으므로
   // field/region이 "all"이면 undefined를 전달하여 서버에서 전체 조회
@@ -135,14 +138,24 @@ export default function Mentors() {
             </div>
             <div>
               <label className="text-xs font-medium text-muted-foreground">검색</label>
-              <div className="relative">
-                <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="대학, 전공..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-8 h-8 text-xs"
-                />
+              <div className="flex gap-2">
+                <div className="relative flex-1">
+                  <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder="대학, 전공..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    onKeyDown={handleKeyDown}
+                    className="pl-8 h-8 text-xs"
+                  />
+                </div>
+                <Button
+                  onClick={handleSearch}
+                  variant="default"
+                  className="h-8 px-3 text-xs"
+                >
+                  검색
+                </Button>
               </div>
             </div>
             <Button 
