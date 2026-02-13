@@ -163,6 +163,7 @@ export default function Mentors() {
                 setSearchTerm("");
                 setSelectedField("all");
                 setSelectedRegion("all");
+                setDebouncedSearch(""); // 빈 검색창에 검색을 누른 것처럼
               }}
               variant="outline"
               className="w-full h-8 text-xs"
