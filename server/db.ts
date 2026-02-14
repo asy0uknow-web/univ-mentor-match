@@ -1,4 +1,4 @@
-import { eq, and, or, desc, sql } from "drizzle-orm";
+import { eq, and, or, desc, sql, inArray } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import { 
   InsertUser, 
@@ -607,16 +607,96 @@ export async function updateMentorVerificationStatus(userId: number, status: "pe
 }
 
 // Mentor filtering queries
+// 학과명 배열을 받아서 major 필드와 매칭
+function getMajorNameFromId(majorId: string): string {
+  const majorMap: Record<string, string> = {
+    "korean_lang_lit": "국어국문학과",
+    "philosophy": "철학과",
+    "korean_history": "한국사학과",
+    "history": "사학과",
+    "sociology": "사회학과",
+    "chinese_classics": "한문학과",
+    "english_lit": "영어영문학과",
+    "german_lit": "독어독문학과",
+    "french_lit": "불어불문학과",
+    "chinese_lit": "중어중문학과",
+    "russian_lit": "노어노문학과",
+    "japanese_lit": "일어일문학과",
+    "spanish_lit": "서어서문학과",
+    "linguistics": "언어학과",
+    "political_science": "정치외교학과",
+    "economics": "경제학과",
+    "statistics": "통계학과",
+    "public_admin": "행정학과",
+    "business_admin": "경영학과",
+    "mathematics": "수학과",
+    "physics": "물리학과",
+    "chemistry": "화학과",
+    "earth_science": "지구환경과학과",
+    "chemical_engineering": "화공생명공학과",
+    "new_materials": "신소재공학부",
+    "architecture_civil": "건축사회환경공학부",
+    "architecture": "건축학과",
+    "mechanical_engineering": "기계공학부",
+    "industrial_management": "산업경영공학부",
+    "electrical_engineering": "전기전자공학부",
+    "convergence_energy": "융합에너지공학과",
+    "semiconductor": "반도체공학과",
+    "next_gen_communication": "차세대통신학과",
+    "medicine": "의학과",
+    "education": "교육학과",
+    "korean_education": "국어교육과",
+    "english_education": "영어교육과",
+    "geography_education": "지리교육과",
+    "history_education": "역사교육과",
+    "home_economics_education": "가정교육과",
+    "math_education": "수학교육과",
+    "physical_education": "체육교육과",
+    "nursing": "간호학과",
+    "computer_science": "컴퓨터학과",
+    "data_science": "데이터과학과",
+    "artificial_intelligence": "인공지능학과",
+    "design": "디자인조형학부",
+    "international_studies": "국제학부",
+    "global_korean_fusion": "글로벌한국융합학부",
+    "media": "미디어학부",
+    "biomedical_engineering": "바이오의공학부",
+    "biosystems_medicine": "바이오시스템의과학부",
+    "health_environment": "보건환경융합과학부",
+    "health_policy_management": "보건정책관리학부",
+    "liberal_arts_major": "자유전공학부",
+    "smart_mobility": "스마트모빌리티학부",
+    "smart_security": "스마트보안학부",
+  };
+  return majorMap[majorId] || majorId;
+}
+
 export async function getMentorsByFieldAndRegion(
-  field?: "engineering" | "natural_science" | "business" | "humanities" | "education" | "liberal_arts" | "medicine",
-  region?: "seoul" | "gyeonggi" | "incheon" | "gangwon" | "chungcheong" | "jeolla" | "gyeongsang" | "jeju"
+  majorIds?: string[],
+  regions?: string[]
 ) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
   
   const conditions = [];
-  if (field) conditions.push(eq(mentorProfiles.field, field));
-  if (region) conditions.push(eq(mentorProfiles.region, region));
+  
+  // 학과명 기반 필터링
+  if (majorIds && majorIds.length > 0) {
+    const majorNames = majorIds.map(id => getMajorNameFromId(id));
+    const majorConditions = majorNames.map(majorName => 
+      sql`${mentorProfiles.major} LIKE ${`%${majorName}%`}`
+    );
+    conditions.push(or(...majorConditions));
+  }
+  
+  // 지역 기반 필터링
+  if (regions && regions.length > 0) {
+    const validRegions = ["seoul", "gyeonggi", "incheon", "gangwon", "chungcheong", "jeolla", "gyeongsang", "jeju"];
+    const filteredRegions = regions.filter(r => validRegions.includes(r)) as any[];
+    if (filteredRegions.length > 0) {
+      conditions.push(inArray(mentorProfiles.region, filteredRegions));
+    }
+  }
   conditions.push(eq(mentorProfiles.isActive, true));
   conditions.push(eq(mentorProfiles.verificationStatus, "approved"));
   

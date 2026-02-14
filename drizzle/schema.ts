@@ -60,6 +60,8 @@ export const mentorProfiles = mysqlTable("mentor_profiles", {
   averageRating: decimal("averageRating", { precision: 3, scale: 2 }).default("0.00"),
   // Total number of reviews
   reviewCount: int("reviewCount").default(0).notNull(),
+  // Specialty services (stored as JSON array string)
+  specialtyServices: text("specialtyServices"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });

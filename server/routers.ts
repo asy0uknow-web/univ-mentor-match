@@ -705,11 +705,11 @@ export const appRouter = router({
 
     getByFieldAndRegion: publicProcedure
       .input(z.object({
-        field: z.enum(["engineering", "natural_science", "business", "humanities", "education", "liberal_arts", "medicine"]).optional(),
-        region: z.enum(["seoul", "gyeonggi", "incheon", "gangwon", "chungcheong", "jeolla", "gyeongsang", "jeju"]).optional(),
+        fields: z.array(z.string()).optional(),
+        regions: z.array(z.string()).optional(),
       }))
       .query(async ({ input }) => {
-        return await getMentorsByFieldAndRegion(input.field, input.region);
+        return await getMentorsByFieldAndRegion(input.fields, input.regions);
       }),
   }),
 

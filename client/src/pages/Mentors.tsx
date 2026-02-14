@@ -32,12 +32,14 @@ const GRADES = [
 export default function Mentors() {
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
-  const [selectedRegion, setSelectedRegion] = useState<string>("all");
+  const [selectedRegions, setSelectedRegions] = useState<string[]>([]);
   const [selectedMajors, setSelectedMajors] = useState<string[]>([]);
   const [showMajorPanel, setShowMajorPanel] = useState(false);
   const [tempSelectedMajors, setTempSelectedMajors] = useState<string[]>([]);
+  const [majorSearchTerm, setMajorSearchTerm] = useState("");
   const [showRegionPanel, setShowRegionPanel] = useState(false);
-  const [tempSelectedRegion, setTempSelectedRegion] = useState<string>("all");
+  const [tempSelectedRegions, setTempSelectedRegions] = useState<string[]>([]);
+  const [regionSearchTerm, setRegionSearchTerm] = useState("");
 
   useEffect(() => {
     setPageMeta(PAGE_META.mentors);
@@ -57,35 +59,60 @@ export default function Mentors() {
   // 학과 패널 열기
   const openMajorPanel = () => {
     setTempSelectedMajors(selectedMajors);
+    setMajorSearchTerm("");
     setShowMajorPanel(true);
   };
 
   // 학과 패널 닫기
   const closeMajorPanel = () => {
     setShowMajorPanel(false);
+    setMajorSearchTerm("");
   };
 
   // 지역 패널 열기
   const openRegionPanel = () => {
-    setTempSelectedRegion(selectedRegion);
+    setTempSelectedRegions(selectedRegions);
     setShowRegionPanel(true);
   };
 
   // 지역 패널 닫기
   const closeRegionPanel = () => {
     setShowRegionPanel(false);
+    setRegionSearchTerm("");
   };
 
   // 지역 선택 적용
   const applyRegionSelection = () => {
-    setSelectedRegion(tempSelectedRegion);
+    setSelectedRegions(tempSelectedRegions);
     setShowRegionPanel(false);
   };
 
   // 지역 선택 초기화
   const resetRegionSelection = () => {
-    setTempSelectedRegion("all");
+    setTempSelectedRegions([]);
   };
+
+  // 지역 개별 선택/제거
+  const toggleRegion = (regionValue: string) => {
+    setTempSelectedRegions((prev) =>
+      prev.includes(regionValue)
+        ? prev.filter((r) => r !== regionValue)
+        : [...prev, regionValue]
+    );
+  };
+
+  // 학과 검색 필터링
+  const filteredMajorsBySearch = COLLEGES.map((college) => ({
+    ...college,
+    majors: college.majors.filter((major) =>
+      major.name.toLowerCase().includes(majorSearchTerm.toLowerCase())
+    ),
+  })).filter((college) => college.majors.length > 0 || majorSearchTerm === "");
+
+  // 지역 검색 필터링
+  const filteredRegionsBySearch = REGIONS.filter((region) =>
+    region.label.toLowerCase().includes(regionSearchTerm.toLowerCase())
+  );
 
   // 계열 전체 선택
   const selectCollege = (collegeId: string) => {
@@ -120,7 +147,7 @@ export default function Mentors() {
   };
 
   // 필터 조건 확인
-  const hasFilter = selectedRegion !== "all" || selectedMajors.length > 0;
+  const hasFilter = selectedRegions.length > 0 || selectedMajors.length > 0;
 
   const { data: allMentors, isLoading: isLoadingAll } = trpc.mentor.listAll.useQuery(
     undefined,
@@ -129,8 +156,8 @@ export default function Mentors() {
 
   const { data: filteredByServer, isLoading: isLoadingFiltered } = trpc.mentorSearch.getByFieldAndRegion.useQuery(
     {
-      field: selectedMajors.length > 0 ? (selectedMajors as any) : undefined,
-      region: selectedRegion !== "all" ? selectedRegion as any : undefined,
+      fields: selectedMajors.length > 0 ? selectedMajors : undefined,
+      regions: selectedRegions.length > 0 ? selectedRegions : undefined,
     },
     { enabled: hasFilter }
   );
@@ -205,7 +232,7 @@ export default function Mentors() {
             <Button 
               onClick={() => {
                 setSearchTerm("");
-                setSelectedRegion("all");
+                setSelectedRegions([]);
                 setSelectedMajors([]);
                 setDebouncedSearch("");
               }}
@@ -232,9 +259,20 @@ export default function Mentors() {
                 </button>
               </div>
 
+              {/* 검색창 */}
+              <div className="p-4 border-b border-border">
+                <input
+                  type="text"
+                  placeholder="학과 검색..."
+                  value={majorSearchTerm}
+                  onChange={(e) => setMajorSearchTerm(e.target.value)}
+                  className="w-full px-3 py-2 text-xs bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+              </div>
+
               {/* 계열 및 학과 목록 (스크롤 가능) */}
               <div className="flex-1 overflow-y-auto p-4 space-y-4">
-                {COLLEGES.map((college) => (
+                {filteredMajorsBySearch.map((college) => (
                   <div key={college.id}>
                     <button
                       onClick={() => selectCollege(college.id)}
@@ -269,14 +307,23 @@ export default function Mentors() {
                     선택된 학과 ({tempSelectedMajors.length})
                   </p>
                   <div className="flex flex-wrap gap-2">
-                    {getMajorNames(tempSelectedMajors).map((majorName, idx) => (
-                      <span
-                        key={idx}
-                        className="inline-block px-2 py-1 bg-primary text-primary-foreground text-xs rounded-full"
-                      >
-                        {majorName}
-                      </span>
-                    ))}
+                    {tempSelectedMajors.map((majorId) => {
+                      const majorName = getMajorNames([majorId])[0];
+                      return (
+                        <div
+                          key={majorId}
+                          className="inline-flex items-center gap-1 px-2 py-1 bg-primary text-primary-foreground text-xs rounded-full"
+                        >
+                          <span>{majorName}</span>
+                          <button
+                            onClick={() => toggleMajor(majorId)}
+                            className="ml-1 hover:opacity-70 transition-opacity"
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               )}
@@ -317,30 +364,28 @@ export default function Mentors() {
                 </button>
               </div>
 
+              {/* 검색창 */}
+              <div className="p-4 border-b border-border">
+                <input
+                  type="text"
+                  placeholder="지역 검색..."
+                  value={regionSearchTerm}
+                  onChange={(e) => setRegionSearchTerm(e.target.value)}
+                  className="w-full px-3 py-2 text-xs bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+              </div>
+
               {/* 지역 목록 (스크롤 가능) */}
               <div className="flex-1 overflow-y-auto p-4 space-y-2">
-                <label className="flex items-center gap-2 p-2 rounded-md hover:bg-muted cursor-pointer transition-colors">
-                  <input
-                    type="radio"
-                    name="region"
-                    value="all"
-                    checked={tempSelectedRegion === "all"}
-                    onChange={(e) => setTempSelectedRegion(e.target.value)}
-                    className="rounded"
-                  />
-                  <span className="text-xs">전체 지역</span>
-                </label>
-                {REGIONS.map((region) => (
+                {filteredRegionsBySearch.map((region) => (
                   <label
                     key={region.value}
                     className="flex items-center gap-2 p-2 rounded-md hover:bg-muted cursor-pointer transition-colors"
                   >
                     <input
-                      type="radio"
-                      name="region"
-                      value={region.value}
-                      checked={tempSelectedRegion === region.value}
-                      onChange={(e) => setTempSelectedRegion(e.target.value)}
+                      type="checkbox"
+                      checked={tempSelectedRegions.includes(region.value)}
+                      onChange={() => toggleRegion(region.value)}
                       className="rounded"
                     />
                     <span className="text-xs">{region.label}</span>
@@ -349,13 +394,27 @@ export default function Mentors() {
               </div>
 
               {/* 선택된 지역 표시 (고정) */}
-              {tempSelectedRegion !== "all" && (
+              {tempSelectedRegions.length > 0 && (
                 <div className="border-t border-border p-4 bg-muted/50">
-                  <p className="text-xs font-medium text-muted-foreground mb-2">선택된 지역</p>
+                  <p className="text-xs font-medium text-muted-foreground mb-2">선택된 지역 ({tempSelectedRegions.length})</p>
                   <div className="flex flex-wrap gap-2">
-                    <span className="inline-block px-2 py-1 bg-primary text-primary-foreground text-xs rounded-full">
-                      {REGIONS.find((r) => r.value === tempSelectedRegion)?.label || tempSelectedRegion}
-                    </span>
+                    {tempSelectedRegions.map((regionValue) => {
+                      const regionName = REGIONS.find((r) => r.value === regionValue)?.label || regionValue;
+                      return (
+                        <div
+                          key={regionValue}
+                          className="inline-flex items-center gap-1 px-2 py-1 bg-primary text-primary-foreground text-xs rounded-full"
+                        >
+                          <span>{regionName}</span>
+                          <button
+                            onClick={() => toggleRegion(regionValue)}
+                            className="ml-1 hover:opacity-70 transition-opacity"
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               )}
