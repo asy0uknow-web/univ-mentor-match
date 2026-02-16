@@ -27,17 +27,21 @@ export default function Messages() {
   const toUserId = Number(to);
   if (isNaN(toUserId)) return;
 
-  // conversations 계산
-  const conversationExists = inbox.some(
+  // inbox에 해당 유저와의 메시지가 실제로 존재하는지 확인
+  const exists = inbox.some(
     (msg) =>
       msg.senderId === toUserId ||
       msg.recipientId === toUserId
   );
 
-  if (conversationExists) {
+  if (exists) {
     setSelectedConversation(toUserId);
+
+    // URL 정리 (선택 후 ?to 제거)
+    window.history.replaceState({}, "", "/messages");
   }
 }, [isAuthenticated, inbox]);
+
   
   const { data: inbox } = trpc.message.getInbox.useQuery(undefined, {
     enabled: isAuthenticated,
