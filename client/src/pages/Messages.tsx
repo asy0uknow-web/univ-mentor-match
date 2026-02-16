@@ -7,6 +7,7 @@ import { Link, useLocation } from "wouter";
 import { GraduationCap, Send, MessageSquare, Check, X, Clock, CheckCircle2, Trash2, ChevronDown } from "lucide-react";
 import BugReportModal from "@/components/BugReportModal";
 import { useState, useEffect, useRef } from "react";
+import { useAuth } from "@/_core/hooks/useAuth";
 import { getLoginUrl } from "@/const";
 import { toast } from "sonner";
 import { format } from "date-fns";
@@ -36,14 +37,30 @@ export default function Messages() {
 
   const [messageContent, setMessageContent] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const { data: inbox } = trpc.message.getInbox.useQuery(undefined, {
+
+  // 모든 메시지 조회
+  const { data: allMessages } = trpc.message.getInbox.useQuery(undefined, {
     enabled: isAuthenticated,
   });
 
+  // 선택된 대화의 메시지 조회
   const { data: conversation } = trpc.message.getConversation.useQuery(
     { otherUserId: selectedConversation || 0 },
     { enabled: isAuthenticated && selectedConversation !== null }
   );
+
+  // 대화 목록 생성 (모든 메시지에서 고유한 상대방 추출)
+  const conversations = allMessages
+    ? Array.from(
+        new Map(
+          allMessages.map((msg) => {
+            const otherUserId =
+              msg.senderId === user?.id ? msg.recipientId : msg.senderId;
+            return [otherUserId, msg];
+          })
+        ).values()
+      )
+    : [];
 
   // 자동 스크롤 - 새 메시지가 추가되면 하단으로 스크롤
   const scrollToBottom = () => {
@@ -79,28 +96,6 @@ export default function Messages() {
     },
   });
 
-  const acceptBookingMutation = trpc.booking.acceptBooking.useMutation({
-    onSuccess: () => {
-      toast.success("상담 신청을 수락했습니다.");
-      utils.message.getConversation.invalidate();
-      utils.message.getInbox.invalidate();
-    },
-    onError: (error) => {
-      toast.error(`상담 신청 수락 실패: ${error.message}`);
-    },
-  });
-
-  const rejectBookingMutation = trpc.booking.rejectBooking.useMutation({
-    onSuccess: () => {
-      toast.success("상담 신청을 거절했습니다.");
-      utils.message.getConversation.invalidate();
-      utils.message.getInbox.invalidate();
-    },
-    onError: (error) => {
-      toast.error(`상담 신청 거절 실패: ${error.message}`);
-    },
-  });
-
   const handleSendMessage = () => {
     if (!messageContent.trim() || !selectedConversation) {
       toast.error("메시지 내용을 입력해주세요.");
@@ -114,6 +109,11 @@ export default function Messages() {
   };
 
   const [showBugReport, setShowBugReport] = useState(false);
+
+  // 상대방 정보 찾기
+  const getOtherUserId = (msg: any) => {
+    return msg.senderId === user?.id ? msg.recipientId : msg.senderId;
+  };
 
   return (
     <PageLayout>
@@ -130,41 +130,40 @@ export default function Messages() {
                 <CardTitle className="text-lg">대화 목록</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
-                {inbox && inbox.length > 0 ? (
-                  inbox.map((message) => (
-                    <button
-                      key={message.otherUser.id}
-                      onClick={() => setSelectedConversation(message.otherUser.id)}
-                      className={`w-full text-left p-3 rounded-lg border transition-colors ${
-                        selectedConversation === message.otherUser.id
-                          ? "border-primary bg-primary/10"
-                          : "border-border hover:bg-muted"
-                      }`}
-                    >
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1 min-w-0">
-                          <p className="font-semibold text-sm truncate">
-                            To: {message.otherUser.name || `User ${message.otherUser.id}`}
-                          </p>
-                          <p className="text-xs text-muted-foreground truncate">
-                            {message.lastMessage?.content || "메시지 없음"}
-                          </p>
-                          <p className="text-xs text-muted-foreground mt-1">
-                            {message.lastMessage?.createdAt
-                              ? format(new Date(message.lastMessage.createdAt), "MM.dd HH:mm", {
-                                  locale: ko,
-                                })
-                              : ""}
-                          </p>
-                        </div>
-                        {message.unreadCount > 0 && (
-                          <div className="ml-2 flex-shrink-0 w-5 h-5 rounded-full bg-primary text-white text-xs flex items-center justify-center">
-                            {message.unreadCount}
+                {conversations && conversations.length > 0 ? (
+                  conversations.map((message) => {
+                    const otherUserId = getOtherUserId(message);
+                    return (
+                      <button
+                        key={otherUserId}
+                        onClick={() => setSelectedConversation(otherUserId)}
+                        className={`w-full text-left p-3 rounded-lg border transition-colors ${
+                          selectedConversation === otherUserId
+                            ? "border-primary bg-primary/10"
+                            : "border-border hover:bg-muted"
+                        }`}
+                      >
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1 min-w-0">
+                            <p className="font-semibold text-sm truncate">
+                              To: User {otherUserId}
+                            </p>
+                            <p className="text-xs text-muted-foreground truncate">
+                              {message.content || "메시지 없음"}
+                            </p>
+                            <p className="text-xs text-muted-foreground mt-1">
+                              {format(new Date(message.createdAt), "MM.dd HH:mm", {
+                                locale: ko,
+                              })}
+                            </p>
                           </div>
-                        )}
-                      </div>
-                    </button>
-                  ))
+                          {!message.isRead && message.recipientId === user?.id && (
+                            <div className="ml-2 flex-shrink-0 w-2 h-2 rounded-full bg-primary" />
+                          )}
+                        </div>
+                      </button>
+                    );
+                  })
                 ) : (
                   <p className="text-muted-foreground text-sm text-center py-8">
                     아직 메시지가 없습니다
@@ -180,113 +179,37 @@ export default function Messages() {
               <Card className="flex flex-col h-full" style={{ minHeight: "600px" }}>
                 <CardHeader>
                   <CardTitle className="text-lg">대화</CardTitle>
-                  <CardDescription>
-                    {inbox
-                      ?.find((m) => m.otherUser.id === selectedConversation)
-                      ?.otherUser.name || `User ${selectedConversation}`}
-                    와의 대화
-                  </CardDescription>
+                  <CardDescription>User {selectedConversation}와의 대화</CardDescription>
                 </CardHeader>
                 <CardContent className="flex-1 overflow-y-auto space-y-4 mb-4">
                   {conversation && conversation.length > 0 ? (
                     conversation.map((msg) => (
                       <div
-                        key={msg.message.id}
+                        key={msg.id}
                         className={`flex ${
-                          msg.message.senderId === user?.id
+                          msg.senderId === user?.id
                             ? "justify-end"
                             : "justify-start"
                         }`}
                       >
                         <div
                           className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
-                            msg.message.senderId === user?.id
+                            msg.senderId === user?.id
                               ? "bg-primary text-white"
                               : "bg-muted"
                           }`}
                         >
-                          {msg.booking ? (
-                            <div className="space-y-2">
-                              <div className="text-sm font-semibold">상담 신청</div>
-                              <div className="text-xs space-y-1">
-                                <p>
-                                  <span className="font-medium">종류:</span>{" "}
-                                  {msg.booking.consultationType === "resume_consulting"
-                                    ? "생기부 컨설팅"
-                                    : msg.booking.consultationType ===
-                                        "career_counseling"
-                                      ? "진로상담"
-                                      : msg.booking.consultationType ===
-                                          "academic_management"
-                                        ? "학업관리"
-                                        : "대학탐방"}
-                                </p>
-                                <p>
-                                  <span className="font-medium">날짜:</span>{" "}
-                                  {format(
-                                    new Date(msg.booking.scheduledAt),
-                                    "MM.dd HH:mm",
-                                    { locale: ko }
-                                  )}
-                                </p>
-                                <p>
-                                  <span className="font-medium">상태:</span>{" "}
-                                  {msg.booking.status === "pending"
-                                    ? "대기중"
-                                    : msg.booking.status === "accepted"
-                                      ? "수락됨"
-                                      : "거절됨"}
-                                </p>
-                              </div>
-                              {msg.booking.status === "pending" &&
-                                msg.message.senderId !== user?.id && (
-                                  <div className="flex gap-2 mt-2">
-                                    <button
-                                      onClick={() =>
-                                        acceptBookingMutation.mutate({
-                                          bookingId: msg.booking.id,
-                                        })
-                                      }
-                                      disabled={
-                                        acceptBookingMutation.isPending
-                                      }
-                                      className="flex-1 px-2 py-1 bg-green-600 hover:bg-green-700 text-white text-xs rounded transition-colors disabled:opacity-50"
-                                    >
-                                      <Check className="h-3 w-3 inline mr-1" />
-                                      수락
-                                    </button>
-                                    <button
-                                      onClick={() =>
-                                        rejectBookingMutation.mutate({
-                                          bookingId: msg.booking.id,
-                                        })
-                                      }
-                                      disabled={
-                                        rejectBookingMutation.isPending
-                                      }
-                                      className="flex-1 px-2 py-1 bg-red-600 hover:bg-red-700 text-white text-xs rounded transition-colors disabled:opacity-50"
-                                    >
-                                      <X className="h-3 w-3 inline mr-1" />
-                                      거절
-                                    </button>
-                                  </div>
-                                )}
-                            </div>
-                          ) : (
-                            <p className="text-sm">{msg.message.content}</p>
-                          )}
+                          <p className="text-sm">{msg.content}</p>
                           <p
                             className={`text-xs mt-1 ${
-                              msg.message.senderId === user?.id
+                              msg.senderId === user?.id
                                 ? "text-primary-foreground/70"
                                 : "text-muted-foreground"
                             }`}
                           >
-                            {format(
-                              new Date(msg.message.createdAt),
-                              "HH:mm",
-                              { locale: ko }
-                            )}
+                            {format(new Date(msg.createdAt), "HH:mm", {
+                              locale: ko,
+                            })}
                           </p>
                         </div>
                       </div>
