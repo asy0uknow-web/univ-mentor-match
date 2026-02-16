@@ -37,7 +37,7 @@ export default function Messages() {
   if (conversationExists) {
     setSelectedConversation(toUserId);
   }
-  }, [isAuthenticated, inbox]);
+}, [isAuthenticated, inbox]);
   
   const { data: inbox } = trpc.message.getInbox.useQuery(undefined, {
     enabled: isAuthenticated,
