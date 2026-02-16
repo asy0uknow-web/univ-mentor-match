@@ -18,7 +18,7 @@ import { setPageMeta, PAGE_META } from "@/lib/seo";
 export default function Messages() {
   
   useEffect(() => {
-  if (!isAuthenticated || !inbox) return;
+  if (!isAuthenticated) return;
 
   const params = new URLSearchParams(window.location.search);
   const to = params.get("to");
@@ -27,19 +27,14 @@ export default function Messages() {
   const toUserId = Number(to);
   if (isNaN(toUserId)) return;
 
-  const exists = inbox.some(
-    (msg) =>
-      msg.senderId === toUserId ||
-      msg.recipientId === toUserId
-  );
+  // 🔥 무조건 선택
+  setSelectedConversation(toUserId);
 
-  if (exists) {
-    setSelectedConversation(toUserId);
+  // URL 정리 (선택 후 ?to 제거)
+  window.history.replaceState({}, "", "/messages");
 
-    // URL 정리 (선택 후 ?to 제거)
-    window.history.replaceState({}, "", "/messages");
-  }
-}, [isAuthenticated, inbox]);
+}, [isAuthenticated]);
+
 
   
   const { data: inbox } = trpc.message.getInbox.useQuery(undefined, {
