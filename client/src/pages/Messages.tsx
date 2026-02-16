@@ -22,21 +22,22 @@ export default function Messages() {
 
   const params = new URLSearchParams(window.location.search);
   const to = params.get("to");
-
   if (!to) return;
 
   const toUserId = Number(to);
   if (isNaN(toUserId)) return;
 
-  // inbox에 해당 유저 대화가 있으면 선택
-  const exists = Object.keys(conversations).some(
-    (userId) => Number(userId) === toUserId
+  // conversations 계산
+  const conversationExists = inbox.some(
+    (msg) =>
+      msg.senderId === toUserId ||
+      msg.recipientId === toUserId
   );
 
-  if (exists) {
+  if (conversationExists) {
     setSelectedConversation(toUserId);
   }
-}, [isAuthenticated, inbox]);
+  }, [isAuthenticated, inbox]);
   
   const { data: inbox } = trpc.message.getInbox.useQuery(undefined, {
     enabled: isAuthenticated,
