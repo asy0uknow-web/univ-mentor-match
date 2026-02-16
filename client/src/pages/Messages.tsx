@@ -18,25 +18,25 @@ import { setPageMeta, PAGE_META } from "@/lib/seo";
 export default function Messages() {
   
   useEffect(() => {
-    setPageMeta(PAGE_META.messages);
-  }, []);
-  const { user, isAuthenticated } = useAuth();
-  const [selectedConversation, setSelectedConversation] = useState<number | null>(null);
-  const [messageContent, setMessageContent] = useState("");
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    if (!isAuthenticated) return;
+  if (!isAuthenticated || !inbox) return;
 
-    const params = new URLSearchParams(window.location.search);
-    const to = params.get("to");
+  const params = new URLSearchParams(window.location.search);
+  const to = params.get("to");
 
-    if (to) {
-      const toUserId = Number(to);
-      if (!isNaN(toUserId)) {
-        setSelectedConversation(toUserId);
-      }
-    }
-  }, [isAuthenticated]);
+  if (!to) return;
+
+  const toUserId = Number(to);
+  if (isNaN(toUserId)) return;
+
+  // inbox에 해당 유저 대화가 있으면 선택
+  const exists = Object.keys(conversations).some(
+    (userId) => Number(userId) === toUserId
+  );
+
+  if (exists) {
+    setSelectedConversation(toUserId);
+  }
+}, [isAuthenticated, inbox]);
   
   const { data: inbox } = trpc.message.getInbox.useQuery(undefined, {
     enabled: isAuthenticated,
