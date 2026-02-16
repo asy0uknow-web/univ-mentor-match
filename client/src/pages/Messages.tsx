@@ -27,7 +27,6 @@ export default function Messages() {
   const toUserId = Number(to);
   if (isNaN(toUserId)) return;
 
-  // inbox에 해당 유저와의 메시지가 실제로 존재하는지 확인
   const exists = inbox.some(
     (msg) =>
       msg.senderId === toUserId ||
