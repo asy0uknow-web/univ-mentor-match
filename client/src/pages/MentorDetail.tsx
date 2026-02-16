@@ -85,7 +85,7 @@ export default function MentorDetail() {
       toast.success("메시지가 전송되었습니다.");
       setStudentMessage("");
       setTimeout(() => {
-        setLocation(`/messages?to=${mentor.user.id}`);
+        setLocation(`/messages?mentorId=${mentor?.profile.id}`);
       }, 500);
     },
     onError: (error) => {

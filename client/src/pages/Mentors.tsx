@@ -466,16 +466,26 @@ function MentorCard({
   mentor,
 }: {
   mentor: {
-    user: { id: string; name: string | null };
+    user: { id: number; name: string | null };
     profile: {
-      id: string;
+      id: number;
+      userId: number;
       university: string;
       major: string;
       grade: string;
-      region: string;
-      bio: string;
-      isVerified: boolean;
-      specialtyServices?: string;
+      region: string | null;
+      bio: string | null;
+      field: string | null;
+      hourlyRate: string;
+      availableSlots: string | null;
+      isActive: boolean;
+      verificationStatus: string;
+      isDeleted: boolean;
+      averageRating: string | null;
+      reviewCount: number;
+      specialtyServices: string | null;
+      createdAt: Date;
+      updatedAt: Date;
     };
   };
 }) {
@@ -531,7 +541,7 @@ function MentorCard({
           {mentor.profile.bio}
         </p>
 
-        {mentor.profile.isVerified && (
+        {mentor.profile.verificationStatus === 'approved' && (
           <div className="mt-2 text-xs text-green-600 font-medium">✓ 인증됨</div>
         )}
     </Link>

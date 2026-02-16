@@ -1,10 +1,9 @@
-import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { trpc } from "@/lib/trpc";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { GraduationCap, Send, MessageSquare, Check, X, Clock, CheckCircle2, Trash2, ChevronDown } from "lucide-react";
 import BugReportModal from "@/components/BugReportModal";
 import { useState, useEffect, useRef } from "react";
@@ -16,27 +15,27 @@ import { PageLayout } from "@/components/layout";
 import { setPageMeta, PAGE_META } from "@/lib/seo";
 
 export default function Messages() {
-  
+  const [location] = useLocation();
+
   useEffect(() => {
-  if (!isAuthenticated) return;
+    setPageMeta(PAGE_META.messages);
+  }, []);
+  const { user, isAuthenticated } = useAuth();
+  const [selectedConversation, setSelectedConversation] = useState<number | null>(null);
 
-  const params = new URLSearchParams(window.location.search);
-  const to = params.get("to");
-  if (!to) return;
+  // URL 쿼리 파라미터에서 멘토 ID 추출하여 자동 선택
+  useEffect(() => {
+    if (location.includes('?')) {
+      const params = new URLSearchParams(location.split('?')[1]);
+      const mentorId = params.get('mentorId');
+      if (mentorId) {
+        setSelectedConversation(parseInt(mentorId, 10));
+      }
+    }
+  }, [location]);
 
-  const toUserId = Number(to);
-  if (isNaN(toUserId)) return;
-
-  // 🔥 무조건 선택
-  setSelectedConversation(toUserId);
-
-  // URL 정리 (선택 후 ?to 제거)
-  window.history.replaceState({}, "", "/messages");
-
-}, [isAuthenticated]);
-
-
-  
+  const [messageContent, setMessageContent] = useState("");
+  const messagesEndRef = useRef<HTMLDivElement>(null);
   const { data: inbox } = trpc.message.getInbox.useQuery(undefined, {
     enabled: isAuthenticated,
   });
@@ -112,290 +111,245 @@ export default function Messages() {
       recipientId: selectedConversation,
       content: messageContent,
     });
-    
-    // 메시지 전송 후 입력창 포커스 유지
-    setTimeout(() => {
-      scrollToBottom();
-    }, 150);
   };
 
-  const handleAcceptBooking = (bookingId: number) => {
-    acceptBookingMutation.mutate({ bookingId });
-  };
-
-  const handleRejectBooking = (bookingId: number) => {
-    rejectBookingMutation.mutate({ bookingId });
-  };
-
-  if (!isAuthenticated) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Card className="max-w-md">
-          <CardHeader>
-            <CardTitle>로그인이 필요합니다</CardTitle>
-            <CardDescription>메시지를 보려면 로그인해주세요.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <a href={getLoginUrl()}>
-              <Button className="w-full">로그인</Button>
-            </a>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
-  // Group messages by conversation
-  const conversations = inbox?.reduce((acc: any, msg) => {
-    const otherUserId = msg.senderId === user?.id ? msg.recipientId : msg.senderId;
-    if (!acc[otherUserId]) {
-      acc[otherUserId] = [];
-    }
-    acc[otherUserId].push(msg);
-    return acc;
-  }, {}) || {};
-
-  // Find related booking from conversation
-  const selectedConversationMessages = selectedConversation
-    ? conversations[selectedConversation] || []
-    : [];
-  
-  const relatedBooking = selectedConversationMessages.find((msg: any) => msg.bookingId)?.bookingId;
-
-  // Extract user name from first message
-  const getOtherUserName = (userId: number) => {
-    const msgs: any[] = conversations[userId] || [];
-    if (msgs.length === 0) return `User ${userId}`;
-    const firstMsg = msgs[0];
-    // Try to extract name from message content if it's a consultation request
-    if (firstMsg.content.includes("[상담 신청]")) {
-      return "상담 신청";
-    }
-    return `User ${userId}`;
-  };
+  const [showBugReport, setShowBugReport] = useState(false);
 
   return (
     <PageLayout>
       {/* Content */}
-      <div className="container mx-auto px-4 py-8">
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold">메시지</h1>
-          <p className="text-muted-foreground mt-1">멘토와의 상담 신청 및 메시지를 관리하세요</p>
-        </div>
+      <div className="container mx-auto px-4 py-12">
+        <h1 className="text-2xl sm:text-4xl font-bold mb-2">메시지</h1>
+        <p className="text-muted-foreground mb-6">멘토와의 상담 신청 및 메시지를 관리하세요</p>
 
-        <div className="grid lg:grid-cols-3 gap-6">
+        <div className="grid lg:grid-cols-3 gap-8">
           {/* Conversations List */}
           <div className="lg:col-span-1">
-            <Card className="h-[700px] flex flex-col">
+            <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <MessageSquare className="h-5 w-5" />
-                  대화 목록
-                </CardTitle>
+                <CardTitle className="text-lg">대화 목록</CardTitle>
               </CardHeader>
-              <CardContent className="flex-1 overflow-y-auto">
-                {Object.keys(conversations).length > 0 ? (
-                  <div className="space-y-2">
-                    {Object.entries(conversations).map(([userId, msgs]: [string, any]) => {
-                      const lastMsg = msgs[0];
-                      const isSelected = parseInt(userId) === selectedConversation;
-                      const isConsultationRequest = lastMsg.content.includes("[상담 신청]");
-                      
-                      return (
-                        <button
-                          key={userId}
-                          onClick={() => setSelectedConversation(parseInt(userId))}
-                          className={`w-full text-left p-3 rounded-lg transition-all border-2 ${
-                            isSelected
-                              ? "bg-primary/10 border-primary"
-                              : "bg-muted/50 border-transparent hover:bg-muted/80"
-                          }`}
-                        >
-                          <div className="flex items-start justify-between gap-2">
-                            <div className="flex-1 min-w-0">
-                              <p className="font-semibold text-sm">
-                                {lastMsg.senderId === user?.id
-                                  ? `To: ${getOtherUserName(parseInt(userId))}`
-                                  : `From: ${getOtherUserName(parseInt(userId))}`}
-                              </p>
-                              <p className="text-xs opacity-75 truncate line-clamp-2">
-                                {isConsultationRequest
-                                  ? "상담 신청 메시지"
-                                  : lastMsg.content}
-                              </p>
-                            </div>
-                            {isConsultationRequest && (
-                              <Clock className="h-4 w-4 text-amber-500 flex-shrink-0 mt-1" />
-                            )}
-                          </div>
-                          <p className="text-xs opacity-50 mt-2">
-                            {format(new Date(lastMsg.createdAt), "PPp", { locale: ko })}
+              <CardContent className="space-y-2">
+                {inbox && inbox.length > 0 ? (
+                  inbox.map((message) => (
+                    <button
+                      key={message.otherUser.id}
+                      onClick={() => setSelectedConversation(message.otherUser.id)}
+                      className={`w-full text-left p-3 rounded-lg border transition-colors ${
+                        selectedConversation === message.otherUser.id
+                          ? "border-primary bg-primary/10"
+                          : "border-border hover:bg-muted"
+                      }`}
+                    >
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1 min-w-0">
+                          <p className="font-semibold text-sm truncate">
+                            To: {message.otherUser.name || `User ${message.otherUser.id}`}
                           </p>
-                        </button>
-                      );
-                    })}
-                  </div>
+                          <p className="text-xs text-muted-foreground truncate">
+                            {message.lastMessage?.content || "메시지 없음"}
+                          </p>
+                          <p className="text-xs text-muted-foreground mt-1">
+                            {message.lastMessage?.createdAt
+                              ? format(new Date(message.lastMessage.createdAt), "MM.dd HH:mm", {
+                                  locale: ko,
+                                })
+                              : ""}
+                          </p>
+                        </div>
+                        {message.unreadCount > 0 && (
+                          <div className="ml-2 flex-shrink-0 w-5 h-5 rounded-full bg-primary text-white text-xs flex items-center justify-center">
+                            {message.unreadCount}
+                          </div>
+                        )}
+                      </div>
+                    </button>
+                  ))
                 ) : (
-                  <p className="text-muted-foreground text-center py-8">
-                    아직 메시지가 없습니다.
+                  <p className="text-muted-foreground text-sm text-center py-8">
+                    아직 메시지가 없습니다
                   </p>
                 )}
               </CardContent>
             </Card>
           </div>
 
-          {/* Conversation View */}
+          {/* Conversation Detail */}
           <div className="lg:col-span-2">
             {selectedConversation ? (
-              <Card className="flex flex-col h-[700px]">
-                <CardHeader className="border-b">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <CardTitle>대화</CardTitle>
-                      <CardDescription>User {selectedConversation}와의 대화</CardDescription>
-                    </div>
-                  </div>
+              <Card className="flex flex-col h-full" style={{ minHeight: "600px" }}>
+                <CardHeader>
+                  <CardTitle className="text-lg">대화</CardTitle>
+                  <CardDescription>
+                    {inbox
+                      ?.find((m) => m.otherUser.id === selectedConversation)
+                      ?.otherUser.name || `User ${selectedConversation}`}
+                    와의 대화
+                  </CardDescription>
                 </CardHeader>
-                
-                {/* Messages */}
-                <CardContent className="flex-1 overflow-y-auto py-4 space-y-4 flex flex-col">
+                <CardContent className="flex-1 overflow-y-auto space-y-4 mb-4">
                   {conversation && conversation.length > 0 ? (
-                    [...conversation].sort((a: any, b: any) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()).map((msg: any) => {
-                      const isConsultationRequest = msg.content.includes("[상담 신청]");
-                      const isSentByMe = msg.senderId === user?.id;
-                      
-                      return (
-                        <div key={msg.id}>
-                          {isConsultationRequest ? (
-                            // Consultation Request Message
-                            <div className={`flex ${isSentByMe ? "justify-end" : "justify-start"}`}>
-                              <div className={`max-w-md px-4 py-3 rounded-lg border-2 ${
-                                isSentByMe
-                                  ? "bg-primary/10 border-primary"
-                                  : "bg-amber-50 border-amber-200"
-                              }`}>
-                                <div className="flex items-center gap-2 mb-2">
-                                  <Clock className="h-4 w-4 text-amber-600" />
-                                  <p className="font-semibold text-sm text-amber-900">상담 신청</p>
-                                </div>
-                                <p className="text-sm whitespace-pre-wrap text-amber-900">
-                                  {msg.content}
+                    conversation.map((msg) => (
+                      <div
+                        key={msg.message.id}
+                        className={`flex ${
+                          msg.message.senderId === user?.id
+                            ? "justify-end"
+                            : "justify-start"
+                        }`}
+                      >
+                        <div
+                          className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
+                            msg.message.senderId === user?.id
+                              ? "bg-primary text-white"
+                              : "bg-muted"
+                          }`}
+                        >
+                          {msg.booking ? (
+                            <div className="space-y-2">
+                              <div className="text-sm font-semibold">상담 신청</div>
+                              <div className="text-xs space-y-1">
+                                <p>
+                                  <span className="font-medium">종류:</span>{" "}
+                                  {msg.booking.consultationType === "resume_consulting"
+                                    ? "생기부 컨설팅"
+                                    : msg.booking.consultationType ===
+                                        "career_counseling"
+                                      ? "진로상담"
+                                      : msg.booking.consultationType ===
+                                          "academic_management"
+                                        ? "학업관리"
+                                        : "대학탐방"}
                                 </p>
-                                <p className="text-xs opacity-75 mt-2">
-                                  {format(new Date(msg.createdAt), "p", { locale: ko })}
+                                <p>
+                                  <span className="font-medium">날짜:</span>{" "}
+                                  {format(
+                                    new Date(msg.booking.scheduledAt),
+                                    "MM.dd HH:mm",
+                                    { locale: ko }
+                                  )}
+                                </p>
+                                <p>
+                                  <span className="font-medium">상태:</span>{" "}
+                                  {msg.booking.status === "pending"
+                                    ? "대기중"
+                                    : msg.booking.status === "accepted"
+                                      ? "수락됨"
+                                      : "거절됨"}
                                 </p>
                               </div>
+                              {msg.booking.status === "pending" &&
+                                msg.message.senderId !== user?.id && (
+                                  <div className="flex gap-2 mt-2">
+                                    <button
+                                      onClick={() =>
+                                        acceptBookingMutation.mutate({
+                                          bookingId: msg.booking.id,
+                                        })
+                                      }
+                                      disabled={
+                                        acceptBookingMutation.isPending
+                                      }
+                                      className="flex-1 px-2 py-1 bg-green-600 hover:bg-green-700 text-white text-xs rounded transition-colors disabled:opacity-50"
+                                    >
+                                      <Check className="h-3 w-3 inline mr-1" />
+                                      수락
+                                    </button>
+                                    <button
+                                      onClick={() =>
+                                        rejectBookingMutation.mutate({
+                                          bookingId: msg.booking.id,
+                                        })
+                                      }
+                                      disabled={
+                                        rejectBookingMutation.isPending
+                                      }
+                                      className="flex-1 px-2 py-1 bg-red-600 hover:bg-red-700 text-white text-xs rounded transition-colors disabled:opacity-50"
+                                    >
+                                      <X className="h-3 w-3 inline mr-1" />
+                                      거절
+                                    </button>
+                                  </div>
+                                )}
                             </div>
                           ) : (
-                            // Regular Message
-                            <div className={`flex ${isSentByMe ? "justify-end" : "justify-start"}`}>
-                              <div className={`max-w-md px-4 py-2 rounded-lg ${
-                                isSentByMe
-                                  ? "bg-primary text-primary-foreground"
-                                  : "bg-muted"
-                              }`}>
-                                <p className="text-sm">{msg.content}</p>
-                                <p className="text-xs opacity-75 mt-1">
-                                  {format(new Date(msg.createdAt), "p", { locale: ko })}
-                                </p>
-                              </div>
-                            </div>
+                            <p className="text-sm">{msg.message.content}</p>
                           )}
+                          <p
+                            className={`text-xs mt-1 ${
+                              msg.message.senderId === user?.id
+                                ? "text-primary-foreground/70"
+                                : "text-muted-foreground"
+                            }`}
+                          >
+                            {format(
+                              new Date(msg.message.createdAt),
+                              "HH:mm",
+                              { locale: ko }
+                            )}
+                          </p>
                         </div>
-                      );
-                    })
+                      </div>
+                    ))
                   ) : (
-                    <p className="text-muted-foreground text-center py-8">
-                      대화를 시작해보세요.
-                    </p>
+                    <div className="flex items-center justify-center h-full text-muted-foreground">
+                      <MessageSquare className="h-8 w-8 mr-2" />
+                      <p>대화를 선택하여 메시지를 확인하세요.</p>
+                    </div>
                   )}
                   <div ref={messagesEndRef} />
                 </CardContent>
-
-                {/* Action Buttons for Consultation Request */}
-                {selectedConversationMessages.some((msg: any) => msg.content.includes("[상담 신청]")) && 
-                 selectedConversationMessages.some((msg: any) => msg.senderId !== user?.id) && (
-                  <div className="border-t border-border p-4 bg-amber-50">
-                    <p className="text-sm font-semibold text-amber-900 mb-3">상담 신청 응답</p>
-                    <div className="flex gap-2">
-                      <Button
-                        onClick={() => {
-                          // Find the booking ID from the consultation request message
-                          const consultationMsg = selectedConversationMessages.find(
-                            (msg: any) => msg.content.includes("[상담 신청]") && msg.senderId !== user?.id
-                          );
-                          if (consultationMsg?.bookingId) {
-                            handleAcceptBooking(consultationMsg.bookingId);
-                          }
-                        }}
-                        disabled={acceptBookingMutation.isPending}
-                        className="flex-1 bg-green-600 hover:bg-green-700"
-                      >
-                        <Check className="h-4 w-4 mr-2" />
-                        {acceptBookingMutation.isPending ? "처리 중..." : "수락"}
-                      </Button>
-                      <Button
-                        onClick={() => {
-                          const consultationMsg = selectedConversationMessages.find(
-                            (msg: any) => msg.content.includes("[상담 신청]") && msg.senderId !== user?.id
-                          );
-                          if (consultationMsg?.bookingId) {
-                            handleRejectBooking(consultationMsg.bookingId);
-                          }
-                        }}
-                        disabled={rejectBookingMutation.isPending}
-                        variant="outline"
-                        className="flex-1"
-                      >
-                        <X className="h-4 w-4 mr-2" />
-                        {rejectBookingMutation.isPending ? "처리 중..." : "거절"}
-                      </Button>
-                    </div>
-                  </div>
-                )}
-
-                {/* Message Input */}
-                <div className="border-t border-border p-4 space-y-3 bg-card">
-                  <Textarea
-                    placeholder="메시지를 입력하세요..."
-                    value={messageContent}
-                    onChange={(e) => setMessageContent(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" && e.ctrlKey) {
-                        handleSendMessage();
-                      }
-                    }}
-                    rows={3}
-                    className="resize-none"
-                  />
+                <div className="border-t border-border pt-4 px-6 pb-6">
                   <div className="flex gap-2">
+                    <Textarea
+                      placeholder="메시지를 입력하세요..."
+                      value={messageContent}
+                      onChange={(e) => setMessageContent(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (
+                          e.key === "Enter" &&
+                          (e.ctrlKey || e.metaKey)
+                        ) {
+                          handleSendMessage();
+                        }
+                      }}
+                      className="flex-1"
+                    />
                     <Button
                       onClick={handleSendMessage}
-                      disabled={sendMessageMutation.isPending || !messageContent.trim()}
-                      className="flex-1"
+                      disabled={
+                        sendMessageMutation.isPending ||
+                        !messageContent.trim()
+                      }
+                      size="sm"
                     >
-                      <Send className="h-4 w-4 mr-2" />
-                      {sendMessageMutation.isPending ? "전송 중..." : "메시지 전송"}
+                      <Send className="h-4 w-4" />
                     </Button>
                   </div>
-                  <p className="text-xs text-muted-foreground">
-                    Ctrl + Enter로도 전송할 수 있습니다.
+                  <p className="text-xs text-muted-foreground mt-2">
+                    Ctrl + Enter로 전송 중 입력합니다.
                   </p>
                 </div>
               </Card>
             ) : (
-              <Card className="h-[700px] flex items-center justify-center">
-                <CardContent className="text-center">
-                  <MessageSquare className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                  <p className="text-muted-foreground">
-                    대화를 선택하여 메시지를 확인하세요.
-                  </p>
+              <Card className="flex items-center justify-center" style={{ minHeight: "600px" }}>
+                <CardContent className="text-center text-muted-foreground">
+                  <MessageSquare className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                  <p>대화를 선택하여 메시지를 확인하세요.</p>
                 </CardContent>
               </Card>
             )}
           </div>
         </div>
       </div>
+
+      {/* Bug Report Modal */}
+      {showBugReport && (
+        <BugReportModal
+          isOpen={showBugReport}
+          onClose={() => setShowBugReport(false)}
+        />
+      )}
     </PageLayout>
   );
 }
