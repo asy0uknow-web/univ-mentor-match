@@ -16,7 +16,7 @@ import { PageLayout } from "@/components/layout";
 import { setPageMeta, PAGE_META } from "@/lib/seo";
 
 export default function Messages() {
-
+  
   useEffect(() => {
     setPageMeta(PAGE_META.messages);
   }, []);
@@ -24,6 +24,20 @@ export default function Messages() {
   const [selectedConversation, setSelectedConversation] = useState<number | null>(null);
   const [messageContent, setMessageContent] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!isAuthenticated) return;
+
+    const params = new URLSearchParams(window.location.search);
+    const to = params.get("to");
+
+    if (to) {
+      const toUserId = Number(to);
+      if (!isNaN(toUserId)) {
+        setSelectedConversation(toUserId);
+      }
+    }
+  }, [isAuthenticated]);
+  
   const { data: inbox } = trpc.message.getInbox.useQuery(undefined, {
     enabled: isAuthenticated,
   });
