@@ -16,6 +16,12 @@ import { toast } from "sonner";
 import { PageLayout } from "@/components/layout";
 import { setPageMeta, PAGE_META } from "@/lib/seo";
 
+// When jumping to /messages from another page (e.g., mentor detail), we store
+// the target user id in sessionStorage so Messages.tsx can auto-open the right
+// conversation.
+const OPEN_CONVERSATION_KEY = "univmatch:openConversationUserId";
+const DRAFT_MESSAGE_KEY = "univmatch:draftMessage";
+
 export default function MentorDetail() {
   const { id } = useParams();
   const { user, isAuthenticated } = useAuth();
@@ -80,20 +86,7 @@ export default function MentorDetail() {
   });
 
   const [, setLocation] = useLocation();
-  const sendMessageMutation = trpc.message.send.useMutation({
-    onSuccess: () => {
-      toast.success("메시지가 전송되었습니다.");
-      setStudentMessage("");
-      setTimeout(() => {
-        setLocation(`/messages?mentorId=${mentor?.profile.id}`);
-      }, 500);
-    },
-    onError: (error) => {
-      toast.error(`메시지 전송 실패: ${error.message}`);
-    },
-  });
-
-
+  
 
   const handleBooking = () => {
     if (!scheduledAt || !duration || !scheduledHour || !scheduledMinute) {
@@ -483,17 +476,32 @@ ${studentMessage ? `메시지: ${studentMessage}` : '추가 메시지 없음'}`;
                   variant="outline"
                   className="w-full mt-3"
                   onClick={() => {
-                    if (mentor?.user?.id) {
-                      sendMessageMutation.mutate({
-                        recipientId: mentor.user.id,
-                        content: "안녕하세요! 상담을 받고 싶습니다.",
-                      });
+                    // If not logged in, send them to the login page first.
+                    if (!isAuthenticated) {
+                      window.location.href = getLoginUrl();
+                      return;
                     }
+
+                    const recipientId = mentor?.user?.id;
+                    if (!recipientId) {
+                      toast.error("멘토 정보를 확인할 수 없습니다.");
+                      return;
+                    }
+
+                    // Save target conversation & a default draft, then navigate.
+                    try {
+                      sessionStorage.setItem(OPEN_CONVERSATION_KEY, String(recipientId));
+                      // Optional: prefill a polite first message (user can edit before sending)
+                      sessionStorage.setItem(DRAFT_MESSAGE_KEY, "안녕하세요! 상담을 받고 싶습니다.");
+                    } catch {
+                      // sessionStorage can fail in some restricted browsers; navigation still works.
+                    }
+
+                    setLocation("/messages");
                   }}
-                  disabled={sendMessageMutation.isPending}
                 >
                   <MessageCircle className="h-5 w-5 mr-2" />
-                  {sendMessageMutation.isPending ? "전송 중..." : "문의 메시지"}
+                  문의 메시지
                 </Button>
               </CardContent>
             </Card>
