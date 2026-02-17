@@ -2,7 +2,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { trpc } from "@/lib/trpc";
 import { Link } from "wouter";
-import { Search, X, ChevronRight } from "lucide-react";
+import { Search, X, ChevronRight, Star } from "lucide-react";
 import { useState, useEffect, useMemo } from "react";
 import { PageLayout } from "@/components/layout";
 import { setPageMeta, PAGE_META } from "@/lib/seo";
@@ -491,59 +491,99 @@ function MentorCard({
 }) {
   const universityLogo = getUniversityLogo(mentor.profile.university);
 
+  const regionLabel =
+    REGIONS.find((r) => r.value === mentor.profile.region)?.label ??
+    mentor.profile.region ??
+    "";
+
+  const gradeLabel = (() => {
+    const g = mentor.profile.grade;
+    if (!g) return "";
+    if (/^[1-4]$/.test(g)) return `${g}학년`;
+    if (g === "graduate") return "대학원";
+    return g;
+  })();
+
+  const ratingValue =
+    mentor.profile.averageRating && mentor.profile.averageRating !== "0"
+      ? Number(mentor.profile.averageRating).toFixed(1)
+      : null;
+
   return (
-    <Link href={`/mentor/${mentor.profile.id}`} className="block p-4 rounded-lg border border-border hover:border-primary hover:shadow-md transition-all cursor-pointer bg-card">
-        <div className="flex gap-3 mb-3">
-          <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center flex-shrink-0">
-            {universityLogo ? (
-              <img
-                src={universityLogo}
-                alt={mentor.profile.university}
-                className="w-8 h-8 object-contain"
-              />
-            ) : (
-              <div className="w-8 h-8 bg-primary/20 rounded-full" />
-            )}
-          </div>
-          <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-sm truncate">{mentor.user.name}</h3>
-            <p className="text-xs text-muted-foreground truncate">
-              {mentor.profile.university} · {mentor.profile.major}
-            </p>
-          </div>
+    <Link
+      href={`/mentor/${mentor.profile.id}`}
+      className="block rounded-lg border border-border hover:border-primary hover:shadow-md transition-all cursor-pointer bg-card overflow-hidden"
+    >
+      <div className="flex gap-4 p-4">
+        {/* 좌측: 대표 이미지(사각형) */}
+        <div className="w-24 h-24 rounded-md bg-muted flex items-center justify-center flex-shrink-0 overflow-hidden">
+          {universityLogo ? (
+            <img
+              src={universityLogo}
+              alt={mentor.profile.university}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <div className="w-full h-full bg-muted" />
+          )}
         </div>
 
-        <div className="flex flex-wrap gap-1 mb-2">
-          <span className="inline-block px-2 py-1 bg-muted text-xs rounded-full">
-            {mentor.profile.grade}
-          </span>
-          <span className="inline-block px-2 py-1 bg-muted text-xs rounded-full">
-            {mentor.profile.region}
-          </span>
-        </div>
+        {/* 우측: 텍스트 영역 */}
+        <div className="flex-1 min-w-0 flex flex-col gap-2">
+          {/* 상단: 닉네임(좌) + 별점(우) */}
+          <div className="flex items-start justify-between gap-3">
+            <div className="min-w-0">
+              <h3 className="font-semibold text-base leading-tight truncate">
+                {mentor.user.name}
+              </h3>
 
-        {mentor.profile.specialtyServices && (
-          <div className="flex flex-wrap gap-1 mb-2">
-            {JSON.parse(mentor.profile.specialtyServices).map(
-              (service: string, idx: number) => (
-                <span
-                  key={idx}
-                  className="inline-block px-2 py-1 bg-primary/10 text-primary text-xs rounded-full"
-                >
-                  {service}
+              <p className="text-xs text-muted-foreground truncate">
+                {mentor.profile.university} · {mentor.profile.major}
+              </p>
+
+              {gradeLabel && (
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  {gradeLabel}
+                </p>
+              )}
+            </div>
+
+            <div className="flex items-center gap-1 flex-shrink-0 text-xs text-muted-foreground">
+              <Star className="h-4 w-4" />
+              {ratingValue ? (
+                <span className="font-medium text-foreground">
+                  {ratingValue}
+                  <span className="text-muted-foreground font-normal">
+                    {" "}
+                    ({mentor.profile.reviewCount})
+                  </span>
                 </span>
-              )
-            )}
+              ) : (
+                <span>평점 없음</span>
+              )}
+            </div>
           </div>
-        )}
 
-        <p className="text-xs text-muted-foreground line-clamp-2">
-          {mentor.profile.bio}
-        </p>
+          {/* 중단: 자기소개 */}
+          <p className="text-xs text-muted-foreground line-clamp-3">
+            {mentor.profile.bio || "소개가 아직 없어요."}
+          </p>
 
-        {mentor.profile.verificationStatus === 'approved' && (
-          <div className="mt-2 text-xs text-green-600 font-medium">✓ 인증됨</div>
-        )}
+          {/* 하단: 상담 가능 지역 */}
+          {regionLabel && (
+            <div className="mt-auto">
+              <p className="text-xs text-muted-foreground">
+                상담 가능 지역:{" "}
+                <span className="text-foreground">{regionLabel}</span>
+              </p>
+            </div>
+          )}
+
+          {mentor.profile.verificationStatus === "approved" && (
+            <div className="text-xs text-green-600 font-medium">✓ 인증됨</div>
+          )}
+        </div>
+      </div>
     </Link>
   );
 }
