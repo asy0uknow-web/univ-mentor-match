@@ -451,7 +451,11 @@ export async function getMessagesForUser(userId: number) {
   const result = await db
     .select()
     .from(messages)
-    .where(eq(messages.recipientId, userId))
+    // NOTE: We intentionally include both received AND sent messages.
+    // If we only fetch recipientId = userId, a user who just sent the first
+    // message to someone will see an empty inbox until the other person replies.
+    // That breaks the "문의하기" flow from mentor detail.
+    .where(or(eq(messages.recipientId, userId), eq(messages.senderId, userId)))
     .orderBy(desc(messages.createdAt));
   
   return result;
