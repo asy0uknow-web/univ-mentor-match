@@ -2,21 +2,13 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { AlertCircle } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 
 export default function BugReportForm() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [severity, setSeverity] = useState<"low" | "medium" | "high" | "critical">("medium");
-  const [page, setPage] = useState("");
+  const [device, setDevice] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
@@ -24,7 +16,7 @@ export default function BugReportForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!title.trim() || !description.trim()) {
       alert("제목과 설명을 입력해주세요.");
       return;
@@ -41,15 +33,13 @@ export default function BugReportForm() {
       await bugReportMutation.mutateAsync({
         title,
         description,
-        severity,
-        page: page || undefined,
+        device: device.trim() || undefined,
       });
 
       setSubmitted(true);
       setTitle("");
       setDescription("");
-      setSeverity("medium");
-      setPage("");
+      setDevice("");
 
       setTimeout(() => setSubmitted(false), 3000);
     } catch (error) {
@@ -75,10 +65,12 @@ export default function BugReportForm() {
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium mb-2">제목 *</label>
+          <label className="block text-sm font-medium mb-2">
+            어디서 버그가 발생했나요? *
+          </label>
           <Input
             type="text"
-            placeholder="버그의 제목을 입력해주세요"
+            placeholder=""
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             disabled={isLoading}
@@ -87,7 +79,9 @@ export default function BugReportForm() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-2">설명 *</label>
+          <label className="block text-sm font-medium mb-2">
+            버그에 대해 요약해서 설명해주세요. *
+          </label>
           <Textarea
             placeholder="버그의 상세한 설명을 입력해주세요 (최소 10자)"
             value={description}
@@ -97,44 +91,22 @@ export default function BugReportForm() {
             minLength={10}
             rows={5}
           />
-          <p className="text-xs text-gray-500 mt-1">
-            {description.length}/10자 이상 필요
-          </p>
+          <p className="text-xs text-gray-500 mt-1">{description.length}/10자 이상 필요</p>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium mb-2">심각도</label>
-            <Select value={severity} onValueChange={(v: any) => setSeverity(v)}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="low">낮음</SelectItem>
-                <SelectItem value="medium">중간</SelectItem>
-                <SelectItem value="high">높음</SelectItem>
-                <SelectItem value="critical">긴급</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium mb-2">페이지 (선택)</label>
-            <Input
-              type="text"
-              placeholder="예: /mentors, /my-profile"
-              value={page}
-              onChange={(e) => setPage(e.target.value)}
-              disabled={isLoading}
-            />
-          </div>
+        <div>
+          <label className="block text-sm font-medium mb-2">사용 기기 *</label>
+          <Input
+            type="text"
+            placeholder="ex) 맥북, 데스크탑, 아이패드, 갤럭시탭, ..."
+            value={device}
+            onChange={(e) => setDevice(e.target.value)}
+            disabled={isLoading}
+            required
+          />
         </div>
 
-        <Button
-          type="submit"
-          disabled={isLoading || !title.trim() || description.length < 10}
-          className="w-full"
-        >
+        <Button type="submit" disabled={isLoading || !title.trim()} className="w-full">
           {isLoading ? "신고 중..." : "버그 신고"}
         </Button>
       </form>

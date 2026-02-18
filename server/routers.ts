@@ -802,8 +802,7 @@ export const appRouter = router({
       .input(z.object({
         title: z.string().min(1, "제목을 입력해주세요"),
         description: z.string().min(10, "설명은 최소 10자 이상이어야 합니다"),
-        severity: z.enum(["low", "medium", "high", "critical"]).default("medium"),
-        page: z.string().optional(),
+        device: z.string().optional(),
       }))
       .mutation(async ({ ctx, input }) => {
         const database = await getDb();
@@ -815,8 +814,7 @@ export const appRouter = router({
           userId: ctx.user!.id,
           title: input.title,
           description: input.description,
-          severity: input.severity,
-          page: input.page,
+          device: input.device ?? null,
           userAgent,
           status: "new",
         });
