@@ -199,10 +199,8 @@ export const bugReports = mysqlTable("bug_reports", {
   userId: int("userId").notNull(), // References users.id
   title: varchar("title", { length: 255 }).notNull(),
   description: text("description").notNull(),
-  // Severity level: low, medium, high, critical
-  severity: mysqlEnum("severity", ["low", "medium", "high", "critical"]).default("medium").notNull(),
-  // Page or feature where bug occurred
-  page: varchar("page", { length: 255 }),
+  // User-provided device label (optional)
+  device: varchar("device", { length: 255 }),
   // User agent for browser/device info
   userAgent: text("userAgent"),
   // Status: new, acknowledged, in_progress, resolved, wont_fix

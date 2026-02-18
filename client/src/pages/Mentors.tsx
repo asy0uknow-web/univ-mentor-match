@@ -501,7 +501,7 @@ function MentorCard({
     if (!g) return "";
     if (/^[1-4]$/.test(g)) return `${g}학년`;
     if (g === "graduate") return "대학원";
-    return g;
+    return g; // 이미 '3학년' 형태면 그대로
   })();
 
   const ratingValue =
