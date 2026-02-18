@@ -14,19 +14,7 @@ import { useEffect } from "react";
 import { trpc } from "@/lib/trpc";
 import { setPageMeta, PAGE_META } from "@/lib/seo";
 
-const severityColors = {
-  low: "bg-blue-50 text-blue-700 border border-blue-200",
-  medium: "bg-yellow-50 text-yellow-700 border border-yellow-200",
-  high: "bg-orange-50 text-orange-700 border border-orange-200",
-  critical: "bg-red-50 text-red-700 border border-red-200",
-};
 
-const severityLabels = {
-  low: "낮음",
-  medium: "중간",
-  high: "높음",
-  critical: "긴급",
-};
 
 const statusLabels = {
   new: "신규",
@@ -58,7 +46,7 @@ export default function AdminBugReports() {
     setPageMeta(PAGE_META.adminBugReports);
   }, []);
   const [statusFilter, setStatusFilter] = useState<string | undefined>();
-  const [sortBy, setSortBy] = useState<"newest" | "oldest" | "critical">("newest");
+  const [sortBy, setSortBy] = useState<"newest" | "oldest">("newest");
   const { data: bugReports, isLoading, refetch } = trpc.bugReport.getAll.useQuery({
     status: statusFilter as any,
   });
@@ -68,9 +56,6 @@ export default function AdminBugReports() {
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     } else if (sortBy === "oldest") {
       return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
-    } else if (sortBy === "critical") {
-      const severityOrder: Record<string, number> = { critical: 0, high: 1, medium: 2, low: 3 };
-      return (severityOrder[a.severity] || 4) - (severityOrder[b.severity] || 4);
     }
     return 0;
   }) : [];
@@ -121,7 +106,6 @@ export default function AdminBugReports() {
             <SelectContent>
               <SelectItem value="newest">최신순</SelectItem>
               <SelectItem value="oldest">오래된순</SelectItem>
-              <SelectItem value="critical">심각도순</SelectItem>
             </SelectContent>
           </Select>
           <div className="text-sm text-muted-foreground flex items-center">
@@ -139,9 +123,6 @@ export default function AdminBugReports() {
                       <div className="flex items-center gap-3 mb-2 flex-wrap">
                         <Bug className="w-5 h-5 text-muted-foreground flex-shrink-0" />
                         <CardTitle className="text-lg break-words">{report.title}</CardTitle>
-                        <Badge className={`${severityColors[report.severity as keyof typeof severityColors]} flex-shrink-0`}>
-                          {severityLabels[report.severity as keyof typeof severityLabels]}
-                        </Badge>
                       </div>
                       <CardDescription className="text-xs">
                         신고자: {report.userId} • {new Date(report.createdAt).toLocaleString("ko-KR")}
@@ -197,12 +178,6 @@ export default function AdminBugReports() {
                     <p className="text-sm text-foreground whitespace-pre-wrap line-clamp-3">{report.description}</p>
                   </div>
                   <div className="grid grid-cols-2 gap-3">
-                    {report.page && (
-                      <div>
-                        <p className="text-xs font-medium text-muted-foreground mb-1">페이지</p>
-                        <p className="text-sm text-foreground font-mono bg-muted/30 p-2 rounded">{report.page}</p>
-                      </div>
-                    )}
                     <div>
                       <p className="text-xs font-medium text-muted-foreground mb-1">상태</p>
                       <Badge className={statusColors[report.status as keyof typeof statusColors]}>
