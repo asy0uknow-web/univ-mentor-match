@@ -676,3 +676,9 @@
 - [x] 학과 및 지역 패널에 검색 기능 추가
 - [x] 선택된 학과 배지에 X 버튼 추가
 - [x] 데이터과학과 필터 검색 문제 해결 (학과명 기반 필터링)
+
+## Google 로그인 redirect URI HTTPS 강제 설정
+- [x] client/src/const.ts 파일 수정 (getPublicOrigin 함수 추가)
+- [x] 환경변수 설정 (VITE_PUBLIC_ORIGIN=https://univmatch.com)
+- [x] 빌드 및 테스트 완료
+- [x] 모든 시나리오 테스트 통과 (4가지 경우 모두 HTTPS 리다이렉트 확인)
