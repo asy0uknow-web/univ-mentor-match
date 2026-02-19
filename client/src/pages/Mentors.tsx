@@ -483,7 +483,6 @@ function MentorCard({
       isDeleted: boolean;
       averageRating: string | null;
       reviewCount: number;
-      specialtyServices: string | null;
       createdAt: Date;
       updatedAt: Date;
     };
