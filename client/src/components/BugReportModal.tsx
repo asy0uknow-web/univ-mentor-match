@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { X } from "lucide-react";
 import { trpc } from "@/lib/trpc";
+import { useAuth } from "@/_core/hooks/useAuth";
+import { getLoginUrl } from "@/const";
 
 interface BugReportModalProps {
   isOpen: boolean;
@@ -11,6 +13,7 @@ interface BugReportModalProps {
 }
 
 export default function BugReportModal({ isOpen, onClose }: BugReportModalProps) {
+  const { isAuthenticated } = useAuth();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [device, setDevice] = useState("");
@@ -18,6 +21,14 @@ export default function BugReportModal({ isOpen, onClose }: BugReportModalProps)
   const [submitted, setSubmitted] = useState(false);
 
   const bugReportMutation = trpc.bugReport.create.useMutation();
+
+  // 로그인하지 않은 사용자가 모달을 열려고 하면 로그인 페이지로 리다이렉트
+  useEffect(() => {
+    if (isOpen && !isAuthenticated) {
+      onClose();
+      window.location.href = getLoginUrl();
+    }
+  }, [isOpen, isAuthenticated, onClose]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -58,7 +69,7 @@ export default function BugReportModal({ isOpen, onClose }: BugReportModalProps)
     }
   };
 
-  if (!isOpen) return null;
+  if (!isOpen || !isAuthenticated) return null;
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
@@ -109,20 +120,21 @@ export default function BugReportModal({ isOpen, onClose }: BugReportModalProps)
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2">사용 기기</label>
+                <label className="block text-sm font-medium mb-2">사용 기기 *</label>
                 <Input
                   type="text"
                   placeholder="ex) 맥북, 데스크탑, 아이패드, 갤럭시탭, ..."
                   value={device}
                   onChange={(e) => setDevice(e.target.value)}
                   disabled={isLoading}
+                  required
                 />
               </div>
 
               <div className="flex gap-2 pt-4">
                 <Button
                   type="submit"
-                  disabled={isLoading || !title.trim() || description.length < 10}
+                  disabled={isLoading || !title.trim() || description.length < 10 || !device.trim()}
                   className="flex-1"
                 >
                   {isLoading ? "신고 중..." : "신고하기"}
