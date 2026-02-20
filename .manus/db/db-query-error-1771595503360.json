@@ -1,8 +1,0 @@
-{
-  "query": "\nINSERT INTO users (\n  openId, \n  name, \n  email, \n  loginMethod, \n  lastSignedIn, \n  role, \n  userType,\n  realName,\n  phoneNumber,\n  password,\n  verificationStatus,\n  verificationMethod,\n  createdAt,\n  updatedAt\n) VALUES (\n  'test_oauth_user_001',\n  'Test OAuth User',\n  'test.oauth@example.com',\n  'google',\n  NOW(),\n  'user',\n  'student',\n  'Test User',\n  '01012345678',\n  'test_password_base64',\n  'pending',\n  'none',\n  NOW(),\n  NOW()\n);\n\nSELECT id, openId, name, email, realName, verificationStatus FROM users WHERE openId = 'test_oauth_user_001';\n",
-  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute \nINSERT INTO users (\n  openId, \n  name, \n  email, \n  loginMethod, \n  lastSignedIn, \n  role, \n  userType,\n  realName,\n  phoneNumber,\n  password,\n  verificationStatus,\n  verificationMethod,\n  createdAt,\n  updatedAt\n) VALUES (\n  'test_oauth_user_001',\n  'Test OAuth User',\n  'test.oauth@example.com',\n  'google',\n  NOW(),\n  'user',\n  'student',\n  'Test User',\n  '01012345678',\n  'test_password_base64',\n  'pending',\n  'none',\n  NOW(),\n  NOW()\n);\n\nSELECT id, openId, name, email, realName, verificationStatus FROM users WHERE openId = 'test_oauth_user_001';\n",
-  "returncode": 1,
-  "logs": [
-    "ERROR 1054 (42S22) at line 2: Unknown column 'phoneNumber' in 'field list'"
-  ]
-}

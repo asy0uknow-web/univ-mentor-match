@@ -1,8 +1,0 @@
-{
-  "query": "\nALTER TABLE `users` ADD COLUMN `realName` varchar(255) NULL;\nALTER TABLE `users` ADD COLUMN `phoneNumber` varchar(20) NULL;\nALTER TABLE `users` ADD COLUMN `password` varchar(255) NULL;\nALTER TABLE `users` ADD COLUMN `verificationStatus` enum('not_verified','pending','verified','rejected') NOT NULL DEFAULT 'not_verified';\nALTER TABLE `users` ADD COLUMN `verificationMethod` varchar(64) NULL;\nALTER TABLE `users` ADD COLUMN `verifiedAt` timestamp NULL;\n",
-  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute \nALTER TABLE `users` ADD COLUMN `realName` varchar(255) NULL;\nALTER TABLE `users` ADD COLUMN `phoneNumber` varchar(20) NULL;\nALTER TABLE `users` ADD COLUMN `password` varchar(255) NULL;\nALTER TABLE `users` ADD COLUMN `verificationStatus` enum('not_verified','pending','verified','rejected') NOT NULL DEFAULT 'not_verified';\nALTER TABLE `users` ADD COLUMN `verificationMethod` varchar(64) NULL;\nALTER TABLE `users` ADD COLUMN `verifiedAt` timestamp NULL;\n",
-  "returncode": 1,
-  "logs": [
-    "ERROR 1060 (42S21) at line 2: Duplicate column name 'realName'"
-  ]
-}

@@ -1,9 +1,0 @@
-{
-  "query": "\n-- 사용자 ID 조회\nSET @userId = (SELECT id FROM users WHERE email = 'syoung.choi327@gmail.com' LIMIT 1);\n\n-- 메시지 삭제\nDELETE FROM messages WHERE senderId = @userId OR recipientId = @userId;\n\n-- 버그 리포트 삭제\nDELETE FROM bug_reports WHERE userId = @userId;\n\n-- 예약 삭제\nDELETE FROM bookings WHERE studentId = @userId OR mentorId = @userId;\n\n-- 리뷰 삭제\nDELETE FROM reviews WHERE studentId = @userId OR mentorId = @userId;\n\n-- 알림 삭제\nDELETE FROM notifications WHERE userId = @userId;\n\n-- 멘토 검증 삭제\nDELETE FROM mentor_verifications WHERE userId = @userId;\n\n-- 멘토 프로필 삭제\nDELETE FROM mentor_profiles WHERE userId = @userId;\n\n-- 사용자 계정 삭제\nDELETE FROM users WHERE email = 'syoung.choi327@gmail.com';\n",
-  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute \n-- 사용자 ID 조회\nSET @userId = (SELECT id FROM users WHERE email = 'syoung.choi327@gmail.com' LIMIT 1);\n\n-- 메시지 삭제\nDELETE FROM messages WHERE senderId = @userId OR recipientId = @userId;\n\n-- 버그 리포트 삭제\nDELETE FROM bug_reports WHERE userId = @userId;\n\n-- 예약 삭제\nDELETE FROM bookings WHERE studentId = @userId OR mentorId = @userId;\n\n-- 리뷰 삭제\nDELETE FROM reviews WHERE studentId = @userId OR mentorId = @userId;\n\n-- 알림 삭제\nDELETE FROM notifications WHERE userId = @userId;\n\n-- 멘토 검증 삭제\nDELETE FROM mentor_verifications WHERE userId = @userId;\n\n-- 멘토 프로필 삭제\nDELETE FROM mentor_profiles WHERE userId = @userId;\n\n-- 사용자 계정 삭제\nDELETE FROM users WHERE email = 'syoung.choi327@gmail.com';\n",
-  "rows": [],
-  "messages": [],
-  "stdout": "",
-  "stderr": "",
-  "execution_time_ms": 3182
-}
