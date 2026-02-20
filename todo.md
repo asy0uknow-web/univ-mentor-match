@@ -689,3 +689,6 @@
 
 ## 버그 수정 - 로그인 안된 상태 멘토 목록
 - [x] 로그인하지 않은 상태에서 멘토 목록이 보이지 않는 문제 해결 (specialtyServices 컬럼 제거, 마이그레이션 메타데이터 초기화)
+## 로고 파일 저장 및 Navbar 수정
+- [x] 로고 이미지 투명한 배경 처리 및 client/public/logo.png 저장
+- [x] Navbar.tsx에서 LOGO_URL 상수를 "/logo.png"으로 수정

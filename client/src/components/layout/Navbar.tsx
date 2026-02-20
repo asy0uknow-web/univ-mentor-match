@@ -32,8 +32,7 @@ const HOME_MENU = [
   { id: "how-it-works", label: "이용 방법" },
 ] as const;
 
-// 원래 유니브매치 로고 URL (환경변수 무시)
-const LOGO_URL = "https://files.manuscdn.com/user_upload_by_module/session_file/310519663280786037/SPxbaeRMjBqMqqlh.png";
+const LOGO_URL = "/logo.png";
 
 export default function Navbar({ onBugReport }: NavbarProps) {
   const { isAuthenticated } = useAuth();
