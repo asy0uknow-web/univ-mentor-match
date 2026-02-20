@@ -47,55 +47,27 @@ export async function upsertUser(user: InsertUser): Promise<void> {
   }
 
   try {
-    const values: InsertUser = {
-      openId: user.openId,
-    };
-    const updateSet: Record<string, unknown> = {};
+    // 기존 사용자 조회
+    const existingUser = await db.select().from(users).where(eq(users.openId, user.openId)).limit(1);
 
-    const textFields = ["name", "email", "loginMethod"] as const;
-    type TextField = (typeof textFields)[number];
+    if (existingUser.length > 0) {
+      // 기존 사용자가 있으면 lastSignedIn만 업데이트
+      await db.update(users).set({ lastSignedIn: new Date() }).where(eq(users.id, existingUser[0].id));
+    } else {
+      // 새로운 사용자 생성
+      const insertData: InsertUser = {
+        openId: user.openId,
+        name: user.name ?? null,
+        email: user.email ?? null,
+        loginMethod: user.loginMethod ?? null,
+        lastSignedIn: user.lastSignedIn ?? new Date(),
+        role: user.role ?? (user.openId === ENV.ownerOpenId ? 'admin' : 'user'),
+        userType: user.userType ?? null,
+        stripeCustomerId: user.stripeCustomerId ?? null,
+      };
 
-    const assignNullable = (field: TextField) => {
-      const value = user[field];
-      if (value === undefined) return;
-      const normalized = value ?? null;
-      values[field] = normalized;
-      updateSet[field] = normalized;
-    };
-
-    textFields.forEach(assignNullable);
-
-    if (user.lastSignedIn !== undefined) {
-      values.lastSignedIn = user.lastSignedIn;
-      updateSet.lastSignedIn = user.lastSignedIn;
+      await db.insert(users).values(insertData);
     }
-    if (user.role !== undefined) {
-      values.role = user.role;
-      updateSet.role = user.role;
-    } else if (user.openId === ENV.ownerOpenId) {
-      values.role = 'admin';
-      updateSet.role = 'admin';
-    }
-    if (user.userType !== undefined) {
-      values.userType = user.userType;
-      updateSet.userType = user.userType;
-    }
-    if (user.stripeCustomerId !== undefined) {
-      values.stripeCustomerId = user.stripeCustomerId;
-      updateSet.stripeCustomerId = user.stripeCustomerId;
-    }
-
-    if (!values.lastSignedIn) {
-      values.lastSignedIn = new Date();
-    }
-
-    if (Object.keys(updateSet).length === 0) {
-      updateSet.lastSignedIn = new Date();
-    }
-
-    await db.insert(users).values(values).onDuplicateKeyUpdate({
-      set: updateSet,
-    });
   } catch (error) {
     console.error("[Database] Failed to upsert user:", error);
     throw error;
@@ -801,4 +773,44 @@ export async function updateGalleryImageOrder(imageId: number, displayOrder: num
   if (!db) throw new Error("Database not available");
   
   await db.update(mentorGallery).set({ displayOrder }).where(eq(mentorGallery.id, imageId));
+}
+
+export async function deleteUser(userId: number): Promise<void> {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot delete user: database not available");
+    return;
+  }
+
+  try {
+    // 사용자의 멘토 프로필 삭제
+    await db.delete(mentorProfiles).where(eq(mentorProfiles.userId, userId));
+    
+    // 사용자의 메시지 삭제
+    await db.delete(messages).where(
+      or(eq(messages.senderId, userId), eq(messages.recipientId, userId))
+    );
+    
+    // 사용자의 예약 삭제
+    await db.delete(bookings).where(
+      or(eq(bookings.studentId, userId), eq(bookings.mentorId, userId))
+    );
+    
+    // 사용자의 리뷰 삭제
+    await db.delete(reviews).where(eq(reviews.reviewerId, userId));
+    
+    // 사용자의 알림 삭제
+    await db.delete(notifications).where(eq(notifications.userId, userId));
+    
+    // 사용자의 버그 리포트 삭제
+    await db.delete(bugReports).where(eq(bugReports.userId, userId));
+    
+    // 마지막으로 사용자 계정 삭제
+    await db.delete(users).where(eq(users.id, userId));
+    
+    console.log(`[Database] User ${userId} deleted successfully`);
+  } catch (error) {
+    console.error("[Database] Failed to delete user:", error);
+    throw error;
+  }
 }

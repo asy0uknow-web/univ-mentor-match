@@ -1,0 +1,29 @@
+{
+  "query": "SELECT * FROM users LIMIT 1;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute SELECT * FROM users LIMIT 1;",
+  "rows": [
+    {
+      "id": "35",
+      "openId": "2sJUYDtiAF26ztRq5Z6Mqp",
+      "name": "Seyoung",
+      "email": "syoung.choi327@gmail.com",
+      "loginMethod": "google",
+      "role": "user",
+      "userType": "NULL",
+      "stripeCustomerId": "NULL",
+      "createdAt": "2026-02-20 14:42:44",
+      "updatedAt": "2026-02-20 14:45:47",
+      "lastSignedIn": "2026-02-20 14:45:47",
+      "realName": "최세영",
+      "phoneNumber": "010-9873-8382",
+      "password": "NULL",
+      "verificationStatus": "not_verified",
+      "verificationMethod": "NULL",
+      "verifiedAt": "NULL"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\topenId\tname\temail\tloginMethod\trole\tuserType\tstripeCustomerId\tcreatedAt\tupdatedAt\tlastSignedIn\trealName\tphoneNumber\tpassword\tverificationStatus\tverificationMethod\tverifiedAt\n35\t2sJUYDtiAF26ztRq5Z6Mqp\tSeyoung\tsyoung.choi327@gmail.com\tgoogle\tuser\tNULL\tNULL\t2026-02-20 14:42:44\t2026-02-20 14:45:47\t2026-02-20 14:45:47\t최세영\t010-9873-8382\tNULL\tnot_verified\tNULL\tNULL\n",
+  "stderr": "",
+  "execution_time_ms": 1531
+}
