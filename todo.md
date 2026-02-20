@@ -716,9 +716,5 @@
   - [x] 폼 검증 테스트 (8개)
   - [x] 휴대폰 번호 정규식 테스트 (5개)
   - [x] 모든 테스트 통과 (19/19)
-- [x] completeProfile API를 publicProcedure로 변경 (protectedProcedure에서 변경)
-- [x] email 기반 사용자 조회 및 업데이트 로직 구현
-- [x] 프론트엔드 CompleteProfile.tsx에 useAuth 훅 추가
-- [x] user.email을 mutation에 전달하도록 수정
 - [ ] 실명인증 서비스 연동 (카카오페이, NICE 등) - 향후 구현
 - [ ] 프로덕션 환경 테스트

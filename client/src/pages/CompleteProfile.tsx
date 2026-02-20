@@ -1,142 +1,277 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { trpc } from "@/lib/trpc";
-import { useAuth } from "@/_core/hooks/useAuth";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
 
 export default function CompleteProfile() {
   const [, navigate] = useLocation();
-  const { user } = useAuth();
   const [realName, setRealName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isLoading, setIsLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [userEmail, setUserEmail] = useState("");
 
+  // 현재 사용자 정보 조회
+  const { data: user } = trpc.auth.me.useQuery();
+
+  useEffect(() => {
+    if (user) {
+      setUserEmail(user.email || "");
+    }
+  }, [user]);
+
+  // 프로필 완성 API
   const completeProfileMutation = trpc.verification.completeProfile.useMutation();
 
-  // 휴대폰 번호 자동 포맷팅
+  // 휴대폰 번호 포맷팅
   const formatPhoneNumber = (value: string) => {
-    const digits = value.replace(/\D/g, "");
-    if (digits.length <= 3) return digits;
-    if (digits.length <= 7) return `${digits.slice(0, 3)}-${digits.slice(3)}`;
-    return `${digits.slice(0, 3)}-${digits.slice(3, 7)}-${digits.slice(7, 11)}`;
+    const cleaned = value.replace(/\D/g, "");
+    if (cleaned.length <= 3) return cleaned;
+    if (cleaned.length <= 7) return `${cleaned.slice(0, 3)}-${cleaned.slice(3)}`;
+    return `${cleaned.slice(0, 3)}-${cleaned.slice(3, 7)}-${cleaned.slice(7, 11)}`;
   };
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const formatted = formatPhoneNumber(e.target.value);
     setPhoneNumber(formatted);
+    if (errors.phoneNumber) {
+      setErrors({ ...errors, phoneNumber: "" });
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {};
+
+    if (!realName.trim()) {
+      newErrors.realName = "실명을 입력해주세요";
+    }
+
+    if (!phoneNumber.trim()) {
+      newErrors.phoneNumber = "휴대폰 번호를 입력해주세요";
+    } else if (!/^01[0-9]-\d{3,4}-\d{4}$/.test(phoneNumber)) {
+      newErrors.phoneNumber = "올바른 휴대폰 번호 형식이 아닙니다 (예: 010-1234-5678)";
+    }
+
+    if (!password) {
+      newErrors.password = "비밀번호를 입력해주세요";
+    } else if (password.length < 6) {
+      newErrors.password = "비밀번호는 최소 6자 이상이어야 합니다";
+    }
+
+    if (password !== confirmPassword) {
+      newErrors.confirmPassword = "비밀번호가 일치하지 않습니다";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
-    setLoading(true);
 
+    if (!validateForm()) {
+      return;
+    }
+
+    setIsLoading(true);
     try {
-      // 휴대폰 번호 검증
-      const phoneRegex = /^01[0-9]-\d{3,4}-\d{4}$/;
-      if (!phoneRegex.test(phoneNumber)) {
-        setError("올바른 휴대폰 번호 형식이 아닙니다. (예: 010-1234-5678)");
-        setLoading(false);
-        return;
-      }
-
-      if (!user?.email) {
-        setError("사용자 이메일을 찾을 수 없습니다.");
-        setLoading(false);
-        return;
-      }
-
       const result = await completeProfileMutation.mutateAsync({
-        realName,
+        realName: realName.trim(),
         phoneNumber,
-        email: user.email,
+        password,
       });
 
-      // 성공 메시지 표시
-      setSuccess(true);
-      setError("");
-      
-      // 2초 후 홈으로 이동
+      setSuccessMessage(result.message);
+      setRealName("");
+      setPhoneNumber("");
+      setPassword("");
+      setConfirmPassword("");
+      setErrors({});
+
+      // 2초 후 홈뎘이지로 이동
       setTimeout(() => {
         navigate("/", { replace: true });
       }, 2000);
-    } catch (err) {
-      console.error("[CompleteProfile] Error:", err);
-      const errorMessage = err instanceof Error ? err.message : "프로필 저장 중 오류가 발생했습니다.";
-      setError(errorMessage);
+    } catch (error: any) {
+      setErrors({
+        submit: error.message || "프로필 저장에 실패했습니다",
+      });
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        <div className="bg-white rounded-lg shadow-lg p-8">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">프로필 완성</h1>
-          <p className="text-gray-600 mb-6">추가 정보를 입력해주세요.</p>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+      <Card className="w-full max-w-md shadow-lg">
+        <CardHeader className="space-y-2">
+          <CardTitle className="text-2xl">프로필 완성</CardTitle>
+          <CardDescription>
+            실명인증을 위해 필요한 정보를 입력해주세요
+          </CardDescription>
+        </CardHeader>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {/* 이름 입력 */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                이름 (본명)
-              </label>
-              <input
-                type="text"
-                value={realName}
-                onChange={(e) => setRealName(e.target.value)}
-                placeholder="홍길동"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
-                required
+        <CardContent>
+          {successMessage && (
+            <Alert className="mb-6 border-green-200 bg-green-50">
+              <CheckCircle2 className="h-4 w-4 text-green-600" />
+              <AlertDescription className="text-green-800">
+                {successMessage}
+              </AlertDescription>
+            </Alert>
+          )}
+
+          {errors.submit && (
+            <Alert variant="destructive" className="mb-6">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>{errors.submit}</AlertDescription>
+            </Alert>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-5">
+            {/* 이메일 (읽기 전용) */}
+            <div className="space-y-2">
+              <Label htmlFor="email">이메일</Label>
+              <Input
+                id="email"
+                type="email"
+                value={userEmail}
+                disabled
+                className="bg-gray-100"
               />
+              <p className="text-xs text-gray-500">
+                OAuth 계정의 이메일입니다. 변경할 수 없습니다.
+              </p>
             </div>
 
-            {/* 휴대폰 번호 입력 */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                휴대폰 번호
-              </label>
-              <input
+            {/* 실명 */}
+            <div className="space-y-2">
+              <Label htmlFor="realName">
+                실명 <span className="text-red-500">*</span>
+              </Label>
+              <Input
+                id="realName"
+                type="text"
+                placeholder="홍길동"
+                value={realName}
+                onChange={(e) => {
+                  setRealName(e.target.value);
+                  if (errors.realName) {
+                    setErrors({ ...errors, realName: "" });
+                  }
+                }}
+                className={errors.realName ? "border-red-500" : ""}
+                disabled={isLoading}
+              />
+              {errors.realName && (
+                <p className="text-sm text-red-500">{errors.realName}</p>
+              )}
+            </div>
+
+            {/* 휴대폰 번호 */}
+            <div className="space-y-2">
+              <Label htmlFor="phoneNumber">
+                휴대폰 번호 <span className="text-red-500">*</span>
+              </Label>
+              <Input
+                id="phoneNumber"
                 type="tel"
+                placeholder="010-1234-5678"
                 value={phoneNumber}
                 onChange={handlePhoneChange}
-                placeholder="010-1234-5678"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
-                required
+                className={errors.phoneNumber ? "border-red-500" : ""}
+                disabled={isLoading}
               />
+              {errors.phoneNumber && (
+                <p className="text-sm text-red-500">{errors.phoneNumber}</p>
+              )}
+              <p className="text-xs text-gray-500">
+                휴대폰 실명인증에 사용됩니다
+              </p>
             </div>
 
-            {/* 성공 메시지 */}
-            {success && (
-              <div className="p-3 bg-green-50 border border-green-200 rounded-lg text-green-700 text-sm">
-                ✓ 프로필이 저장되었습니다. 잠시 후 홈페이지로 이동합니다...
-              </div>
-            )}
+            {/* 비밀번호 */}
+            <div className="space-y-2">
+              <Label htmlFor="password">
+                비밀번호 <span className="text-red-500">*</span>
+              </Label>
+              <Input
+                id="password"
+                type="password"
+                placeholder="최소 6자 이상"
+                value={password}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  if (errors.password) {
+                    setErrors({ ...errors, password: "" });
+                  }
+                }}
+                className={errors.password ? "border-red-500" : ""}
+                disabled={isLoading}
+              />
+              {errors.password && (
+                <p className="text-sm text-red-500">{errors.password}</p>
+              )}
+            </div>
 
-            {/* 에러 메시지 */}
-            {error && !success && (
-              <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
-                {error}
-              </div>
-            )}
+            {/* 비밀번호 확인 */}
+            <div className="space-y-2">
+              <Label htmlFor="confirmPassword">
+                비밀번호 확인 <span className="text-red-500">*</span>
+              </Label>
+              <Input
+                id="confirmPassword"
+                type="password"
+                placeholder="비밀번호 재입력"
+                value={confirmPassword}
+                onChange={(e) => {
+                  setConfirmPassword(e.target.value);
+                  if (errors.confirmPassword) {
+                    setErrors({ ...errors, confirmPassword: "" });
+                  }
+                }}
+                className={errors.confirmPassword ? "border-red-500" : ""}
+                disabled={isLoading}
+              />
+              {errors.confirmPassword && (
+                <p className="text-sm text-red-500">{errors.confirmPassword}</p>
+              )}
+            </div>
 
             {/* 제출 버튼 */}
-            <button
+            <Button
               type="submit"
-              disabled={loading || !realName || !phoneNumber || success}
-              className="w-full bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white font-medium py-2 px-4 rounded-lg transition duration-200"
+              className="w-full bg-indigo-600 hover:bg-indigo-700"
+              disabled={isLoading}
             >
-              {loading ? "저장 중..." : success ? "저장 완료" : "프로필 저장"}
-            </button>
-          </form>
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  저장 중...
+                </>
+              ) : (
+                "프로필 저장 및 실명인증 진행"
+              )}
+            </Button>
 
-          <p className="text-xs text-gray-500 text-center mt-4">
-            이 정보는 나중에 마이페이지에서 수정할 수 있습니다.
-          </p>
-        </div>
-      </div>
+            {/* 안내 문구 */}
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm text-blue-800">
+              <p className="font-semibold mb-1">💡 다음 단계</p>
+              <p>
+                프로필을 저장한 후, 카카오페이 또는 NICE 실명인증을 통해 본인을 확인하게 됩니다.
+              </p>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   );
 }
