@@ -602,6 +602,58 @@ export const appRouter = router({
         await rejectMentorVerification(input.verificationId, input.adminNotes);
         return { success: true };
       }),
+
+    completeProfile: protectedProcedure
+      .input(z.object({
+        realName: z.string().min(1),
+        phoneNumber: z.string().regex(/^01[0-9]-?\d{3,4}-?\d{4}$/),
+        password: z.string().min(6),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+
+        const hashedPassword = Buffer.from(input.password).toString('base64');
+
+        await db
+          .update(users)
+          .set({
+            realName: input.realName,
+            phoneNumber: input.phoneNumber,
+            password: hashedPassword,
+            verificationStatus: "pending",
+            updatedAt: new Date(),
+          })
+          .where(eq(users.id, ctx.user.id));
+
+        return {
+          success: true,
+          message: "Profile information saved. Please proceed with real name verification.",
+        };
+      }),
+
+    getProfileVerificationStatus: protectedProcedure
+      .query(async ({ ctx }) => {
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+
+        const user = await db
+          .select({
+            id: users.id,
+            realName: users.realName,
+            phoneNumber: users.phoneNumber,
+            verificationStatus: users.verificationStatus,
+            verificationMethod: users.verificationMethod,
+            verifiedAt: users.verifiedAt,
+          })
+          .from(users)
+          .where(eq(users.id, ctx.user.id))
+          .limit(1);
+
+        if (!user.length) throw new Error("User not found");
+
+        return user[0];
+      }),
   }),
 
   admin: router({

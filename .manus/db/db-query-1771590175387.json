@@ -1,0 +1,14 @@
+{
+  "query": "SELECT id, email FROM users WHERE email = 'syoung.choi327@gmail.com';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute SELECT id, email FROM users WHERE email = 'syoung.choi327@gmail.com';",
+  "rows": [
+    {
+      "id": "3540072",
+      "email": "syoung.choi327@gmail.com"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\temail\n3540072\tsyoung.choi327@gmail.com\n",
+  "stderr": "",
+  "execution_time_ms": 1572
+}

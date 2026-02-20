@@ -21,6 +21,16 @@ export const users = mysqlTable("users", {
   userType: mysqlEnum("userType", ["high_school_student", "university_student"]),
   // Stripe customer ID for payment processing
   stripeCustomerId: varchar("stripeCustomerId", { length: 255 }),
+  // Real name verification fields
+  realName: varchar("realName", { length: 255 }),
+  phoneNumber: varchar("phoneNumber", { length: 20 }),
+  password: varchar("password", { length: 255 }),
+  // Verification status: not_verified, pending, verified, rejected
+  verificationStatus: mysqlEnum("verificationStatus", ["not_verified", "pending", "verified", "rejected"]).default("not_verified").notNull(),
+  // Verification method: none, kakao_pay, nice, manual
+  verificationMethod: varchar("verificationMethod", { length: 64 }),
+  // Verified at timestamp
+  verifiedAt: timestamp("verifiedAt"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
   lastSignedIn: timestamp("lastSignedIn").defaultNow().notNull(),

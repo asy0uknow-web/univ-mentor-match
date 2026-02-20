@@ -8,6 +8,13 @@
       "when": 1771522392481,
       "tag": "0000_illegal_wolfpack",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1771592364151,
+      "tag": "0001_quick_sandman",
+      "breakpoints": true
     }
   ]
 }

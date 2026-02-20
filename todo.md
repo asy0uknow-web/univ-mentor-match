@@ -692,3 +692,29 @@
 ## 로고 파일 저장 및 Navbar 수정
 - [x] 로고 이미지 투명한 배경 처리 및 client/public/logo.png 저장
 - [x] Navbar.tsx에서 LOGO_URL 상수를 "/logo.png"으로 수정
+
+
+## 회원가입 후 실명인증 페이지 구현
+- [x] 데이터베이스 스키마 확장 (realName, phoneNumber, password, verificationStatus, verificationMethod, verifiedAt)
+- [x] 마이그레이션 파일 생성 및 실행
+- [x] 백엔드 API 구현 (verification.completeProfile, verification.getProfileVerificationStatus)
+- [x] 프론트엔드 CompleteProfile 페이지 구현
+  - [x] 실명 입력 필드
+  - [x] 휴대폰 번호 입력 필드 (자동 포맷팅)
+  - [x] 비밀번호 입력 필드
+  - [x] 비밀번호 확인 필드
+  - [x] 이메일 필드 (읽기 전용, OAuth에서 자동 입력)
+  - [x] 폼 검증 로직
+  - [x] 에러 메시지 표시
+  - [x] 성공 메시지 표시
+- [x] OAuth 콜백 후 리다이렉트 로직 구현
+  - [x] Home.tsx에서 실명 미완성 사용자 감지
+  - [x] CompleteProfile 페이지로 자동 리다이렉트
+  - [x] 로딩 상태 표시
+- [x] 단위 테스트 작성 및 실행
+  - [x] 휴대폰 번호 포맷팅 테스트 (6개)
+  - [x] 폼 검증 테스트 (8개)
+  - [x] 휴대폰 번호 정규식 테스트 (5개)
+  - [x] 모든 테스트 통과 (19/19)
+- [ ] 실명인증 서비스 연동 (카카오페이, NICE 등) - 향후 구현
+- [ ] 프로덕션 환경 테스트
