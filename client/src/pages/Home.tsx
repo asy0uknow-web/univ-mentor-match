@@ -89,22 +89,8 @@ export default function Home() {
     setPageMeta(PAGE_META.home);
   }, []);
 
-  // OAuth 로그인 후 프로필 미완성 시 리다이렉트
-  useEffect(() => {
-    // 로딩 중이면 실행하지 않음
-    if (loading) return;
-    
-    // 인증되지 않았으면 실행하지 않음
-    if (!isAuthenticated) return;
-    
-    // user 데이터가 없으면 실행하지 않음
-    if (!user) return;
-    
-    // 실명이 없으면 프로필 완성 페이지로 이동
-    if (!user.realName) {
-      navigate("/complete-profile", { replace: true });
-    }
-  }, [loading, isAuthenticated, user, navigate]);
+  // Note: 프로필 완성 리다이렉트는 OAuth 콜백 중에 충돌을 일으키므로 제거
+  // CompleteProfile 페이지에서 직접 접근하거나, 별도의 가드 로직으로 처리
 
   useEffect(() => {
     const interval = setInterval(() => {
