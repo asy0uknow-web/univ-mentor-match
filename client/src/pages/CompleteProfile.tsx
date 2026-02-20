@@ -12,8 +12,6 @@ export default function CompleteProfile() {
   const [, navigate] = useLocation();
   const [realName, setRealName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
@@ -60,16 +58,6 @@ export default function CompleteProfile() {
       newErrors.phoneNumber = "올바른 휴대폰 번호 형식이 아닙니다 (예: 010-1234-5678)";
     }
 
-    if (!password) {
-      newErrors.password = "비밀번호를 입력해주세요";
-    } else if (password.length < 6) {
-      newErrors.password = "비밀번호는 최소 6자 이상이어야 합니다";
-    }
-
-    if (password !== confirmPassword) {
-      newErrors.confirmPassword = "비밀번호가 일치하지 않습니다";
-    }
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -86,17 +74,15 @@ export default function CompleteProfile() {
       const result = await completeProfileMutation.mutateAsync({
         realName: realName.trim(),
         phoneNumber,
-        password,
+        email: userEmail,
       });
 
-      setSuccessMessage(result.message);
+      setSuccessMessage("프로필이 저장되었습니다.");
       setRealName("");
       setPhoneNumber("");
-      setPassword("");
-      setConfirmPassword("");
       setErrors({});
 
-      // 2초 후 홈뎘이지로 이동
+      // 2초 후 홈페이지로 이동
       setTimeout(() => {
         navigate("/", { replace: true });
       }, 2000);
@@ -198,53 +184,7 @@ export default function CompleteProfile() {
               </p>
             </div>
 
-            {/* 비밀번호 */}
-            <div className="space-y-2">
-              <Label htmlFor="password">
-                비밀번호 <span className="text-red-500">*</span>
-              </Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="최소 6자 이상"
-                value={password}
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                  if (errors.password) {
-                    setErrors({ ...errors, password: "" });
-                  }
-                }}
-                className={errors.password ? "border-red-500" : ""}
-                disabled={isLoading}
-              />
-              {errors.password && (
-                <p className="text-sm text-red-500">{errors.password}</p>
-              )}
-            </div>
 
-            {/* 비밀번호 확인 */}
-            <div className="space-y-2">
-              <Label htmlFor="confirmPassword">
-                비밀번호 확인 <span className="text-red-500">*</span>
-              </Label>
-              <Input
-                id="confirmPassword"
-                type="password"
-                placeholder="비밀번호 재입력"
-                value={confirmPassword}
-                onChange={(e) => {
-                  setConfirmPassword(e.target.value);
-                  if (errors.confirmPassword) {
-                    setErrors({ ...errors, confirmPassword: "" });
-                  }
-                }}
-                className={errors.confirmPassword ? "border-red-500" : ""}
-                disabled={isLoading}
-              />
-              {errors.confirmPassword && (
-                <p className="text-sm text-red-500">{errors.confirmPassword}</p>
-              )}
-            </div>
 
             {/* 제출 버튼 */}
             <Button
@@ -258,7 +198,7 @@ export default function CompleteProfile() {
                   저장 중...
                 </>
               ) : (
-                "프로필 저장 및 실명인증 진행"
+                "프로필 저장"
               )}
             </Button>
 

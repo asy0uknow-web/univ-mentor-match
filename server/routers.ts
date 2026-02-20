@@ -603,28 +603,31 @@ export const appRouter = router({
         return { success: true };
       }),
 
-    completeProfile: protectedProcedure
+    completeProfile: publicProcedure
       .input(z.object({
         realName: z.string().min(1),
         phoneNumber: z.string().regex(/^01[0-9]-?\d{3,4}-?\d{4}$/),
-        password: z.string().min(6),
+        email: z.string().email(),
       }))
       .mutation(async ({ ctx, input }) => {
         const db = await getDb();
         if (!db) throw new Error("Database not available");
 
-        const hashedPassword = Buffer.from(input.password).toString('base64');
+        // email 기반으로 사용자 조회
+        const userResult = await db.select().from(users).where(eq(users.email, input.email)).limit(1);
+        if (userResult.length === 0) throw new Error("User not found");
+        
+        const user = userResult[0];
 
         await db
           .update(users)
           .set({
             realName: input.realName,
             phoneNumber: input.phoneNumber,
-            password: hashedPassword,
             verificationStatus: "pending",
             updatedAt: new Date(),
           })
-          .where(eq(users.id, ctx.user.id));
+          .where(eq(users.id, user.id));
 
         return {
           success: true,
@@ -637,7 +640,7 @@ export const appRouter = router({
         const db = await getDb();
         if (!db) throw new Error("Database not available");
 
-        const user = await db
+        const userResult = await db
           .select({
             id: users.id,
             realName: users.realName,
@@ -650,9 +653,9 @@ export const appRouter = router({
           .where(eq(users.id, ctx.user.id))
           .limit(1);
 
-        if (!user.length) throw new Error("User not found");
+        if (userResult.length === 0) throw new Error("User not found");
 
-        return user[0];
+        return userResult[0];
       }),
   }),
 
