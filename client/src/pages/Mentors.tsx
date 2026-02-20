@@ -564,14 +564,14 @@ function MentorCard({
           </div>
 
           {/* 중단: 자기소개 */}
-          <p className="text-xs text-muted-foreground line-clamp-3">
+          <p className="text-xs text-muted-foreground line-clamp-2 h-[32px] leading-4 overflow-hidden">
             {mentor.profile.bio || "소개가 아직 없어요."}
           </p>
 
           {/* 하단: 상담 가능 지역 */}
           {regionLabel && (
             <div className="mt-auto">
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs text-muted-foreground line-clamp-1 h-[16px] leading-4 overflow-hidden">
                 상담 가능 지역:{" "}
                 <span className="text-foreground">{regionLabel}</span>
               </p>
