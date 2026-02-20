@@ -1,0 +1,19 @@
+{
+  "query": "\n-- 먼저 테스트 사용자 ID 조회\nSELECT @userId := id FROM users WHERE openId = 'test_oauth_user_001' LIMIT 1;\n\n-- 멘토 프로필 생성\nINSERT INTO mentor_profiles (\n  userId,\n  university,\n  major,\n  grade,\n  bio,\n  hourlyRate,\n  field,\n  region,\n  isActive,\n  verificationStatus,\n  isDeleted,\n  averageRating,\n  createdAt,\n  updatedAt\n) VALUES (\n  @userId,\n  'Seoul National University',\n  'Computer Science',\n  '4',\n  'Experienced mentor in computer science and algorithm',\n  '50000',\n  'engineering',\n  'seoul',\n  true,\n  'approved',\n  false,\n  4.8,\n  NOW(),\n  NOW()\n);\n\n-- 생성 확인\nSELECT id, userId, university, major, verificationStatus FROM mentor_profiles WHERE userId = @userId;\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute \n-- 먼저 테스트 사용자 ID 조회\nSELECT @userId := id FROM users WHERE openId = 'test_oauth_user_001' LIMIT 1;\n\n-- 멘토 프로필 생성\nINSERT INTO mentor_profiles (\n  userId,\n  university,\n  major,\n  grade,\n  bio,\n  hourlyRate,\n  field,\n  region,\n  isActive,\n  verificationStatus,\n  isDeleted,\n  averageRating,\n  createdAt,\n  updatedAt\n) VALUES (\n  @userId,\n  'Seoul National University',\n  'Computer Science',\n  '4',\n  'Experienced mentor in computer science and algorithm',\n  '50000',\n  'engineering',\n  'seoul',\n  true,\n  'approved',\n  false,\n  4.8,\n  NOW(),\n  NOW()\n);\n\n-- 생성 확인\nSELECT id, userId, university, major, verificationStatus FROM mentor_profiles WHERE userId = @userId;\n",
+  "rows": [
+    {
+      "@userId := id": "3630034"
+    },
+    {
+      "@userId := id": "id\tuserId\tuniversity\tmajor\tverificationStatus"
+    },
+    {
+      "@userId := id": "1020009\t3630034\tSeoul National University\tComputer Science\tapproved"
+    }
+  ],
+  "messages": [],
+  "stdout": "@userId := id\n3630034\nid\tuserId\tuniversity\tmajor\tverificationStatus\n1020009\t3630034\tSeoul National University\tComputer Science\tapproved\n",
+  "stderr": "",
+  "execution_time_ms": 1914
+}

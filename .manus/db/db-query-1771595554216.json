@@ -1,0 +1,16 @@
+{
+  "query": "\nINSERT INTO users (\n  openId, \n  name, \n  email, \n  loginMethod, \n  lastSignedIn, \n  role,\n  createdAt,\n  updatedAt\n) VALUES (\n  'test_oauth_user_001',\n  'Test OAuth User',\n  'test.oauth@example.com',\n  'google',\n  NOW(),\n  'user',\n  NOW(),\n  NOW()\n);\n\nSELECT id, openId, name, email FROM users WHERE openId = 'test_oauth_user_001';\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute \nINSERT INTO users (\n  openId, \n  name, \n  email, \n  loginMethod, \n  lastSignedIn, \n  role,\n  createdAt,\n  updatedAt\n) VALUES (\n  'test_oauth_user_001',\n  'Test OAuth User',\n  'test.oauth@example.com',\n  'google',\n  NOW(),\n  'user',\n  NOW(),\n  NOW()\n);\n\nSELECT id, openId, name, email FROM users WHERE openId = 'test_oauth_user_001';\n",
+  "rows": [
+    {
+      "id": "3630034",
+      "openId": "test_oauth_user_001",
+      "name": "Test OAuth User",
+      "email": "test.oauth@example.com"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\topenId\tname\temail\n3630034\ttest_oauth_user_001\tTest OAuth User\ttest.oauth@example.com\n",
+  "stderr": "",
+  "execution_time_ms": 1727
+}
