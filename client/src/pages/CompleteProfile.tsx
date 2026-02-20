@@ -9,6 +9,7 @@ export default function CompleteProfile() {
   const [realName, setRealName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const completeProfileMutation = trpc.verification.completeProfile.useMutation();
@@ -46,14 +47,20 @@ export default function CompleteProfile() {
         return;
       }
 
-      await completeProfileMutation.mutateAsync({
+      const result = await completeProfileMutation.mutateAsync({
         realName,
         phoneNumber,
         email: user.email,
       });
 
-      // 성공 후 홈으로 이동
-      navigate("/");
+      // 성공 메시지 표시
+      setSuccess(true);
+      setError("");
+      
+      // 2초 후 홈으로 이동
+      setTimeout(() => {
+        navigate("/", { replace: true });
+      }, 2000);
     } catch (err) {
       console.error("[CompleteProfile] Error:", err);
       const errorMessage = err instanceof Error ? err.message : "프로필 저장 중 오류가 발생했습니다.";
@@ -101,8 +108,15 @@ export default function CompleteProfile() {
               />
             </div>
 
+            {/* 성공 메시지 */}
+            {success && (
+              <div className="p-3 bg-green-50 border border-green-200 rounded-lg text-green-700 text-sm">
+                ✓ 프로필이 저장되었습니다. 잠시 후 홈페이지로 이동합니다...
+              </div>
+            )}
+
             {/* 에러 메시지 */}
-            {error && (
+            {error && !success && (
               <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
                 {error}
               </div>
@@ -111,10 +125,10 @@ export default function CompleteProfile() {
             {/* 제출 버튼 */}
             <button
               type="submit"
-              disabled={loading || !realName || !phoneNumber}
+              disabled={loading || !realName || !phoneNumber || success}
               className="w-full bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white font-medium py-2 px-4 rounded-lg transition duration-200"
             >
-              {loading ? "저장 중..." : "프로필 저장"}
+              {loading ? "저장 중..." : success ? "저장 완료" : "프로필 저장"}
             </button>
           </form>
 
