@@ -1,11 +1,12 @@
-import { useAuth } from "@/_core/hooks/useAuth";
+'use client';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { trpc } from "@/lib/trpc";
 import { Link } from "wouter";
-import { GraduationCap, Send, MessageSquare, Check, X, Clock, CheckCircle2, Trash2, ChevronDown } from "lucide-react";
+import { GraduationCap, Send, MessageSquare, Check, X, Clock, CheckCircle2, Trash2, ChevronDown, AlertCircle } from "lucide-react";
+import { useAuth } from "@/_core/hooks/useAuth";
 import BugReportModal from "@/components/BugReportModal";
 import { useState, useEffect, useRef } from "react";
 import { getLoginUrl } from "@/const";
@@ -146,6 +147,10 @@ export default function Messages() {
     rejectBookingMutation.mutate({ bookingId });
   };
 
+  const insertTemplate = (template: string) => {
+    setMessageContent((prev) => (prev ? prev + "\n\n" + template : template));
+  };
+
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -198,8 +203,8 @@ export default function Messages() {
       {/* Content */}
       <div className="container mx-auto px-4 py-8">
         <div className="mb-6">
-          <h1 className="text-3xl font-bold">메시지</h1>
-          <p className="text-muted-foreground mt-1">멘토와의 상담 신청 및 메시지를 관리하세요</p>
+          <h1 className="text-3xl font-bold">상담 조율</h1>
+          <p className="text-muted-foreground mt-1">멘토와 상담 일정, 시간, 장소를 조율하세요</p>
         </div>
 
         <div className="grid lg:grid-cols-3 gap-6">
@@ -276,6 +281,23 @@ export default function Messages() {
                   </div>
                 </CardHeader>
                 
+                {/* 상담 조율 카드 */}
+                <div className="bg-amber-50 border-b border-amber-200 p-4">
+                  <div className="flex items-start gap-3">
+                    <AlertCircle className="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" />
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-amber-900 mb-1">상담 조율 대화</h3>
+                      <p className="text-sm text-amber-800 mb-3">
+                        이 공간은 상담 일정, 시간, 장소, 결제 방식 등을 합의하기 위한 공간입니다.
+                      </p>
+                      <div className="bg-white border border-amber-200 rounded p-3 text-sm text-amber-900">
+                        <p className="font-semibold mb-1">⚠️ 상담 진행 안내</p>
+                        <p>상담은 대면으로 진행됩니다. 결제는 상담 당일 현장에서 진행해주세요. 정확한 장소와 시간을 이 대화에서 확정해주세요.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
                 {/* Messages */}
                 <CardContent className="flex-1 overflow-y-auto py-4 space-y-4 flex flex-col">
                   {conversation && conversation.length > 0 ? (
@@ -324,9 +346,20 @@ export default function Messages() {
                       );
                     })
                   ) : (
-                    <p className="text-muted-foreground text-center py-8">
-                      대화를 시작해보세요.
-                    </p>
+                    <div className="text-center py-8">
+                      <MessageSquare className="h-12 w-12 text-muted-foreground mx-auto mb-4 opacity-50" />
+                      <p className="text-muted-foreground mb-4">
+                        아직 조율 메시지가 없습니다.
+                      </p>
+                      <p className="text-sm text-muted-foreground mb-4">
+                        멘토와 상담 일정, 시간, 장소를 먼저 합의해보세요.
+                      </p>
+                      <Link href="/mentors">
+                        <Button variant="outline" size="sm">
+                          멘토 찾기
+                        </Button>
+                      </Link>
+                    </div>
                   )}
                   <div ref={messagesEndRef} />
                 </CardContent>
@@ -387,6 +420,35 @@ export default function Messages() {
                     rows={3}
                     className="resize-none"
                   />
+                  
+                  {/* 템플릿 버튼 */}
+                  <div className="grid grid-cols-3 gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => insertTemplate("상담 가능한 날짜와 시간을 아래와 같이 제안드립니다.\n- 날짜: \n- 시간: \n확인 부탁드립니다.")}
+                      className="text-xs"
+                    >
+                      📅 일정 제안
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => insertTemplate("상담 장소를 아래와 같이 제안드립니다.\n- 장소: \n- 위치 설명: \n가능 여부 확인 부탁드립니다.")}
+                      className="text-xs"
+                    >
+                      📍 장소 제안
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => insertTemplate("결제는 상담 당일 현장에서 진행 부탁드립니다. 계좌이체/현금 중 편하신 방식으로 준비해주세요.")}
+                      className="text-xs"
+                    >
+                      💳 결제 안내
+                    </Button>
+                  </div>
+                  
                   <div className="flex gap-2">
                     <Button
                       onClick={handleSendMessage}
@@ -405,10 +467,22 @@ export default function Messages() {
             ) : (
               <Card className="h-[700px] flex items-center justify-center">
                 <CardContent className="text-center">
-                  <MessageSquare className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                  <p className="text-muted-foreground">
+                  <MessageSquare className="h-12 w-12 text-muted-foreground mx-auto mb-4 opacity-50" />
+                  <p className="text-muted-foreground mb-4">
                     대화를 선택하여 메시지를 확인하세요.
                   </p>
+                  {Object.keys(conversations).length === 0 && (
+                    <>
+                      <p className="text-sm text-muted-foreground mb-4">
+                        아직 조율 메시지가 없습니다.
+                      </p>
+                      <Link href="/mentors">
+                        <Button variant="outline" size="sm">
+                          멘토 찾기
+                        </Button>
+                      </Link>
+                    </>
+                  )}
                 </CardContent>
               </Card>
             )}
