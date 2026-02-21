@@ -718,3 +718,13 @@
   - [x] 모든 테스트 통과 (19/19)
 - [ ] 실명인증 서비스 연동 (카카오페이, NICE 등) - 향후 구현
 - [ ] 프로덕션 환경 테스트
+
+## Google OAuth 회원정보 저장 수정 (진행 중)
+
+- [x] DB 스키마 점검 (phoneNumber 컬럼 이미 존재)
+- [x] server/routers.ts에 user.getProfile에 realName, phoneNumber 필드 추가
+- [x] server/routers.ts에 user.updateProfile 엔드포인트 추가
+- [x] client/src/pages/MyProfile.tsx에 realName, phoneNumber 필드 추가
+- [x] MyProfile.tsx에 "추가 정보 수정" 섹션 구현
+- [ ] 통합 테스트 (Google 로그인 → 정보 입력 → 저장 → 조회)
+- [ ] 배포

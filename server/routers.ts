@@ -125,8 +125,32 @@ export const appRouter = router({
         openId: user.openId,
         loginMethod: user.loginMethod,
         userType: user.userType,
+        realName: user.realName,
+        phoneNumber: user.phoneNumber,
       };
     }),
+    updateProfile: protectedProcedure
+      .input(z.object({
+        name: z.string().min(1).max(100).optional(),
+        realName: z.string().min(1).max(255).optional(),
+        phoneNumber: z.string().regex(/^01[0-9]-?\d{3,4}-?\d{4}$/).optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+        
+        const updateData: Record<string, any> = {
+          updatedAt: new Date(),
+        };
+        
+        if (input.name !== undefined) updateData.name = input.name;
+        if (input.realName !== undefined) updateData.realName = input.realName;
+        if (input.phoneNumber !== undefined) updateData.phoneNumber = input.phoneNumber;
+        
+        await db.update(users).set(updateData).where(eq(users.id, ctx.user.id));
+        
+        return { success: true, message: "Profile updated successfully" };
+      }),
     changeNickname: protectedProcedure
       .input(z.object({
         nickname: z.string().min(1).max(50),

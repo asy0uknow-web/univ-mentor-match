@@ -17,15 +17,31 @@ export default function MyProfile() {
 
   const { user, isAuthenticated } = useAuth();
   const [nickname, setNickname] = useState("");
+  const [realName, setRealName] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isEditingNickname, setIsEditingNickname] = useState(false);
+  const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [isEditingPassword, setIsEditingPassword] = useState(false);
 
   // 개인정보 조회
   const { data: profile, isLoading } = trpc.user.getProfile.useQuery(undefined, {
     enabled: isAuthenticated,
+  });
+
+  // 프로필 업데이트 mutation
+  const updateProfileMutation = trpc.user.updateProfile.useMutation({
+    onSuccess: () => {
+      toast.success("프로필이 업데이트되었습니다!");
+      setIsEditingProfile(false);
+      setRealName("");
+      setPhoneNumber("");
+    },
+    onError: (error) => {
+      toast.error(`프로필 업데이트 실패: ${error.message}`);
+    },
   });
 
   // 닉네임 변경 mutation
@@ -53,6 +69,19 @@ export default function MyProfile() {
       toast.error(`비밀번호 변경 실패: ${error.message}`);
     },
   });
+
+  const handleUpdateProfile = () => {
+    const updates: Record<string, string> = {};
+    if (realName.trim()) updates.realName = realName.trim();
+    if (phoneNumber.trim()) updates.phoneNumber = phoneNumber.trim();
+    
+    if (Object.keys(updates).length === 0) {
+      toast.error("변경할 정보를 입력해주세요");
+      return;
+    }
+    
+    updateProfileMutation.mutate(updates as any);
+  };
 
   const handleChangeNickname = () => {
     if (!nickname.trim()) {
@@ -167,10 +196,103 @@ export default function MyProfile() {
                       </p>
                     </div>
                   </div>
+
+                  {/* 실명 */}
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium">실명</Label>
+                    <div className="p-3 bg-muted rounded-md">
+                      <p className="text-sm">{profile?.realName || "설정되지 않음"}</p>
+                    </div>
+                  </div>
+
+                  {/* 휴대폰 번호 */}
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium">휴대폰 번호</Label>
+                    <div className="p-3 bg-muted rounded-md">
+                      <p className="text-sm">{profile?.phoneNumber || "설정되지 않음"}</p>
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
 
-              {/* 닉네임 변경 섹션 */}
+              {/* 프로필 수정 섹션 */}
+              <Card className="mb-6">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Edit2 className="h-5 w-5" />
+                    추가 정보 수정
+                  </CardTitle>
+                  <CardDescription>
+                    실명과 휴대폰 번호를 수정하세요
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {isEditingProfile ? (
+                    <>
+                      <div className="space-y-2">
+                        <Label htmlFor="realName">실명</Label>
+                        <Input
+                          id="realName"
+                          type="text"
+                          placeholder="실명을 입력하세요"
+                          value={realName}
+                          onChange={(e) => setRealName(e.target.value)}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="phoneNumber">휴대폰 번호</Label>
+                        <Input
+                          id="phoneNumber"
+                          type="tel"
+                          placeholder="010-1234-5678"
+                          value={phoneNumber}
+                          onChange={(e) => setPhoneNumber(e.target.value)}
+                        />
+                      </div>
+                      <div className="flex gap-2">
+                        <Button
+                          onClick={handleUpdateProfile}
+                          disabled={updateProfileMutation.isPending}
+                        >
+                          {updateProfileMutation.isPending ? (
+                            <>
+                              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                              저장 중...
+                            </>
+                          ) : (
+                            "저장하기"
+                          )}
+                        </Button>
+                        <Button
+                          variant="outline"
+                          onClick={() => {
+                            setIsEditingProfile(false);
+                            setRealName("");
+                            setPhoneNumber("");
+                          }}
+                        >
+                          취소
+                        </Button>
+                      </div>
+                    </>
+                  ) : (
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        setIsEditingProfile(true);
+                        setRealName(profile?.realName || "");
+                        setPhoneNumber(profile?.phoneNumber || "");
+                      }}
+                    >
+                      <Edit2 className="mr-2 h-4 w-4" />
+                      정보 수정
+                    </Button>
+                  )}
+                </CardContent>
+              </Card>
+
+              {/* 닉네임 변경 섹션 (숨김) */}
+              {/*
               <Card className="mb-6">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
@@ -234,6 +356,7 @@ export default function MyProfile() {
                   )}
                 </CardContent>
               </Card>
+              */}
 
               {/* 비밀번호 변경 섹션 */}
               <Card>
