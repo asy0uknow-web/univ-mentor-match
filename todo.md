@@ -738,3 +738,12 @@
 - [x] Navbar에 "상담 조율" 메뉴 추가
 - [ ] 통합 테스트 (멘토 상세 → 문의하기 → 메시지 이동)
 - [ ] 배포
+
+## OAuth 환경변수 검증 및 HTTPS 보장
+
+- [x] getLoginUrl() 함수 개선 (환경변수 검증 추가)
+- [x] getPublicOrigin() 함수 유지 (HTTP → HTTPS 변환)
+- [x] 환경변수 누락 시 방어 코드 추가 (콘솔 에러 출력)
+- [x] redirectUri HTTPS 검증 추가
+- [ ] 테스트 (로그인 버튼 클릭, redirectUri 확인, 세션 유지)
+- [ ] 배포

@@ -5,7 +5,6 @@ const getPublicOrigin = () => {
   if (forced && forced.trim().length > 0) {
     return forced.replace(/\/$/, "");
   }
-  // 현재 도메인이 http로 시작하면 강제로 https로 변환
   const origin = window.location.origin;
   if (origin.startsWith("http://")) {
     return origin.replace("http://", "https://");
@@ -16,8 +15,24 @@ const getPublicOrigin = () => {
 export const getLoginUrl = () => {
   const oauthPortalUrl = import.meta.env.VITE_OAUTH_PORTAL_URL;
   const appId = import.meta.env.VITE_APP_ID;
+  
+  // 환경변수 검증
+  if (!oauthPortalUrl || !appId) {
+    console.error("OAuth 환경변수가 설정되지 않았습니다.", {
+      oauthPortalUrl,
+      appId,
+    });
+    return "#";
+  }
+  
   const publicOrigin = getPublicOrigin();
   const redirectUri = `${publicOrigin}/api/oauth/callback`;
+  
+  // HTTPS 검증
+  if (!redirectUri.startsWith("https://")) {
+    console.error("redirectUri는 반드시 HTTPS여야 합니다:", redirectUri);
+  }
+  
   const state = btoa(redirectUri);
   const url = new URL(`${oauthPortalUrl}/app-auth`);
   url.searchParams.set("appId", appId);
