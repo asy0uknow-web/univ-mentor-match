@@ -747,3 +747,22 @@
 - [x] redirectUri HTTPS 검증 추가
 - [ ] 테스트 (로그인 버튼 클릭, redirectUri 확인, 세션 유지)
 - [ ] 배포
+
+## 예약 흐름 변경 (상담 조율 → 메시지 합의 → 멘토 확정)
+
+- [ ] MentorDetail.tsx - 예약 모달 삭제, 상담 조율하기 버튼만 유지
+- [ ] Messages.tsx - 멘토 계정일 경우 예약 확정하기 버튼 추가
+- [ ] server/routers.ts - booking.create 유지 및 mentorProfileId 매핑 정확화
+- [ ] server/db.ts - mentorId vs mentorProfileId 정리
+- [ ] 기존 예약 모달 관련 코드 완전 제거
+- [ ] 통합 테스트 (멘토 상세 → 상담 조율 → 메시지 → 예약 확정)
+- [ ] 배포
+
+## 예약 흐름 변경 및 실명 기반 상담 시스템
+
+- [x] booking.confirm 엔드포인트 추가 (멘토 전용)
+- [x] Messages.tsx: 대화 상대를 users.name으로 표시
+- [x] MentorDetail.tsx: 멘토 이름을 users.name으로 표시 (이미 구현됨)
+- [x] server/routers.ts: API 응답에서 userId 노출 금지, nickname 제거 (이미 정리됨)
+- [x] booking 생성 시 실명 기반 시스템 메시지 추가
+- [x] /mentors 페이지 실명 표시 확인 및 수정 (이미 구현됨)

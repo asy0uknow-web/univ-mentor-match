@@ -100,28 +100,6 @@ export default function Messages() {
     },
   });
 
-  const acceptBookingMutation = trpc.booking.acceptBooking.useMutation({
-    onSuccess: () => {
-      toast.success("상담 신청을 수락했습니다.");
-      utils.message.getConversation.invalidate();
-      utils.message.getInbox.invalidate();
-    },
-    onError: (error) => {
-      toast.error(`상담 신청 수락 실패: ${error.message}`);
-    },
-  });
-
-  const rejectBookingMutation = trpc.booking.rejectBooking.useMutation({
-    onSuccess: () => {
-      toast.success("상담 신청을 거절했습니다.");
-      utils.message.getConversation.invalidate();
-      utils.message.getInbox.invalidate();
-    },
-    onError: (error) => {
-      toast.error(`상담 신청 거절 실패: ${error.message}`);
-    },
-  });
-
   const handleSendMessage = () => {
     if (!messageContent.trim() || !selectedConversation) {
       toast.error("메시지 내용을 입력해주세요.");
@@ -137,14 +115,6 @@ export default function Messages() {
     setTimeout(() => {
       scrollToBottom();
     }, 150);
-  };
-
-  const handleAcceptBooking = (bookingId: number) => {
-    acceptBookingMutation.mutate({ bookingId });
-  };
-
-  const handleRejectBooking = (bookingId: number) => {
-    rejectBookingMutation.mutate({ bookingId });
   };
 
   const insertTemplate = (template: string) => {
@@ -183,17 +153,18 @@ export default function Messages() {
   const selectedConversationMessages = selectedConversation
     ? conversations[selectedConversation] || []
     : [];
-  
-  const relatedBooking = selectedConversationMessages.find((msg: any) => msg.bookingId)?.bookingId;
 
   // Extract user name from first message
   const getOtherUserName = (userId: number) => {
     const msgs: any[] = conversations[userId] || [];
     if (msgs.length === 0) return `User ${userId}`;
     const firstMsg = msgs[0];
-    // Try to extract name from message content if it's a consultation request
-    if (firstMsg.content.includes("[상담 신청]")) {
-      return "상담 신청";
+    // Get other user's name from message metadata
+    if (firstMsg.senderName && firstMsg.senderId === userId) {
+      return firstMsg.senderName;
+    }
+    if (firstMsg.recipientName && firstMsg.recipientId === userId) {
+      return firstMsg.recipientName;
     }
     return `User ${userId}`;
   };
@@ -276,7 +247,7 @@ export default function Messages() {
                   <div className="flex items-center justify-between">
                     <div>
                       <CardTitle>대화</CardTitle>
-                      <CardDescription>User {selectedConversation}와의 대화</CardDescription>
+                      <CardDescription>{getOtherUserName(selectedConversation)}와의 대화</CardDescription>
                     </div>
                   </div>
                 </CardHeader>
@@ -364,45 +335,28 @@ export default function Messages() {
                   <div ref={messagesEndRef} />
                 </CardContent>
 
-                {/* Action Buttons for Consultation Request */}
+                {/* 멘토 계정일 경우 예약 확정 버튼 */}
                 {selectedConversationMessages.some((msg: any) => msg.content.includes("[상담 신청]")) && 
                  selectedConversationMessages.some((msg: any) => msg.senderId !== user?.id) && (
-                  <div className="border-t border-border p-4 bg-amber-50">
-                    <p className="text-sm font-semibold text-amber-900 mb-3">상담 신청 응답</p>
-                    <div className="flex gap-2">
-                      <Button
-                        onClick={() => {
-                          // Find the booking ID from the consultation request message
-                          const consultationMsg = selectedConversationMessages.find(
-                            (msg: any) => msg.content.includes("[상담 신청]") && msg.senderId !== user?.id
-                          );
-                          if (consultationMsg?.bookingId) {
-                            handleAcceptBooking(consultationMsg.bookingId);
-                          }
-                        }}
-                        disabled={acceptBookingMutation.isPending}
-                        className="flex-1 bg-green-600 hover:bg-green-700"
-                      >
-                        <Check className="h-4 w-4 mr-2" />
-                        {acceptBookingMutation.isPending ? "처리 중..." : "수락"}
-                      </Button>
-                      <Button
-                        onClick={() => {
-                          const consultationMsg = selectedConversationMessages.find(
-                            (msg: any) => msg.content.includes("[상담 신청]") && msg.senderId !== user?.id
-                          );
-                          if (consultationMsg?.bookingId) {
-                            handleRejectBooking(consultationMsg.bookingId);
-                          }
-                        }}
-                        disabled={rejectBookingMutation.isPending}
-                        variant="outline"
-                        className="flex-1"
-                      >
-                        <X className="h-4 w-4 mr-2" />
-                        {rejectBookingMutation.isPending ? "처리 중..." : "거절"}
-                      </Button>
-                    </div>
+                  <div className="border-t border-border p-4 bg-green-50">
+                    <p className="text-sm font-semibold text-green-900 mb-3">상담 예약 확정</p>
+                    <p className="text-xs text-green-800 mb-3">
+                      학생이 제안한 일정, 시간, 장소를 확인하고 아래 버튼으로 예약을 확정하세요.
+                    </p>
+                    <Button
+                      onClick={() => {
+                        if (!selectedConversation) return;
+                        sendMessageMutation.mutate({
+                          recipientId: selectedConversation,
+                          content: "예약이 확정되었습니다. 상담 당일 현장 결제 부탁드립니다.",
+                        });
+                      }}
+                      disabled={sendMessageMutation.isPending}
+                      className="w-full bg-green-600 hover:bg-green-700"
+                    >
+                      <Check className="h-4 w-4 mr-2" />
+                      {sendMessageMutation.isPending ? "처리 중..." : "예약 확정하기"}
+                    </Button>
                   </div>
                 )}
 

@@ -309,6 +309,15 @@ export const appRouter = router({
 
         const bookingId = Number((result as any).insertId);
 
+        // 학생 실명 조회
+        const db = await getDb();
+        let studentName = "학생";
+        if (db) {
+          const studentUser = await db.select().from(users).where(eq(users.id, ctx.user.id)).limit(1);
+          if (studentUser.length > 0 && studentUser[0].name) {
+            studentName = studentUser[0].name;
+          }
+        }
         // 멘토에게 알림 생성
         const consultationTypeLabels: Record<string, string> = {
           "resume_consulting": "생기부 컨설팅",
@@ -321,11 +330,13 @@ export const appRouter = router({
         const formattedDate = scheduledDate.toLocaleDateString('ko-KR', { month: '2-digit', day: '2-digit' });
         const formattedTime = scheduledDate.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', hour12: false });
 
+        // 알림 메시지에 학생 실명 포함
+        const studentNameForNotif = studentName || "학생";
         await createNotification({
           userId: input.mentorId,
           type: "booking_request",
           title: "새로운 상담 예약 신청",
-          message: `${consultationLabel} 예약이 신청되었습니다. (${formattedDate} ${formattedTime}, ${duration}시간)`,
+          message: `${studentNameForNotif} 학생이 ${consultationLabel} 예약을 신청했습니다. (${formattedDate} ${formattedTime}, ${duration}시간)`,
           relatedId: bookingId,
           isRead: false,
         });
@@ -359,6 +370,47 @@ export const appRouter = router({
       }))
       .mutation(async ({ input }) => {
         await updateBookingStatus(input.bookingId, input.status);
+        return { success: true };
+      }),
+
+    confirm: protectedProcedure
+      .input(z.object({
+        bookingId: z.number(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const booking = await getBookingById(input.bookingId);
+        if (!booking) throw new Error("Booking not found");
+        
+        // 멘토만 예약 확정 가능
+        const mentorProfile = await getMentorProfileByUserId(ctx.user.id);
+        if (!mentorProfile || mentorProfile.id !== booking.mentorId) {
+          throw new Error("Unauthorized: Only the mentor can confirm this booking");
+        }
+
+        // 예약 상태를 confirmed로 변경
+        await updateBookingStatus(input.bookingId, "confirmed");
+
+        // 학생에게 알림 생성
+        const db = await getDb();
+        if (db) {
+          const student = await db.select().from(users).where(eq(users.id, booking.studentId)).limit(1);
+          const mentor = await db.select().from(users).where(eq(users.id, ctx.user.id)).limit(1);
+          
+          if (student.length > 0 && mentor.length > 0) {
+            const studentName = student[0].name || "학생";
+            const mentorName = mentor[0].name || "멘토";
+            
+            await createNotification({
+              userId: booking.studentId,
+              type: "booking_confirmed",
+              title: "상담 예약이 확정되었습니다",
+              message: `${mentorName} 멘토가 상담 예약을 확정했습니다. 상담 당일 현장 결제 부탁드립니다.`,
+              relatedId: input.bookingId,
+              isRead: false,
+            });
+          }
+        }
+
         return { success: true };
       }),
 
