@@ -141,7 +141,7 @@ export default function Bookings() {
           ) : (
             <Card>
               <CardContent className="py-12 text-center">
-                <p className="text-muted-foreground mb-4">아직 예약 내역이 없습니다.</p>
+                <p className="text-muted-foreground mb-4">예약 내역이 존재하지 않습니다.</p>
                 <Link href="/mentors">
                   <Button>멘토 찾아보기</Button>
                 </Link>

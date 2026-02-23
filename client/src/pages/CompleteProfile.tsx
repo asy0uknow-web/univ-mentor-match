@@ -7,15 +7,29 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
+import { PageLayout } from "@/components/layout";
+
+type UserRole = "mentor" | "mentee" | null;
 
 export default function CompleteProfile() {
   const [, navigate] = useLocation();
-  const [realName, setRealName] = useState("");
+  const [userRole, setUserRole] = useState<UserRole>(null);
+  const [name, setName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [userEmail, setUserEmail] = useState("");
+
+  // 멘토 전용 필드
+  const [university, setUniversity] = useState("");
+  const [major, setMajor] = useState("");
+  const [mentorRegion, setMentorRegion] = useState("");
+
+  // 멘티 전용 필드
+  const [school, setSchool] = useState("");
+  const [careerGoal, setCareerGoal] = useState("");
+  const [menteeRegion, setMenteeRegion] = useState("");
 
   // 현재 사용자 정보 조회
   const { data: user } = trpc.auth.me.useQuery();
@@ -48,14 +62,24 @@ export default function CompleteProfile() {
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
 
-    if (!realName.trim()) {
-      newErrors.realName = "실명을 입력해주세요";
+    if (!name.trim()) {
+      newErrors.name = "이름을 입력해주세요";
     }
 
     if (!phoneNumber.trim()) {
       newErrors.phoneNumber = "휴대폰 번호를 입력해주세요";
-    } else if (!/^01[0-9]-\d{3,4}-\d{4}$/.test(phoneNumber)) {
-      newErrors.phoneNumber = "올바른 휴대폰 번호 형식이 아닙니다 (예: 010-1234-5678)";
+    } else if (!/^01[0-9]-?\d{3,4}-?\d{4}$/.test(phoneNumber)) {
+      newErrors.phoneNumber = "유효한 휴대폰 번호를 입력해주세요";
+    }
+
+    if (userRole === "mentor") {
+      if (!university.trim()) newErrors.university = "대학교를 입력해주세요";
+      if (!major.trim()) newErrors.major = "학과를 입력해주세요";
+      if (!mentorRegion) newErrors.mentorRegion = "상담 가능 지역을 선택해주세요";
+    } else if (userRole === "mentee") {
+      if (!school.trim()) newErrors.school = "학교를 입력해주세요";
+      if (!careerGoal.trim()) newErrors.careerGoal = "희망 진로를 입력해주세요";
+      if (!menteeRegion) newErrors.menteeRegion = "상담 희망 지역을 선택해주세요";
     }
 
     setErrors(newErrors);
@@ -72,13 +96,20 @@ export default function CompleteProfile() {
     setIsLoading(true);
     try {
       const result = await completeProfileMutation.mutateAsync({
-        name: realName.trim(),
+        name: name.trim(),
         phoneNumber,
         email: userEmail,
+        userRole: userRole!,
+        university: userRole === "mentor" ? university.trim() : undefined,
+        major: userRole === "mentor" ? major.trim() : undefined,
+        mentorRegion: userRole === "mentor" ? mentorRegion : undefined,
+        school: userRole === "mentee" ? school.trim() : undefined,
+        careerGoal: userRole === "mentee" ? careerGoal.trim() : undefined,
+        menteeRegion: userRole === "mentee" ? menteeRegion : undefined,
       });
 
       setSuccessMessage("프로필이 저장되었습니다.");
-      setRealName("");
+      setName("");
       setPhoneNumber("");
       setErrors({});
 
@@ -95,123 +126,299 @@ export default function CompleteProfile() {
     }
   };
 
+  const regions = [
+    { value: "seoul", label: "서울" },
+    { value: "gyeonggi", label: "경기" },
+    { value: "incheon", label: "인천" },
+    { value: "gangwon", label: "강원" },
+    { value: "chungcheong", label: "충청" },
+    { value: "jeolla", label: "전라" },
+    { value: "gyeongsang", label: "경상" },
+    { value: "jeju", label: "제주" },
+  ];
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md shadow-lg">
-        <CardHeader className="space-y-2">
-          <CardTitle className="text-2xl">프로필 완성</CardTitle>
-          <CardDescription>
-            실명인증을 위해 필요한 정보를 입력해주세요
-          </CardDescription>
-        </CardHeader>
+    <PageLayout>
+      <div className="container mx-auto px-4 py-8 max-w-2xl">
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-2xl">프로필 완성</CardTitle>
+            <CardDescription>
+              유니브매치에서 시작하는 솔직한 진로 상담을 위해 기본 정보를 입력해주세요.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {successMessage && (
+              <Alert className="mb-6 border-green-200 bg-green-50">
+                <CheckCircle2 className="h-4 w-4 text-green-600" />
+                <AlertDescription className="text-green-800">
+                  {successMessage}
+                </AlertDescription>
+              </Alert>
+            )}
 
-        <CardContent>
-          {successMessage && (
-            <Alert className="mb-6 border-green-200 bg-green-50">
-              <CheckCircle2 className="h-4 w-4 text-green-600" />
-              <AlertDescription className="text-green-800">
-                {successMessage}
-              </AlertDescription>
-            </Alert>
-          )}
+            {errors.submit && (
+              <Alert className="mb-6 border-red-200 bg-red-50">
+                <AlertCircle className="h-4 w-4 text-red-600" />
+                <AlertDescription className="text-red-800">
+                  {errors.submit}
+                </AlertDescription>
+              </Alert>
+            )}
 
-          {errors.submit && (
-            <Alert variant="destructive" className="mb-6">
-              <AlertCircle className="h-4 w-4" />
-              <AlertDescription>{errors.submit}</AlertDescription>
-            </Alert>
-          )}
-
-          <form onSubmit={handleSubmit} className="space-y-5">
-            {/* 이메일 (읽기 전용) */}
-            <div className="space-y-2">
-              <Label htmlFor="email">이메일</Label>
-              <Input
-                id="email"
-                type="email"
-                value={userEmail}
-                disabled
-                className="bg-gray-100"
-              />
-              <p className="text-xs text-gray-500">
-                OAuth 계정의 이메일입니다. 변경할 수 없습니다.
-              </p>
-            </div>
-
-            {/* 실명 */}
-            <div className="space-y-2">
-              <Label htmlFor="realName">
-                실명 <span className="text-red-500">*</span>
-              </Label>
-              <Input
-                id="realName"
-                type="text"
-                placeholder="홍길동"
-                value={realName}
-                onChange={(e) => {
-                  setRealName(e.target.value);
-                  if (errors.realName) {
-                    setErrors({ ...errors, realName: "" });
-                  }
-                }}
-                className={errors.realName ? "border-red-500" : ""}
-                disabled={isLoading}
-              />
-              {errors.realName && (
-                <p className="text-sm text-red-500">{errors.realName}</p>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {/* 역할 선택 */}
+              {!userRole && (
+                <div className="space-y-4">
+                  <Label className="text-base font-semibold">
+                    당신의 역할을 선택해주세요
+                  </Label>
+                  <div className="grid grid-cols-2 gap-4">
+                    <button
+                      type="button"
+                      onClick={() => setUserRole("mentor")}
+                      className="p-4 border-2 border-gray-200 rounded-lg hover:border-primary hover:bg-primary/5 transition-all"
+                    >
+                      <div className="font-semibold">멘토</div>
+                      <div className="text-sm text-muted-foreground mt-1">
+                        대학생으로서 후배들을 멘토링
+                      </div>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setUserRole("mentee")}
+                      className="p-4 border-2 border-gray-200 rounded-lg hover:border-primary hover:bg-primary/5 transition-all"
+                    >
+                      <div className="font-semibold">멘티</div>
+                      <div className="text-sm text-muted-foreground mt-1">
+                        멘토에게 진로 상담 받기
+                      </div>
+                    </button>
+                  </div>
+                </div>
               )}
-            </div>
 
-            {/* 휴대폰 번호 */}
-            <div className="space-y-2">
-              <Label htmlFor="phoneNumber">
-                휴대폰 번호 <span className="text-red-500">*</span>
-              </Label>
-              <Input
-                id="phoneNumber"
-                type="tel"
-                placeholder="010-1234-5678"
-                value={phoneNumber}
-                onChange={handlePhoneChange}
-                className={errors.phoneNumber ? "border-red-500" : ""}
-                disabled={isLoading}
-              />
-              {errors.phoneNumber && (
-                <p className="text-sm text-red-500">{errors.phoneNumber}</p>
-              )}
-              <p className="text-xs text-gray-500">
-                휴대폰 실명인증에 사용됩니다
-              </p>
-            </div>
-
-
-
-            {/* 제출 버튼 */}
-            <Button
-              type="submit"
-              className="w-full bg-indigo-600 hover:bg-indigo-700"
-              disabled={isLoading}
-            >
-              {isLoading ? (
+              {userRole && (
                 <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  저장 중...
-                </>
-              ) : (
-                "프로필 저장"
-              )}
-            </Button>
+                  {/* 공통 필드 */}
+                  <div className="space-y-2">
+                    <Label htmlFor="name">이름 *</Label>
+                    <Input
+                      id="name"
+                      type="text"
+                      placeholder="실명을 입력해주세요"
+                      value={name}
+                      onChange={(e) => {
+                        setName(e.target.value);
+                        if (errors.name) setErrors({ ...errors, name: "" });
+                      }}
+                      className={errors.name ? "border-red-500" : ""}
+                    />
+                    {errors.name && (
+                      <p className="text-sm text-red-500">{errors.name}</p>
+                    )}
+                  </div>
 
-            {/* 안내 문구 */}
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm text-blue-800">
-              <p className="font-semibold mb-1">💡 다음 단계</p>
-              <p>
-                프로필을 저장한 후, 카카오페이 또는 NICE 실명인증을 통해 본인을 확인하게 됩니다.
-              </p>
-            </div>
-          </form>
-        </CardContent>
-      </Card>
-    </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="phone">휴대폰 번호 *</Label>
+                    <Input
+                      id="phone"
+                      type="tel"
+                      placeholder="010-1234-5678"
+                      value={phoneNumber}
+                      onChange={handlePhoneChange}
+                      className={errors.phoneNumber ? "border-red-500" : ""}
+                    />
+                    {errors.phoneNumber && (
+                      <p className="text-sm text-red-500">{errors.phoneNumber}</p>
+                    )}
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="email">이메일</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      value={userEmail}
+                      disabled
+                      className="bg-muted"
+                    />
+                  </div>
+
+                  {/* 멘토 전용 필드 */}
+                  {userRole === "mentor" && (
+                    <>
+                      <div className="space-y-2">
+                        <Label htmlFor="university">대학교 *</Label>
+                        <Input
+                          id="university"
+                          type="text"
+                          placeholder="예: 서울대학교"
+                          value={university}
+                          onChange={(e) => {
+                            setUniversity(e.target.value);
+                            if (errors.university)
+                              setErrors({ ...errors, university: "" });
+                          }}
+                          className={errors.university ? "border-red-500" : ""}
+                        />
+                        {errors.university && (
+                          <p className="text-sm text-red-500">
+                            {errors.university}
+                          </p>
+                        )}
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="major">학과 *</Label>
+                        <Input
+                          id="major"
+                          type="text"
+                          placeholder="예: 컴퓨터공학과"
+                          value={major}
+                          onChange={(e) => {
+                            setMajor(e.target.value);
+                            if (errors.major) setErrors({ ...errors, major: "" });
+                          }}
+                          className={errors.major ? "border-red-500" : ""}
+                        />
+                        {errors.major && (
+                          <p className="text-sm text-red-500">{errors.major}</p>
+                        )}
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="mentorRegion">상담 가능 지역 *</Label>
+                        <select
+                          id="mentorRegion"
+                          value={mentorRegion}
+                          onChange={(e) => {
+                            setMentorRegion(e.target.value);
+                            if (errors.mentorRegion)
+                              setErrors({ ...errors, mentorRegion: "" });
+                          }}
+                          className={`w-full px-3 py-2 border rounded-md ${
+                            errors.mentorRegion ? "border-red-500" : ""
+                          }`}
+                        >
+                          <option value="">지역을 선택해주세요</option>
+                          {regions.map((r) => (
+                            <option key={r.value} value={r.value}>
+                              {r.label}
+                            </option>
+                          ))}
+                        </select>
+                        {errors.mentorRegion && (
+                          <p className="text-sm text-red-500">
+                            {errors.mentorRegion}
+                          </p>
+                        )}
+                      </div>
+                    </>
+                  )}
+
+                  {/* 멘티 전용 필드 */}
+                  {userRole === "mentee" && (
+                    <>
+                      <div className="space-y-2">
+                        <Label htmlFor="school">학교 *</Label>
+                        <Input
+                          id="school"
+                          type="text"
+                          placeholder="예: 서울고등학교"
+                          value={school}
+                          onChange={(e) => {
+                            setSchool(e.target.value);
+                            if (errors.school) setErrors({ ...errors, school: "" });
+                          }}
+                          className={errors.school ? "border-red-500" : ""}
+                        />
+                        {errors.school && (
+                          <p className="text-sm text-red-500">{errors.school}</p>
+                        )}
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="careerGoal">희망 진로 *</Label>
+                        <Input
+                          id="careerGoal"
+                          type="text"
+                          placeholder="예: 컴퓨터공학 전공"
+                          value={careerGoal}
+                          onChange={(e) => {
+                            setCareerGoal(e.target.value);
+                            if (errors.careerGoal)
+                              setErrors({ ...errors, careerGoal: "" });
+                          }}
+                          className={errors.careerGoal ? "border-red-500" : ""}
+                        />
+                        {errors.careerGoal && (
+                          <p className="text-sm text-red-500">
+                            {errors.careerGoal}
+                          </p>
+                        )}
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="menteeRegion">상담 희망 지역 *</Label>
+                        <select
+                          id="menteeRegion"
+                          value={menteeRegion}
+                          onChange={(e) => {
+                            setMenteeRegion(e.target.value);
+                            if (errors.menteeRegion)
+                              setErrors({ ...errors, menteeRegion: "" });
+                          }}
+                          className={`w-full px-3 py-2 border rounded-md ${
+                            errors.menteeRegion ? "border-red-500" : ""
+                          }`}
+                        >
+                          <option value="">지역을 선택해주세요</option>
+                          {regions.map((r) => (
+                            <option key={r.value} value={r.value}>
+                              {r.label}
+                            </option>
+                          ))}
+                        </select>
+                        {errors.menteeRegion && (
+                          <p className="text-sm text-red-500">
+                            {errors.menteeRegion}
+                          </p>
+                        )}
+                      </div>
+                    </>
+                  )}
+
+                  <div className="flex gap-3 pt-4">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setUserRole(null)}
+                      disabled={isLoading}
+                    >
+                      이전
+                    </Button>
+                    <Button
+                      type="submit"
+                      disabled={isLoading}
+                      className="flex-1"
+                    >
+                      {isLoading ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          저장 중...
+                        </>
+                      ) : (
+                        "프로필 저장"
+                      )}
+                    </Button>
+                  </div>
+                </>
+              )}
+            </form>
+          </CardContent>
+        </Card>
+      </div>
+    </PageLayout>
   );
 }

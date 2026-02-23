@@ -19,8 +19,8 @@ interface NavbarProps {
 
 const NAVBAR_MENU = [
   { href: "/mentors", label: "멘토 찾기" },
-  { href: "/bookings", label: "상담 문의" },
-  { href: "/messages", label: "상담 조율" },
+  { href: "/messages", label: "상담 문의" },
+  { href: "/bookings", label: "예약 내역" },
   { href: "/my-profile", label: "내 프로필" },
   { href: "/my-info", label: "내 정보" },
   { href: "/notifications", label: "알림" },

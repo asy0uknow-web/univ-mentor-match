@@ -681,13 +681,6 @@ export const appRouter = router({
         name: z.string().min(1),
         phoneNumber: z.string().regex(/^01[0-9]-?\d{3,4}-?\d{4}$/),
         email: z.string().email(),
-        userRole: z.enum(["mentor", "mentee"]),
-        university: z.string().optional(),
-        major: z.string().optional(),
-        mentorRegion: z.string().optional(),
-        school: z.string().optional(),
-        careerGoal: z.string().optional(),
-        menteeRegion: z.string().optional(),
       }))
       .mutation(async ({ ctx, input }) => {
         const db = await getDb();
@@ -699,17 +692,14 @@ export const appRouter = router({
         
         const user = userResult[0];
 
-        const updateData: Record<string, any> = {
-          name: input.name,
-          phoneNumber: input.phoneNumber,
-          userType: input.userRole === "mentor" ? "university_student" : "high_school_student",
-          verificationStatus: "pending",
-          updatedAt: new Date(),
-        };
-
         await db
           .update(users)
-          .set(updateData)
+          .set({
+            name: input.name,
+            phoneNumber: input.phoneNumber,
+            verificationStatus: "pending",
+            updatedAt: new Date(),
+          })
           .where(eq(users.id, user.id));
 
         return {
