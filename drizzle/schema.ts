@@ -21,8 +21,7 @@ export const users = mysqlTable("users", {
   userType: mysqlEnum("userType", ["high_school_student", "university_student"]),
   // Stripe customer ID for payment processing
   stripeCustomerId: varchar("stripeCustomerId", { length: 255 }),
-  // Real name verification fields
-  realName: varchar("realName", { length: 255 }),
+  // Phone number for contact
   phoneNumber: varchar("phoneNumber", { length: 20 }),
   password: varchar("password", { length: 255 }),
   // Verification status: not_verified, pending, verified, rejected

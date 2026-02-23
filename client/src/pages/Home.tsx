@@ -91,7 +91,7 @@ export default function Home() {
 
   // OAuth 로그인 후 프로필 미완성 시 리다이렉트
   useEffect(() => {
-    if (isAuthenticated && user && !user.realName) {
+    if (isAuthenticated && user && !user.name) {
       // 실명이 없으면 프로필 완성 페이지로 이동
       navigate("/complete-profile", { replace: true });
     }
@@ -105,8 +105,8 @@ export default function Home() {
     return () => clearInterval(interval);
   }, [keywords.length]);
 
-  // 프로필 완성 페이지로 리다이렉트 중이면 로딩 표시
-  if (isAuthenticated && user && !user.realName) {
+  // 프로필 완성 페이지로 리다이렉트 중이면 로드 표시
+  if (isAuthenticated && user && !user.name) {
     return (
       <PageLayout showFooter>
         <div className="flex items-center justify-center min-h-screen">

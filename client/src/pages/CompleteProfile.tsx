@@ -72,7 +72,7 @@ export default function CompleteProfile() {
     setIsLoading(true);
     try {
       const result = await completeProfileMutation.mutateAsync({
-        realName: realName.trim(),
+        name: realName.trim(),
         phoneNumber,
         email: userEmail,
       });

@@ -201,7 +201,7 @@ export default function MyProfile() {
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">실명</Label>
                     <div className="p-3 bg-muted rounded-md">
-                      <p className="text-sm">{profile?.realName || "설정되지 않음"}</p>
+                      <p className="text-sm">{profile?.name || "설정되지 않음"}</p>
                     </div>
                   </div>
 
@@ -280,7 +280,7 @@ export default function MyProfile() {
                       variant="outline"
                       onClick={() => {
                         setIsEditingProfile(true);
-                        setRealName(profile?.realName || "");
+                        setRealName(profile?.name || "");
                         setPhoneNumber(profile?.phoneNumber || "");
                       }}
                     >

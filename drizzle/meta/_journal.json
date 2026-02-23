@@ -15,6 +15,13 @@
       "when": 1771592364151,
       "tag": "0001_quick_sandman",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1771857641958,
+      "tag": "0002_fast_mandarin",
+      "breakpoints": true
     }
   ]
 }

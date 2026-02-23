@@ -125,14 +125,12 @@ export const appRouter = router({
         openId: user.openId,
         loginMethod: user.loginMethod,
         userType: user.userType,
-        realName: user.realName,
         phoneNumber: user.phoneNumber,
       };
     }),
     updateProfile: protectedProcedure
       .input(z.object({
-        name: z.string().min(1).max(100).optional(),
-        realName: z.string().min(1).max(255).optional(),
+        name: z.string().min(1).max(255).optional(),
         phoneNumber: z.string().regex(/^01[0-9]-?\d{3,4}-?\d{4}$/).optional(),
       }))
       .mutation(async ({ ctx, input }) => {
@@ -144,7 +142,6 @@ export const appRouter = router({
         };
         
         if (input.name !== undefined) updateData.name = input.name;
-        if (input.realName !== undefined) updateData.realName = input.realName;
         if (input.phoneNumber !== undefined) updateData.phoneNumber = input.phoneNumber;
         
         await db.update(users).set(updateData).where(eq(users.id, ctx.user.id));
@@ -681,7 +678,7 @@ export const appRouter = router({
 
     completeProfile: publicProcedure
       .input(z.object({
-        realName: z.string().min(1),
+        name: z.string().min(1),
         phoneNumber: z.string().regex(/^01[0-9]-?\d{3,4}-?\d{4}$/),
         email: z.string().email(),
       }))
@@ -698,7 +695,7 @@ export const appRouter = router({
         await db
           .update(users)
           .set({
-            realName: input.realName,
+            name: input.name,
             phoneNumber: input.phoneNumber,
             verificationStatus: "pending",
             updatedAt: new Date(),
@@ -719,7 +716,7 @@ export const appRouter = router({
         const userResult = await db
           .select({
             id: users.id,
-            realName: users.realName,
+            name: users.name,
             phoneNumber: users.phoneNumber,
             verificationStatus: users.verificationStatus,
             verificationMethod: users.verificationMethod,
