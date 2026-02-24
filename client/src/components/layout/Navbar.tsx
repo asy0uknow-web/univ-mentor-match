@@ -11,16 +11,19 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { trpc } from "@/lib/trpc";
-import { useEffect, useRef } from "react";
 
 interface NavbarProps {
   onBugReport: () => void;
 }
 
-const NAVBAR_MENU = [
+// 로그인 상태별 메뉴
+const AUTHENTICATED_MENU = [
   { href: "/mentors", label: "멘토 찾기" },
   { href: "/messages", label: "상담 문의" },
   { href: "/bookings", label: "예약 내역" },
+] as const;
+
+const DROPDOWN_MENU = [
   { href: "/my-profile", label: "내 프로필" },
   { href: "/my-info", label: "내 정보" },
   { href: "/notifications", label: "알림" },
@@ -33,7 +36,7 @@ const HOME_MENU = [
   { id: "how-it-works", label: "이용 방법" },
 ] as const;
 
-const LOGO_URL = "/logo.png";
+const LOGO_URL = "/logo.png?v=" + Date.now().toString().slice(0, 10);
 
 export default function Navbar({ onBugReport }: NavbarProps) {
   const { isAuthenticated } = useAuth();
@@ -48,7 +51,7 @@ export default function Navbar({ onBugReport }: NavbarProps) {
   const handleSmoothScroll = (elementId: string) => {
     const element = document.getElementById(elementId);
     if (element) {
-      const navHeight = 80; // 네비게이션 바 높이 (px)
+      const navHeight = 80;
       const elementPosition = element.getBoundingClientRect().top + window.scrollY;
       const offsetPosition = elementPosition - navHeight;
       
@@ -65,28 +68,29 @@ export default function Navbar({ onBugReport }: NavbarProps) {
       role="navigation"
       aria-label="메인 네비게이션"
     >
-      <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-5">
-        <div className="flex items-center justify-between gap-4">
-          {/* 왼쪽: 로고 */}
-          <Link href="/" aria-label="유니브매치 홈으로 이동">
+      <div className="container mx-auto px-3 sm:px-4 py-3 sm:py-4">
+        <div className="flex items-center justify-between gap-2 sm:gap-4 h-16">
+          {/* 왼쪽: 로고 + 브랜드 텍스트 */}
+          <Link href="/" aria-label="유니브매치 홈으로 이동" className="flex items-center gap-2 flex-shrink-0">
             <img
               src={LOGO_URL}
               alt="유니브매치 로고"
-              className="h-10 sm:h-14 md:h-16 lg:h-20 w-auto cursor-pointer flex-shrink-0"
+              className="h-10 sm:h-12 w-auto cursor-pointer"
               width={80}
               height={80}
               loading="eager"
             />
+            <span className="hidden sm:inline font-bold text-lg sm:text-xl text-foreground">유니브매치</span>
           </Link>
 
-          {/* 중앙: 메뉴 (홈페이지에서만 표시) */}
+          {/* 중앙: 홈페이지 메뉴 (홈페이지에서만, md 이상에서만) */}
           {isHomePage && (
             <div className="hidden md:flex items-center gap-8 flex-1 justify-center">
               {HOME_MENU.map((item) => (
                 <button
                   key={item.id}
                   onClick={() => handleSmoothScroll(item.id)}
-                  className="text-sm sm:text-base font-medium text-foreground hover:text-primary transition-colors"
+                  className="text-sm font-medium text-foreground hover:text-primary transition-colors"
                   aria-label={`${item.label} 섹션으로 이동`}
                 >
                   {item.label}
@@ -95,67 +99,86 @@ export default function Navbar({ onBugReport }: NavbarProps) {
             </div>
           )}
 
-          {/* 오른쪽: CTA 또는 메뉴 */}
-          <div className="flex items-center gap-4">
+          {/* 오른쪽: 로그인 상태별 메뉴 */}
+          <div className="flex items-center gap-2 sm:gap-4 ml-auto">
             {isAuthenticated ? (
               <>
-                {NAVBAR_MENU.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className="hidden md:block"
-                    aria-label={`${item.label} 페이지로 이동`}
-                  >
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="text-base font-medium hover:bg-blue-100 hover:text-primary"
+                {/* 데스크톱: 가로 메뉴 */}
+                <div className="hidden lg:flex items-center gap-2">
+                  {AUTHENTICATED_MENU.map((item) => (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      aria-label={`${item.label} 페이지로 이동`}
                     >
-                      {item.label}
-                    </Button>
-                  </Link>
-                ))}
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-sm font-medium hover:bg-blue-100 hover:text-primary"
+                      >
+                        {item.label}
+                      </Button>
+                    </Link>
+                  ))}
+                </div>
+
+                {/* 드롭다운 메뉴 (모든 화면에서) */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="gap-2"
+                      className="gap-1 px-2 sm:px-3"
                       aria-label="네비게이션 메뉴 열기"
                     >
-                      <span className="hidden sm:inline">메뉴</span>
+                      <span className="hidden sm:inline text-sm font-medium">메뉴</span>
                       <ChevronDown className="h-4 w-4" aria-hidden="true" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-48 bg-white">
+                    {/* 모바일: 인증 메뉴 */}
+                    <div className="lg:hidden">
+                      {AUTHENTICATED_MENU.map((item) => (
+                        <DropdownMenuItem key={item.href} asChild>
+                          <Link href={item.href} className="cursor-pointer">
+                            {item.label}
+                          </Link>
+                        </DropdownMenuItem>
+                      ))}
+                      <DropdownMenuSeparator />
+                    </div>
+
+                    {/* 드롭다운 메뉴 항목 */}
+                    {DROPDOWN_MENU.map((item) => (
+                      <DropdownMenuItem key={item.href} asChild>
+                        <Link href={item.href} className="cursor-pointer">
+                          {item.label}
+                        </Link>
+                      </DropdownMenuItem>
+                    ))}
+
+                    <DropdownMenuSeparator />
                     <DropdownMenuItem
-                      onClick={onBugReport}
-                      className="hover:bg-blue-100 hover:text-primary"
+                      onClick={() => onBugReport()}
+                      className="hover:bg-blue-100 hover:text-primary cursor-pointer"
                     >
                       <Bug className="h-4 w-4 mr-2" aria-hidden="true" />
                       버그 신고
                     </DropdownMenuItem>
+
                     <DropdownMenuSeparator />
-                    {NAVBAR_MENU.map((item) => (
-                      <DropdownMenuItem
-                        key={item.href}
-                        asChild
-                        className="md:hidden"
-                      >
-                        <Link href={item.href}>{item.label}</Link>
-                      </DropdownMenuItem>
-                    ))}
-                    <DropdownMenuSeparator className="md:hidden" />
                     <DropdownMenuItem
                       onClick={() => logoutMutation.mutate()}
                       disabled={logoutMutation.isPending}
+                      className="cursor-pointer"
                     >
                       <LogOut className="h-4 w-4 mr-2" aria-hidden="true" />
                       {logoutMutation.isPending ? "로그아웃 중..." : "로그아웃"}
                     </DropdownMenuItem>
+
                     <DropdownMenuSeparator />
                     <DropdownMenuItem asChild>
-                      <Link href="/delete-account">
+                      <Link href="/delete-account" className="cursor-pointer">
                         <Trash2 className="h-4 w-4 mr-2" aria-hidden="true" />
                         계정 탈퇴
                       </Link>
@@ -164,29 +187,45 @@ export default function Navbar({ onBugReport }: NavbarProps) {
                 </DropdownMenu>
               </>
             ) : (
-              <div className="flex items-center gap-3 sm:gap-4">
-                {/* 로그인 텍스트 링크 */}
-                <a 
-                  href={getLoginUrl()} 
-                  className="text-sm sm:text-base font-medium text-foreground hover:text-primary transition-colors"
-                  aria-label="로그인 페이지로 이동"
-                >
-                  로그인
-                </a>
-                
-                {/* 구분선 (데스크톱에서만) */}
-                <div className="hidden sm:block w-px h-6 bg-border"></div>
-                
-                {/* CTA 버튼 */}
-                <a href={getLoginUrl()} aria-label="회원가입 페이지로 이동">
-                  <Button 
-                    size="lg" 
-                    className="rounded-full bg-primary hover:bg-primary/90 text-white font-semibold px-6 sm:px-8 py-2 sm:py-3 text-sm sm:text-base"
+              <>
+                {/* 로그아웃 상태: 홈페이지 메뉴 + CTA */}
+                {isHomePage && (
+                  <div className="hidden sm:flex items-center gap-4">
+                    {HOME_MENU.map((item) => (
+                      <button
+                        key={item.id}
+                        onClick={() => handleSmoothScroll(item.id)}
+                        className="text-sm font-medium text-foreground hover:text-primary transition-colors"
+                        aria-label={`${item.label} 섹션으로 이동`}
+                      >
+                        {item.label}
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                {/* 로그인/회원가입 버튼 */}
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <a 
+                    href={getLoginUrl()} 
+                    className="text-sm font-medium text-foreground hover:text-primary transition-colors"
+                    aria-label="로그인 페이지로 이동"
                   >
-                    무료로 시작하기
-                  </Button>
-                </a>
-              </div>
+                    로그인
+                  </a>
+                  
+                  <div className="hidden sm:block w-px h-6 bg-border"></div>
+                  
+                  <a href={getLoginUrl()} aria-label="회원가입 페이지로 이동">
+                    <Button 
+                      size="sm"
+                      className="rounded-full bg-primary hover:bg-primary/90 text-white font-semibold px-4 sm:px-6 text-xs sm:text-sm"
+                    >
+                      무료로 시작하기
+                    </Button>
+                  </a>
+                </div>
+              </>
             )}
           </div>
         </div>
