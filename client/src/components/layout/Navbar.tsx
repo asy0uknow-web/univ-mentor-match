@@ -36,7 +36,7 @@ const HOME_MENU = [
   { id: "how-it-works", label: "이용 방법" },
 ] as const;
 
-const LOGO_URL = "/logo.png?v=" + Date.now().toString().slice(0, 10);
+const LOGO_URL = "/logo.png?v=1";
 
 export default function Navbar({ onBugReport }: NavbarProps) {
   const { isAuthenticated } = useAuth();
