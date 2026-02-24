@@ -18,7 +18,7 @@ interface NavbarProps {
 
 // 로그인 상태별 메뉴
 const AUTHENTICATED_MENU = [
-  { href: "/mentors", label: "멘른토 cc3d기" },
+  { href: "/mentors", label: "멘토 찾기" },
   { href: "/messages", label: "상담 조율" },
   { href: "/bookings", label: "예약 내역" },
 ] as const;
