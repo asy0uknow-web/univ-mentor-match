@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { PageLayout } from "@/components/layout";
 import { setPageMeta, PAGE_META } from "@/lib/seo";
 import { trpc } from "@/lib/trpc";
+import { getLoginUrl } from "@/const";
 
 // Line Art Icons Component - How It Works Section
 const SearchIcon = () => (
@@ -342,11 +343,11 @@ export default function Home() {
           <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-6 sm:mb-8 max-w-2xl mx-auto">
             수많은 고등학생들이 유니브매치를 통해 꿈에 한 걸음 더 다가가고 있습니다
           </p>
-          <Link href="/mentors" className="inline-block">
+          <a href={getLoginUrl()} className="inline-block">
             <Button size="lg" className="text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 shadow-lg hover:shadow-xl transition-shadow">
-              전공 선택 전에, 이야기부터 들어보기
+              유니브매치 로그인
             </Button>
-          </Link>
+          </a>
         </div>
       </section>
     </PageLayout>

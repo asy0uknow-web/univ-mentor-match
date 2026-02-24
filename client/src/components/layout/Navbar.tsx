@@ -29,9 +29,9 @@ const DROPDOWN_MENU = [
   { href: "/notifications", label: "알림" },
 ] as const;
 
-// 홈페이지 메뉴 (스크롤 이동)
+// 뙈페이지 메뉴 (스크롤 이동)
 const HOME_MENU = [
-  { id: "hero", label: "전공 선택" },
+  { id: "hero", label: "멘토 찾기" },
   { id: "service-intro", label: "서비스 소개" },
   { id: "how-it-works", label: "이용 방법" },
 ] as const;
@@ -188,43 +188,15 @@ export default function Navbar({ onBugReport }: NavbarProps) {
               </>
             ) : (
               <>
-                {/* 로그아웃 상태: 홈페이지 메뉴 + CTA */}
-                {isHomePage && (
-                  <div className="hidden sm:flex items-center gap-4">
-                    {HOME_MENU.map((item) => (
-                      <button
-                        key={item.id}
-                        onClick={() => handleSmoothScroll(item.id)}
-                        className="text-sm font-medium text-foreground hover:text-primary transition-colors"
-                        aria-label={`${item.label} 섹션으로 이동`}
-                      >
-                        {item.label}
-                      </button>
-                    ))}
-                  </div>
-                )}
-
-                {/* 로그인/회원가입 버튼 */}
-                <div className="flex items-center gap-2 sm:gap-3">
-                  <a 
-                    href={getLoginUrl()} 
-                    className="text-sm font-medium text-foreground hover:text-primary transition-colors"
-                    aria-label="로그인 페이지로 이동"
+                {/* 로그인 버튼 */}
+                <a href={getLoginUrl()} aria-label="로그인 페이지로 이동">
+                  <Button 
+                    size="sm"
+                    className="rounded-full bg-primary hover:bg-primary/90 text-white font-semibold px-4 sm:px-6 text-xs sm:text-sm"
                   >
-                    로그인
-                  </a>
-                  
-                  <div className="hidden sm:block w-px h-6 bg-border"></div>
-                  
-                  <a href={getLoginUrl()} aria-label="회원가입 페이지로 이동">
-                    <Button 
-                      size="sm"
-                      className="rounded-full bg-primary hover:bg-primary/90 text-white font-semibold px-4 sm:px-6 text-xs sm:text-sm"
-                    >
-                      무료로 시작하기
-                    </Button>
-                  </a>
-                </div>
+                    유니브매치 로그인
+                  </Button>
+                </a>
               </>
             )}
           </div>

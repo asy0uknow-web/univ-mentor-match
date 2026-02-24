@@ -143,7 +143,7 @@ export default function MyProfile() {
                     개인정보
                   </CardTitle>
                   <CardDescription>
-                    계정 정보를 확인하고 관리하세요
+                    기본 정보를 확인하세요
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -152,34 +152,6 @@ export default function MyProfile() {
                     <Label className="text-sm font-medium">이름</Label>
                     <div className="p-3 bg-muted rounded-md">
                       <p className="text-sm">{profile?.name || "설정되지 않음"}</p>
-                    </div>
-                  </div>
-
-                  {/* 아이디 (openId) */}
-                  <div className="space-y-2">
-                    <Label className="text-sm font-medium">아이디</Label>
-                    <div className="p-3 bg-muted rounded-md">
-                      <p className="text-sm font-mono text-xs break-all">
-                        {profile?.openId || "설정되지 않음"}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* 이메일 */}
-                  <div className="space-y-2">
-                    <Label className="text-sm font-medium">이메일</Label>
-                    <div className="p-3 bg-muted rounded-md">
-                      <p className="text-sm">{profile?.email || "설정되지 않음"}</p>
-                    </div>
-                  </div>
-
-                  {/* 로그인 방식 */}
-                  <div className="space-y-2">
-                    <Label className="text-sm font-medium">로그인 방식</Label>
-                    <div className="p-3 bg-muted rounded-md">
-                      <p className="text-sm">
-                        {profile?.loginMethod === "oauth" ? "OAuth (소셜 로그인)" : "기타"}
-                      </p>
                     </div>
                   </div>
 
@@ -194,14 +166,6 @@ export default function MyProfile() {
                           ? "대학생"
                           : "설정되지 않음"}
                       </p>
-                    </div>
-                  </div>
-
-                  {/* 실명 */}
-                  <div className="space-y-2">
-                    <Label className="text-sm font-medium">실명</Label>
-                    <div className="p-3 bg-muted rounded-md">
-                      <p className="text-sm">{profile?.name || "설정되지 않음"}</p>
                     </div>
                   </div>
 
@@ -223,18 +187,18 @@ export default function MyProfile() {
                     추가 정보 수정
                   </CardTitle>
                   <CardDescription>
-                    실명과 휴대폰 번호를 수정하세요
+                    정보를 수정하세요
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   {isEditingProfile ? (
                     <>
                       <div className="space-y-2">
-                        <Label htmlFor="realName">실명</Label>
+                        <Label htmlFor="realName">이름</Label>
                         <Input
                           id="realName"
                           type="text"
-                          placeholder="실명을 입력하세요"
+                          placeholder="이름을 입력하세요"
                           value={realName}
                           onChange={(e) => setRealName(e.target.value)}
                         />

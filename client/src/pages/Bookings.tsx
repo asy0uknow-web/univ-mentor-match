@@ -36,7 +36,7 @@ export default function Bookings() {
         <Card className="max-w-md">
           <CardHeader>
             <CardTitle>로그인이 필요합니다</CardTitle>
-            <CardDescription>상담 문의를 보려면 로그인해주세요.</CardDescription>
+            <CardDescription>예약 내역을 보려면 로그인해주세요.</CardDescription>
           </CardHeader>
           <CardContent>
             <a href={getLoginUrl()}>
@@ -89,7 +89,7 @@ export default function Bookings() {
       <PageLayout>
         {/* Content */}
         <div className="container mx-auto px-4 py-12">
-          <h1 className="text-4xl font-bold mb-8">상담 문의</h1>
+          <h1 className="text-4xl font-bold mb-8">예약 내역</h1>
 
           {bookingsLoading ? (
             <p className="text-muted-foreground">로딩 중...</p>
@@ -158,7 +158,7 @@ export default function Bookings() {
     <PageLayout>
       {/* Content */}
       <div className="container mx-auto px-4 py-12">
-        <h1 className="text-4xl font-bold mb-8">상담 문의</h1>
+        <h1 className="text-4xl font-bold mb-8">받은 상담 신청</h1>
 
         {mentorBookingsLoading ? (
           <p className="text-muted-foreground">로딩 중...</p>
@@ -240,7 +240,7 @@ export default function Bookings() {
         ) : (
           <Card>
             <CardContent className="py-12 text-center">
-              <p className="text-muted-foreground mb-4">아직 상담 문의가 없습니다.</p>
+              <p className="text-muted-foreground mb-4">아직 예약 내역이 없습니다.</p>
             </CardContent>
           </Card>
         )}
