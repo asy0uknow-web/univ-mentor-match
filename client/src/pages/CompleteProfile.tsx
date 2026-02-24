@@ -191,7 +191,7 @@ export default function CompleteProfile() {
                     >
                       <div className="font-semibold">멘티</div>
                       <div className="text-sm text-muted-foreground mt-1">
-                        멘토에게 진로 상담 받기
+                        대학생 멘른토로부터 진로 상담 받기
                       </div>
                     </button>
                   </div>

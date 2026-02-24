@@ -215,8 +215,7 @@ export default function MentorDetail() {
           <div className="lg:col-span-1">
             <Card className="sticky top-24">
               <CardHeader>
-                <CardTitle>상담 조율</CardTitle>
-                <CardDescription>멘토와 상담 일정을 조율하세요</CardDescription>
+                <CardTitle>상담 조율</CardTitle>                <CardDescription>상담 일정을 조율하세요</CardDescription>
               </CardHeader>
               <CardContent className="space-y-3">
                 {isAuthenticated ? (
@@ -251,7 +250,7 @@ export default function MentorDetail() {
                   </a>
                 )}
                 <p className="text-xs text-muted-foreground text-center">
-                  상담 일정, 시간, 장소를 메시지에서 합의한 후 멘토가 예약을 확정합니다.
+                  상담 일정, 시간, 장소를 메시지에서 합의한 후 예약을 확정합니다.
                 </p>
               </CardContent>
             </Card>

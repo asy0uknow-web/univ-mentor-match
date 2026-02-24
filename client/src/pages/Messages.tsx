@@ -175,8 +175,7 @@ export default function Messages() {
       <div className="container mx-auto px-4 py-8">
         <div className="mb-6">
           <h1 className="text-3xl font-bold">상담 조율</h1>
-          <p className="text-muted-foreground mt-1">멘토와 상담 일정, 시간, 장소를 조율하세요</p>
-        </div>
+          <p className="text-muted-foreground mt-1">상담 일정, 시간, 장소를 조율하세요</p>        </div>
 
         <div className="grid lg:grid-cols-3 gap-6">
           {/* Conversations List */}
@@ -323,8 +322,7 @@ export default function Messages() {
                         아직 조율 메시지가 없습니다.
                       </p>
                       <p className="text-sm text-muted-foreground mb-4">
-                        멘토와 상담 일정, 시간, 장소를 먼저 합의해보세요.
-                      </p>
+상담 일정, 시간, 장소를 먼저 합의해보세요.                      </p>
                       <Link href="/mentors">
                         <Button variant="outline" size="sm">
                           멘토 찾기

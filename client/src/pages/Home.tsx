@@ -299,8 +299,7 @@ export default function Home() {
                 },
                 { 
                   title: "1:1 상담", 
-                  desc: "예약된 시간에 멘토와 만나 진로에 대한 조언을 받으세요",
-                  iconComponent: ChatIcon
+                  desc: "예약된 시간에 1:1 상담으로 진로에 대한 조언을 받으세요",                  iconComponent: ChatIcon
                 },
               ].map(({ title, desc, iconComponent: IconComponent }, idx) => (
                 <div 
