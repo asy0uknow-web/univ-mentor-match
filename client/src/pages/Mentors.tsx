@@ -137,7 +137,7 @@ export default function Mentors() {
   // 멘토 데이터 조회
   const { data: mentorsData, isLoading } = trpc.mentor.list.useQuery({
     search: debouncedSearch,
-    regions: (selectedRegions.length > 0 ? selectedRegions : undefined) as any,
+    regions: selectedRegions.length > 0 ? selectedRegions : undefined,
     majors: selectedMajors.length > 0 ? selectedMajors : undefined,
   });
 
