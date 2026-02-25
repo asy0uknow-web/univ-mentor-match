@@ -135,11 +135,7 @@ export default function Mentors() {
   };
 
   // 멘토 데이터 조회
-  const { data: mentorsData, isLoading } = trpc.mentor.list.useQuery({
-    search: debouncedSearch,
-    regions: selectedRegions.length > 0 ? selectedRegions : undefined,
-    majors: selectedMajors.length > 0 ? selectedMajors : undefined,
-  });
+  const { data: mentorsData, isLoading } = trpc.mentor.listAll.useQuery();
 
   // 필터링된 멘토 목록
   const filteredMentors = useMemo(() => {
@@ -507,9 +503,9 @@ function MentorCard({
       href={`/mentor/${mentor.profile.id}`}
       className="block rounded-lg border border-border hover:border-primary hover:shadow-md transition-all cursor-pointer bg-card overflow-hidden"
     >
-      <div className="flex flex-col gap-4 p-4 h-full">
-        {/* 좌측: 대표 이미지(사각형) */}
-        <div className="w-full h-32 rounded-md bg-muted flex items-center justify-center overflow-hidden">
+      <div className="flex gap-4 p-4">
+        {/* 좌츧0: 대표 이미지(사각형) */}
+        <div className="w-24 h-24 rounded-md bg-muted flex items-center justify-center flex-shrink-0 overflow-hidden">
           {universityLogo ? (
             <img
               src={universityLogo}
@@ -520,9 +516,8 @@ function MentorCard({
             <div className="w-full h-full bg-muted" />
           )}
         </div>
-
-        {/* 우측: 텍스트 영역 */}
-        <div className="flex-1 min-w-0 flex flex-col gap-2">
+        {/* 우츧0: 텍스트 영역 */}
+        <div className="flex-1 min-w-0 flex flex-col gap-2 justify-between">
           {/* 첫째 줄: 멘토 이름 + BadgeCheck 아이콘 + '인증됨' 텍스트 */}
           <div className="flex items-center gap-1">
             <h3 className="font-semibold text-base leading-tight truncate">
