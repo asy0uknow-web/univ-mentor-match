@@ -46,7 +46,7 @@ import {
 } from "./db";
 import { CONSULTATION_PRODUCT, MIN_BOOKING_DURATION, MAX_BOOKING_DURATION } from "./products";
 import { storagePut } from "./storage";
-import { eq } from "drizzle-orm";
+import { eq, and, or, like, inArray, desc } from "drizzle-orm";
 import { mentorGallery, messages, notifications, bookings, reviews, mentorProfiles, mentorVerifications, users, bugReports } from "../drizzle/schema";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
@@ -225,6 +225,54 @@ export const appRouter = router({
     listAll: publicProcedure.query(async () => {
       return await getAllActiveMentors();
     }),
+
+    list: publicProcedure
+      .input(z.object({
+        search: z.string().optional(),
+        regions: z.array(z.enum(["seoul", "gyeonggi", "incheon", "gangwon", "chungcheong", "jeolla", "gyeongsang", "jeju"])).optional(),
+        majors: z.array(z.string()).optional(),
+      }))
+      .query(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+        
+        const conditions: any[] = [
+          eq(mentorProfiles.isActive, true),
+          eq(mentorProfiles.verificationStatus, "approved"),
+          eq(mentorProfiles.isDeleted, false),
+        ];
+        
+        if (input.search && input.search.trim()) {
+          const searchTerm = `%${input.search.trim()}%`;
+          conditions.push(
+            or(
+              like(users.name, searchTerm),
+              like(mentorProfiles.university, searchTerm),
+              like(mentorProfiles.major, searchTerm)
+            )
+          );
+        }
+        
+        if (input.regions && input.regions.length > 0) {
+          conditions.push(inArray(mentorProfiles.region, input.regions as any));
+        }
+        
+        if (input.majors && input.majors.length > 0) {
+          conditions.push(inArray(mentorProfiles.major, input.majors));
+        }
+        
+        const result = await db
+          .select({
+            profile: mentorProfiles,
+            user: users,
+          })
+          .from(mentorProfiles)
+          .innerJoin(users, eq(mentorProfiles.userId, users.id))
+          .where(and(...conditions))
+          .orderBy(desc(mentorProfiles.averageRating));
+        
+        return result;
+      }),
 
     getById: publicProcedure
       .input(z.object({
