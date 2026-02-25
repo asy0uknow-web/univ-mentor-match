@@ -1,8 +1,8 @@
-import { Input } from "@/components/ui/input";
+import { Card } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { trpc } from "@/lib/trpc";
 import { Link } from "wouter";
-import { Search, X, ChevronRight, Star } from "lucide-react";
+import { Search, X, ChevronRight, Star, MapPin, BadgeCheck } from "lucide-react";
 import { useState, useEffect, useMemo } from "react";
 import { PageLayout } from "@/components/layout";
 import { setPageMeta, PAGE_META } from "@/lib/seo";
@@ -101,38 +101,17 @@ export default function Mentors() {
     );
   };
 
-  // 학과 검색 필터링
-  const filteredMajorsBySearch = COLLEGES.map((college) => ({
-    ...college,
-    majors: college.majors.filter((major) =>
-      major.name.toLowerCase().includes(majorSearchTerm.toLowerCase())
-    ),
-  })).filter((college) => college.majors.length > 0 || majorSearchTerm === "");
-
-  // 지역 검색 필터링
-  const filteredRegionsBySearch = REGIONS.filter((region) =>
-    region.label.toLowerCase().includes(regionSearchTerm.toLowerCase())
-  );
-
-  // 계열 전체 선택
-  const selectCollege = (collegeId: string) => {
-    const college = COLLEGES.find((c) => c.id === collegeId);
-    if (!college) return;
-
-    const majorIds = college.majors.map((m) => m.id);
-    const newSelected = Array.from(
-      new Set([...tempSelectedMajors, ...majorIds])
-    );
-    setTempSelectedMajors(newSelected);
+  // 학과 패널 열기
+  const openMajorPanel2 = () => {
+    setTempSelectedMajors(selectedMajors);
+    setMajorSearchTerm("");
+    setShowMajorPanel(true);
   };
 
-  // 학과 개별 선택/제거
-  const toggleMajor = (majorId: string) => {
-    setTempSelectedMajors((prev) =>
-      prev.includes(majorId)
-        ? prev.filter((id) => id !== majorId)
-        : [...prev, majorId]
-    );
+  // 학과 패널 닫기
+  const closeMajorPanel2 = () => {
+    setShowMajorPanel(false);
+    setMajorSearchTerm("");
   };
 
   // 학과 선택 적용
@@ -146,101 +125,128 @@ export default function Mentors() {
     setTempSelectedMajors([]);
   };
 
-  // 필터 조건 확인
-  const hasFilter = selectedRegions.length > 0 || selectedMajors.length > 0;
-
-  const { data: allMentors, isLoading: isLoadingAll } = trpc.mentor.listAll.useQuery(
-    undefined,
-    { enabled: !hasFilter }
-  );
-
-  const { data: filteredByServer, isLoading: isLoadingFiltered } = trpc.mentorSearch.getByFieldAndRegion.useQuery(
-    {
-      fields: selectedMajors.length > 0 ? selectedMajors : undefined,
-      regions: selectedRegions.length > 0 ? selectedRegions : undefined,
-    },
-    { enabled: hasFilter }
-  );
-
-  const mentors = hasFilter ? filteredByServer : allMentors;
-  const isLoading = hasFilter ? isLoadingFiltered : isLoadingAll;
-
-  // useMemo로 클라이언트 필터링 메모이제이션
-  const filteredMentors = useMemo(() => {
-    if (!mentors) return [];
-    if (!debouncedSearch) return mentors;
-
-    const searchLower = debouncedSearch.toLowerCase();
-    return mentors.filter((m) =>
-      m.profile.university.toLowerCase().includes(searchLower) ||
-      m.profile.major.toLowerCase().includes(searchLower) ||
-      m.user.name?.toLowerCase().includes(searchLower)
+  // 학과 개별 선택/제거
+  const toggleMajor = (majorId: string) => {
+    setTempSelectedMajors((prev) =>
+      prev.includes(majorId)
+        ? prev.filter((m) => m !== majorId)
+        : [...prev, majorId]
     );
-  }, [mentors, debouncedSearch]);
+  };
+
+  // 멘토 데이터 조회
+  const { data: mentorsData, isLoading } = trpc.mentor.list.useQuery({
+    search: debouncedSearch,
+    regions: selectedRegions.length > 0 ? selectedRegions : undefined,
+    majors: selectedMajors.length > 0 ? selectedMajors : undefined,
+  });
+
+  // 필터링된 멘토 목록
+  const filteredMentors = useMemo(() => {
+    return mentorsData || [];
+  }, [mentorsData]);
+
+  // 필터링된 학과 목록
+  const filteredMajorsBySearch = useMemo(() => {
+    if (!majorSearchTerm.trim()) {
+      return COLLEGES.flatMap((college) => college.majors);
+    }
+
+    const lowerSearchTerm = majorSearchTerm.toLowerCase();
+    return COLLEGES.flatMap((college) =>
+      college.majors.filter((major) =>
+        major.name.toLowerCase().includes(lowerSearchTerm)
+      )
+    );
+  }, [majorSearchTerm]);
+
+  // 필터링된 지역 목록
+  const filteredRegionsBySearch = useMemo(() => {
+    if (!regionSearchTerm.trim()) {
+      return REGIONS;
+    }
+
+    const lowerSearchTerm = regionSearchTerm.toLowerCase();
+    return REGIONS.filter((region) =>
+      region.label.toLowerCase().includes(lowerSearchTerm)
+    );
+  }, [regionSearchTerm]);
 
   return (
     <PageLayout>
-      <div className="container mx-auto px-2 sm:px-4 py-6 sm:py-12">
-        <h1 className="text-2xl sm:text-4xl font-bold mb-4 sm:mb-8">멘토 찾기</h1>
+      <div className="space-y-6">
+        {/* 헤더 */}
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-bold">멘토 찾기</h1>
+          <p className="text-sm text-muted-foreground mt-1">
+            당신의 진로를 함께 고민해줄 멘토를 찾아보세요
+          </p>
+        </div>
 
-        {/* Filters Section - 모바일 최적화 */}
-        <div className="mb-4 sm:mb-8 p-2 sm:p-4 bg-card rounded-lg border border-border" role="search" aria-label="멘토 검색 필터">
-          <h2 className="text-sm sm:text-lg font-semibold mb-2 sm:mb-3">검색 필터</h2>
-          <div className="space-y-2 sm:space-y-3">
-            <div className="grid grid-cols-2 gap-2">
-              <div>
-                <button
-                  onClick={openMajorPanel}
-                  className="w-fit h-8 px-[calc(0.75rem+5px)] text-xs font-medium text-left bg-background border border-border rounded-md hover:bg-muted transition-colors flex items-center justify-between"
-                >
-                  <span>학과</span>
-                  <ChevronRight className="h-4 w-4" />
-                </button>
-              </div>
-              <div>
-                <button
-                  onClick={openRegionPanel}
-                  className="w-fit h-8 px-[calc(0.75rem+5px)] text-xs font-medium text-left bg-background border border-border rounded-md hover:bg-muted transition-colors flex items-center justify-between"
-                >
-                  <span>지역</span>
-                  <ChevronRight className="h-4 w-4" />
-                </button>
-              </div>
+        {/* 검색 및 필터 */}
+        <div className="space-y-3">
+          {/* 검색 입력 */}
+          <div className="flex gap-2">
+            <div className="flex-1 relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <input
+                type="text"
+                placeholder="멘토 이름, 대학교, 학과로 검색..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                onKeyDown={handleKeyDown}
+                className="w-full pl-10 pr-4 py-2 text-sm bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+              />
             </div>
-            <div>
-              <label className="text-xs font-medium text-muted-foreground">검색</label>
-              <div className="flex gap-2">
-                <div className="relative flex-1">
-                  <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    placeholder="대학, 전공..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    onKeyDown={handleKeyDown}
-                    className="pl-8 h-8 text-xs"
-                  />
-                </div>
-                <Button
-                  onClick={handleSearch}
-                  variant="default"
-                  className="h-8 px-3 text-xs"
-                >
-                  검색
-                </Button>
-              </div>
-            </div>
-            <Button 
-              onClick={() => {
-                setSearchTerm("");
-                setSelectedRegions([]);
-                setSelectedMajors([]);
-                setDebouncedSearch("");
-              }}
-              variant="outline"
-              className="w-full h-8 text-xs"
-            >
-              초기화
+            <Button onClick={handleSearch} size="sm" className="px-4">
+              검색
             </Button>
+          </div>
+
+          {/* 필터 버튼 */}
+          <div className="flex gap-2 flex-wrap">
+            <Button
+              onClick={openMajorPanel2}
+              variant="outline"
+              size="sm"
+              className="text-xs"
+            >
+              학과
+              {selectedMajors.length > 0 && (
+                <span className="ml-1 bg-primary text-primary-foreground rounded-full px-2 py-0.5 text-xs font-semibold">
+                  {selectedMajors.length}
+                </span>
+              )}
+            </Button>
+
+            <Button
+              onClick={openRegionPanel}
+              variant="outline"
+              size="sm"
+              className="text-xs"
+            >
+              지역
+              {selectedRegions.length > 0 && (
+                <span className="ml-1 bg-primary text-primary-foreground rounded-full px-2 py-0.5 text-xs font-semibold">
+                  {selectedRegions.length}
+                </span>
+              )}
+            </Button>
+
+            {(selectedMajors.length > 0 || selectedRegions.length > 0) && (
+              <Button
+                onClick={() => {
+                  setSelectedMajors([]);
+                  setSelectedRegions([]);
+                }}
+                variant="ghost"
+                size="sm"
+                className="text-xs text-muted-foreground"
+              >
+                <X className="h-3 w-3 mr-1" />
+                초기화
+              </Button>
+            )}
           </div>
         </div>
 
@@ -252,7 +258,7 @@ export default function Mentors() {
               <div className="flex items-center justify-between p-4 border-b border-border">
                 <h3 className="text-lg font-semibold">학과 선택</h3>
                 <button
-                  onClick={closeMajorPanel}
+                  onClick={closeMajorPanel2}
                   className="p-1 hover:bg-muted rounded-md transition-colors"
                 >
                   <X className="h-5 w-5" />
@@ -270,33 +276,21 @@ export default function Mentors() {
                 />
               </div>
 
-              {/* 계열 및 학과 목록 (스크롤 가능) */}
-              <div className="flex-1 overflow-y-auto p-4 space-y-4">
-                {filteredMajorsBySearch.map((college) => (
-                  <div key={college.id}>
-                    <button
-                      onClick={() => selectCollege(college.id)}
-                      className="w-full text-left p-2 rounded-md hover:bg-muted transition-colors mb-2"
-                    >
-                      <h4 className="font-semibold text-sm">{college.name}</h4>
-                    </button>
-                    <div className="space-y-1 ml-2">
-                      {college.majors.map((major) => (
-                        <label
-                          key={major.id}
-                          className="flex items-center gap-2 p-2 rounded-md hover:bg-muted cursor-pointer transition-colors"
-                        >
-                          <input
-                            type="checkbox"
-                            checked={tempSelectedMajors.includes(major.id)}
-                            onChange={() => toggleMajor(major.id)}
-                            className="rounded"
-                          />
-                          <span className="text-xs">{major.name}</span>
-                        </label>
-                      ))}
-                    </div>
-                  </div>
+              {/* 학과 목록 (스크롤 가능) */}
+              <div className="flex-1 overflow-y-auto p-4 space-y-2">
+                {filteredMajorsBySearch.map((major: any) => (
+                  <label
+                    key={major.id}
+                    className="flex items-center gap-2 p-2 rounded-md hover:bg-muted cursor-pointer transition-colors"
+                  >
+                    <input
+                      type="checkbox"
+                      checked={tempSelectedMajors.includes(major.id)}
+                      onChange={() => toggleMajor(major.id)}
+                      className="rounded"
+                    />
+                    <span className="text-xs">{major.name}</span>
+                  </label>
                 ))}
               </div>
 
@@ -500,7 +494,7 @@ function MentorCard({
     if (!g) return "";
     if (/^[1-4]$/.test(g)) return `${g}학년`;
     if (g === "graduate") return "대학원";
-    return g; // 이미 '3학년' 형태면 그대로
+    return g;
   })();
 
   const ratingValue =
@@ -513,9 +507,9 @@ function MentorCard({
       href={`/mentor/${mentor.profile.id}`}
       className="block rounded-lg border border-border hover:border-primary hover:shadow-md transition-all cursor-pointer bg-card overflow-hidden"
     >
-      <div className="flex gap-4 p-4">
+      <div className="flex flex-col gap-4 p-4 h-full">
         {/* 좌측: 대표 이미지(사각형) */}
-        <div className="w-24 h-24 rounded-md bg-muted flex items-center justify-center flex-shrink-0 overflow-hidden">
+        <div className="w-full h-32 rounded-md bg-muted flex items-center justify-center overflow-hidden">
           {universityLogo ? (
             <img
               src={universityLogo}
@@ -529,26 +523,47 @@ function MentorCard({
 
         {/* 우측: 텍스트 영역 */}
         <div className="flex-1 min-w-0 flex flex-col gap-2">
-          {/* 상단: 닉네임(좌) + 별점(우) */}
-          <div className="flex items-start justify-between gap-3">
-            <div className="min-w-0">
-              <h3 className="font-semibold text-base leading-tight truncate">
-                {mentor.user.name}
-              </h3>
+          {/* 첫째 줄: 멘토 이름 + BadgeCheck 아이콘 + '인증됨' 텍스트 */}
+          <div className="flex items-center gap-1">
+            <h3 className="font-semibold text-base leading-tight truncate">
+              {mentor.user.name}
+            </h3>
+            {mentor.profile.verificationStatus === "approved" && (
+              <>
+                <BadgeCheck className="h-4 w-4 text-green-600 flex-shrink-0" />
+                <span className="text-xs text-green-600 font-medium flex-shrink-0">인증됨</span>
+              </>
+            )}
+          </div>
 
-              <p className="text-xs text-muted-foreground truncate">
-                {mentor.profile.university} · {mentor.profile.major}
-              </p>
+          {/* 둘째 줄: 대학교 이름 · 학년 */}
+          <p className="text-xs text-muted-foreground truncate">
+            {mentor.profile.university} · {gradeLabel}
+          </p>
 
-              {gradeLabel && (
-                <p className="text-xs text-muted-foreground mt-0.5">
-                  {gradeLabel}
-                </p>
-              )}
-            </div>
+          {/* 셋째 줄: 학과 (글씨가 길어도 잘리지 않도록) */}
+          <p className="text-xs text-muted-foreground break-words">
+            {mentor.profile.major}
+          </p>
 
+          {/* 넷째 줄: 자기소개글 */}
+          <p className="text-xs text-muted-foreground line-clamp-2 h-[32px] leading-4 overflow-hidden">
+            {mentor.profile.bio || "소개가 아직 없어요."}
+          </p>
+
+          {/* 하단 푸터: border-t로 분리 */}
+          <div className="mt-auto pt-3 border-t border-border flex items-center justify-between gap-2">
+            {/* 좌측: MapPin 아이콘 + 지역명 */}
+            {regionLabel && (
+              <div className="flex items-center gap-1 text-xs text-muted-foreground min-w-0">
+                <MapPin className="h-3.5 w-3.5 flex-shrink-0" />
+                <span className="truncate">{regionLabel}</span>
+              </div>
+            )}
+
+            {/* 우측: Star 아이콘 + 평점 및 후기 개수 */}
             <div className="flex items-center gap-1 flex-shrink-0 text-xs text-muted-foreground">
-              <Star className="h-4 w-4" />
+              <Star className="h-3.5 w-3.5" />
               {ratingValue ? (
                 <span className="font-medium text-foreground">
                   {ratingValue}
@@ -562,25 +577,6 @@ function MentorCard({
               )}
             </div>
           </div>
-
-          {/* 중단: 자기소개 */}
-          <p className="text-xs text-muted-foreground line-clamp-2 h-[32px] leading-4 overflow-hidden">
-            {mentor.profile.bio || "소개가 아직 없어요."}
-          </p>
-
-          {/* 하단: 상담 가능 지역 */}
-          {regionLabel && (
-            <div className="mt-auto">
-              <p className="text-xs text-muted-foreground line-clamp-1 h-[16px] leading-4 overflow-hidden">
-                상담 가능 지역:{" "}
-                <span className="text-foreground">{regionLabel}</span>
-              </p>
-            </div>
-          )}
-
-          {mentor.profile.verificationStatus === "approved" && (
-            <div className="text-xs text-green-600 font-medium">✓ 인증됨</div>
-          )}
         </div>
       </div>
     </Link>
