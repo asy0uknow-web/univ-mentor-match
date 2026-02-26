@@ -24,7 +24,7 @@ export default function CompleteProfile() {
   // 멘토 전용 필드
   const [university, setUniversity] = useState("");
   const [major, setMajor] = useState("");
-  const [mentorRegion, setMentorRegion] = useState("");
+  const [mentorRegions, setMentorRegions] = useState<string[]>([]);
 
   // 멘티 전용 필드
   const [school, setSchool] = useState("");
@@ -75,7 +75,7 @@ export default function CompleteProfile() {
     if (userRole === "mentor") {
       if (!university.trim()) newErrors.university = "대학교를 입력해주세요";
       if (!major.trim()) newErrors.major = "학과를 입력해주세요";
-      if (!mentorRegion) newErrors.mentorRegion = "상담 가능 지역을 선택해주세요";
+      if (mentorRegions.length === 0) newErrors.mentorRegions = "상담 가능 지역을 남도 하나 이상 선택해주세요";
     } else if (userRole === "mentee") {
       if (!school.trim()) newErrors.school = "학교를 입력해주세요";
       if (!careerGoal.trim()) newErrors.careerGoal = "희망 진로를 입력해주세요";
@@ -102,7 +102,7 @@ export default function CompleteProfile() {
         userRole: userRole!,
         university: userRole === "mentor" ? university.trim() : undefined,
         major: userRole === "mentor" ? major.trim() : undefined,
-        mentorRegion: userRole === "mentor" ? mentorRegion : undefined,
+        mentorRegion: userRole === "mentor" ? mentorRegions.join(",") : undefined,
         school: userRole === "mentee" ? school.trim() : undefined,
         careerGoal: userRole === "mentee" ? careerGoal.trim() : undefined,
         menteeRegion: userRole === "mentee" ? menteeRegion : undefined,
@@ -288,29 +288,31 @@ export default function CompleteProfile() {
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="mentorRegion">상담 가능 지역 *</Label>
-                        <select
-                          id="mentorRegion"
-                          value={mentorRegion}
-                          onChange={(e) => {
-                            setMentorRegion(e.target.value);
-                            if (errors.mentorRegion)
-                              setErrors({ ...errors, mentorRegion: "" });
-                          }}
-                          className={`w-full px-3 py-2 border rounded-md ${
-                            errors.mentorRegion ? "border-red-500" : ""
-                          }`}
-                        >
-                          <option value="">지역을 선택해주세요</option>
+                        <Label>상담 가능 지역 *</Label>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                           {regions.map((r) => (
-                            <option key={r.value} value={r.value}>
-                              {r.label}
-                            </option>
+                            <label key={r.value} className="flex items-center gap-2 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={mentorRegions.includes(r.value)}
+                                onChange={(e) => {
+                                  if (e.target.checked) {
+                                    setMentorRegions([...mentorRegions, r.value]);
+                                  } else {
+                                    setMentorRegions(mentorRegions.filter((v) => v !== r.value));
+                                  }
+                                  if (errors.mentorRegions)
+                                    setErrors({ ...errors, mentorRegions: "" });
+                                }}
+                                className="w-4 h-4"
+                              />
+                              <span className="text-sm">{r.label}</span>
+                            </label>
                           ))}
-                        </select>
-                        {errors.mentorRegion && (
+                        </div>
+                        {errors.mentorRegions && (
                           <p className="text-sm text-red-500">
-                            {errors.mentorRegion}
+                            {errors.mentorRegions}
                           </p>
                         )}
                       </div>
