@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
+import { AlertCircle, CheckCircle2, Loader2, X } from "lucide-react";
 import { PageLayout } from "@/components/layout";
 
 type UserRole = "mentor" | "mentee" | null;
@@ -25,6 +25,20 @@ export default function CompleteProfile() {
   const [university, setUniversity] = useState("");
   const [major, setMajor] = useState("");
   const [mentorRegions, setMentorRegions] = useState<string[]>([]);
+  const [showRegionPanel, setShowRegionPanel] = useState(false);
+  const [tempSelectedRegions, setTempSelectedRegions] = useState<string[]>([]);
+  const [regionSearchTerm, setRegionSearchTerm] = useState("");
+
+  const regions = [
+    { value: "seoul", label: "서울" },
+    { value: "gyeonggi", label: "경기" },
+    { value: "incheon", label: "인천" },
+    { value: "gangwon", label: "강원" },
+    { value: "chungcheong", label: "충청" },
+    { value: "jeolla", label: "전라" },
+    { value: "gyeongsang", label: "경상" },
+    { value: "jeju", label: "제주" },
+  ] as const;
 
   // 멘티 전용 필드
   const [school, setSchool] = useState("");
@@ -126,16 +140,37 @@ export default function CompleteProfile() {
     }
   };
 
-  const regions = [
-    { value: "seoul", label: "서울" },
-    { value: "gyeonggi", label: "경기" },
-    { value: "incheon", label: "인천" },
-    { value: "gangwon", label: "강원" },
-    { value: "chungcheong", label: "충청" },
-    { value: "jeolla", label: "전라" },
-    { value: "gyeongsang", label: "경상" },
-    { value: "jeju", label: "제주" },
-  ];
+  const openRegionPanel = () => {
+    setTempSelectedRegions(mentorRegions);
+    setRegionSearchTerm("");
+    setShowRegionPanel(true);
+  };
+
+  const closeRegionPanel = () => {
+    setShowRegionPanel(false);
+    setRegionSearchTerm("");
+  };
+
+  const applyRegionSelection = () => {
+    setMentorRegions(tempSelectedRegions);
+    setShowRegionPanel(false);
+  };
+
+  const resetRegionSelection = () => {
+    setTempSelectedRegions([]);
+  };
+
+  const toggleRegion = (regionValue: string) => {
+    setTempSelectedRegions((prev) =>
+      prev.includes(regionValue)
+        ? prev.filter((r) => r !== regionValue)
+        : [...prev, regionValue]
+    );
+  };
+
+  const filteredRegionsBySearch = regions.filter((region) =>
+    region.label.toLowerCase().includes(regionSearchTerm.toLowerCase())
+  );
 
   return (
     <PageLayout>
@@ -245,7 +280,72 @@ export default function CompleteProfile() {
                     />
                   </div>
 
-                  {/* 멘토 전용 필드 */}
+                  {/* 지역 선택 사이드 패널 */}
+                  {showRegionPanel && (
+                    <div className="fixed inset-0 z-50 bg-black/50">
+                      <div className="fixed right-0 top-0 bottom-0 w-full sm:w-96 bg-background shadow-lg flex flex-col">
+                        {/* 헬더 */}
+                        <div className="flex items-center justify-between p-4 border-b border-border">
+                          <h3 className="text-lg font-semibold">지역 선택</h3>
+                          <button
+                            onClick={closeRegionPanel}
+                            className="p-1 hover:bg-muted rounded-md transition-colors"
+                          >
+                            <X className="h-5 w-5" />
+                          </button>
+                        </div>
+
+                        {/* 검색창 */}
+                        <div className="p-4 border-b border-border">
+                          <input
+                            type="text"
+                            placeholder="지역 검색..."
+                            value={regionSearchTerm}
+                            onChange={(e) => setRegionSearchTerm(e.target.value)}
+                            className="w-full px-3 py-2 text-xs bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                          />
+                        </div>
+
+                        {/* 지역 목록 (스크롤 가능) */}
+                        <div className="flex-1 overflow-y-auto p-4 space-y-2">
+                          {filteredRegionsBySearch.map((region) => (
+                            <label
+                              key={region.value}
+                              className="flex items-center gap-2 p-2 rounded-md hover:bg-muted cursor-pointer transition-colors"
+                            >
+                              <input
+                                type="checkbox"
+                                checked={tempSelectedRegions.includes(region.value)}
+                                onChange={() => toggleRegion(region.value)}
+                                className="rounded"
+                              />
+                              <span className="text-sm">{region.label}</span>
+                            </label>
+                          ))}
+                        </div>
+
+                        {/* 버튼 (고정) */}
+                        <div className="border-t border-border p-4 flex gap-2">
+                          <Button
+                            onClick={resetRegionSelection}
+                            variant="outline"
+                            className="h-8 text-xs"
+                          >
+                            초기화
+                          </Button>
+                          <Button
+                            onClick={applyRegionSelection}
+                            variant="default"
+                            className="flex-1 h-8 text-xs"
+                          >
+                            선택
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* 멘니 전용 필드 */}
                   {userRole === "mentor" && (
                     <>
                       <div className="space-y-2">
@@ -289,27 +389,22 @@ export default function CompleteProfile() {
 
                       <div className="space-y-2">
                         <Label>상담 가능 지역 *</Label>
-                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                          {regions.map((r) => (
-                            <label key={r.value} className="flex items-center gap-2 cursor-pointer">
-                              <input
-                                type="checkbox"
-                                checked={mentorRegions.includes(r.value)}
-                                onChange={(e) => {
-                                  if (e.target.checked) {
-                                    setMentorRegions([...mentorRegions, r.value]);
-                                  } else {
-                                    setMentorRegions(mentorRegions.filter((v) => v !== r.value));
-                                  }
-                                  if (errors.mentorRegions)
-                                    setErrors({ ...errors, mentorRegions: "" });
-                                }}
-                                className="w-4 h-4"
-                              />
-                              <span className="text-sm">{r.label}</span>
-                            </label>
-                          ))}
-                        </div>
+                        <Button
+                          onClick={openRegionPanel}
+                          variant="outline"
+                          className="w-full justify-between"
+                        >
+                          <span>
+                            {mentorRegions.length > 0
+                              ? `선택된 지역: ${mentorRegions.length}개`
+                              : "지역을 선택해주세요"}
+                          </span>
+                          {mentorRegions.length > 0 && (
+                            <span className="ml-2 bg-primary text-primary-foreground rounded-full px-2 py-0.5 text-xs font-semibold">
+                              {mentorRegions.length}
+                            </span>
+                          )}
+                        </Button>
                         {errors.mentorRegions && (
                           <p className="text-sm text-red-500">
                             {errors.mentorRegions}
