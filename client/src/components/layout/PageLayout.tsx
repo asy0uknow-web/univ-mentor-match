@@ -14,7 +14,9 @@ export default function PageLayout({ children, showFooter = false }: PageLayoutP
   return (
     <div className="min-h-screen">
       <Navbar onBugReport={() => setShowBugReport(true)} />
-      {children}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {children}
+      </div>
       {showFooter && <Footer />}
       <BugReportModal isOpen={showBugReport} onClose={() => setShowBugReport(false)} />
     </div>
