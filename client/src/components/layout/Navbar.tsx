@@ -80,7 +80,7 @@ export default function Navbar({ onBugReport }: NavbarProps) {
               height={80}
               loading="eager"
             />
-            <span className="hidden sm:inline font-bold text-lg sm:text-xl text-foreground">유니브매치</span>
+            <span className="font-bold text-sm sm:text-lg lg:text-xl text-foreground">유니브매치</span>
           </Link>
 
           {/* 중앙: 홈페이지 메뉴 (홈페이지에서만, md 이상에서만) */}
