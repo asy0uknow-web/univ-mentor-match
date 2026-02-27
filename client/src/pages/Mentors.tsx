@@ -172,28 +172,25 @@ export default function Mentors() {
     <PageLayout>
       <div className="space-y-6">
         {/* 헤더 */}
-        <div>
+        <div className="pt-4 pl-2">
           <h1 className="text-2xl sm:text-3xl font-bold">멘토 찾기</h1>
           <p className="text-sm text-muted-foreground mt-1">
             당신의 진로를 함께 고민해줄 멘토를 찾아보세요
           </p>
         </div>
 
-        {/* 검색 및 필터 */}
-        <div className="space-y-6">
-          {/* 검색 필터 제목 */}
-          <div>
-            <h2 className="text-lg font-semibold mb-4">검색 필터</h2>
-            
-            {/* 필터 버튼 */}
-            <div className="flex gap-2 flex-wrap mb-4">
+        {/* 검색 및 필터 카드 */}
+        <div className="mt-10 bg-card border border-border rounded-2xl shadow-sm p-8">
+          {/* 필터 버튼 */}
+          <div className="flex gap-3 flex-wrap mb-6">
             <Button
               onClick={openMajorPanel2}
               variant="outline"
               size="sm"
-              className="text-xs"
+              className="rounded-full text-xs flex items-center gap-1"
             >
               학과
+              <ChevronRight className="h-3 w-3" />
               {selectedMajors.length > 0 && (
                 <span className="ml-1 bg-primary text-primary-foreground rounded-full px-2 py-0.5 text-xs font-semibold">
                   {selectedMajors.length}
@@ -205,33 +202,20 @@ export default function Mentors() {
               onClick={openRegionPanel}
               variant="outline"
               size="sm"
-              className="text-xs"
+              className="rounded-full text-xs flex items-center gap-1"
             >
               지역
+              <ChevronRight className="h-3 w-3" />
               {selectedRegions.length > 0 && (
                 <span className="ml-1 bg-primary text-primary-foreground rounded-full px-2 py-0.5 text-xs font-semibold">
                   {selectedRegions.length}
                 </span>
               )}
             </Button>
-
-            {(selectedMajors.length > 0 || selectedRegions.length > 0) && (
-              <Button
-                onClick={() => {
-                  setSelectedMajors([]);
-                  setSelectedRegions([]);
-                }}
-                variant="ghost"
-                size="sm"
-                className="text-xs text-muted-foreground"
-              >
-                <X className="h-3 w-3 mr-1" />
-                초기화
-              </Button>
-            )}
-            
-            {/* 검색 입력 */}
-            <div className="flex gap-2">
+          </div>
+          
+          {/* 검색 입력 */}
+          <div className="flex gap-2 mb-6">
               <div className="flex-1 relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <input
@@ -247,8 +231,24 @@ export default function Mentors() {
                 검색
               </Button>
             </div>
+          
+          {/* 초기화 버튼 */}
+          {(selectedMajors.length > 0 || selectedRegions.length > 0) && (
+            <div className="flex justify-center">
+              <Button
+                onClick={() => {
+                  setSelectedMajors([]);
+                  setSelectedRegions([]);
+                }}
+                variant="ghost"
+                size="sm"
+                className="text-xs text-muted-foreground hover:text-foreground"
+              >
+                <X className="h-3 w-3 mr-1" />
+                초기화
+              </Button>
             </div>
-          </div>
+          )}
         </div>
 
         {/* 학과 선택 사이드 패널 */}
