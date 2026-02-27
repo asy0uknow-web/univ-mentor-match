@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useLocation } from "wouter";
 import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
@@ -25,9 +25,8 @@ export default function CompleteProfile() {
   const [university, setUniversity] = useState("");
   const [major, setMajor] = useState("");
   const [mentorRegions, setMentorRegions] = useState<string[]>([]);
-  const [showRegionPanel, setShowRegionPanel] = useState(false);
-  const [tempSelectedRegions, setTempSelectedRegions] = useState<string[]>([]);
-  const [regionSearchTerm, setRegionSearchTerm] = useState("");
+  const [showRegionDropdown, setShowRegionDropdown] = useState(false);
+  const regionDropdownRef = useRef<HTMLDivElement>(null);
 
   const regions = [
     { value: "seoul", label: "서울" },
@@ -140,37 +139,32 @@ export default function CompleteProfile() {
     }
   };
 
-  const openRegionPanel = () => {
-    setTempSelectedRegions(mentorRegions);
-    setRegionSearchTerm("");
-    setShowRegionPanel(true);
-  };
-
-  const closeRegionPanel = () => {
-    setShowRegionPanel(false);
-    setRegionSearchTerm("");
-  };
-
-  const applyRegionSelection = () => {
-    setMentorRegions(tempSelectedRegions);
-    setShowRegionPanel(false);
-  };
-
-  const resetRegionSelection = () => {
-    setTempSelectedRegions([]);
-  };
-
   const toggleRegion = (regionValue: string) => {
-    setTempSelectedRegions((prev) =>
+    setMentorRegions((prev) =>
       prev.includes(regionValue)
         ? prev.filter((r) => r !== regionValue)
         : [...prev, regionValue]
     );
   };
 
-  const filteredRegionsBySearch = regions.filter((region) =>
-    region.label.toLowerCase().includes(regionSearchTerm.toLowerCase())
-  );
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        regionDropdownRef.current &&
+        !regionDropdownRef.current.contains(event.target as Node)
+      ) {
+        setShowRegionDropdown(false);
+      }
+    };
+
+    if (showRegionDropdown) {
+      document.addEventListener("mousedown", handleClickOutside);
+      return () =>
+        document.removeEventListener("mousedown", handleClickOutside);
+    }
+  }, [showRegionDropdown]);
+
+
 
   return (
     <PageLayout>
@@ -280,42 +274,38 @@ export default function CompleteProfile() {
                     />
                   </div>
 
-                  {/* 지역 선택 사이드 패널 */}
-                  {showRegionPanel && (
-                    <div className="fixed inset-0 z-50 bg-black/50">
-                      <div className="fixed right-0 top-0 bottom-0 w-full sm:w-96 bg-background shadow-lg flex flex-col">
-                        {/* 헬더 */}
-                        <div className="flex items-center justify-between p-4 border-b border-border">
-                          <h3 className="text-lg font-semibold">지역 선택</h3>
-                          <button
-                            onClick={closeRegionPanel}
-                            className="p-1 hover:bg-muted rounded-md transition-colors"
-                          >
-                            <X className="h-5 w-5" />
-                          </button>
-                        </div>
+                  {/* 지역 선택 드롭다운 */}
+                  <div className="space-y-2" ref={regionDropdownRef}>
+                    <Label>상담 가능 지역 *</Label>
+                    <Button
+                      onClick={() => setShowRegionDropdown(!showRegionDropdown)}
+                      variant="outline"
+                      className="w-full justify-between"
+                    >
+                      <span>
+                        {mentorRegions.length > 0
+                          ? `선택된 지역: ${mentorRegions.length}개`
+                          : "지역을 선택해주세요"}
+                      </span>
+                      {mentorRegions.length > 0 && (
+                        <span className="ml-2 bg-primary text-primary-foreground rounded-full px-2 py-0.5 text-xs font-semibold">
+                          {mentorRegions.length}
+                        </span>
+                      )}
+                    </Button>
 
-                        {/* 검색창 */}
-                        <div className="p-4 border-b border-border">
-                          <input
-                            type="text"
-                            placeholder="지역 검색..."
-                            value={regionSearchTerm}
-                            onChange={(e) => setRegionSearchTerm(e.target.value)}
-                            className="w-full px-3 py-2 text-xs bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                          />
-                        </div>
-
-                        {/* 지역 목록 (스크롤 가능) */}
-                        <div className="flex-1 overflow-y-auto p-4 space-y-2">
-                          {filteredRegionsBySearch.map((region) => (
+                    {/* 드롭다운 리스트 */}
+                    {showRegionDropdown && (
+                      <div className="absolute z-50 w-full max-w-sm bg-background border border-border rounded-md shadow-lg mt-1">
+                        <div className="p-2 space-y-1 max-h-64 overflow-y-auto">
+                          {regions.map((region) => (
                             <label
                               key={region.value}
                               className="flex items-center gap-2 p-2 rounded-md hover:bg-muted cursor-pointer transition-colors"
                             >
                               <input
                                 type="checkbox"
-                                checked={tempSelectedRegions.includes(region.value)}
+                                checked={mentorRegions.includes(region.value)}
                                 onChange={() => toggleRegion(region.value)}
                                 className="rounded"
                               />
@@ -323,27 +313,15 @@ export default function CompleteProfile() {
                             </label>
                           ))}
                         </div>
-
-                        {/* 버튼 (고정) */}
-                        <div className="border-t border-border p-4 flex gap-2">
-                          <Button
-                            onClick={resetRegionSelection}
-                            variant="outline"
-                            className="h-8 text-xs"
-                          >
-                            초기화
-                          </Button>
-                          <Button
-                            onClick={applyRegionSelection}
-                            variant="default"
-                            className="flex-1 h-8 text-xs"
-                          >
-                            선택
-                          </Button>
-                        </div>
                       </div>
-                    </div>
-                  )}
+                    )}
+
+                    {errors.mentorRegions && (
+                      <p className="text-sm text-red-500">
+                        {errors.mentorRegions}
+                      </p>
+                    )}
+                  </div>
 
                   {/* 멘니 전용 필드 */}
                   {userRole === "mentor" && (
@@ -387,30 +365,7 @@ export default function CompleteProfile() {
                         )}
                       </div>
 
-                      <div className="space-y-2">
-                        <Label>상담 가능 지역 *</Label>
-                        <Button
-                          onClick={openRegionPanel}
-                          variant="outline"
-                          className="w-full justify-between"
-                        >
-                          <span>
-                            {mentorRegions.length > 0
-                              ? `선택된 지역: ${mentorRegions.length}개`
-                              : "지역을 선택해주세요"}
-                          </span>
-                          {mentorRegions.length > 0 && (
-                            <span className="ml-2 bg-primary text-primary-foreground rounded-full px-2 py-0.5 text-xs font-semibold">
-                              {mentorRegions.length}
-                            </span>
-                          )}
-                        </Button>
-                        {errors.mentorRegions && (
-                          <p className="text-sm text-red-500">
-                            {errors.mentorRegions}
-                          </p>
-                        )}
-                      </div>
+
                     </>
                   )}
 
