@@ -280,7 +280,9 @@ export default function CompleteProfile() {
                     <Button
                       onClick={() => setShowRegionDropdown(!showRegionDropdown)}
                       variant="outline"
-                      className="w-full justify-between"
+                      className={`w-full justify-between ${
+                        errors.mentorRegions ? "border-red-500" : ""
+                      }`}
                     >
                       <span>
                         {mentorRegions.length > 0
