@@ -78,21 +78,33 @@ export default function CompleteProfile() {
   };
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const filtered = filterSpecialCharacters(e.target.value);
-    setName(filtered);
+    setName(e.target.value);
     if (errors.name) setErrors({ ...errors, name: "" });
   };
 
+  const handleNameCompositionEnd = (e: React.CompositionEvent<HTMLInputElement>) => {
+    const filtered = filterSpecialCharacters(e.currentTarget.value);
+    setName(filtered);
+  };
+
   const handleUniversityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const filtered = filterSpecialCharacters(e.target.value);
-    setUniversity(filtered);
+    setUniversity(e.target.value);
     if (errors.university) setErrors({ ...errors, university: "" });
   };
 
+  const handleUniversityCompositionEnd = (e: React.CompositionEvent<HTMLInputElement>) => {
+    const filtered = filterSpecialCharacters(e.currentTarget.value);
+    setUniversity(filtered);
+  };
+
   const handleMajorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const filtered = filterSpecialCharacters(e.target.value);
-    setMajor(filtered);
+    setMajor(e.target.value);
     if (errors.major) setErrors({ ...errors, major: "" });
+  };
+
+  const handleMajorCompositionEnd = (e: React.CompositionEvent<HTMLInputElement>) => {
+    const filtered = filterSpecialCharacters(e.currentTarget.value);
+    setMajor(filtered);
   }
 
   const validateForm = () => {
@@ -261,6 +273,7 @@ export default function CompleteProfile() {
                       placeholder="실명을 입력해주세요"
                       value={name}
                       onChange={handleNameChange}
+                      onCompositionEnd={handleNameCompositionEnd}
                       className={errors.name ? "border-red-500" : ""}
                     />
                     {errors.name && (
@@ -356,6 +369,7 @@ export default function CompleteProfile() {
                           placeholder="예: 서울대학교"
                           value={university}
                           onChange={handleUniversityChange}
+                          onCompositionEnd={handleUniversityCompositionEnd}
                           className={errors.university ? "border-red-500" : ""}
                         />
                         {errors.university && (
@@ -372,10 +386,8 @@ export default function CompleteProfile() {
                           type="text"
                           placeholder="예: 컴퓨터공학과"
                           value={major}
-                          onChange={(e) => {
-                            setMajor(e.target.value);
-                            if (errors.major) setErrors({ ...errors, major: "" });
-                          }}
+                          onChange={handleMajorChange}
+                          onCompositionEnd={handleMajorCompositionEnd}
                           className={errors.major ? "border-red-500" : ""}
                         />
                         {errors.major && (
