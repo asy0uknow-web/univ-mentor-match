@@ -72,6 +72,29 @@ export default function CompleteProfile() {
     }
   };
 
+  // 한글, 영어만 허용하는 필터
+  const filterSpecialCharacters = (value: string) => {
+    return value.replace(/[^\uac00-\ud7a3a-zA-Z\s]/g, "");
+  };
+
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const filtered = filterSpecialCharacters(e.target.value);
+    setName(filtered);
+    if (errors.name) setErrors({ ...errors, name: "" });
+  };
+
+  const handleUniversityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const filtered = filterSpecialCharacters(e.target.value);
+    setUniversity(filtered);
+    if (errors.university) setErrors({ ...errors, university: "" });
+  };
+
+  const handleMajorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const filtered = filterSpecialCharacters(e.target.value);
+    setMajor(filtered);
+    if (errors.major) setErrors({ ...errors, major: "" });
+  }
+
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
 
@@ -88,7 +111,7 @@ export default function CompleteProfile() {
     if (userRole === "mentor") {
       if (!university.trim()) newErrors.university = "대학교를 입력해주세요";
       if (!major.trim()) newErrors.major = "학과를 입력해주세요";
-      if (mentorRegions.length === 0) newErrors.mentorRegions = "상담 가능 지역을 남도 하나 이상 선택해주세요";
+      if (mentorRegions.length === 0) newErrors.mentorRegions = "상담 가능 지역을 하나 이상 선택해주세요";
     } else if (userRole === "mentee") {
       if (!school.trim()) newErrors.school = "학교를 입력해주세요";
       if (!careerGoal.trim()) newErrors.careerGoal = "희망 진로를 입력해주세요";
@@ -237,10 +260,7 @@ export default function CompleteProfile() {
                       type="text"
                       placeholder="실명을 입력해주세요"
                       value={name}
-                      onChange={(e) => {
-                        setName(e.target.value);
-                        if (errors.name) setErrors({ ...errors, name: "" });
-                      }}
+                      onChange={handleNameChange}
                       className={errors.name ? "border-red-500" : ""}
                     />
                     {errors.name && (
@@ -335,11 +355,7 @@ export default function CompleteProfile() {
                           type="text"
                           placeholder="예: 서울대학교"
                           value={university}
-                          onChange={(e) => {
-                            setUniversity(e.target.value);
-                            if (errors.university)
-                              setErrors({ ...errors, university: "" });
-                          }}
+                          onChange={handleUniversityChange}
                           className={errors.university ? "border-red-500" : ""}
                         />
                         {errors.university && (
@@ -393,18 +409,14 @@ export default function CompleteProfile() {
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="careerGoal">희망 진로 *</Label>
+                        <Label htmlFor="major">학과 *</Label>
                         <Input
-                          id="careerGoal"
+                          id="major"
                           type="text"
-                          placeholder="예: 컴퓨터공학 전공"
-                          value={careerGoal}
-                          onChange={(e) => {
-                            setCareerGoal(e.target.value);
-                            if (errors.careerGoal)
-                              setErrors({ ...errors, careerGoal: "" });
-                          }}
-                          className={errors.careerGoal ? "border-red-500" : ""}
+                          placeholder="예: 컴퓨터공학과"
+                          value={major}
+                          onChange={handleMajorChange}
+                          className={errors.major ? "border-red-500" : ""}
                         />
                         {errors.careerGoal && (
                           <p className="text-sm text-red-500">
