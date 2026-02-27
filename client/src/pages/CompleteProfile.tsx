@@ -238,7 +238,7 @@ export default function CompleteProfile() {
                       placeholder="실명을 입력해주세요"
                       value={name}
                       onChange={(e) => {
-                        const value = e.target.value.replace(/[^\w\s가-힯]/g, "");
+                        const value = e.target.value.replace(/[^\w\s\uac00-\ud7af]/g, "");
                         setName(value);
                       }}
                       className={errors.name ? "border-red-500" : ""}
@@ -287,7 +287,7 @@ export default function CompleteProfile() {
                           placeholder="예: 서울대학교"
                           value={university}
                           onChange={(e) => {
-                            const value = e.target.value.replace(/[^\w\s가-힯]/g, "");
+                            const value = e.target.value.replace(/[^\w\s\uac00-\ud7af]/g, "");
                             setUniversity(value);
                           }}
                           className={errors.university ? "border-red-500" : ""}
@@ -307,7 +307,7 @@ export default function CompleteProfile() {
                           placeholder="예: 컴퓨터공학과"
                           value={major}
                           onChange={(e) => {
-                            const value = e.target.value.replace(/[^\w\s가-힯]/g, "");
+                            const value = e.target.value.replace(/[^\w\s\uac00-\ud7af]/g, "");
                             setMajor(value);
                           }}
                           className={errors.major ? "border-red-500" : ""}
