@@ -180,27 +180,13 @@ export default function Mentors() {
         </div>
 
         {/* 검색 및 필터 */}
-        <div className="py-8 space-y-4">
-          {/* 검색 입력 및 필터 버튼 */}
-          <div className="flex gap-2 flex-col sm:flex-row">
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <input
-                type="text"
-                placeholder="멘토 이름, 대학교, 학과로 검색..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                onKeyDown={handleKeyDown}
-                className="w-full pl-10 pr-4 py-2 text-sm bg-background border border-border rounded-full focus:outline-none focus:ring-2 focus:ring-primary"
-              />
-            </div>
-            <Button onClick={handleSearch} size="sm" className="px-6 rounded-full">
-              검색
-            </Button>
-          </div>
-
-          {/* 필터 버튼 */}
-          <div className="flex gap-2 flex-wrap">
+        <div className="space-y-6">
+          {/* 검색 필터 제목 */}
+          <div>
+            <h2 className="text-lg font-semibold mb-4">검색 필터</h2>
+            
+            {/* 필터 버튼 */}
+            <div className="flex gap-2 flex-wrap mb-4">
             <Button
               onClick={openMajorPanel2}
               variant="outline"
@@ -243,6 +229,25 @@ export default function Mentors() {
                 초기화
               </Button>
             )}
+            
+            {/* 검색 입력 */}
+            <div className="flex gap-2">
+              <div className="flex-1 relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <input
+                  type="text"
+                  placeholder="대학, 전공..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  className="w-full pl-10 pr-4 py-2 text-sm bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+              </div>
+              <Button onClick={handleSearch} size="sm" className="px-4">
+                검색
+              </Button>
+            </div>
+            </div>
           </div>
         </div>
 
