@@ -180,9 +180,9 @@ export default function Mentors() {
         </div>
 
         {/* 검색 및 필터 */}
-        <div className="space-y-3">
-          {/* 검색 입력 */}
-          <div className="flex gap-2">
+        <div className="py-8 space-y-4">
+          {/* 검색 입력 및 필터 버튼 */}
+          <div className="flex gap-2 flex-col sm:flex-row">
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <input
@@ -191,10 +191,10 @@ export default function Mentors() {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 onKeyDown={handleKeyDown}
-                className="w-full pl-10 pr-4 py-2 text-sm bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full pl-10 pr-4 py-2 text-sm bg-background border border-border rounded-full focus:outline-none focus:ring-2 focus:ring-primary"
               />
             </div>
-            <Button onClick={handleSearch} size="sm" className="px-4">
+            <Button onClick={handleSearch} size="sm" className="px-6 rounded-full">
               검색
             </Button>
           </div>
@@ -520,15 +520,15 @@ function MentorCard({
         <div className="flex-1 min-w-0 flex flex-col gap-2 justify-between">
           {/* 첫째 줄: 멘토 이름 + BadgeCheck 아이콘 + '인증됨' 텍스트 */}
           <div className="flex items-center gap-1">
-            <h3 className="font-semibold text-base leading-tight truncate">
-              {mentor.user.name}
-            </h3>
             {mentor.profile.verificationStatus === "approved" && (
               <>
                 <BadgeCheck className="h-4 w-4 text-green-600 flex-shrink-0" />
                 <span className="text-xs text-green-600 font-medium flex-shrink-0">인증됨</span>
               </>
             )}
+            <h3 className="font-semibold text-base leading-tight truncate">
+              {mentor.user.name}
+            </h3>
           </div>
 
           {/* 둘째 줄: 대학교 이름 · 학년 */}
