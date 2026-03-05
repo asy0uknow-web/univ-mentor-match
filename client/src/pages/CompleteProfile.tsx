@@ -307,56 +307,7 @@ export default function CompleteProfile() {
                     />
                   </div>
 
-                  {/* 지역 선택 드롭다운 */}
-                  <div className="space-y-2" ref={regionDropdownRef}>
-                    <Label>상담 가능 지역 *</Label>
-                    <Button
-                      onClick={() => setShowRegionDropdown(!showRegionDropdown)}
-                      variant="outline"
-                      className={`w-full justify-between ${
-                        errors.mentorRegions ? "border-red-500" : ""
-                      }`}
-                    >
-                      <span>
-                        {mentorRegions.length > 0
-                          ? `선택된 지역: ${mentorRegions.length}개`
-                          : "지역을 선택해주세요"}
-                      </span>
-                      {mentorRegions.length > 0 && (
-                        <span className="ml-2 bg-primary text-primary-foreground rounded-full px-2 py-0.5 text-xs font-semibold">
-                          {mentorRegions.length}
-                        </span>
-                      )}
-                    </Button>
 
-                    {/* 드롭다운 리스트 */}
-                    {showRegionDropdown && (
-                      <div className="absolute z-50 w-full max-w-sm bg-background border border-border rounded-md shadow-lg mt-1">
-                        <div className="p-2 space-y-1 max-h-64 overflow-y-auto">
-                          {regions.map((region) => (
-                            <label
-                              key={region.value}
-                              className="flex items-center gap-2 p-2 rounded-md hover:bg-muted cursor-pointer transition-colors"
-                            >
-                              <input
-                                type="checkbox"
-                                checked={mentorRegions.includes(region.value)}
-                                onChange={() => toggleRegion(region.value)}
-                                className="rounded"
-                              />
-                              <span className="text-sm">{region.label}</span>
-                            </label>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {errors.mentorRegions && (
-                      <p className="text-sm text-red-500">
-                        {errors.mentorRegions}
-                      </p>
-                    )}
-                  </div>
 
                   {/* 멘니 전용 필드 */}
                   {userRole === "mentor" && (
@@ -395,7 +346,56 @@ export default function CompleteProfile() {
                         )}
                       </div>
 
+                      {/* 상담 가능 지역 */}
+                      <div className="space-y-2" ref={regionDropdownRef}>
+                        <Label>상담 가능 지역 *</Label>
+                        <Button
+                          onClick={() => setShowRegionDropdown(!showRegionDropdown)}
+                          variant="outline"
+                          className={`w-full justify-between ${
+                            errors.mentorRegions ? "border-red-500" : ""
+                          }`}
+                        >
+                          <span>
+                            {mentorRegions.length > 0
+                              ? `선택된 지역: ${mentorRegions.length}개`
+                              : "지역을 선택해주세요"}
+                          </span>
+                          {mentorRegions.length > 0 && (
+                            <span className="ml-2 bg-primary text-primary-foreground rounded-full px-2 py-0.5 text-xs font-semibold">
+                              {mentorRegions.length}
+                            </span>
+                          )}
+                        </Button>
 
+                        {/* 드롭다운 리스트 */}
+                        {showRegionDropdown && (
+                          <div className="absolute z-50 w-full max-w-sm bg-background border border-border rounded-md shadow-lg mt-1">
+                            <div className="p-2 space-y-1 max-h-64 overflow-y-auto">
+                              {regions.map((region) => (
+                                <label
+                                  key={region.value}
+                                  className="flex items-center gap-2 p-2 rounded-md hover:bg-muted cursor-pointer transition-colors"
+                                >
+                                  <input
+                                    type="checkbox"
+                                    checked={mentorRegions.includes(region.value)}
+                                    onChange={() => toggleRegion(region.value)}
+                                    className="rounded"
+                                  />
+                                  <span className="text-sm">{region.label}</span>
+                                </label>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {errors.mentorRegions && (
+                          <p className="text-sm text-red-500">
+                            {errors.mentorRegions}
+                          </p>
+                        )}
+                      </div>
                     </>
                   )}
 
