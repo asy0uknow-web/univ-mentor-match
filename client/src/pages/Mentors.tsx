@@ -471,7 +471,7 @@ function MentorCard({
       region: string | null;
       bio: string | null;
       field: string | null;
-      hourlyRate: string;
+      hourlyRate: string | null;
       availableSlots: string | null;
       isActive: boolean;
       verificationStatus: string;

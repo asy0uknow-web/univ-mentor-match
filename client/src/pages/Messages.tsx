@@ -255,17 +255,12 @@ export default function Messages() {
                 </CardHeader>
                 
                 {/* 상담 조율 카드 */}
-                <div className="bg-amber-50 border-b border-amber-200 p-4">
+                <div className="bg-amber-50 border-b border-amber-200 p-3">
                   <div className="flex items-start gap-3">
-                    <AlertCircle className="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" />
                     <div className="flex-1">
-                      <h3 className="font-semibold text-amber-900 mb-1">상담 조율 대화</h3>
-                      <p className="text-sm text-amber-800 mb-3">
-                        이 공간은 상담 일정, 시간, 장소, 결제 방식 등을 합의하기 위한 공간입니다.
-                      </p>
+                      <h3 className="font-semibold text-amber-900 mb-2">상담 조율 대화</h3>
                       <div className="bg-white border border-amber-200 rounded p-3 text-sm text-amber-900">
-                        <p className="font-semibold mb-1">⚠️ 상담 진행 안내</p>
-                        <p>상담은 대면으로 진행됩니다. 결제는 상담 당일 현장에서 진행해주세요. 정확한 장소와 시간을 이 대화에서 확정해주세요.</p>
+                        <p>상담을 신청하고 세부일정을 조율하세요.</p>
                       </div>
                     </div>
                   </div>

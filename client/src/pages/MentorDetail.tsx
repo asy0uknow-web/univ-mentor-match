@@ -222,6 +222,7 @@ export default function MentorDetail() {
                   <Button
                     className="w-full"
                     size="lg"
+                    disabled={user?.id === mentor?.user?.id}
                     onClick={() => {
                       const recipientId = mentor?.user?.id;
                       if (!recipientId) {
@@ -238,6 +239,7 @@ export default function MentorDetail() {
 
                       setLocation("/messages");
                     }}
+                    title={user?.id === mentor?.user?.id ? "자신의 프로필에서는 상담을 신청할 수 없습니다." : ""}
                   >
                     <MessageCircle className="h-5 w-5 mr-2" />
                     상담 조율하기

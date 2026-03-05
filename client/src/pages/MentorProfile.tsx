@@ -25,7 +25,7 @@ export default function MentorProfile() {
   const [major, setMajor] = useState("");
   const [grade, setGrade] = useState<"1" | "2" | "3" | "4" | "graduate">("1");
   const [bio, setBio] = useState("");
-  const [hourlyRate, setHourlyRate] = useState("");
+
   const [field, setField] = useState<"engineering" | "natural_science" | "business" | "humanities" | "education" | "liberal_arts" | "medicine" | undefined>();
   const [region, setRegion] = useState<"seoul" | "gyeonggi" | "incheon" | "gangwon" | "chungcheong" | "jeolla" | "gyeongsang" | "jeju" | undefined>();
   const [dragActive, setDragActive] = useState(false);
@@ -109,7 +109,6 @@ export default function MentorProfile() {
       setMajor(profile.major);
       setGrade(profile.grade);
       setBio(profile.bio || "");
-      setHourlyRate(profile.hourlyRate.toString());
       setField(profile.field || undefined);
       setRegion(profile.region || undefined);
     }
@@ -202,7 +201,7 @@ export default function MentorProfile() {
     const empty = new Set<string>();
     if (!university) empty.add("university");
     if (!major) empty.add("major");
-    if (!hourlyRate) empty.add("hourlyRate");
+
     if (!field) empty.add("field");
     if (!region) empty.add("region");
 
@@ -219,22 +218,22 @@ export default function MentorProfile() {
     setEmptyFields(new Set());
 
     if (profile) {
-      updateProfileMutation.mutate({
-        university,
-        major,
-        grade,
-        bio,
-        hourlyRate: "30000",
-        field,
-        region,
-      });
-    } else {
       createProfileMutation.mutate({
         university,
         major,
         grade,
         bio,
-        hourlyRate: "30000",
+        hourlyRate: "0",
+        field,
+        region,
+      });
+    } else {
+      updateProfileMutation.mutate({
+        university,
+        major,
+        grade,
+        bio,
+        hourlyRate: "0",
         field,
         region,
       });
@@ -408,19 +407,7 @@ export default function MentorProfile() {
                           </SelectContent>
                         </Select>
                       </div>
-                      <div>
-                        <Label htmlFor="hourlyRate" className="text-sm font-medium">
-                          시간당 상담료 (원) *
-                        </Label>
-                        <Input
-                          id="hourlyRate"
-                          placeholder="30000"
-                          value={hourlyRate}
-                          onChange={(e) => setHourlyRate(e.target.value)}
-                          type="number"
-                          className={emptyFields.has("hourlyRate") ? "border-red-500" : ""}
-                        />
-                      </div>
+
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
