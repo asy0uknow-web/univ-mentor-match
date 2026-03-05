@@ -430,7 +430,7 @@ export async function getMessagesBetweenUsers(userId1: number, userId2: number) 
   const db = await getDb();
   if (!db) throw new Error("Database not available");
   
-  const result = await db
+  const allMessages = await db
     .select()
     .from(messages)
     .where(
@@ -441,14 +441,26 @@ export async function getMessagesBetweenUsers(userId1: number, userId2: number) 
     )
     .orderBy(desc(messages.createdAt));
   
-  return result;
+  const [sender, recipient] = await Promise.all([
+    db.select({ name: users.name }).from(users).where(eq(users.id, userId1)).limit(1),
+    db.select({ name: users.name }).from(users).where(eq(users.id, userId2)).limit(1),
+  ]);
+  
+  const senderName = sender[0]?.name || `User ${userId1}`;
+  const recipientName = recipient[0]?.name || `User ${userId2}`;
+  
+  return allMessages.map((msg: any) => ({
+    ...msg,
+    senderName: msg.senderId === userId1 ? senderName : recipientName,
+    recipientName: msg.recipientId === userId1 ? senderName : recipientName,
+  }));
 }
 
 export async function getMessagesForUser(userId: number) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
   
-  const result = await db
+  const allMessages = await db
     .select()
     .from(messages)
     // NOTE: We intentionally include both received AND sent messages.
@@ -458,7 +470,23 @@ export async function getMessagesForUser(userId: number) {
     .where(or(eq(messages.recipientId, userId), eq(messages.senderId, userId)))
     .orderBy(desc(messages.createdAt));
   
-  return result;
+  const userIds = new Set<number>();
+  allMessages.forEach((msg: any) => {
+    userIds.add(msg.senderId);
+    userIds.add(msg.recipientId);
+  });
+  
+  const userNames: Record<number, string> = {};
+  for (const id of Array.from(userIds)) {
+    const result = await db.select({ name: users.name }).from(users).where(eq(users.id, id)).limit(1);
+    userNames[id] = result[0]?.name || `User ${id}`;
+  }
+  
+  return allMessages.map((msg: any) => ({
+    ...msg,
+    senderName: userNames[msg.senderId],
+    recipientName: userNames[msg.recipientId],
+  }));
 }
 
 export async function markMessageAsRead(messageId: number) {

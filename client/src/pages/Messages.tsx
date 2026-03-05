@@ -154,18 +154,21 @@ export default function Messages() {
     ? conversations[selectedConversation] || []
     : [];
 
-  // Extract user name from first message
+  // Extract user name from messages
   const getOtherUserName = (userId: number) => {
     const msgs: any[] = conversations[userId] || [];
     if (msgs.length === 0) return `User ${userId}`;
-    const firstMsg = msgs[0];
-    // Get other user's name from message metadata
-    if (firstMsg.senderName && firstMsg.senderId === userId) {
-      return firstMsg.senderName;
+    
+    // 메시지 배열에서 해당 사용자의 실명을 찾기
+    for (const msg of msgs) {
+      if (msg.senderId === userId && msg.senderName) {
+        return msg.senderName;
+      }
+      if (msg.recipientId === userId && msg.recipientName) {
+        return msg.recipientName;
+      }
     }
-    if (firstMsg.recipientName && firstMsg.recipientId === userId) {
-      return firstMsg.recipientName;
-    }
+    
     return `User ${userId}`;
   };
 

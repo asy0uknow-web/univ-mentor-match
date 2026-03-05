@@ -1,0 +1,28 @@
+{
+  "query": "SELECT id, name, email, role FROM users ORDER BY createdAt DESC LIMIT 10;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute SELECT id, name, email, role FROM users ORDER BY createdAt DESC LIMIT 10;",
+  "rows": [
+    {
+      "id": "750009",
+      "name": "NULL",
+      "email": "syoung.choi327@gmail.com",
+      "role": "user"
+    },
+    {
+      "id": "330001",
+      "name": "양주혁",
+      "email": "yjh032201@gmail.com",
+      "role": "admin"
+    },
+    {
+      "id": "240075",
+      "name": "NULL",
+      "email": "2003yunho@gmail.com",
+      "role": "admin"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\temail\trole\n750009\tNULL\tsyoung.choi327@gmail.com\tuser\n330001\t양주혁\tyjh032201@gmail.com\tadmin\n240075\tNULL\t2003yunho@gmail.com\tadmin\n",
+  "stderr": "",
+  "execution_time_ms": 1624
+}
