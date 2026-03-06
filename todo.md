@@ -885,3 +885,18 @@
   - [x] Messages.tsx에 검색 입력 필드 추가
   - [x] 대화 목록에서 사용자 이름 또는 메시지 내용으로 검색
   - [x] 검색 결과 실시간 필터링
+
+
+## pt 2.2 - 멘토 카드 상담 유형 배지 표시
+- [x] 멘토 검색 페이지의 멘토 카드에 상담 유형 배지 UI 추가
+  - [x] Mentors.tsx MentorCard 타입에 consultationTypes 필드 추가
+  - [x] consultationTypeLabels 매핑 추가 (진로상담, 대학탐방, 생기부컨설팅, 학업관리)
+  - [x] 배지 렌더링 로직 추가 (자기소개글 아래)
+- [x] 백엔드 API 수정 - getAllActiveMentors 함수에서 consultationTypes 조회
+  - [x] mentorConsultationTypes import 추가
+  - [x] Promise.all로 각 멘토의 상담 유형 조회
+  - [x] profile에 consultationTypes 배열 추가
+- [ ] 데이터베이스 테스트 데이터 추가 및 배지 표시 확인
+  - [x] 멘토 ID 1에 상담 유형 4개 추가
+  - [ ] API 응답 검증 (consultationTypes가 정상 반환되는지 확인)
+  - [ ] 프론트엔드 배지 렌더링 확인

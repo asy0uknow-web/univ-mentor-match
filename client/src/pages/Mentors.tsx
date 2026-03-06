@@ -480,6 +480,7 @@ function MentorCard({
       reviewCount: number;
       createdAt: Date;
       updatedAt: Date;
+      consultationTypes?: string[] | null;
     };
   };
 }) {
@@ -497,6 +498,17 @@ function MentorCard({
     if (g === "graduate") return "대학원";
     return g;
   })();
+
+
+  // 상담 유형 매핑
+  const consultationTypeLabels: { [key: string]: { label: string; color: string } } = {
+    "career_counseling": { label: "진로상담", color: "bg-blue-100 text-blue-700" },
+    "university_tour": { label: "대학탐방", color: "bg-green-100 text-green-700" },
+    "resume_consulting": { label: "생기부컨설팅", color: "bg-purple-100 text-purple-700" },
+    "academic_management": { label: "학업관리", color: "bg-orange-100 text-orange-700" },
+  };
+
+  const consultationTypes = mentor.profile.consultationTypes || [];
 
   const ratingValue =
     mentor.profile.averageRating && mentor.profile.averageRating !== "0"
@@ -550,6 +562,23 @@ function MentorCard({
           <p className="text-xs text-muted-foreground line-clamp-2 h-[32px] leading-4 overflow-hidden">
             {mentor.profile.bio || "소개가 아직 없어요."}
           </p>
+
+          {/* 다섯째 줄: 상담 유형 배지 */}
+          {consultationTypes.length > 0 && (
+            <div className="flex flex-wrap gap-1 mt-2">
+              {consultationTypes.map((type) => {
+                const typeInfo = consultationTypeLabels[type];
+                return (
+                  <span
+                    key={type}
+                    className={`text-xs px-2 py-1 rounded-full font-medium ${typeInfo?.color || "bg-gray-100 text-gray-700"}`}
+                  >
+                    {typeInfo?.label || type}
+                  </span>
+                );
+              })}
+            </div>
+          )}
 
           {/* 하단 푸터: border-t로 분리 */}
           <div className="mt-auto pt-3 border-t border-border flex items-center justify-between gap-2">

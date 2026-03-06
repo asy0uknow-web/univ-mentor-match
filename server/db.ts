@@ -16,7 +16,8 @@ import {
   mentorVerifications,
   InsertMentorVerification,
   mentorGallery,
-  InsertMentorGallery
+  InsertMentorGallery,
+  mentorConsultationTypes
 } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
@@ -207,7 +208,7 @@ export async function getAllActiveMentors() {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
   
-  const result = await db
+  const mentors = await db
     .select({
       profile: mentorProfiles,
       user: users,
@@ -223,7 +224,25 @@ export async function getAllActiveMentors() {
     )
     .orderBy(desc(mentorProfiles.averageRating));
   
-  return result;
+  // 각 멘토의 상담 유형 조회
+  const mentorsWithConsultationTypes = await Promise.all(
+    mentors.map(async (mentor) => {
+      const consultationTypes = await db
+        .select({ consultationType: mentorConsultationTypes.consultationType })
+        .from(mentorConsultationTypes)
+        .where(eq(mentorConsultationTypes.mentorId, mentor.profile.userId));
+      
+      return {
+        ...mentor,
+        profile: {
+          ...mentor.profile,
+          consultationTypes: consultationTypes.map(ct => ct.consultationType),
+        },
+      };
+    })
+  );
+  
+  return mentorsWithConsultationTypes;
 }
 
 export async function getMentorById(mentorId: number) {
