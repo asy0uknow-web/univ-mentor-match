@@ -562,6 +562,27 @@ export const appRouter = router({
           bookingId: input.bookingId,
           isRead: false,
         });
+        
+        // Create notification for recipient
+        const db = await getDb();
+        if (db) {
+          try {
+            const senderResult = await db.select({ name: users.name }).from(users).where(eq(users.id, ctx.user.id)).limit(1);
+            const senderName = senderResult[0]?.name || `User ${ctx.user.id}`;
+            
+            await createNotification({
+              userId: input.recipientId,
+              type: "message",
+              title: `${senderName}님으로부터 새 메시지`,
+              message: input.content.substring(0, 100),
+              relatedId: ctx.user.id,
+              isRead: false,
+            });
+          } catch (error) {
+            console.error("[Notification] Failed to create message notification:", error);
+          }
+        }
+        
         return { success: true, messageId: (message as any).insertId };
       }),
 

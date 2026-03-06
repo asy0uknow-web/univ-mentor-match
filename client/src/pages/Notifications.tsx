@@ -2,6 +2,7 @@ import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import { trpc } from "@/lib/trpc";
 import { Link } from "wouter";
 import { GraduationCap, Bell, Check, Trash2, ChevronDown } from "lucide-react";
@@ -20,6 +21,7 @@ export default function Notifications() {
     setPageMeta(PAGE_META.notifications);
   }, []);
   const { user, isAuthenticated } = useAuth();
+  const [searchQuery, setSearchQuery] = useState("");
   const utils = trpc.useUtils();
   const { data: notifications, isLoading } = trpc.notification.getAll.useQuery(undefined, {
     enabled: isAuthenticated,
@@ -57,6 +59,12 @@ export default function Notifications() {
     markAsReadMutation.mutate({ notificationId });
   };
 
+  // Filter notifications based on search query
+  const filteredNotifications = notifications?.filter((notif: any) =>
+    notif.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    notif.message.toLowerCase().includes(searchQuery.toLowerCase())
+  ) || [];
+
   return (
     <PageLayout>
       {/* Content */}
@@ -66,11 +74,23 @@ export default function Notifications() {
           <h1 className="text-4xl font-bold">알림</h1>
         </div>
 
+        {/* Search bar */}
+        <Card className="mb-6">
+          <CardContent className="pt-6">
+            <Input
+              placeholder="알림 검색..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full"
+            />
+          </CardContent>
+        </Card>
+
         {isLoading ? (
           <p className="text-muted-foreground">로딩 중...</p>
-        ) : notifications && notifications.length > 0 ? (
+        ) : filteredNotifications.length > 0 ? (
           <div className="space-y-3">
-            {notifications.map((notification) => (
+            {filteredNotifications.map((notification) => (
               <Card
                 key={notification.id}
                 className={`transition-colors ${
@@ -90,17 +110,19 @@ export default function Notifications() {
                         {format(new Date(notification.createdAt), "PPP p", { locale: ko })}
                       </CardDescription>
                     </div>
-                    {!notification.isRead && (
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => handleMarkAsRead(notification.id)}
-                        disabled={markAsReadMutation.isPending}
-                      >
-                        <Check className="h-4 w-4 mr-1" />
-                        읽음
-                      </Button>
-                    )}
+                    <div className="flex gap-2">
+                      {!notification.isRead && (
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => handleMarkAsRead(notification.id)}
+                          disabled={markAsReadMutation.isPending}
+                        >
+                          <Check className="h-4 w-4 mr-1" />
+                          읽음
+                        </Button>
+                      )}
+                    </div>
                   </div>
                 </CardHeader>
                 <CardContent>

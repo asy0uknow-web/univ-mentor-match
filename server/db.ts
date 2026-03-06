@@ -441,18 +441,25 @@ export async function getMessagesBetweenUsers(userId1: number, userId2: number) 
     )
     .orderBy(desc(messages.createdAt));
   
-  const [sender, recipient] = await Promise.all([
+  const [sender, recipient, senderMentorProfile, recipientMentorProfile] = await Promise.all([
     db.select({ name: users.name }).from(users).where(eq(users.id, userId1)).limit(1),
     db.select({ name: users.name }).from(users).where(eq(users.id, userId2)).limit(1),
+    db.select({ id: mentorProfiles.id }).from(mentorProfiles).where(eq(mentorProfiles.userId, userId1)).limit(1),
+    db.select({ id: mentorProfiles.id }).from(mentorProfiles).where(eq(mentorProfiles.userId, userId2)).limit(1),
   ]);
   
   const senderName = sender[0]?.name || `User ${userId1}`;
   const recipientName = recipient[0]?.name || `User ${userId2}`;
+  const senderIsMentor = senderMentorProfile.length > 0;
+  const recipientIsMentor = recipientMentorProfile.length > 0;
+  
+  const senderDisplayName = senderIsMentor ? `${senderName}멘토님` : `${senderName}멘티님`;
+  const recipientDisplayName = recipientIsMentor ? `${recipientName}멘토님` : `${recipientName}멘티님`;
   
   return allMessages.map((msg: any) => ({
     ...msg,
-    senderName: msg.senderId === userId1 ? senderName : recipientName,
-    recipientName: msg.recipientId === userId1 ? senderName : recipientName,
+    senderName: msg.senderId === userId1 ? senderDisplayName : recipientDisplayName,
+    recipientName: msg.recipientId === userId1 ? senderDisplayName : recipientDisplayName,
   }));
 }
 
@@ -477,16 +484,28 @@ export async function getMessagesForUser(userId: number) {
   });
   
   const userNames: Record<number, string> = {};
+  const userRoles: Record<number, boolean> = {};
+  
   for (const id of Array.from(userIds)) {
     const result = await db.select({ name: users.name }).from(users).where(eq(users.id, id)).limit(1);
     userNames[id] = result[0]?.name || `User ${id}`;
+    
+    const mentorProfile = await db.select({ id: mentorProfiles.id }).from(mentorProfiles).where(eq(mentorProfiles.userId, id)).limit(1);
+    userRoles[id] = mentorProfile.length > 0;
   }
   
-  return allMessages.map((msg: any) => ({
-    ...msg,
-    senderName: userNames[msg.senderId],
-    recipientName: userNames[msg.recipientId],
-  }));
+  return allMessages.map((msg: any) => {
+    const senderName = userNames[msg.senderId];
+    const recipientName = userNames[msg.recipientId];
+    const senderIsMentor = userRoles[msg.senderId];
+    const recipientIsMentor = userRoles[msg.recipientId];
+    
+    return {
+      ...msg,
+      senderName: senderIsMentor ? `${senderName}멘토님` : `${senderName}멘티님`,
+      recipientName: recipientIsMentor ? `${recipientName}멘토님` : `${recipientName}멘티님`,
+    };
+  });
 }
 
 export async function markMessageAsRead(messageId: number) {

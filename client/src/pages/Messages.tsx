@@ -30,6 +30,8 @@ export default function Messages() {
   const { user, isAuthenticated } = useAuth();
   const [selectedConversation, setSelectedConversation] = useState<number | null>(null);
   const [messageContent, setMessageContent] = useState("");
+  const [consultationType, setConsultationType] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // If another page (e.g., MentorDetail) asked us to open a specific conversation,
@@ -53,6 +55,12 @@ export default function Messages() {
         setMessageContent((prev) => (prev.trim().length === 0 ? draft : prev));
         sessionStorage.removeItem(DRAFT_MESSAGE_KEY);
       }
+
+      const type = sessionStorage.getItem("univmatch:consultationType");
+      if (type) {
+        setConsultationType(type);
+        sessionStorage.removeItem("univmatch:consultationType");
+      }
     } catch {
       // Ignore storage errors (private mode, restrictive browsers, etc.)
     }
@@ -65,6 +73,7 @@ export default function Messages() {
     { otherUserId: selectedConversation || 0 },
     { enabled: isAuthenticated && selectedConversation !== null }
   );
+
 
   // 자동 스크롤 - 새 메시지가 추가되면 하단으로 스크롤
   const scrollToBottom = () => {
@@ -149,10 +158,28 @@ export default function Messages() {
     return acc;
   }, {}) || {};
 
+  // Filter conversations based on search query
+  const filteredConversations = Object.entries(conversations).filter(([userId, msgs]: [string, any]) => {
+    const otherUserName = getOtherUserName(parseInt(userId));
+    return otherUserName.toLowerCase().includes(searchQuery.toLowerCase());
+  });
+
   // Find related booking from conversation
   const selectedConversationMessages = selectedConversation
     ? conversations[selectedConversation] || []
     : [];
+
+
+  const getConsultationTypeLabel = (type: string | null) => {
+    if (!type) return "";
+    const typeLabels: Record<string, string> = {
+      "career_counseling": "진로상담",
+      "university_tour": "대학탐방",
+      "resume_consulting": "생기부컨설팅",
+      "academic_management": "학업관리"
+    };
+    return typeLabels[type] || "";
+  };
 
   // Extract user name from messages
   const getOtherUserName = (userId: number) => {
@@ -190,10 +217,18 @@ export default function Messages() {
                   대화 목록
                 </CardTitle>
               </CardHeader>
+              <CardContent className="pb-3">
+                <Input
+                  placeholder="대화 검색..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full"
+                />
+              </CardContent>
               <CardContent className="flex-1 overflow-y-auto">
-                {Object.keys(conversations).length > 0 ? (
+                {filteredConversations.length > 0 ? (
                   <div className="space-y-2">
-                    {Object.entries(conversations).map(([userId, msgs]: [string, any]) => {
+                    {filteredConversations.map(([userId, msgs]: [string, any]) => {
                       const lastMsg = msgs[0];
                       const isSelected = parseInt(userId) === selectedConversation;
                       const isConsultationRequest = lastMsg.content.includes("[상담 신청]");
@@ -249,7 +284,10 @@ export default function Messages() {
                   <div className="flex items-center justify-between">
                     <div>
                       <CardTitle>대화</CardTitle>
-                      <CardDescription>{getOtherUserName(selectedConversation)}와의 대화</CardDescription>
+                      <CardDescription>
+                        {getOtherUserName(selectedConversation)}와의 대화
+                        {consultationType && ` - ${getConsultationTypeLabel(consultationType)}`}
+                      </CardDescription>
                     </div>
                   </div>
                 </CardHeader>

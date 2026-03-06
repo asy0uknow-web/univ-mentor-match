@@ -215,35 +215,91 @@ export default function MentorDetail() {
           <div className="lg:col-span-1">
             <Card className="sticky top-24">
               <CardHeader>
-                <CardTitle>상담 조율</CardTitle>                <CardDescription>상담 일정을 조율하세요</CardDescription>
+                <CardTitle>상담 조율</CardTitle>
+                <CardDescription>상담 유형을 선택하세요</CardDescription>
               </CardHeader>
               <CardContent className="space-y-3">
                 {isAuthenticated ? (
-                  <Button
-                    className="w-full"
-                    size="lg"
-                    disabled={user?.id === mentor?.user?.id}
-                    onClick={() => {
-                      const recipientId = mentor?.user?.id;
-                      if (!recipientId) {
-                        toast.error("멘토 정보를 확인할 수 없습니다.");
-                        return;
-                      }
-
-                      try {
-                        sessionStorage.setItem(OPEN_CONVERSATION_KEY, String(recipientId));
-                        sessionStorage.setItem(DRAFT_MESSAGE_KEY, "안녕하세요! 상담을 받고 싶습니다.");
-                      } catch {
-                        // sessionStorage can fail in some restricted browsers
-                      }
-
-                      setLocation("/messages");
-                    }}
-                    title={user?.id === mentor?.user?.id ? "자신의 프로필에서는 상담을 신청할 수 없습니다." : ""}
-                  >
-                    <MessageCircle className="h-5 w-5 mr-2" />
-                    상담 조율하기
-                  </Button>
+                  user?.id === mentor?.user?.id ? (
+                    <div className="text-center py-6 text-muted-foreground text-sm">
+                      자신의 프로필에서는 상담을 신청할 수 없습니다.
+                    </div>
+                  ) : (
+                    <div className="space-y-2">
+                      <button
+                        onClick={() => {
+                          const recipientId = mentor?.user?.id;
+                          if (!recipientId) {
+                            toast.error("멘토 정보를 확인할 수 없습니다.");
+                            return;
+                          }
+                          try {
+                            sessionStorage.setItem(OPEN_CONVERSATION_KEY, String(recipientId));
+                            sessionStorage.setItem("univmatch:consultationType", "career_counseling");
+                            sessionStorage.setItem(DRAFT_MESSAGE_KEY, "안녕하세요! 진로상담을 받고 싶습니다.");
+                          } catch {}
+                          setLocation("/messages");
+                        }}
+                        className="w-full px-4 py-2 rounded-lg border border-border hover:bg-accent transition-colors text-sm font-medium"
+                      >
+                        진로상담 (시간당 40,000원)
+                      </button>
+                      <button
+                        onClick={() => {
+                          const recipientId = mentor?.user?.id;
+                          if (!recipientId) {
+                            toast.error("멘토 정보를 확인할 수 없습니다.");
+                            return;
+                          }
+                          try {
+                            sessionStorage.setItem(OPEN_CONVERSATION_KEY, String(recipientId));
+                            sessionStorage.setItem("univmatch:consultationType", "university_tour");
+                            sessionStorage.setItem(DRAFT_MESSAGE_KEY, "안녕하세요! 대학탐방을 받고 싶습니다.");
+                          } catch {}
+                          setLocation("/messages");
+                        }}
+                        className="w-full px-4 py-2 rounded-lg border border-border hover:bg-accent transition-colors text-sm font-medium"
+                      >
+                        대학탐방 (시간당 50,000원)
+                      </button>
+                      <button
+                        onClick={() => {
+                          const recipientId = mentor?.user?.id;
+                          if (!recipientId) {
+                            toast.error("멘토 정보를 확인할 수 없습니다.");
+                            return;
+                          }
+                          try {
+                            sessionStorage.setItem(OPEN_CONVERSATION_KEY, String(recipientId));
+                            sessionStorage.setItem("univmatch:consultationType", "resume_consulting");
+                            sessionStorage.setItem(DRAFT_MESSAGE_KEY, "안녕하세요! 생기부컨설팅을 받고 싶습니다.");
+                          } catch {}
+                          setLocation("/messages");
+                        }}
+                        className="w-full px-4 py-2 rounded-lg border border-border hover:bg-accent transition-colors text-sm font-medium"
+                      >
+                        생기부컨설팅 (시간당 50,000원)
+                      </button>
+                      <button
+                        onClick={() => {
+                          const recipientId = mentor?.user?.id;
+                          if (!recipientId) {
+                            toast.error("멘토 정보를 확인할 수 없습니다.");
+                            return;
+                          }
+                          try {
+                            sessionStorage.setItem(OPEN_CONVERSATION_KEY, String(recipientId));
+                            sessionStorage.setItem("univmatch:consultationType", "academic_management");
+                            sessionStorage.setItem(DRAFT_MESSAGE_KEY, "안녕하세요! 학업관리 상담을 받고 싶습니다.");
+                          } catch {}
+                          setLocation("/messages");
+                        }}
+                        className="w-full px-4 py-2 rounded-lg border border-border hover:bg-accent transition-colors text-sm font-medium"
+                      >
+                        학업관리 (시간당 40,000원)
+                      </button>
+                    </div>
+                  )
                 ) : (
                   <a href={getLoginUrl()}>
                     <Button className="w-full" size="lg">
@@ -252,7 +308,7 @@ export default function MentorDetail() {
                   </a>
                 )}
                 <p className="text-xs text-muted-foreground text-center">
-                  상담 일정, 시간, 장소를 메시지에서 합의한 후 예약을 확정합니다.
+                  상담 유형을 선택하고 메시지에서 세부 일정을 조율하세요.
                 </p>
               </CardContent>
             </Card>

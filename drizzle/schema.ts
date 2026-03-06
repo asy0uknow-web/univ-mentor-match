@@ -130,7 +130,7 @@ export type InsertReview = typeof reviews.$inferInsert;
 export const notifications = mysqlTable("notifications", {
   id: int("id").autoincrement().primaryKey(),
   userId: int("userId").notNull(), // References users.id
-  type: mysqlEnum("type", ["booking_request", "booking_confirmed", "booking_cancelled", "schedule_changed", "review_received"]).notNull(),
+  type: mysqlEnum("type", ["booking_request", "booking_confirmed", "booking_cancelled", "schedule_changed", "review_received", "message"]).notNull(),
   title: varchar("title", { length: 255 }).notNull(),
   message: text("message").notNull(),
   isRead: boolean("isRead").default(false).notNull(),
@@ -220,3 +220,20 @@ export const bugReports = mysqlTable("bug_reports", {
 });
 export type BugReport = typeof bugReports.$inferSelect;
 export type InsertBugReport = typeof bugReports.$inferInsert;
+
+/**
+ * Mentor consultation types - tracks which consultation types each mentor offers
+ */
+export const mentorConsultationTypes = mysqlTable("mentor_consultation_types", {
+  id: int("id").autoincrement().primaryKey(),
+  mentorId: int("mentorId").notNull(), // References users.id (mentor)
+  // Consultation type: career_counseling, university_tour, resume_consulting, academic_management
+  consultationType: mysqlEnum("consultationType", ["career_counseling", "university_tour", "resume_consulting", "academic_management"]).notNull(),
+  // Price in KRW per hour
+  pricePerHour: decimal("pricePerHour", { precision: 10, scale: 2 }).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type MentorConsultationType = typeof mentorConsultationTypes.$inferSelect;
+export type InsertMentorConsultationType = typeof mentorConsultationTypes.$inferInsert;
