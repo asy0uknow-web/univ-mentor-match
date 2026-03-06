@@ -47,7 +47,7 @@ import {
 import { CONSULTATION_PRODUCT, MIN_BOOKING_DURATION, MAX_BOOKING_DURATION } from "./products";
 import { storagePut } from "./storage";
 import { eq } from "drizzle-orm";
-import { mentorGallery, messages, notifications, bookings, reviews, mentorProfiles, mentorVerifications, users, bugReports } from "../drizzle/schema";
+import { mentorGallery, messages, notifications, bookings, reviews, mentorProfiles, mentorVerifications, users, bugReports, mentorConsultationTypes } from "../drizzle/schema";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2025-12-15.clover",
@@ -262,6 +262,49 @@ export const appRouter = router({
       await updateMentorProfile(ctx.user.id, { isActive: false });
       return { success: true };
     }),
+
+    getMyConsultationTypes: protectedProcedure.query(async ({ ctx }) => {
+      const db = await getDb();
+      if (!db) throw new Error("Database not available");
+      
+      const types = await db.select().from(mentorConsultationTypes).where(eq(mentorConsultationTypes.mentorId, ctx.user.id));
+      return types;
+    }),
+
+    updateConsultationTypes: protectedProcedure
+      .input(z.object({
+        consultationTypes: z.array(z.enum(["career_counseling", "university_tour", "resume_consulting", "academic_management"])),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const profile = await getMentorProfileByUserId(ctx.user.id);
+        if (!profile) {
+          throw new Error("등록된 멘토 프로필이 없습니다");
+        }
+
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+
+        // 기존 상담 유형 삭제
+        await db.delete(mentorConsultationTypes).where(eq(mentorConsultationTypes.mentorId, ctx.user.id));
+
+        // 새로운 상담 유형 추가
+        const consultationPrices: Record<string, number> = {
+          "career_counseling": 40000,
+          "university_tour": 50000,
+          "resume_consulting": 50000,
+          "academic_management": 40000,
+        };
+
+        for (const type of input.consultationTypes) {
+          await db.insert(mentorConsultationTypes).values({
+            mentorId: ctx.user.id,
+            consultationType: type,
+            pricePerHour: consultationPrices[type].toString(),
+          });
+        }
+
+        return { success: true };
+      }),
   }),
 
   booking: router({

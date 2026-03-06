@@ -33,6 +33,25 @@ export default function MentorProfile() {
   const [isUploading, setIsUploading] = useState(false);
   const [newCaption, setNewCaption] = useState("");
   const [emptyFields, setEmptyFields] = useState<Set<string>>(new Set());
+  const [consultationTypes, setConsultationTypes] = useState<Array<"career_counseling" | "university_tour" | "resume_consulting" | "academic_management">>([]);
+  const { data: myConsultationTypes } = trpc.mentor.getMyConsultationTypes.useQuery(undefined, {
+    enabled: isAuthenticated,
+  });
+
+  const updateConsultationTypesMutation = trpc.mentor.updateConsultationTypes.useMutation({
+    onSuccess: () => {
+      toast.success("상담 유형이 업데이트되었습니다!");
+    },
+    onError: (error) => {
+      toast.error(`상담 유형 업데이트 실패: ${error.message}`);
+    },
+  });
+
+  useEffect(() => {
+    if (myConsultationTypes) {
+      setConsultationTypes(myConsultationTypes.map((ct: any) => ct.consultationType));
+    }
+  }, [myConsultationTypes]);
 
   const { data: profile, isLoading } = trpc.mentor.getMyProfile.useQuery(undefined, {
     enabled: isAuthenticated,
