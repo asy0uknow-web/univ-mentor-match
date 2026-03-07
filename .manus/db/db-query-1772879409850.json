@@ -1,0 +1,21 @@
+{
+  "query": "SELECT mp.id, mp.userId, mp.university, mp.major, mp.isActive, mp.verificationStatus, mp.isDeleted, u.id, u.email, u.name FROM mentor_profiles mp LEFT JOIN users u ON mp.userId = u.id;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute SELECT mp.id, mp.userId, mp.university, mp.major, mp.isActive, mp.verificationStatus, mp.isDeleted, u.id, u.email, u.name FROM mentor_profiles mp LEFT JOIN users u ON mp.userId = u.id;",
+  "rows": [
+    {
+      "id": "NULL",
+      "userId": "1",
+      "university": "Harvard",
+      "major": "경영",
+      "isActive": "1",
+      "verificationStatus": "approved",
+      "isDeleted": "0",
+      "email": "NULL",
+      "name": "NULL"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tuserId\tuniversity\tmajor\tisActive\tverificationStatus\tisDeleted\tid\temail\tname\n150001\t1\tHarvard\t경영\t1\tapproved\t0\tNULL\tNULL\tNULL\n",
+  "stderr": "",
+  "execution_time_ms": 1594
+}

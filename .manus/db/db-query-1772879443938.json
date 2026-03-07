@@ -1,0 +1,22 @@
+{
+  "query": "SELECT id, openId, name, email FROM users;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute SELECT id, openId, name, email FROM users;",
+  "rows": [
+    {
+      "id": "2040012",
+      "openId": "test-open-id-123",
+      "name": "김테스토",
+      "email": "test@test.com"
+    },
+    {
+      "id": "2040013",
+      "openId": "jNpicDk7jMFQGMZMFUDRwn",
+      "name": "2003yunho",
+      "email": "2003yunho@gmail.com"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\topenId\tname\temail\n2040012\ttest-open-id-123\t김테스토\ttest@test.com\n2040013\tjNpicDk7jMFQGMZMFUDRwn\t2003yunho\t2003yunho@gmail.com\n",
+  "stderr": "",
+  "execution_time_ms": 1537
+}

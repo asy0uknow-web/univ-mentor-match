@@ -1,0 +1,19 @@
+{
+  "query": "SELECT id, userId, university, major, isActive, verificationStatus, isDeleted FROM mentor_profiles;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute SELECT id, userId, university, major, isActive, verificationStatus, isDeleted FROM mentor_profiles;",
+  "rows": [
+    {
+      "id": "120001",
+      "userId": "2",
+      "university": "Harvard",
+      "major": "경영",
+      "isActive": "1",
+      "verificationStatus": "approved",
+      "isDeleted": "0"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tuserId\tuniversity\tmajor\tisActive\tverificationStatus\tisDeleted\n120001\t2\tHarvard\t경영\t1\tapproved\t0\n",
+  "stderr": "",
+  "execution_time_ms": 1631
+}

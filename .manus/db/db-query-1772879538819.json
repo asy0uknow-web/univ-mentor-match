@@ -1,0 +1,28 @@
+{
+  "query": "SELECT 'USERS' as table_name, id, name, email FROM users UNION ALL SELECT 'MENTOR_PROFILES', id, userId, university FROM mentor_profiles;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute SELECT 'USERS' as table_name, id, name, email FROM users UNION ALL SELECT 'MENTOR_PROFILES', id, userId, university FROM mentor_profiles;",
+  "rows": [
+    {
+      "table_name": "USERS",
+      "id": "2040012",
+      "name": "김테스토",
+      "email": "test@test.com"
+    },
+    {
+      "table_name": "USERS",
+      "id": "2040013",
+      "name": "2003yunho",
+      "email": "2003yunho@gmail.com"
+    },
+    {
+      "table_name": "MENTOR_PROFILES",
+      "id": "150001",
+      "name": "1",
+      "email": "Harvard"
+    }
+  ],
+  "messages": [],
+  "stdout": "table_name\tid\tname\temail\nUSERS\t2040012\t김테스토\ttest@test.com\nUSERS\t2040013\t2003yunho\t2003yunho@gmail.com\nMENTOR_PROFILES\t150001\t1\tHarvard\n",
+  "stderr": "",
+  "execution_time_ms": 1525
+}
