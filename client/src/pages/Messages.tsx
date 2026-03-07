@@ -5,9 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { trpc } from "@/lib/trpc";
 import { Link } from "wouter";
-import { GraduationCap, Send, MessageSquare, Check, X, Clock, CheckCircle2, Trash2, ChevronDown, AlertCircle } from "lucide-react";
+import { GraduationCap, Send, MessageSquare, Check, X, Clock, CheckCircle2, Trash2, ChevronDown, AlertCircle, Menu, X as XIcon } from "lucide-react";
 import { useAuth } from "@/_core/hooks/useAuth";
-import BugReportModal from "@/components/BugReportModal";
 import { useState, useEffect, useRef } from "react";
 import { getLoginUrl } from "@/const";
 import { toast } from "sonner";
@@ -32,6 +31,7 @@ export default function Messages() {
   const [messageContent, setMessageContent] = useState("");
   const [consultationType, setConsultationType] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // If another page (e.g., MentorDetail) asked us to open a specific conversation,
@@ -202,15 +202,16 @@ export default function Messages() {
   return (
     <PageLayout>
       {/* Content */}
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8 h-screen flex flex-col">
         <div className="mb-6">
           <h1 className="text-3xl font-bold">상담 조율</h1>
-          <p className="text-muted-foreground mt-1">상담 일정, 시간, 장소를 조율하세요</p>        </div>
+          <p className="text-muted-foreground mt-1">상담 일정, 시간, 장소를 조율하세요</p>        
+        </div>
 
-        <div className="grid lg:grid-cols-3 gap-6">
-          {/* Conversations List */}
-          <div className="lg:col-span-1">
-            <Card className="h-[700px] flex flex-col">
+        <div className="flex-1 flex gap-4 overflow-hidden">
+          {/* Sidebar - Conversations List */}
+          <div className={`${sidebarOpen ? 'w-80' : 'w-0'} transition-all duration-300 overflow-hidden flex flex-col`}>
+            <Card className="h-full flex flex-col border-r">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <MessageSquare className="h-5 w-5" />
@@ -236,7 +237,13 @@ export default function Messages() {
                       return (
                         <button
                           key={userId}
-                          onClick={() => setSelectedConversation(parseInt(userId))}
+                          onClick={() => {
+                            setSelectedConversation(parseInt(userId));
+                            // 모바일에서는 자동으로 사이드바 닫기
+                            if (window.innerWidth < 1024) {
+                              setSidebarOpen(false);
+                            }
+                          }}
                           className={`w-full text-left p-3 rounded-lg transition-all border-2 ${
                             isSelected
                               ? "bg-primary/10 border-primary"
@@ -276,10 +283,23 @@ export default function Messages() {
             </Card>
           </div>
 
-          {/* Conversation View */}
-          <div className="lg:col-span-2">
+          {/* Main Conversation Area */}
+          <div className="flex-1 flex flex-col overflow-hidden">
+            {/* Toggle Sidebar Button */}
+            <div className="mb-4">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setSidebarOpen(!sidebarOpen)}
+                className="gap-2"
+              >
+                {sidebarOpen ? <XIcon className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+                {sidebarOpen ? '목록 닫기' : '목록 열기'}
+              </Button>
+            </div>
+
             {selectedConversation ? (
-              <Card className="flex flex-col h-[700px]">
+              <Card className="flex flex-col h-full overflow-hidden">
                 <CardHeader className="border-b">
                   <div className="flex items-center justify-between">
                     <CardTitle className="text-lg">
@@ -293,10 +313,11 @@ export default function Messages() {
                   </div>
                 </CardHeader>
 
-                <CardContent className="flex-1 overflow-y-auto p-4 space-y-4">
+                <CardContent className="flex-1 overflow-y-auto p-4 space-y-4 flex flex-col-reverse">
                   {conversation && conversation.length > 0 ? (
                     <>
-                      {conversation.map((msg: any, idx: number) => (
+                      <div ref={messagesEndRef} />
+                      {[...conversation].reverse().map((msg: any, idx: number) => (
                         <div
                           key={idx}
                           className={`flex ${
@@ -321,7 +342,6 @@ export default function Messages() {
                           </div>
                         </div>
                       ))}
-                      <div ref={messagesEndRef} />
                     </>
                   ) : (
                     <div className="flex items-center justify-center h-full">
@@ -392,7 +412,7 @@ export default function Messages() {
                 </CardContent>
               </Card>
             ) : (
-              <Card className="h-[700px] flex items-center justify-center">
+              <Card className="h-full flex items-center justify-center">
                 <div className="text-center">
                   <MessageSquare className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
                   <p className="text-muted-foreground">
