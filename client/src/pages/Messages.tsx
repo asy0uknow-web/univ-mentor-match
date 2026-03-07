@@ -294,7 +294,7 @@ export default function Messages() {
                 className="gap-2"
               >
                 {sidebarOpen ? <XIcon className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
-                {sidebarOpen ? '목록 닫기' : '목록 열기'}
+                {sidebarOpen ? '대화목록 닫기' : '대화목록 열기'}
               </Button>
             </div>
 
