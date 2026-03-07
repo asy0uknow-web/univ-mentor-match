@@ -10,7 +10,7 @@ import { useAuth } from "@/_core/hooks/useAuth";
 import { useState, useEffect, useRef } from "react";
 import { getLoginUrl } from "@/const";
 import { toast } from "sonner";
-import { format } from "date-fns";
+import { format, formatDistanceToNow } from "date-fns";
 import { ko } from "date-fns/locale";
 import { PageLayout } from "@/components/layout";
 import { setPageMeta, PAGE_META } from "@/lib/seo";
@@ -199,6 +199,18 @@ export default function Messages() {
     return typeLabels[type] || "";
   };
 
+  // 상대적 시간 표시 함수
+  const getRelativeTime = (date: string | Date) => {
+    try {
+      return formatDistanceToNow(new Date(date), { 
+        addSuffix: true, 
+        locale: ko 
+      });
+    } catch {
+      return format(new Date(date), "PPp", { locale: ko });
+    }
+  };
+
   return (
     <PageLayout>
       {/* Content */}
@@ -268,7 +280,7 @@ export default function Messages() {
                             )}
                           </div>
                           <p className="text-xs opacity-50 mt-2">
-                            {format(new Date(lastMsg.createdAt), "PPp", { locale: ko })}
+                            {getRelativeTime(lastMsg.createdAt)}
                           </p>
                         </button>
                       );
@@ -335,9 +347,7 @@ export default function Messages() {
                               {msg.content}
                             </p>
                             <p className="text-xs opacity-70 mt-1">
-                              {format(new Date(msg.createdAt), "HH:mm", {
-                                locale: ko,
-                              })}
+                              {getRelativeTime(msg.createdAt)}
                             </p>
                           </div>
                         </div>
