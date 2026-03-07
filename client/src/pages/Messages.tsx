@@ -158,6 +158,24 @@ export default function Messages() {
     return acc;
   }, {}) || {};
 
+  // Extract user name from messages - MUST be defined before use
+  const getOtherUserName = (userId: number) => {
+    const msgs: any[] = conversations[userId] || [];
+    if (msgs.length === 0) return `User ${userId}`;
+    
+    // 메시지 배열에서 해당 사용자의 실명을 찾기
+    for (const msg of msgs) {
+      if (msg.senderId === userId && msg.senderName) {
+        return msg.senderName;
+      }
+      if (msg.recipientId === userId && msg.recipientName) {
+        return msg.recipientName;
+      }
+    }
+    
+    return `User ${userId}`;
+  };
+
   // Filter conversations based on search query
   const filteredConversations = Object.entries(conversations).filter(([userId, msgs]: [string, any]) => {
     const otherUserName = getOtherUserName(parseInt(userId));
@@ -179,24 +197,6 @@ export default function Messages() {
       "academic_management": "학업관리"
     };
     return typeLabels[type] || "";
-  };
-
-  // Extract user name from messages
-  const getOtherUserName = (userId: number) => {
-    const msgs: any[] = conversations[userId] || [];
-    if (msgs.length === 0) return `User ${userId}`;
-    
-    // 메시지 배열에서 해당 사용자의 실명을 찾기
-    for (const msg of msgs) {
-      if (msg.senderId === userId && msg.senderName) {
-        return msg.senderName;
-      }
-      if (msg.recipientId === userId && msg.recipientName) {
-        return msg.recipientName;
-      }
-    }
-    
-    return `User ${userId}`;
   };
 
   return (
@@ -282,120 +282,93 @@ export default function Messages() {
               <Card className="flex flex-col h-[700px]">
                 <CardHeader className="border-b">
                   <div className="flex items-center justify-between">
-                    <div>
-                      <CardTitle>대화</CardTitle>
-                      <CardDescription>
-                        {getOtherUserName(selectedConversation)}와의 대화
-                        {consultationType && ` - ${getConsultationTypeLabel(consultationType)}`}
-                      </CardDescription>
-                    </div>
+                    <CardTitle className="text-lg">
+                      {getOtherUserName(selectedConversation)}와의 대화
+                    </CardTitle>
+                    <Link href="/mentors">
+                      <Button variant="outline" size="sm">
+                        멘토 목록으로
+                      </Button>
+                    </Link>
                   </div>
                 </CardHeader>
-                
-                {/* 상담 조율 카드 */}
-                <div className="bg-amber-50 border-b border-amber-200 p-3">
-                  <div className="flex items-start gap-3">
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-amber-900 mb-2">상담 조율 대화</h3>
-                      <div className="bg-white border border-amber-200 rounded p-3 text-sm text-amber-900">
-                        <p>상담을 신청하고 세부일정을 조율하세요.</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                
-                {/* Messages */}
-                <CardContent className="flex-1 overflow-y-auto py-4 space-y-4 flex flex-col">
+
+                <CardContent className="flex-1 overflow-y-auto p-4 space-y-4">
                   {conversation && conversation.length > 0 ? (
-                    [...conversation].sort((a: any, b: any) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()).map((msg: any) => {
-                      const isConsultationRequest = msg.content.includes("[상담 신청]");
-                      const isSentByMe = msg.senderId === user?.id;
-                      
-                      return (
-                        <div key={msg.id}>
-                          {isConsultationRequest ? (
-                            // Consultation Request Message
-                            <div className={`flex ${isSentByMe ? "justify-end" : "justify-start"}`}>
-                              <div className={`max-w-md px-4 py-3 rounded-lg border-2 ${
-                                isSentByMe
-                                  ? "bg-primary/10 border-primary"
-                                  : "bg-amber-50 border-amber-200"
-                              }`}>
-                                <div className="flex items-center gap-2 mb-2">
-                                  <Clock className="h-4 w-4 text-amber-600" />
-                                  <p className="font-semibold text-sm text-amber-900">상담 신청</p>
-                                </div>
-                                <p className="text-sm whitespace-pre-wrap text-amber-900">
-                                  {msg.content}
-                                </p>
-                                <p className="text-xs opacity-75 mt-2">
-                                  {format(new Date(msg.createdAt), "p", { locale: ko })}
-                                </p>
-                              </div>
-                            </div>
-                          ) : (
-                            // Regular Message
-                            <div className={`flex ${isSentByMe ? "justify-end" : "justify-start"}`}>
-                              <div className={`max-w-md px-4 py-2 rounded-lg ${
-                                isSentByMe
-                                  ? "bg-primary text-primary-foreground"
-                                  : "bg-muted"
-                              }`}>
-                                <p className="text-sm">{msg.content}</p>
-                                <p className="text-xs opacity-75 mt-1">
-                                  {format(new Date(msg.createdAt), "p", { locale: ko })}
-                                </p>
-                              </div>
-                            </div>
-                          )}
+                    <>
+                      {conversation.map((msg: any, idx: number) => (
+                        <div
+                          key={idx}
+                          className={`flex ${
+                            msg.senderId === user?.id ? "justify-end" : "justify-start"
+                          }`}
+                        >
+                          <div
+                            className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
+                              msg.senderId === user?.id
+                                ? "bg-primary text-primary-foreground"
+                                : "bg-muted"
+                            }`}
+                          >
+                            <p className="text-sm whitespace-pre-wrap break-words">
+                              {msg.content}
+                            </p>
+                            <p className="text-xs opacity-70 mt-1">
+                              {format(new Date(msg.createdAt), "HH:mm", {
+                                locale: ko,
+                              })}
+                            </p>
+                          </div>
                         </div>
-                      );
-                    })
+                      ))}
+                      <div ref={messagesEndRef} />
+                    </>
                   ) : (
-                    <div className="text-center py-8">
-                      <MessageSquare className="h-12 w-12 text-muted-foreground mx-auto mb-4 opacity-50" />
-                      <p className="text-muted-foreground mb-4">
+                    <div className="flex items-center justify-center h-full">
+                      <p className="text-muted-foreground">
                         아직 조율 메시지가 없습니다.
                       </p>
-                      <p className="text-sm text-muted-foreground mb-4">
-상담 일정, 시간, 장소를 먼저 합의해보세요.                      </p>
-                      <Link href="/mentors">
-                        <Button variant="outline" size="sm">
-                          멘토 찾기
-                        </Button>
-                      </Link>
                     </div>
                   )}
-                  <div ref={messagesEndRef} />
                 </CardContent>
 
-                {/* 멘토 계정일 경우 예약 확정 버튼 */}
-                {selectedConversationMessages.some((msg: any) => msg.content.includes("[상담 신청]")) && 
-                 selectedConversationMessages.some((msg: any) => msg.senderId !== user?.id) && (
-                  <div className="border-t border-border p-4 bg-green-50">
-                    <p className="text-sm font-semibold text-green-900 mb-3">상담 예약 확정</p>
-                    <p className="text-xs text-green-800 mb-3">
-                      학생이 제안한 일정, 시간, 장소를 확인하고 아래 버튼으로 예약을 확정하세요.
-                    </p>
+                <CardContent className="border-t pt-4 space-y-3">
+                  <div className="grid grid-cols-3 gap-2">
                     <Button
-                      onClick={() => {
-                        if (!selectedConversation) return;
-                        sendMessageMutation.mutate({
-                          recipientId: selectedConversation,
-                          content: "예약이 확정되었습니다. 상담 당일 현장 결제 부탁드립니다.",
-                        });
-                      }}
-                      disabled={sendMessageMutation.isPending}
-                      className="w-full bg-green-600 hover:bg-green-700"
+                      variant="outline"
+                      size="sm"
+                      onClick={() =>
+                        insertTemplate(
+                          "📅 일정 제안\n\n편한 날짜와 시간을 알려주세요."
+                        )
+                      }
                     >
-                      <Check className="h-4 w-4 mr-2" />
-                      {sendMessageMutation.isPending ? "처리 중..." : "예약 확정하기"}
+                      📅 일정 제안
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() =>
+                        insertTemplate(
+                          "📍 장소 제안\n\n어디서 만날까요? (온/오프라인)"
+                        )
+                      }
+                    >
+                      📍 장소 제안
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() =>
+                        insertTemplate(
+                          "💳 결제 안내\n\n결제 방법과 일정을 확인해주세요."
+                        )
+                      }
+                    >
+                      💳 결제 안내
                     </Button>
                   </div>
-                )}
 
-                {/* Message Input */}
-                <div className="border-t border-border p-4 space-y-3 bg-card">
                   <Textarea
                     placeholder="메시지를 입력하세요..."
                     value={messageContent}
@@ -405,73 +378,27 @@ export default function Messages() {
                         handleSendMessage();
                       }
                     }}
-                    rows={3}
                     className="resize-none"
+                    rows={3}
                   />
-                  
-                  {/* 템플릿 버튼 */}
-                  <div className="grid grid-cols-3 gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => insertTemplate("상담 가능한 날짜와 시간을 아래와 같이 제안드립니다.\n- 날짜: \n- 시간: \n확인 부탁드립니다.")}
-                      className="text-xs"
-                    >
-                      📅 일정 제안
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => insertTemplate("상담 장소를 아래와 같이 제안드립니다.\n- 장소: \n- 위치 설명: \n가능 여부 확인 부탁드립니다.")}
-                      className="text-xs"
-                    >
-                      📍 장소 제안
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => insertTemplate("결제는 상담 당일 현장에서 진행 부탁드립니다. 계좌이체/현금 중 편하신 방식으로 준비해주세요.")}
-                      className="text-xs"
-                    >
-                      💳 결제 안내
-                    </Button>
-                  </div>
-                  
-                  <div className="flex gap-2">
-                    <Button
-                      onClick={handleSendMessage}
-                      disabled={sendMessageMutation.isPending || !messageContent.trim()}
-                      className="flex-1"
-                    >
-                      <Send className="h-4 w-4 mr-2" />
-                      {sendMessageMutation.isPending ? "전송 중..." : "메시지 전송"}
-                    </Button>
-                  </div>
-                  <p className="text-xs text-muted-foreground">
-                    Ctrl + Enter로도 전송할 수 있습니다.
-                  </p>
-                </div>
+                  <Button
+                    onClick={handleSendMessage}
+                    disabled={!messageContent.trim() || sendMessageMutation.isPending}
+                    className="w-full"
+                  >
+                    <Send className="h-4 w-4 mr-2" />
+                    메시지 전송
+                  </Button>
+                </CardContent>
               </Card>
             ) : (
               <Card className="h-[700px] flex items-center justify-center">
-                <CardContent className="text-center">
-                  <MessageSquare className="h-12 w-12 text-muted-foreground mx-auto mb-4 opacity-50" />
-                  <p className="text-muted-foreground mb-4">
-                    대화를 선택하여 메시지를 확인하세요.
+                <div className="text-center">
+                  <MessageSquare className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                  <p className="text-muted-foreground">
+                    대화를 선택해주세요.
                   </p>
-                  {Object.keys(conversations).length === 0 && (
-                    <>
-                      <p className="text-sm text-muted-foreground mb-4">
-                        아직 조율 메시지가 없습니다.
-                      </p>
-                      <Link href="/mentors">
-                        <Button variant="outline" size="sm">
-                          멘토 찾기
-                        </Button>
-                      </Link>
-                    </>
-                  )}
-                </CardContent>
+                </div>
               </Card>
             )}
           </div>
