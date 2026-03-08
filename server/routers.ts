@@ -776,6 +776,43 @@ export const appRouter = router({
           .set(updateData)
           .where(eq(users.id, user.id));
 
+        // 멘토인 경우 멘토프로필도 자동으로 생성
+        if (input.userRole === "mentor" && input.university && input.major && input.mentorRegion) {
+          const regionValue = input.mentorRegion as "seoul" | "gyeonggi" | "incheon" | "gangwon" | "chungcheong" | "jeolla" | "gyeongsang" | "jeju";
+          const existingProfile = await db
+            .select()
+            .from(mentorProfiles)
+            .where(eq(mentorProfiles.userId, user.id))
+            .limit(1);
+          
+          if (existingProfile.length === 0) {
+            // 멘토프로필 생성
+            await db.insert(mentorProfiles).values({
+              userId: user.id,
+              university: input.university,
+              major: input.major,
+              grade: "1",
+              region: regionValue,
+              isActive: false,
+              isDeleted: false,
+              verificationStatus: "pending",
+              createdAt: new Date(),
+              updatedAt: new Date(),
+            });
+          } else {
+            // 기존 프로필 업데이트
+            await db
+              .update(mentorProfiles)
+              .set({
+                university: input.university,
+                major: input.major,
+                region: regionValue,
+                updatedAt: new Date(),
+              })
+              .where(eq(mentorProfiles.userId, user.id));
+          }
+        }
+
         return {
           success: true,
           message: "Profile information saved. Please proceed with real name verification.",

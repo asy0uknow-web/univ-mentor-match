@@ -50,6 +50,11 @@ export default function CompleteProfile() {
   useEffect(() => {
     if (user) {
       setUserEmail(user.email || "");
+      // userType이 있으면 자동으로 역할 선택
+      if (user.userType) {
+        const role = user.userType === "university_student" ? "mentor" : "mentee";
+        setUserRole(role);
+      }
     }
   }, [user]);
 
@@ -232,7 +237,7 @@ export default function CompleteProfile() {
 
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* 역할 선택 */}
-              {!userRole && (
+              {!userRole && user && !user.userType && (
                 <div className="space-y-4">
                   <Label className="text-base font-semibold">
                     당신의 역할을 선택해주세요
