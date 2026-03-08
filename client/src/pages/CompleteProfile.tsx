@@ -24,9 +24,26 @@ export default function CompleteProfile() {
   // 멘토 전용 필드
   const [university, setUniversity] = useState("");
   const [major, setMajor] = useState("");
+  const [grade, setGrade] = useState<"1" | "2" | "3" | "4" | "graduate" | "">("");
   const [mentorRegions, setMentorRegions] = useState<string[]>([]);
   const [showRegionDropdown, setShowRegionDropdown] = useState(false);
   const regionDropdownRef = useRef<HTMLDivElement>(null);
+  const [consultationTypes, setConsultationTypes] = useState<string[]>([]);
+
+  const grades = [
+    { value: "1", label: "1학년" },
+    { value: "2", label: "2학년" },
+    { value: "3", label: "3학년" },
+    { value: "4", label: "4학년" },
+    { value: "graduate", label: "대학원" },
+  ] as const;
+
+  const consultationTypeOptions = [
+    { value: "career_counseling", label: "진로상담" },
+    { value: "university_tour", label: "대학탐방" },
+    { value: "resume_consulting", label: "생기부컨설팅" },
+    { value: "academic_management", label: "학업관리" },
+  ] as const;
 
   const regions = [
     { value: "seoul", label: "서울" },
@@ -38,6 +55,14 @@ export default function CompleteProfile() {
     { value: "gyeongsang", label: "경상" },
     { value: "jeju", label: "제주" },
   ] as const;
+
+  const toggleConsultationType = (type: string) => {
+    setConsultationTypes((prev) =>
+      prev.includes(type)
+        ? prev.filter((t) => t !== type)
+        : [...prev, type]
+    );
+  };
 
   // 멘티 전용 필드
   const [school, setSchool] = useState("");
@@ -128,6 +153,8 @@ export default function CompleteProfile() {
     if (userRole === "mentor") {
       if (!university.trim()) newErrors.university = "대학교를 입력해주세요";
       if (!major.trim()) newErrors.major = "학과를 입력해주세요";
+      if (!grade) newErrors.grade = "학년을 선택해주세요";
+      if (consultationTypes.length === 0) newErrors.consultationTypes = "상담 유형을 하나 이상 선택해주세요";
       if (mentorRegions.length === 0) newErrors.mentorRegions = "상담 가능 지역을 하나 이상 선택해주세요";
     } else if (userRole === "mentee") {
       if (!school.trim()) newErrors.school = "학교를 입력해주세요";
@@ -155,6 +182,8 @@ export default function CompleteProfile() {
         userRole: userRole!,
         university: userRole === "mentor" ? university.trim() : undefined,
         major: userRole === "mentor" ? major.trim() : undefined,
+        grade: userRole === "mentor" && grade ? (grade as "1" | "2" | "3" | "4" | "graduate") : undefined,
+        consultationTypes: userRole === "mentor" ? (consultationTypes as ("career_counseling" | "university_tour" | "resume_consulting" | "academic_management")[]) : undefined,
         mentorRegion: userRole === "mentor" ? mentorRegions.join(",") : undefined,
         school: userRole === "mentee" ? school.trim() : undefined,
         careerGoal: userRole === "mentee" ? careerGoal.trim() : undefined,
@@ -348,6 +377,53 @@ export default function CompleteProfile() {
                         />
                         {errors.major && (
                           <p className="text-sm text-red-500">{errors.major}</p>
+                        )}
+                      </div>
+
+                      {/* 학년 선택 */}
+                      <div className="space-y-2">
+                        <Label htmlFor="grade">학년 *</Label>
+                        <select
+                          id="grade"
+                          value={grade}
+                          onChange={(e) => setGrade(e.target.value as any)}
+                          className="w-full px-3 py-2 border border-border rounded-md bg-background"
+                        >
+                          <option value="">학년을 선택해주세요</option>
+                          {grades.map((g) => (
+                            <option key={g.value} value={g.value}>
+                              {g.label}
+                            </option>
+                          ))}
+                        </select>
+                        {errors.grade && (
+                          <p className="text-sm text-red-500">{errors.grade}</p>
+                        )}
+                      </div>
+
+                      {/* 상담 유형 선택 */}
+                      <div className="space-y-2">
+                        <Label>상담 유형 *</Label>
+                        <div className="grid grid-cols-2 gap-2">
+                          {consultationTypeOptions.map((type) => (
+                            <label
+                              key={type.value}
+                              className="flex items-center gap-2 p-2 border border-border rounded-md hover:bg-muted cursor-pointer transition-colors"
+                            >
+                              <input
+                                type="checkbox"
+                                checked={consultationTypes.includes(type.value)}
+                                onChange={() => toggleConsultationType(type.value)}
+                                className="rounded"
+                              />
+                              <span className="text-sm">{type.label}</span>
+                            </label>
+                          ))}
+                        </div>
+                        {errors.consultationTypes && (
+                          <p className="text-sm text-red-500">
+                            {errors.consultationTypes}
+                          </p>
                         )}
                       </div>
 

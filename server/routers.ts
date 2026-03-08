@@ -748,6 +748,8 @@ export const appRouter = router({
         userRole: z.enum(["mentor", "mentee"]),
         university: z.string().optional(),
         major: z.string().optional(),
+        grade: z.enum(["1", "2", "3", "4", "graduate"]).optional(),
+        consultationTypes: z.array(z.enum(["career_counseling", "university_tour", "resume_consulting", "academic_management"])).optional(),
         mentorRegion: z.string().optional(),
         school: z.string().optional(),
         careerGoal: z.string().optional(),
@@ -779,6 +781,7 @@ export const appRouter = router({
         // 멘토인 경우 멘토프로필도 자동으로 생성
         if (input.userRole === "mentor" && input.university && input.major && input.mentorRegion) {
           const regionValue = input.mentorRegion as "seoul" | "gyeonggi" | "incheon" | "gangwon" | "chungcheong" | "jeolla" | "gyeongsang" | "jeju";
+          const gradeValue = (input.grade || "1") as "1" | "2" | "3" | "4" | "graduate";
           const existingProfile = await db
             .select()
             .from(mentorProfiles)
@@ -791,7 +794,7 @@ export const appRouter = router({
               userId: user.id,
               university: input.university,
               major: input.major,
-              grade: "1",
+              grade: gradeValue,
               region: regionValue,
               isActive: false,
               isDeleted: false,
@@ -806,10 +809,26 @@ export const appRouter = router({
               .set({
                 university: input.university,
                 major: input.major,
+                grade: gradeValue,
                 region: regionValue,
                 updatedAt: new Date(),
               })
               .where(eq(mentorProfiles.userId, user.id));
+          }
+          
+          // 상담 유형 저장
+          if (input.consultationTypes && input.consultationTypes.length > 0) {
+            // 기존 상담 유형 단제
+            await db.delete(mentorConsultationTypes).where(eq(mentorConsultationTypes.mentorId, user.id));
+            
+            // 새 상담 유형 추가
+            for (const type of input.consultationTypes) {
+              await db.insert(mentorConsultationTypes).values({
+                mentorId: user.id,
+                consultationType: type as "career_counseling" | "university_tour" | "resume_consulting" | "academic_management",
+                pricePerHour: "40000.00",
+              });
+            }
           }
         }
 
