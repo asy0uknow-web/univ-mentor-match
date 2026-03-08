@@ -119,11 +119,21 @@ export default function MentorDetail() {
             <Card>
               <CardHeader>
                 <div className="flex items-start justify-between">
-                  <div>
-                    <CardTitle className="text-3xl">{mentor.user.name}</CardTitle>
-                    <CardDescription className="text-lg mt-2">
-                      {mentor.profile.university} · {mentor.profile.major} · {mentor.profile.grade}학년
-                    </CardDescription>
+                  <div className="flex items-start gap-4">
+                    {/* 멘토 프로필 아바타 */}
+                    <div className="w-24 h-24 rounded-full bg-muted flex items-center justify-center flex-shrink-0 overflow-hidden">
+                      <img
+                        src="https://d2xsxph8kpxj0f.cloudfront.net/310519663280786037/Gy6RaYwMhnXP5TJQbTpkxJ/mentor-default-avatar-XSMy7BuwnsbcDukFiGhL9q.webp"
+                        alt={mentor.user.name || "멘토 프로필"}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div>
+                      <CardTitle className="text-3xl">{mentor.user.name}</CardTitle>
+                      <CardDescription className="text-lg mt-2">
+                        {mentor.profile.university} · {mentor.profile.major} · {mentor.profile.grade}학년
+                      </CardDescription>
+                    </div>
                   </div>
                   <div className="flex items-center gap-2 text-primary">
                     <Star className="h-6 w-6 fill-current" />

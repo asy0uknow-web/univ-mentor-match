@@ -521,17 +521,13 @@ function MentorCard({
       className="block rounded-lg border border-border hover:border-primary hover:shadow-md transition-all cursor-pointer bg-card overflow-hidden"
     >
       <div className="flex gap-4 p-4">
-        {/* 좌츧0: 대표 이미지(사각형) */}
+        {/* 좌츧0: 멘토 프로필 이미지 (기본 아바타) */}
         <div className="w-24 h-24 rounded-md bg-muted flex items-center justify-center flex-shrink-0 overflow-hidden">
-          {universityLogo ? (
-            <img
-              src={universityLogo}
-              alt={mentor.profile.university}
-              className="w-full h-full object-cover"
-            />
-          ) : (
-            <div className="w-full h-full bg-muted" />
-          )}
+          <img
+            src="https://d2xsxph8kpxj0f.cloudfront.net/310519663280786037/Gy6RaYwMhnXP5TJQbTpkxJ/mentor-default-avatar-XSMy7BuwnsbcDukFiGhL9q.webp"
+            alt={mentor.user.name || "멘토 프로필"}
+            className="w-full h-full object-cover"
+          />
         </div>
         {/* 우츧0: 텍스트 영역 */}
         <div className="flex-1 min-w-0 flex flex-col gap-2 justify-between">
