@@ -931,3 +931,12 @@
 - [x] 멘티 프로필 페이지 구현
 - [x] 멘토 프로필 페이지 구현
 - [x] 네비게이션에 "내 프로필" 메뉴 추가
+
+## 버그 수정 - 로그아웃 후 다시 로그인 시 CompleteProfile 페이지 반복 나타남
+- [x] CompleteProfile 페이지 조건 분석
+- [x] Home.tsx에서 로그인 시 CompleteProfile 리다이렉트 로직 분석
+- [x] CompleteProfile.tsx에 프로필 저장 후 사용자 데이터 갱신 기능 추가
+  - [x] useAuth 훅 import 추가
+  - [x] completeProfileMutation에 onSuccess 콜백 추가
+  - [x] utils.auth.me.invalidate() 호출로 사용자 데이터 갱신
+  - [x] auth.me 쿼리에 refetchOnWindowFocus: false 옵션 추가

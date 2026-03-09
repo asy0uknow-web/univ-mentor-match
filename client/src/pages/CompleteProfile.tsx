@@ -8,11 +8,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle, CheckCircle2, Loader2, X } from "lucide-react";
 import { PageLayout } from "@/components/layout";
+import { useAuth } from "@/_core/hooks/useAuth";
 
 type UserRole = "mentor" | "mentee" | null;
 
 export default function CompleteProfile() {
   const [, navigate] = useLocation();
+  const { refresh: refreshAuth } = useAuth();
   const [userRole, setUserRole] = useState<UserRole>(null);
   const [name, setName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -70,7 +72,9 @@ export default function CompleteProfile() {
   const [menteeRegion, setMenteeRegion] = useState("");
 
   // 현재 사용자 정보 조회
-  const { data: user } = trpc.auth.me.useQuery();
+  const { data: user } = trpc.auth.me.useQuery(undefined, {
+    refetchOnWindowFocus: false,
+  });
 
   useEffect(() => {
     if (user) {
@@ -84,7 +88,13 @@ export default function CompleteProfile() {
   }, [user]);
 
   // 프로필 완성 API
-  const completeProfileMutation = trpc.verification.completeProfile.useMutation();
+  const utils = trpc.useUtils();
+  const completeProfileMutation = trpc.verification.completeProfile.useMutation({
+    onSuccess: async () => {
+      // 프로필 저장 성공 후 사용자 데이터 갱신
+      await utils.auth.me.invalidate();
+    },
+  });
 
   // 휴대폰 번호 포맷팅
   const formatPhoneNumber = (value: string) => {
@@ -195,6 +205,8 @@ export default function CompleteProfile() {
       setPhoneNumber("");
       setErrors({});
 
+      // 사용자 데이터 갱신 (mutation의 onSuccess에서 처리됨)
+      
       // 2초 후 홈페이지로 이동
       setTimeout(() => {
         navigate("/", { replace: true });
