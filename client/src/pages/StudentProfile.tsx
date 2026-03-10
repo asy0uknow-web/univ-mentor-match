@@ -137,7 +137,7 @@ export default function StudentProfile() {
               <CardTitle className="text-base">계정 관리</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
-              <Link href="/my-info">
+              <Link href="/my-profile">
                 <Button variant="outline" className="w-full">
                   개인 정보 수정
                 </Button>

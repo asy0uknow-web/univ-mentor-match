@@ -985,3 +985,11 @@
 - [x] 프로필 이미지 둥근 사각형 (rounded-lg)
 - [x] 모든 요소 좌측 정렬 통일
 - [x] 카드 내부 정렬 개선 (flex flex-col)
+
+## 라우팅 정리 - /my-info 경로 제거
+- [x] App.tsx에서 /my-info 경로 제거
+- [x] MyProfile 컴포넌트 import 제거
+- [x] StudentProfile 컴포넌트 import 제거
+- [x] Navbar.tsx에서 /my-info 링크 제거
+- [x] StudentProfile.tsx에서 /my-info 링크를 /my-profile로 변경
+- [x] /my-profile 경로가 사용자 역할에 따라 MentorProfile/StudentProfile 렌더링
