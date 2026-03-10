@@ -940,3 +940,12 @@
   - [x] completeProfileMutation에 onSuccess 콜백 추가
   - [x] utils.auth.me.invalidate() 호출로 사용자 데이터 갱신
   - [x] auth.me 쿼리에 refetchOnWindowFocus: false 옵션 추가
+
+## CompleteProfile 페이지 UI 개편
+- [x] 메쉬 그라데이션 배경 추가 (from-green-50 via-white to-blue-50)
+- [x] 멘토/멘티 카드를 세로 긴 형태(aspect-[3/4])로 개편
+- [x] 상단 아이콘 영역 추가 (그라데이션 배경 + 이모지)
+- [x] 중단 타이틀과 설명 추가
+- [x] 하단 배지(Badge) 추가 (역할별 핵심 혜택)
+- [x] 호버 효과 개선 (테두리색 변경, 그림자, 아이콘 스케일)
+- [x] 반응형 디자인 개선 (모바일 1단, 태블릿 이상 2단)

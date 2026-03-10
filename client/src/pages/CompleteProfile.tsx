@@ -249,15 +249,16 @@ export default function CompleteProfile() {
 
   return (
     <PageLayout>
-      <div className="container mx-auto px-4 py-8 max-w-2xl">
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-2xl">프로필 완성</CardTitle>
-            <CardDescription>
-              유니브매치에서 시작하는 솔직한 진로 상담을 위해 기본 정보를 입력해주세요.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
+      <div className="min-h-screen bg-gradient-to-tr from-green-50 via-white to-blue-50">
+        <div className="container mx-auto px-4 py-8 max-w-2xl">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-2xl">프로필 완성</CardTitle>
+              <CardDescription>
+                유니브매치에서 시작하는 솔직한 진로 상담을 위해 기본 정보를 입력해주세요.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
             {successMessage && (
               <Alert className="mb-6 border-green-200 bg-green-50">
                 <CheckCircle2 className="h-4 w-4 text-green-600" />
@@ -279,29 +280,83 @@ export default function CompleteProfile() {
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* 역할 선택 */}
               {!userRole && user && !user.userType && (
-                <div className="space-y-4">
-                  <Label className="text-base font-semibold">
-                    당신의 역할을 선택해주세요
-                  </Label>
-                  <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-6">
+                  <div>
+                    <Label className="text-lg font-bold text-gray-900">
+                      당신의 역할을 선택해주세요
+                    </Label>
+                    <p className="text-sm text-gray-600 mt-2">
+                      유니브매치에서 어떤 역할로 활동하고 싶으신가요?
+                    </p>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    {/* 멘토 카드 */}
                     <button
                       type="button"
                       onClick={() => setUserRole("mentor")}
-                      className="p-4 border-2 border-gray-200 rounded-lg hover:border-primary hover:bg-primary/5 transition-all"
+                      className="group aspect-[3/4] flex flex-col p-6 bg-white border-2 border-gray-200 rounded-2xl hover:border-green-400 hover:shadow-lg transition-all duration-300 overflow-hidden"
                     >
-                      <div className="font-semibold">멘토</div>
-                      <div className="text-sm text-muted-foreground mt-1">
-                        대학생으로서 후배들을 멘토링
+                      {/* 상단: 아이콘 영역 */}
+                      <div className="flex-shrink-0 mb-4">
+                        <div className="w-16 h-16 mx-auto bg-gradient-to-br from-green-100 to-green-50 rounded-2xl flex items-center justify-center text-3xl group-hover:scale-110 transition-transform">
+                          👨‍🏫
+                        </div>
+                      </div>
+
+                      {/* 중단: 타이틀과 설명 */}
+                      <div className="flex-1 flex flex-col justify-center mb-4">
+                        <h3 className="text-xl font-bold text-gray-900 mb-2">멘토</h3>
+                        <p className="text-sm text-gray-600 leading-relaxed">
+                          대학생으로서 후배들의 진로를 함께 고민하고 경험을 나누며 성장하세요.
+                        </p>
+                      </div>
+
+                      {/* 하단: 배지 */}
+                      <div className="flex-shrink-0 flex flex-wrap gap-2">
+                        <span className="inline-block px-3 py-1 bg-green-100 text-green-700 text-xs font-semibold rounded-full">
+                          경험 공유
+                        </span>
+                        <span className="inline-block px-3 py-1 bg-green-100 text-green-700 text-xs font-semibold rounded-full">
+                          수익 창출
+                        </span>
+                        <span className="inline-block px-3 py-1 bg-green-100 text-green-700 text-xs font-semibold rounded-full">
+                          영향력
+                        </span>
                       </div>
                     </button>
+
+                    {/* 멘티 카드 */}
                     <button
                       type="button"
                       onClick={() => setUserRole("mentee")}
-                      className="p-4 border-2 border-gray-200 rounded-lg hover:border-primary hover:bg-primary/5 transition-all"
+                      className="group aspect-[3/4] flex flex-col p-6 bg-white border-2 border-gray-200 rounded-2xl hover:border-blue-400 hover:shadow-lg transition-all duration-300 overflow-hidden"
                     >
-                      <div className="font-semibold">멘티</div>
-                      <div className="text-sm text-muted-foreground mt-1">
-                        대학생 멘토로부터 진로 상담 받기
+                      {/* 상단: 아이콘 영역 */}
+                      <div className="flex-shrink-0 mb-4">
+                        <div className="w-16 h-16 mx-auto bg-gradient-to-br from-blue-100 to-blue-50 rounded-2xl flex items-center justify-center text-3xl group-hover:scale-110 transition-transform">
+                          👨‍🎓
+                        </div>
+                      </div>
+
+                      {/* 중단: 타이틀과 설명 */}
+                      <div className="flex-1 flex flex-col justify-center mb-4">
+                        <h3 className="text-xl font-bold text-gray-900 mb-2">멘티</h3>
+                        <p className="text-sm text-gray-600 leading-relaxed">
+                          대학생 멘토로부터 진로 상담을 받고 미래의 방향을 함께 찾아보세요.
+                        </p>
+                      </div>
+
+                      {/* 하단: 배지 */}
+                      <div className="flex-shrink-0 flex flex-wrap gap-2">
+                        <span className="inline-block px-3 py-1 bg-blue-100 text-blue-700 text-xs font-semibold rounded-full">
+                          진로 상담
+                        </span>
+                        <span className="inline-block px-3 py-1 bg-blue-100 text-blue-700 text-xs font-semibold rounded-full">
+                          경험 학습
+                        </span>
+                        <span className="inline-block px-3 py-1 bg-blue-100 text-blue-700 text-xs font-semibold rounded-full">
+                          성장
+                        </span>
                       </div>
                     </button>
                   </div>
@@ -587,8 +642,9 @@ export default function CompleteProfile() {
                 </>
               )}
             </form>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </PageLayout>
   );

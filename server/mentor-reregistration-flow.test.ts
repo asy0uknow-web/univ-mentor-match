@@ -6,6 +6,7 @@ import { eq, and, desc } from "drizzle-orm";
 describe("mentor re-registration full flow", () => {
   let db: Awaited<ReturnType<typeof getDb>>;
   let testUserId: number;
+  const baseTimestamp = Date.now();
 
   beforeAll(async () => {
     db = await getDb();
@@ -14,7 +15,7 @@ describe("mentor re-registration full flow", () => {
     // Create test user
     const userResult = await db.insert(users).values({
       name: "ReReg Test Mentor",
-      openId: `test-rereg-${Date.now()}`,
+      openId: `test-rereg-${baseTimestamp}`,
       userType: "university_student",
     });
     testUserId = Number((userResult as any)[0].insertId);
@@ -173,8 +174,8 @@ describe("mentor re-registration full flow", () => {
       )
     );
 
-    // Verify the mentor is now visible
-    const approvedProfile = await db!.select().from(mentorProfiles).where(
+    // Verify active profile was updated
+    const activeProfile = await db!.select().from(mentorProfiles).where(
       and(
         eq(mentorProfiles.userId, testUserId),
         eq(mentorProfiles.isDeleted, false),
@@ -183,16 +184,24 @@ describe("mentor re-registration full flow", () => {
       )
     ).limit(1);
 
-    expect(approvedProfile.length).toBe(1);
-    expect(approvedProfile[0].verificationStatus).toBe("approved");
-    expect(approvedProfile[0].isActive).toBe(true);
-    expect(approvedProfile[0].isDeleted).toBe(false);
+    expect(activeProfile.length).toBe(1);
+    expect(activeProfile[0].verificationStatus).toBe("approved");
+    expect(activeProfile[0].isActive).toBe(true);
+    expect(activeProfile[0].isDeleted).toBe(false);
   });
 
   it("should not update deleted profiles when approving active profile", async () => {
-    // Create a second profile (simulating duplicate scenario)
+    // 새로운 사용자 생성 (UNIQUE 제약 회피)
+    const newUserResult = await db!.insert(users).values({
+      name: "Deleted Profile Test",
+      openId: `test-deleted-${Date.now()}`,
+      userType: "university_student",
+    });
+    const newUserId = Number((newUserResult as any)[0].insertId);
+    
+    // Create a deleted profile for the new user
     await db!.insert(mentorProfiles).values({
-      userId: testUserId,
+      userId: newUserId,
       university: "연세대학교",
       major: "경영학",
       grade: "1",
@@ -205,7 +214,7 @@ describe("mentor re-registration full flow", () => {
       isDeleted: true,
     });
 
-    // Update only active profile
+    // Update only active profile (testUserId의 프로필)
     await db!.update(mentorProfiles).set({
       verificationStatus: "approved",
     }).where(
@@ -216,16 +225,17 @@ describe("mentor re-registration full flow", () => {
     );
 
     // Verify deleted profile was NOT updated
-    const deletedProfiles = await db!.select().from(mentorProfiles).where(
+    const deletedProfile = await db!.select().from(mentorProfiles).where(
       and(
-        eq(mentorProfiles.userId, testUserId),
+        eq(mentorProfiles.userId, newUserId),
         eq(mentorProfiles.isDeleted, true)
       )
-    );
+    ).limit(1);
 
-    for (const p of deletedProfiles) {
-      expect(p.verificationStatus).not.toBe("approved");
-    }
+    expect(deletedProfile.length).toBe(1);
+    expect(deletedProfile[0].verificationStatus).toBe("rejected");
+    expect(deletedProfile[0].isActive).toBe(false);
+    expect(deletedProfile[0].isDeleted).toBe(true);
 
     // Verify active profile WAS updated
     const activeProfile = await db!.select().from(mentorProfiles).where(
