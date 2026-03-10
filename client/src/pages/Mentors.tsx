@@ -186,11 +186,11 @@ export default function Mentors() {
         </div>
 
         {/* 통합 검색 카드 */}
-        <div className="max-w-5xl mx-auto mt-10">
+        <div className="mt-10">
           <div className="bg-white border border-gray-200 rounded-full shadow-md hover:shadow-lg transition-shadow duration-300 p-2 flex items-center gap-0">
-            {/* 좌측 검색 영역 (50%) */}
+            {/* 좌측 검색 영역 (40%) */}
             <div className="flex-1 flex items-center gap-3 px-6 py-3 hover:bg-gray-50 rounded-l-full transition-colors duration-200 cursor-text">
-              <Search className="h-5 w-5 text-gray-400" />
+              <Search className="h-5 w-5 text-gray-400 flex-shrink-0" />
               <input
                 type="text"
                 placeholder="대학, 전공, 이름으로 검색"
@@ -202,10 +202,10 @@ export default function Mentors() {
             </div>
 
             {/* 중앙 구분선 */}
-            <div className="h-6 border-r border-gray-300" />
+            <div className="h-8 border-r border-gray-300" />
 
-            {/* 우측 필터 영역 (50%) */}
-            <div className="flex-1 flex items-center gap-4 px-6 py-3">
+            {/* 우측 필터 영역 (60%) */}
+            <div className="flex-1 flex items-center gap-6 px-8 py-3">
               {/* 학과 필터 */}
               <button
                 onClick={openMajorPanel2}
@@ -235,7 +235,7 @@ export default function Mentors() {
               {/* 검색 버튼 */}
               <button
                 onClick={handleSearch}
-                className="flex items-center justify-center w-10 h-10 rounded-full bg-green-500 hover:bg-green-600 transition-colors duration-200 text-white ml-2"
+                className="flex items-center justify-center w-10 h-10 rounded-full bg-green-500 hover:bg-green-600 transition-colors duration-200 text-white ml-auto flex-shrink-0"
               >
                 <Search className="h-5 w-5" />
               </button>
@@ -452,7 +452,7 @@ export default function Mentors() {
             <p className="text-xs sm:text-sm text-muted-foreground">멘토 목록을 불러오는 중...</p>
           </div>
         ) : filteredMentors.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mt-8">
             {filteredMentors.map((mentor) => (
               <MentorCard key={mentor.profile.id} mentor={mentor} />
             ))}
@@ -530,42 +530,43 @@ function MentorCard({
       href={`/mentor/${mentor.profile.id}`}
       className="block rounded-lg border border-border hover:border-primary hover:shadow-md transition-all cursor-pointer bg-card overflow-hidden"
     >
-      <div className="flex gap-4 p-4">
-        {/* 좌츧0: 멘토 프로필 이미지 (기본 아바타) */}
-        <div className="w-24 h-24 rounded-md bg-muted flex items-center justify-center flex-shrink-0 overflow-hidden">
+      <div className="flex flex-col gap-4 p-4">
+        {/* 상단: 멘토 프로필 이미지 (둥근 사각형) */}
+        <div className="w-full h-32 rounded-lg bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center overflow-hidden">
           <img
             src="https://d2xsxph8kpxj0f.cloudfront.net/310519663280786037/Gy6RaYwMhnXP5TJQbTpkxJ/mentor-default-avatar-XSMy7BuwnsbcDukFiGhL9q.webp"
             alt={mentor.user.name || "멘토 프로필"}
             className="w-full h-full object-cover"
           />
         </div>
-        {/* 우츧0: 텍스트 영역 */}
-        <div className="flex-1 min-w-0 flex flex-col gap-2 justify-between">
-          {/* 첫째 줄: 멘토 이름 + BadgeCheck 아이콘 + '인증됨' 텍스트 */}
-          <div className="flex items-center gap-1">
+        {/* 텍스트 영역 */}
+        <div className="flex-1 min-w-0 flex flex-col gap-2">
+          {/* 첫째 줄: 멘토 이름 */}
+          <div className="flex items-center gap-2">
+            <h3 className="text-lg font-bold leading-tight">
+              {mentor.user.name}
+            </h3>
             {mentor.profile.verificationStatus === "approved" && (
               <>
                 <BadgeCheck className="h-4 w-4 text-green-600 flex-shrink-0" />
-                <span className="text-xs text-green-600 font-medium flex-shrink-0">인증됨</span>
               </>
             )}
-            <h3 className="font-semibold text-base leading-tight truncate">
-              {mentor.user.name}
-            </h3>
           </div>
 
           {/* 둘째 줄: 대학교 이름 · 학년 */}
-          <p className="text-xs text-muted-foreground truncate">
+          <p className="text-xs text-muted-foreground">
             {mentor.profile.university} · {gradeLabel}
           </p>
 
-          {/* 셋째 줄: 학과 (글씨가 길어도 잘리지 않도록) */}
-          <p className="text-xs text-muted-foreground break-words">
-            {mentor.profile.major}
-          </p>
+          {/* 셋째 줄: 학과 배지 */}
+          <div className="flex flex-wrap gap-2">
+            <span className="inline-block bg-green-100 text-green-700 text-xs px-3 py-1 rounded-full font-medium">
+              {mentor.profile.major}
+            </span>
+          </div>
 
           {/* 넷째 줄: 자기소개글 */}
-          <p className="text-xs text-muted-foreground line-clamp-2 h-[32px] leading-4 overflow-hidden">
+          <p className="text-xs text-muted-foreground line-clamp-2 leading-4">
             {mentor.profile.bio || "소개가 아직 없어요."}
           </p>
 
@@ -587,17 +588,17 @@ function MentorCard({
           )}
 
           {/* 하단 푸터: border-t로 분리 */}
-          <div className="mt-auto pt-3 border-t border-border flex items-center justify-between gap-2">
+          <div className="mt-auto pt-3 border-t border-border flex items-center gap-2">
             {/* 좌측: MapPin 아이콘 + 지역명 */}
             {regionLabel && (
-              <div className="flex items-center gap-1 text-xs text-muted-foreground min-w-0">
+              <div className="flex items-center gap-1 text-xs text-muted-foreground">
                 <MapPin className="h-3.5 w-3.5 flex-shrink-0" />
-                <span className="truncate">{regionLabel}</span>
+                <span>{regionLabel}</span>
               </div>
             )}
 
             {/* 우측: Star 아이콘 + 평점 및 후기 개수 */}
-            <div className="flex items-center gap-1 flex-shrink-0 text-xs text-muted-foreground">
+            <div className="ml-auto flex items-center gap-1 text-xs text-muted-foreground">
               <Star className="h-3.5 w-3.5" />
               {ratingValue ? (
                 <span className="font-medium text-foreground">
