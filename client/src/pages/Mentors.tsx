@@ -114,6 +114,12 @@ export default function Mentors() {
     setMajorSearchTerm("");
   };
 
+  // 학과 패널 닫기 (중복 제거)
+  const closeMajorPanel3 = () => {
+    setShowMajorPanel(false);
+    setMajorSearchTerm("");
+  };
+
   // 학과 선택 적용
   const applyMajorSelection = () => {
     setSelectedMajors(tempSelectedMajors);
@@ -179,62 +185,66 @@ export default function Mentors() {
           </p>
         </div>
 
-        {/* 검색 및 필터 카드 */}
-        <div className="mt-10 bg-card border border-border rounded-2xl shadow-sm p-8">
-          {/* 필터 버튼 */}
-          <div className="flex gap-3 flex-wrap mb-6">
-            <Button
-              onClick={openMajorPanel2}
-              variant="outline"
-              size="sm"
-              className="rounded-full text-xs flex items-center gap-1"
-            >
-              학과
-              <ChevronRight className="h-3 w-3" />
-              {selectedMajors.length > 0 && (
-                <span className="ml-1 bg-primary text-primary-foreground rounded-full px-2 py-0.5 text-xs font-semibold">
-                  {selectedMajors.length}
-                </span>
-              )}
-            </Button>
-
-            <Button
-              onClick={openRegionPanel}
-              variant="outline"
-              size="sm"
-              className="rounded-full text-xs flex items-center gap-1"
-            >
-              지역
-              <ChevronRight className="h-3 w-3" />
-              {selectedRegions.length > 0 && (
-                <span className="ml-1 bg-primary text-primary-foreground rounded-full px-2 py-0.5 text-xs font-semibold">
-                  {selectedRegions.length}
-                </span>
-              )}
-            </Button>
-          </div>
-          
-          {/* 검색 입력 */}
-          <div className="flex gap-2 mb-6">
-              <div className="flex-1 relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <input
-                  type="text"
-                  placeholder="대학, 전공..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  onKeyDown={handleKeyDown}
-                  className="w-full pl-10 pr-4 py-2 text-sm bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                />
-              </div>
-              <Button onClick={handleSearch} size="sm" className="px-4">
-                검색
-              </Button>
+        {/* 통합 검색 카드 */}
+        <div className="max-w-5xl mx-auto mt-10">
+          <div className="bg-white border border-gray-200 rounded-full shadow-md hover:shadow-lg transition-shadow duration-300 p-2 flex items-center gap-0">
+            {/* 좌측 검색 영역 (50%) */}
+            <div className="flex-1 flex items-center gap-3 px-6 py-3 hover:bg-gray-50 rounded-l-full transition-colors duration-200 cursor-text">
+              <Search className="h-5 w-5 text-gray-400" />
+              <input
+                type="text"
+                placeholder="대학, 전공, 이름으로 검색"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                onKeyDown={handleKeyDown}
+                className="flex-1 bg-transparent text-sm placeholder-gray-400 focus:outline-none"
+              />
             </div>
-          
+
+            {/* 중앙 구분선 */}
+            <div className="h-6 border-r border-gray-300" />
+
+            {/* 우측 필터 영역 (50%) */}
+            <div className="flex-1 flex items-center gap-4 px-6 py-3">
+              {/* 학과 필터 */}
+              <button
+                onClick={openMajorPanel2}
+                className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors duration-200 whitespace-nowrap"
+              >
+                <span>학과</span>
+                {selectedMajors.length > 0 && (
+                  <span className="bg-green-100 text-green-700 rounded-full px-2 py-0.5 text-xs font-semibold">
+                    {selectedMajors.length}
+                  </span>
+                )}
+              </button>
+
+              {/* 지역 필터 */}
+              <button
+                onClick={openRegionPanel}
+                className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors duration-200 whitespace-nowrap"
+              >
+                <span>지역</span>
+                {selectedRegions.length > 0 && (
+                  <span className="bg-green-100 text-green-700 rounded-full px-2 py-0.5 text-xs font-semibold">
+                    {selectedRegions.length}
+                  </span>
+                )}
+              </button>
+
+              {/* 검색 버튼 */}
+              <button
+                onClick={handleSearch}
+                className="flex items-center justify-center w-10 h-10 rounded-full bg-green-500 hover:bg-green-600 transition-colors duration-200 text-white ml-2"
+              >
+                <Search className="h-5 w-5" />
+              </button>
+            </div>
+          </div>
+
           {/* 초기화 버튼 */}
           {(selectedMajors.length > 0 || selectedRegions.length > 0) && (
-            <div className="flex justify-center">
+            <div className="flex justify-center mt-4">
               <Button
                 onClick={() => {
                   setSelectedMajors([]);
@@ -242,10 +252,10 @@ export default function Mentors() {
                 }}
                 variant="ghost"
                 size="sm"
-                className="text-xs text-muted-foreground hover:text-foreground"
+                className="text-xs text-gray-500 hover:text-gray-700"
               >
                 <X className="h-3 w-3 mr-1" />
-                초기화
+                필터 초기화
               </Button>
             </div>
           )}
