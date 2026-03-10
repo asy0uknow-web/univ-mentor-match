@@ -530,16 +530,16 @@ function MentorCard({
       href={`/mentor/${mentor.profile.id}`}
       className="block rounded-lg border border-border hover:border-primary hover:shadow-md transition-all cursor-pointer bg-card overflow-hidden"
     >
-      <div className="flex flex-col gap-4 p-4">
-        {/* 상단: 멘토 프로필 이미지 (둥근 사각형) */}
-        <div className="w-full h-32 rounded-lg bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center overflow-hidden">
+      <div className="flex gap-4 p-4">
+        {/* 좌측: 멘토 프로필 이미지 (둥근 사각형) */}
+        <div className="w-28 h-28 rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center overflow-hidden flex-shrink-0">
           <img
             src="https://d2xsxph8kpxj0f.cloudfront.net/310519663280786037/Gy6RaYwMhnXP5TJQbTpkxJ/mentor-default-avatar-XSMy7BuwnsbcDukFiGhL9q.webp"
             alt={mentor.user.name || "멘토 프로필"}
             className="w-full h-full object-cover"
           />
         </div>
-        {/* 텍스트 영역 */}
+        {/* 우측: 텍스트 영역 */}
         <div className="flex-1 min-w-0 flex flex-col gap-2">
           {/* 첫째 줄: 멘토 이름 */}
           <div className="flex items-center gap-2">
