@@ -68,7 +68,6 @@ export default function CompleteProfile() {
 
   // 멘티 전용 필드
   const [school, setSchool] = useState("");
-  const [careerGoal, setCareerGoal] = useState("");
   const [menteeRegion, setMenteeRegion] = useState("");
 
   // 현재 사용자 정보 조회
@@ -165,7 +164,6 @@ export default function CompleteProfile() {
       if (mentorRegions.length === 0) newErrors.mentorRegions = "상담 가능 지역을 하나 이상 선택해주세요";
     } else if (userRole === "mentee") {
       if (!school.trim()) newErrors.school = "학교를 입력해주세요";
-      if (!careerGoal.trim()) newErrors.careerGoal = "희망 진로를 입력해주세요";
       if (!menteeRegion) newErrors.menteeRegion = "상담 희망 지역을 선택해주세요";
     }
 
@@ -193,7 +191,6 @@ export default function CompleteProfile() {
         consultationTypes: userRole === "mentor" ? (consultationTypes as ("career_counseling" | "university_tour" | "resume_consulting" | "academic_management")[]) : undefined,
         mentorRegion: userRole === "mentor" ? mentorRegions.join(",") : undefined,
         school: userRole === "mentee" ? school.trim() : undefined,
-        careerGoal: userRole === "mentee" ? careerGoal.trim() : undefined,
         menteeRegion: userRole === "mentee" ? menteeRegion : undefined,
       });
 
@@ -580,23 +577,6 @@ export default function CompleteProfile() {
                         />
                         {errors.school && (
                           <p className="text-sm text-red-500">{errors.school}</p>
-                        )}
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="major">학과 *</Label>
-                        <Input
-                          id="major"
-                          type="text"
-                          placeholder="예: 컴퓨터공학과"
-                          value={major}
-                          onChange={handleMajorChange}
-                          className={errors.major ? "border-red-500" : ""}
-                        />
-                        {errors.careerGoal && (
-                          <p className="text-sm text-red-500">
-                            {errors.careerGoal}
-                          </p>
                         )}
                       </div>
 

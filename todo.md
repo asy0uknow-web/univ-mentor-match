@@ -997,3 +997,9 @@
 ## 버그 수정 - 상담 가능 지역 버튼 폼 제출 문제
 - [x] CompleteProfile.tsx의 상담 가능 지역 버튼에 type="button" 속성 추가
 - [x] 버튼 클릭 시 드롭다운만 열고 닫도록 수정 (폼 제출 방지)
+
+## CompleteProfile 페이지 멘티 섹션 개선
+- [x] 멘티 학과 필드 제거
+- [x] careerGoal 상태 변수 제거
+- [x] 멘티 필드 검증에서 careerGoal 제거
+- [x] 프로필 저장 데이터에서 careerGoal 제거
