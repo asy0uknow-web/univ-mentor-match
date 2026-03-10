@@ -993,3 +993,7 @@
 - [x] Navbar.tsx에서 /my-info 링크 제거
 - [x] StudentProfile.tsx에서 /my-info 링크를 /my-profile로 변경
 - [x] /my-profile 경로가 사용자 역할에 따라 MentorProfile/StudentProfile 렌더링
+
+## 버그 수정 - 상담 가능 지역 버튼 폼 제출 문제
+- [x] CompleteProfile.tsx의 상담 가능 지역 버튼에 type="button" 속성 추가
+- [x] 버튼 클릭 시 드롭다운만 열고 닫도록 수정 (폼 제출 방지)

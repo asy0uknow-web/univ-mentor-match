@@ -512,6 +512,7 @@ export default function CompleteProfile() {
                       <div className="space-y-2" ref={regionDropdownRef}>
                         <Label>상담 가능 지역 *</Label>
                         <Button
+                          type="button"
                           onClick={() => setShowRegionDropdown(!showRegionDropdown)}
                           variant="outline"
                           className={`w-full justify-between ${
