@@ -961,3 +961,8 @@
 - [x] 역할 선택 후 50% 표시
 - [x] 그라데이션 배경 (초록색 → 파란색)
 - [x] 부드러운 트랜지션 애니메이션 추가
+
+## 버그 수정 - mentor_profiles INSERT 오류
+- [x] mentorRegion 파라미터 처리 수정 (쉼표 구분 문자열 → 첫 번째 지역만 추출)
+- [x] isActive 기본값 수정 (false → true)
+- [x] 멘토프로필 생성 및 업데이트 시 isActive, isDeleted 명시적으로 설정

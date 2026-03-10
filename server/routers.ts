@@ -780,7 +780,10 @@ export const appRouter = router({
 
         // 멘토인 경우 멘토프로필도 자동으로 생성
         if (input.userRole === "mentor" && input.university && input.major && input.mentorRegion) {
-          const regionValue = input.mentorRegion as "seoul" | "gyeonggi" | "incheon" | "gangwon" | "chungcheong" | "jeolla" | "gyeongsang" | "jeju";
+          // mentorRegion은 쉼표로 구분된 문자열이므로 첫 번째 지역만 추출
+          const regions = input.mentorRegion.split(",").map(r => r.trim()).filter(r => r);
+          const firstRegion = regions[0] || "seoul";
+          const regionValue = firstRegion as "seoul" | "gyeonggi" | "incheon" | "gangwon" | "chungcheong" | "jeolla" | "gyeongsang" | "jeju";
           const gradeValue = (input.grade || "1") as "1" | "2" | "3" | "4" | "graduate";
           const existingProfile = await db
             .select()
@@ -796,7 +799,7 @@ export const appRouter = router({
               major: input.major,
               grade: gradeValue,
               region: regionValue,
-              isActive: false,
+              isActive: true,
               isDeleted: false,
               verificationStatus: "pending",
               createdAt: new Date(),
@@ -811,6 +814,8 @@ export const appRouter = router({
                 major: input.major,
                 grade: gradeValue,
                 region: regionValue,
+                isActive: true,
+                isDeleted: false,
                 updatedAt: new Date(),
               })
               .where(eq(mentorProfiles.userId, user.id));
@@ -818,7 +823,7 @@ export const appRouter = router({
           
           // 상담 유형 저장
           if (input.consultationTypes && input.consultationTypes.length > 0) {
-            // 기존 상담 유형 단제
+            // 기존 상담 유형 삭제
             await db.delete(mentorConsultationTypes).where(eq(mentorConsultationTypes.mentorId, user.id));
             
             // 새 상담 유형 추가
