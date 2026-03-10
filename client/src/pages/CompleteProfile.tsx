@@ -208,6 +208,9 @@ export default function CompleteProfile() {
       setTimeout(() => {
         navigate("/", { replace: true });
       }, 2000);
+
+      // 진행률을 100%로 업데이트 (선택사항)
+      // setUserRole(null); // 필요시 초기화
     } catch (error: any) {
       setErrors({
         submit: error.message || "프로필 저장에 실패했습니다",
@@ -250,6 +253,20 @@ export default function CompleteProfile() {
         <div className="container mx-auto px-4 py-8 max-w-2xl">
           <Card>
             <CardHeader>
+              {/* 진행률 표시기 */}
+              <div className="mb-6">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-sm font-semibold text-gray-700">진행률</span>
+                  <span className="text-sm font-bold text-primary">{userRole ? '50%' : '0%'}</span>
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+                  <div
+                    className="bg-gradient-to-r from-green-400 to-blue-400 h-full rounded-full transition-all duration-500 ease-out"
+                    style={{ width: userRole ? '50%' : '0%' }}
+                  />
+                </div>
+              </div>
+
               <CardTitle className="text-2xl">프로필 완성</CardTitle>
               <CardDescription>
                 유니브매치에서 시작하는 솔직한 진로 상담을 위해 기본 정보를 입력해주세요.
