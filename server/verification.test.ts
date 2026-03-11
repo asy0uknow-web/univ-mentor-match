@@ -47,8 +47,6 @@ describe("mentor verification system", () => {
     expect(result).toHaveProperty("success");
     expect(result.success).toBe(true);
   });
-  
-
 
   it("should retrieve user's verification status", async () => {
     const { ctx } = createAuthContext(baseUserId + 10);
@@ -73,11 +71,11 @@ describe("mentor verification system", () => {
       studentIdImageUrl: "https://example.com/student-id.jpg",
     });
     
-    // 관리자로 조회
+    // 관리자로 조회 (admin 라우터 사용)
     const adminCtx = createAuthContext(baseUserId + 20, "admin");
     const adminCaller = appRouter.createCaller(adminCtx.ctx);
 
-    const verifications = await adminCaller.verification.getPendingVerifications();
+    const verifications = await adminCaller.admin.getPendingVerifications();
 
     expect(Array.isArray(verifications)).toBe(true);
   });
@@ -87,7 +85,7 @@ describe("mentor verification system", () => {
     const caller = appRouter.createCaller(ctx);
 
     try {
-      await caller.verification.getPendingVerifications();
+      await caller.admin.getPendingVerifications();
       expect(true).toBe(false); // Should not reach here
     } catch (error: any) {
       expect(error.message).toContain("admin") || expect(error.message).toContain("Admin");
@@ -104,16 +102,16 @@ describe("mentor verification system", () => {
     });
     expect(submitResult.success).toBe(true);
     
-    // 관리자로 승인
+    // 관리자로 승인 (admin 라우터 사용)
     const adminCtx = createAuthContext(baseUserId + 40, "admin");
     const adminCaller = appRouter.createCaller(adminCtx.ctx);
     
     // 먼저 pending 검증 목록 조회
-    const pendingVerifications = await adminCaller.verification.getPendingVerifications();
-    const verificationId = pendingVerifications[0]?.id;
+    const pendingVerifications = await adminCaller.admin.getPendingVerifications();
+    const verificationId = pendingVerifications[0]?.verification?.id;
     
     if (verificationId) {
-      const result = await adminCaller.verification.approveVerification({
+      const result = await adminCaller.admin.approveVerification({
         verificationId,
       });
       expect(result).toEqual({ success: true });
@@ -130,16 +128,16 @@ describe("mentor verification system", () => {
     });
     expect(submitResult.success).toBe(true);
     
-    // 관리자로 거절
+    // 관리자로 거절 (admin 라우터 사용)
     const adminCtx = createAuthContext(baseUserId + 50, "admin");
     const adminCaller = appRouter.createCaller(adminCtx.ctx);
     
     // 먼저 pending 검증 목록 조회
-    const pendingVerifications = await adminCaller.verification.getPendingVerifications();
-    const verificationId = pendingVerifications[0]?.id;
+    const pendingVerifications = await adminCaller.admin.getPendingVerifications();
+    const verificationId = pendingVerifications[0]?.verification?.id;
     
     if (verificationId) {
-      const result = await adminCaller.verification.rejectVerification({
+      const result = await adminCaller.admin.rejectVerification({
         verificationId,
         adminNotes: "학생증이 명확하지 않습니다.",
       });

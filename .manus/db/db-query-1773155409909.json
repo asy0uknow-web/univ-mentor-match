@@ -1,0 +1,150 @@
+{
+  "query": "SELECT id, email, name, role, createdAt FROM users ORDER BY createdAt DESC LIMIT 20;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute SELECT id, email, name, role, createdAt FROM users ORDER BY createdAt DESC LIMIT 20;",
+  "rows": [
+    {
+      "id": "2550046",
+      "email": "yjh03220@naver.com",
+      "name": "연습용",
+      "role": "user",
+      "createdAt": "2026-03-10 14:51:33"
+    },
+    {
+      "id": "2550014",
+      "email": "NULL",
+      "name": "Deleted Profile Test",
+      "role": "user",
+      "createdAt": "2026-03-10 14:29:35"
+    },
+    {
+      "id": "2550013",
+      "email": "NULL",
+      "name": "ReReg Test Mentor",
+      "role": "user",
+      "createdAt": "2026-03-10 14:29:30"
+    },
+    {
+      "id": "2490069",
+      "email": "NULL",
+      "name": "Deleted Profile Test",
+      "role": "user",
+      "createdAt": "2026-03-10 11:47:22"
+    },
+    {
+      "id": "2490068",
+      "email": "NULL",
+      "name": "ReReg Test Mentor",
+      "role": "user",
+      "createdAt": "2026-03-10 11:47:18"
+    },
+    {
+      "id": "2490061",
+      "email": "syoung.choi327@gmail.com",
+      "name": "NULL",
+      "role": "user",
+      "createdAt": "2026-03-10 11:45:07"
+    },
+    {
+      "id": "2490049",
+      "email": "NULL",
+      "name": "Deleted Profile Test",
+      "role": "user",
+      "createdAt": "2026-03-10 11:42:42"
+    },
+    {
+      "id": "2490048",
+      "email": "NULL",
+      "name": "ReReg Test Mentor",
+      "role": "user",
+      "createdAt": "2026-03-10 11:42:38"
+    },
+    {
+      "id": "2490020",
+      "email": "NULL",
+      "name": "Deleted Profile Test",
+      "role": "user",
+      "createdAt": "2026-03-10 11:34:04"
+    },
+    {
+      "id": "2490019",
+      "email": "NULL",
+      "name": "ReReg Test Mentor",
+      "role": "user",
+      "createdAt": "2026-03-10 11:34:00"
+    },
+    {
+      "id": "2460119",
+      "email": "NULL",
+      "name": "Deleted Profile Test",
+      "role": "user",
+      "createdAt": "2026-03-10 08:55:34"
+    },
+    {
+      "id": "2460118",
+      "email": "NULL",
+      "name": "ReReg Test Mentor",
+      "role": "user",
+      "createdAt": "2026-03-10 08:55:29"
+    },
+    {
+      "id": "2460094",
+      "email": "NULL",
+      "name": "Deleted Profile Test",
+      "role": "user",
+      "createdAt": "2026-03-10 08:48:36"
+    },
+    {
+      "id": "2460093",
+      "email": "NULL",
+      "name": "ReReg Test Mentor",
+      "role": "user",
+      "createdAt": "2026-03-10 08:48:32"
+    },
+    {
+      "id": "2460068",
+      "email": "NULL",
+      "name": "Deleted Profile Test",
+      "role": "user",
+      "createdAt": "2026-03-10 08:39:05"
+    },
+    {
+      "id": "2460067",
+      "email": "NULL",
+      "name": "ReReg Test Mentor",
+      "role": "user",
+      "createdAt": "2026-03-10 08:39:01"
+    },
+    {
+      "id": "2460052",
+      "email": "NULL",
+      "name": "Deleted Profile Test",
+      "role": "user",
+      "createdAt": "2026-03-10 08:33:24"
+    },
+    {
+      "id": "2460051",
+      "email": "NULL",
+      "name": "ReReg Test Mentor",
+      "role": "user",
+      "createdAt": "2026-03-10 08:33:20"
+    },
+    {
+      "id": "2460026",
+      "email": "NULL",
+      "name": "Deleted Profile Test",
+      "role": "user",
+      "createdAt": "2026-03-10 08:20:59"
+    },
+    {
+      "id": "2460025",
+      "email": "NULL",
+      "name": "ReReg Test Mentor",
+      "role": "user",
+      "createdAt": "2026-03-10 08:20:55"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\temail\tname\trole\tcreatedAt\n2550046\tyjh03220@naver.com\t연습용\tuser\t2026-03-10 14:51:33\n2550014\tNULL\tDeleted Profile Test\tuser\t2026-03-10 14:29:35\n2550013\tNULL\tReReg Test Mentor\tuser\t2026-03-10 14:29:30\n2490069\tNULL\tDeleted Profile Test\tuser\t2026-03-10 11:47:22\n2490068\tNULL\tReReg Test Mentor\tuser\t2026-03-10 11:47:18\n2490061\tsyoung.choi327@gmail.com\tNULL\tuser\t2026-03-10 11:45:07\n2490049\tNULL\tDeleted Profile Test\tuser\t2026-03-10 11:42:42\n2490048\tNULL\tReReg Test Mentor\tuser\t2026-03-10 11:42:38\n2490020\tNULL\tDeleted Profile Test\tuser\t2026-03-10 11:34:04\n2490019\tNULL\tReReg Test Mentor\tuser\t2026-03-10 11:34:00\n2460119\tNULL\tDeleted Profile Test\tuser\t2026-03-10 08:55:34\n2460118\tNULL\tReReg Test Mentor\tuser\t2026-03-10 08:55:29\n2460094\tNULL\tDeleted Profile Test\tuser\t2026-03-10 08:48:36\n2460093\tNULL\tReReg Test Mentor\tuser\t2026-03-10 08:48:32\n2460068\tNULL\tDeleted Profile Test\tuser\t2026-03-10 08:39:05\n2460067\tNULL\tReReg Test Mentor\tuser\t2026-03-10 08:39:01\n2460052\tNULL\tDeleted Profile Test\tuser\t2026-03-10 08:33:24\n2460051\tNULL\tReReg Test Mentor\tuser\t2026-03-10 08:33:20\n2460026\tNULL\tDeleted Profile Test\tuser\t2026-03-10 08:20:59\n2460025\tNULL\tReReg Test Mentor\tuser\t2026-03-10 08:20:55\n",
+  "stderr": "",
+  "execution_time_ms": 1555
+}

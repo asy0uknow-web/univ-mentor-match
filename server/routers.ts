@@ -713,33 +713,6 @@ export const appRouter = router({
       return await getMentorVerificationByUserId(ctx.user.id);
     }),
 
-    getPendingVerifications: protectedProcedure.query(async ({ ctx }) => {
-      if (ctx.user?.role !== "admin") {
-        throw new Error("Only admins can access this");
-      }
-      return await getPendingMentorVerifications();
-    }),
-
-    approveVerification: protectedProcedure
-      .input(z.object({ verificationId: z.number() }))
-      .mutation(async ({ ctx, input }) => {
-        if (ctx.user?.role !== "admin") {
-          throw new Error("Only admins can approve verifications");
-        }
-        await approveMentorVerification(input.verificationId);
-        return { success: true };
-      }),
-
-    rejectVerification: protectedProcedure
-      .input(z.object({ verificationId: z.number(), adminNotes: z.string() }))
-      .mutation(async ({ ctx, input }) => {
-        if (ctx.user?.role !== "admin") {
-          throw new Error("Only admins can reject verifications");
-        }
-        await rejectMentorVerification(input.verificationId, input.adminNotes);
-        return { success: true };
-      }),
-
     completeProfile: publicProcedure
       .input(z.object({
         name: z.string().min(1),

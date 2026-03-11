@@ -1010,3 +1010,29 @@
 - [x] 우측에 텍스트 정보 배치
 - [x] flex-shrink-0으로 이미지 크기 고정
 - [x] 검색 기능은 수정하지 않음
+
+## 멘토 인증 과정 전면 수정 (오류 + UI/UX)
+### 오류 수정
+- [ ] [오류1] MentorProfile.tsx - 인증 상태와 무관하게 "인증되었습니다" 메시지 표시 수정
+- [ ] [오류2] routers.ts - admin.approveVerification / rejectVerification 중복 라우터 제거
+- [ ] [오류3] MentorProfile.tsx - createProfile/updateProfile 조건 반전 수정
+- [ ] [오류4] VerifyMentor.tsx - pending 상태에서 "인증 완료" 카드 표시 수정
+### UX 개선
+- [ ] [UX5] MentorProfile.tsx - pending 상태에서 인증 상태 명확히 표시
+- [ ] [UX6] VerifyMentor.tsx - 거부 상태에서 재신청 안내 및 버튼 추가
+- [ ] [UX7] 인증 완료 후 상태 자동 갱신 (refetch)
+### UI 개선
+- [ ] MentorProfile.tsx - 인증 상태 카드 UI 전면 개선 (상태별 색상/아이콘/메시지)
+- [ ] VerifyMentor.tsx - 인증 페이지 UI 전면 개선 (단계별 안내, 상태별 UI)
+- [ ] AdminDashboard.tsx - 인증 요청 관리 UI 개선 (학생증 이미지, 승인/거절 버튼)
+
+## 멘토 인증 과정 전면 수정 (오류 + UI/UX)
+- [x] [오류1] MentorProfile.tsx - 인증 상태와 관계없이 "인증되었습니다" 메시지 표시 수정 (상태별 정확한 메시지 표시)
+- [x] [오류2] routers.ts - 중복 라우터(getPendingVerifications, approveVerification, rejectVerification) 제거
+- [x] [오류3] MentorProfile.tsx - createProfile/updateProfile 조건 반전 수정 (profile 있으면 update, 없으면 create)
+- [x] [오류4] VerifyMentor.tsx - pending 상태에서도 "인증 완료" 카드 표시되는 문제 수정
+- [x] [UX5] MentorProfile.tsx - 인증 상태별 버튼 및 안내 메시지 개선
+- [x] [UX6] VerifyMentor.tsx - 거부 상태에서 재신청 안내 및 버튼 추가
+- [x] [UX7] MentorProfile.tsx - pending 상태에서 수동 갱신 버튼 추가
+- [x] AdminDashboard.tsx - 인증 관리 UI/UX 전면 개선 (통계 카드, 이미지 펼치기/접기, 거부 사유 입력 UI)
+- [x] verification.test.ts - admin 라우터 경로로 테스트 수정 (102/102 통과)
