@@ -9,51 +9,28 @@ import { getLoginUrl } from "@/const";
 
 // Line Art Icons Component - How It Works Section
 const SearchIcon = () => (
-  <svg className="w-16 h-16 sm:w-20 sm:h-20" viewBox="0 0 48 48" fill="none" stroke="#2E4A33" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="20" cy="20" r="12" />
-    <path d="M32 32L42 42" />
-  </svg>
+  <div className="text-5xl sm:text-6xl md:text-7xl">🔍</div>
 );
 
 const CalendarIcon = () => (
-  <svg className="w-16 h-16 sm:w-20 sm:h-20" viewBox="0 0 48 48" fill="none" stroke="#2E4A33" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="8" y="10" width="32" height="28" rx="2" />
-    <path d="M16 6v8M32 6v8" />
-    <path d="M8 18h32" />
-    <circle cx="16" cy="28" r="1.5" fill="#2E4A33" />
-    <circle cx="28" cy="28" r="1.5" fill="#2E4A33" />
-  </svg>
+  <div className="text-5xl sm:text-6xl md:text-7xl">📅</div>
 );
 
 const ChatIcon = () => (
-  <svg className="w-16 h-16 sm:w-20 sm:h-20" viewBox="0 0 48 48" fill="none" stroke="#2E4A33" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M8 12C8 10.9 8.9 10 10 10h28c1.1 0 2 0.9 2 2v20c0 1.1-0.9 2-2 2H12l-4 4v-4H10c-1.1 0-2-0.9-2-2V12Z" />
-  </svg>
+  <div className="text-5xl sm:text-6xl md:text-7xl">💬</div>
 );
 
 // Line Art Icons Component - Service Intro Section
 const InfoIcon = () => (
-  <svg className="w-16 h-16 sm:w-20 sm:h-20" viewBox="0 0 48 48" fill="none" stroke="#2E4A33" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="24" cy="24" r="18" />
-    <path d="M24 16v8" />
-    <circle cx="24" cy="34" r="1" fill="#2E4A33" />
-  </svg>
+  <div className="text-5xl sm:text-6xl md:text-7xl">📰</div>
 );
 
 const TrustIcon = () => (
-  <svg className="w-16 h-16 sm:w-20 sm:h-20" viewBox="0 0 48 48" fill="none" stroke="#2E4A33" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M24 4L8 12v12c0 8 16 14 16 14s16-6 16-14V12L24 4Z" />
-    <path d="M16 24l6 6 10-10" />
-  </svg>
+  <div className="text-5xl sm:text-6xl md:text-7xl">🤝</div>
 );
 
 const CostIcon = () => (
-  <svg className="w-16 h-16 sm:w-20 sm:h-20" viewBox="0 0 48 48" fill="none" stroke="#2E4A33" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="24" cy="24" r="16" />
-    <path d="M24 16v16" />
-    <path d="M20 20h8" />
-    <path d="M20 28h8" />
-  </svg>
+  <div className="text-5xl sm:text-6xl md:text-7xl">💰</div>
 );
 
 // Organic Blob Background Component
@@ -143,12 +120,13 @@ export default function Home() {
       <section 
         id="hero" 
         role="banner"
-        className="relative py-12 sm:py-20 md:py-32 overflow-hidden" 
+        className="relative min-h-screen py-12 sm:py-20 md:py-32 overflow-hidden flex items-center" 
         style={{
           backgroundImage: 'url(https://private-us-east-1.manuscdn.com/sessionFile/uR1NfZVEpEf0Q3jc4GsDIE/sandbox/kkhznDCMTxjUcFoZRqsZfJ-img-1_1770798947000_na1fn_aGVyby1iYWNrZ3JvdW5kLTNk.png?x-oss-process=image/resize,w_1920,h_1920/format,webp/quality,q_80&Expires=1798761600&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvdVIxTmZaVkVwRWYwUTNqYzRHc0RJRS9zYW5kYm94L2traHpuRENNVHhqVWNGb1pScXNaZkotaW1nLTFfMTc3MDc5ODk0NzAwMF9uYTFmbl9hR1Z5YnkxaVlXTnJaM0p2ZFc1a0xUTmsucG5nP3gtb3NzLXByb2Nlc3M9aW1hZ2UvcmVzaXplLHdfMTkyMCxoXzE5MjAvZm9ybWF0LHdlYnAvcXVhbGl0eSxxXzgwIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzk4NzYxNjAwfX19XX0_&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=aFeQKHn-zVK6XIjFXQxhhEFTn1vqNWucnlz~eIlKiPqETvAsL4cIaXDoktOrt-8rR534D05ak-9sQKXu6X5z7tZuRXuL1jEx4KKwwxN2AAj70o6JB6CN1CaIdH42GSGkVJoWyt8IQSQRN7s5eeF-6WeuwgPuiHt~vIoIL2sVoQo0I0uSQY4Ba6BbQVisIjYYl4yU6tEnmr9hbL3HSKQTS53ijk0t8de-C0PT05SBF8eB1T5np9Jhq7-rr2CuH5kW9CPP2CI3V8f7YZ0JoNmkXQsHWWav7C~YGTXHJr10QRI3qPvB9hbrdT-oyTcbTTRU0tzczPaVhrwIv435DAc3xQ__)',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
-          backgroundAttachment: 'fixed'
+          backgroundAttachment: 'fixed',
+          backgroundClip: 'border-box'
         }}
         aria-label="히어로 섹션"
       >
