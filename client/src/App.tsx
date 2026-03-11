@@ -19,6 +19,7 @@ const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
 const DeleteAccount = lazy(() => import("./pages/DeleteAccount"));
 const AdminBugReports = lazy(() => import("./pages/AdminBugReports"));
 const CompleteProfile = lazy(() => import("./pages/CompleteProfile"));
+const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 
 function Router() {
   return (
@@ -36,6 +37,7 @@ function Router() {
         <Route path={"/delete-account"} component={DeleteAccount} />
         <Route path={"/admin/bug-reports"} component={AdminBugReports} />
         <Route path={"/complete-profile"} component={CompleteProfile} />
+        <Route path={"/privacy-policy"} component={PrivacyPolicy} />
         <Route path={"/404"} component={NotFound} />
         <Route component={NotFound} />
       </Switch>

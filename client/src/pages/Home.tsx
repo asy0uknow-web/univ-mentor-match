@@ -22,15 +22,15 @@ const ChatIcon = () => (
 
 // Line Art Icons Component - Service Intro Section
 const InfoIcon = () => (
-  <div className="text-5xl sm:text-6xl md:text-7xl">📰</div>
+  <div className="text-5xl sm:text-6xl md:text-7xl">📉</div>
 );
 
 const TrustIcon = () => (
-  <div className="text-5xl sm:text-6xl md:text-7xl">🤝</div>
+  <div className="text-5xl sm:text-6xl md:text-7xl">⚠️</div>
 );
 
 const CostIcon = () => (
-  <div className="text-5xl sm:text-6xl md:text-7xl">💰</div>
+  <div className="text-5xl sm:text-6xl md:text-7xl">💸</div>
 );
 
 // Organic Blob Background Component
