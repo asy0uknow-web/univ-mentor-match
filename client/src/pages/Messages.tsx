@@ -161,7 +161,6 @@ export default function Messages() {
   // Extract user name from messages - MUST be defined before use
   const getOtherUserName = (userId: number) => {
     const msgs: any[] = conversations[userId] || [];
-    if (msgs.length === 0) return `User ${userId}`;
     
     // 메시지 배열에서 해당 사용자의 실명을 찾기
     for (const msg of msgs) {
@@ -170,6 +169,18 @@ export default function Messages() {
       }
       if (msg.recipientId === userId && msg.recipientName) {
         return msg.recipientName;
+      }
+    }
+    
+    // 선택된 대화의 상대방이면 conversation 데이터에서 이름 찾기
+    if (userId === selectedConversation && conversation && conversation.length > 0) {
+      for (const msg of conversation) {
+        if (msg.senderId === userId && msg.senderName) {
+          return msg.senderName;
+        }
+        if (msg.recipientId === userId && msg.recipientName) {
+          return msg.recipientName;
+        }
       }
     }
     
