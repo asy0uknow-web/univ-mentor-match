@@ -325,11 +325,10 @@ export function Messages() {
                   </div>
                 </CardHeader>
 
-                <CardContent className="flex-1 overflow-y-auto p-4 space-y-4 flex flex-col-reverse min-h-0" style={{ minHeight: 0 }}>
+                <CardContent className="flex-1 overflow-y-auto p-4 space-y-4 flex flex-col min-h-0" style={{ minHeight: 0 }}>
                   {conversation && conversation.length > 0 ? (
                     <>
-                      <div ref={messagesEndRef} />
-                      {[...conversation].reverse().map((msg: any, idx: number) => (
+                      {conversation.map((msg: any, idx: number) => (
                         <div
                           key={idx}
                           className={`flex ${
@@ -352,6 +351,7 @@ export function Messages() {
                           </div>
                         </div>
                       ))}
+                      <div ref={messagesEndRef} />
                     </>
                   ) : (
                     <div className="flex items-center justify-center h-full">
