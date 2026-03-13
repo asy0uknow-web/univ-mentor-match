@@ -311,7 +311,7 @@ export function Messages() {
             </div>
 
             {selectedConversation ? (
-              <Card className="flex flex-col h-full overflow-hidden" style={{ minHeight: 0 }}>
+              <Card className="flex flex-col overflow-hidden" style={{ minHeight: 0, height: 'calc(100vh - 280px)' }}>
                 <CardHeader className="border-b shrink-0">
                   <div className="flex items-center justify-between">
                     <CardTitle className="text-lg">
