@@ -214,7 +214,7 @@ export function Messages() {
   return (
     <PageLayout>
       {/* Content */}
-      <div ref={containerRef} className="container mx-auto px-4 py-8 flex flex-col" style={{ height: 'calc(100vh - 120px)' }}>
+      <div ref={containerRef} className="container mx-auto px-4 py-8 flex flex-col" style={{ height: 'calc(100vh - 160px)' }}>
         <div className="mb-6">
           <h1 className="text-3xl font-bold">상담 조율</h1>
           <p className="text-muted-foreground mt-1">상담 일정, 시간, 장소를 조율하세요</p>        
@@ -238,7 +238,7 @@ export function Messages() {
                   className="w-full"
                 />
               </CardContent>
-              <CardContent className="flex-1 overflow-y-auto">
+              <CardContent className="flex-1 overflow-y-auto h-full">
                 {filteredConversations.length > 0 ? (
                   <div className="space-y-2">
                     {filteredConversations.map(([userId, msgs]: [string, any]) => {
@@ -312,7 +312,7 @@ export function Messages() {
 
             {selectedConversation ? (
               <Card className="flex flex-col h-full overflow-hidden" style={{ minHeight: 0 }}>
-                <CardHeader className="border-b">
+                <CardHeader className="border-b shrink-0">
                   <div className="flex items-center justify-between">
                     <CardTitle className="text-lg">
                       {getOtherUserName(selectedConversation)}와의 대화
@@ -325,7 +325,7 @@ export function Messages() {
                   </div>
                 </CardHeader>
 
-                <CardContent className="flex-1 overflow-y-auto p-4 space-y-4 flex flex-col-reverse" style={{ minHeight: 0 }}>
+                <CardContent className="flex-1 overflow-y-auto p-4 space-y-4 flex flex-col-reverse min-h-0" style={{ minHeight: 0 }}>
                   {conversation && conversation.length > 0 ? (
                     <>
                       <div ref={messagesEndRef} />
@@ -362,7 +362,7 @@ export function Messages() {
                   )}
                 </CardContent>
 
-                <CardContent className="border-t pt-4 space-y-3 flex-shrink-0">
+                <CardContent className="border-t pt-4 space-y-3 shrink-0">
                   <div className="grid grid-cols-3 gap-2">
                     <Button
                       variant="outline"
