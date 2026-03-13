@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { trpc } from "@/lib/trpc";
 import { Link, useLocation } from "wouter";
 import { GraduationCap, CheckCircle, AlertCircle, Clock, Upload, X, Loader2, Shield, ShieldCheck, ShieldAlert, ShieldOff, RefreshCw } from "lucide-react";
@@ -563,27 +564,39 @@ export default function MentorProfile() {
                           <Label className="text-sm font-medium">
                             지역 <span className="text-red-500">*</span>
                           </Label>
-                          <div className="border rounded-md p-3 bg-white max-h-40 overflow-y-auto" id="regions">
-                            <div className="grid grid-cols-2 gap-2">
-                              {Object.entries(REGION_LABELS).map(([value, label]) => (
-                                <label key={value} className="flex items-center space-x-2 cursor-pointer">
-                                  <input
-                                    type="checkbox"
-                                    checked={regions.includes(value as any)}
-                                    onChange={(e) => {
-                                      if (e.target.checked) {
-                                        setRegions([...regions, value as any]);
-                                      } else {
-                                        setRegions(regions.filter(r => r !== value));
-                                      }
-                                    }}
-                                    className="w-4 h-4 rounded border-gray-300"
-                                  />
-                                  <span className="text-sm">{label}</span>
-                                </label>
-                              ))}
-                            </div>
-                          </div>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <Button
+                                variant="outline"
+                                className={`w-full justify-start text-left font-normal ${emptyFields.has("regions") ? "border-red-400" : ""}`}
+                              >
+                                {regions.length > 0
+                                  ? `${regions.length}개 지역 선택됨`
+                                  : "지역 선택"}
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-56 p-3" align="start">
+                              <div className="grid grid-cols-2 gap-2">
+                                {Object.entries(REGION_LABELS).map(([value, label]) => (
+                                  <label key={value} className="flex items-center space-x-2 cursor-pointer">
+                                    <input
+                                      type="checkbox"
+                                      checked={regions.includes(value as any)}
+                                      onChange={(e) => {
+                                        if (e.target.checked) {
+                                          setRegions([...regions, value as any]);
+                                        } else {
+                                          setRegions(regions.filter(r => r !== value));
+                                        }
+                                      }}
+                                      className="w-4 h-4 rounded border-gray-300"
+                                    />
+                                    <span className="text-sm">{label}</span>
+                                  </label>
+                                ))}
+                              </div>
+                            </PopoverContent>
+                          </Popover>
                           {emptyFields.has("regions") && (
                             <p className="text-xs text-red-500">지역을 선택해주세요.</p>
                           )}
