@@ -7,7 +7,7 @@ import { trpc } from "@/lib/trpc";
 import { Link } from "wouter";
 import { GraduationCap, Send, MessageSquare, Check, X, Clock, CheckCircle2, Trash2, ChevronDown, AlertCircle, Menu, X as XIcon } from "lucide-react";
 import { useAuth } from "@/_core/hooks/useAuth";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { getLoginUrl } from "@/const";
 import { toast } from "sonner";
 import { format, formatDistanceToNow } from "date-fns";
@@ -33,6 +33,23 @@ export default function Messages() {
   const [searchQuery, setSearchQuery] = useState("");
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // 텍스트 영역 높이 자동 조정
+  const adjustTextareaHeight = useCallback(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      const newHeight = Math.min(textareaRef.current.scrollHeight, 120);
+      textareaRef.current.style.height = `${newHeight}px`;
+    }
+  }, []);
+
+  // 메시지 입력 시 높이 조정
+  const handleMessageChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setMessageContent(e.target.value);
+    adjustTextareaHeight();
+  };
 
   // If another page (e.g., MentorDetail) asked us to open a specific conversation,
   // read it once from sessionStorage.
@@ -120,8 +137,11 @@ export default function Messages() {
       content: messageContent,
     });
     
-    // 메시지 전송 후 입력창 포커스 유지
+    // 메시지 전송 후 입력창 초기화 및 높이 조정
     setTimeout(() => {
+      if (textareaRef.current) {
+        textareaRef.current.style.height = 'auto';
+      }
       scrollToBottom();
     }, 150);
   };
@@ -225,13 +245,13 @@ export default function Messages() {
   return (
     <PageLayout>
       {/* Content */}
-      <div className="container mx-auto px-4 py-8 h-screen flex flex-col">
+      <div ref={containerRef} className="container mx-auto px-4 py-8 h-screen flex flex-col">
         <div className="mb-6">
           <h1 className="text-3xl font-bold">상담 조율</h1>
           <p className="text-muted-foreground mt-1">상담 일정, 시간, 장소를 조율하세요</p>        
         </div>
 
-        <div className="flex-1 flex gap-4 overflow-hidden">
+        <div className="flex-1 flex gap-4 overflow-hidden min-h-0">
           {/* Sidebar - Conversations List */}
           <div className={`${sidebarOpen ? 'w-80' : 'w-0'} transition-all duration-300 overflow-hidden flex flex-col`}>
             <Card className="h-full flex flex-col border-r">
@@ -307,7 +327,7 @@ export default function Messages() {
           </div>
 
           {/* Main Conversation Area */}
-          <div className="flex-1 flex flex-col overflow-hidden">
+          <div className="flex-1 flex flex-col overflow-hidden min-h-0">
             {/* Toggle Sidebar Button */}
             <div className="mb-4">
               <Button
@@ -322,7 +342,7 @@ export default function Messages() {
             </div>
 
             {selectedConversation ? (
-              <Card className="flex flex-col h-full overflow-hidden">
+              <Card className="flex flex-col h-full overflow-hidden min-h-0">
                 <CardHeader className="border-b">
                   <div className="flex items-center justify-between">
                     <CardTitle className="text-lg">
@@ -336,7 +356,7 @@ export default function Messages() {
                   </div>
                 </CardHeader>
 
-                <CardContent className="flex-1 overflow-y-auto p-4 space-y-4 flex flex-col-reverse">
+                <CardContent className="flex-1 overflow-y-auto p-4 space-y-4 flex flex-col-reverse min-h-0">
                   {conversation && conversation.length > 0 ? (
                     <>
                       <div ref={messagesEndRef} />
@@ -411,16 +431,21 @@ export default function Messages() {
                   </div>
 
                   <Textarea
+                    ref={textareaRef}
                     placeholder="메시지를 입력하세요..."
                     value={messageContent}
-                    onChange={(e) => setMessageContent(e.target.value)}
+                    onChange={handleMessageChange}
                     onKeyDown={(e) => {
                       if (e.key === "Enter" && e.ctrlKey) {
                         handleSendMessage();
                       }
                     }}
-                    className="resize-none"
-                    rows={3}
+                    className="resize-none overflow-hidden"
+                    style={{
+                      minHeight: '48px',
+                      maxHeight: '120px',
+                      height: 'auto'
+                    }}
                   />
                   <Button
                     onClick={handleSendMessage}
