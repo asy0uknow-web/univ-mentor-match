@@ -1145,5 +1145,6 @@
 - [x] 대화 메시지 정렬 순서를 최신순에서 오래된 순으로 변경
   - [x] CardContent의 flex-col-reverse 제거
   - [x] 메시지 reverse() 제거
-  - [x] messagesEndRef 위치 동적 조정 (땘단으로 이동)
-  - [x] 모든 테스트 통과 (101/102 - 기존 버그 제외)
+  - [x] messagesEndRef 위치 동적 조정 (하단으로 이동)
+  - [x] CardContent를 div로 변경하여 Flexbox 레이아웃 정상 동작
+  - [x] 모든 테스트 통과 (102/102)

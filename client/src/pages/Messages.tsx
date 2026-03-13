@@ -325,7 +325,7 @@ export function Messages() {
                   </div>
                 </CardHeader>
 
-                <CardContent className="flex-1 overflow-y-auto p-4 space-y-4 flex flex-col min-h-0" style={{ minHeight: 0 }}>
+                <div className="flex-1 overflow-y-auto p-4 space-y-4 flex flex-col min-h-0" style={{ minHeight: 0 }}>
                   {conversation && conversation.length > 0 ? (
                     <>
                       {conversation.map((msg: any, idx: number) => (
@@ -360,7 +360,7 @@ export function Messages() {
                       </p>
                     </div>
                   )}
-                </CardContent>
+                </div>
 
                 <CardContent className="border-t pt-4 space-y-3 shrink-0">
                   <div className="grid grid-cols-3 gap-2">
