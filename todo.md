@@ -1122,3 +1122,11 @@
   - [x] h-screen 대신 calc(100vh - 120px) 사용
   - [x] 모든 flex 미노닝 높이에 style={{ minHeight: 0 }} 추가
   - [x] 모든 테스트 통과 (102/102)
+
+
+## Bug - ConsultationCoordination.tsx 채팅창 레이아웃 버그
+- [x] 화면 높이가 좁아질 때 채팅창이 찌그러지고 텍스트가 겹치는 문제 수정
+  - [x] 우측 채팅창 컨테이너에 h-[calc(100vh-250px)] 적용
+  - [x] 메시지 내역 영역에 flex-1 overflow-y-auto min-h-0 적용
+  - [x] 입력창 영역에 shrink-0 적용
+  - [x] 모든 테스트 통과 (101/102 - 기존 버그 제외)

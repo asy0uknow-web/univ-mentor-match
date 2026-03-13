@@ -311,7 +311,7 @@ export function Messages() {
             </div>
 
             {selectedConversation ? (
-              <Card className="flex flex-col h-full overflow-hidden" style={{ minHeight: 0 }}>
+              <Card className="flex flex-col h-[calc(100vh-250px)] overflow-hidden" style={{ minHeight: 0 }}>
                 <CardHeader className="border-b">
                   <div className="flex items-center justify-between">
                     <CardTitle className="text-lg">
@@ -325,7 +325,7 @@ export function Messages() {
                   </div>
                 </CardHeader>
 
-                <CardContent className="flex-1 overflow-y-auto p-4 space-y-4 flex flex-col-reverse" style={{ minHeight: 0 }}>
+                <CardContent className="flex-1 overflow-y-auto p-4 space-y-4 flex flex-col-reverse min-h-0" style={{ minHeight: 0 }}>
                   {conversation && conversation.length > 0 ? (
                     <>
                       <div ref={messagesEndRef} />
@@ -362,7 +362,7 @@ export function Messages() {
                   )}
                 </CardContent>
 
-                <CardContent className="border-t pt-4 space-y-3 flex-shrink-0">
+                <CardContent className="border-t pt-4 space-y-3 shrink-0">
                   <div className="grid grid-cols-3 gap-2">
                     <Button
                       variant="outline"
