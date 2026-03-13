@@ -60,7 +60,7 @@ export default function MentorProfile() {
   const [grade, setGrade] = useState<"1" | "2" | "3" | "4" | "graduate">("1");
   const [bio, setBio] = useState("");
 
-  const [region, setRegion] = useState<"seoul" | "gyeonggi" | "incheon" | "gangwon" | "chungcheong" | "jeolla" | "gyeongsang" | "jeju" | undefined>();
+  const [regions, setRegions] = useState<Array<"seoul" | "gyeonggi" | "incheon" | "gangwon" | "chungcheong" | "jeolla" | "gyeongsang" | "jeju">>([]);
   const [dragActive, setDragActive] = useState(false);
   const [uploadedImages, setUploadedImages] = useState<Array<{ url: string; caption: string }>>([]);
   const [isUploading, setIsUploading] = useState(false);
@@ -167,7 +167,7 @@ export default function MentorProfile() {
       setGrade(profile.grade);
       setBio(profile.bio || "");
 
-      setRegion(profile.region || undefined);
+      setRegions(profile.region ? [profile.region] : []);
     }
   }, [profile]);
 
@@ -260,7 +260,7 @@ export default function MentorProfile() {
     if (!university) empty.add("university");
     if (!major) empty.add("major");
 
-    if (!region) empty.add("region");
+    if (regions.length === 0) empty.add("regions");
 
     if (empty.size > 0) {
       setEmptyFields(empty);
@@ -283,7 +283,7 @@ export default function MentorProfile() {
         grade,
         bio,
         hourlyRate: "0",
-        region,
+        region: regions[0] || null,
       });
     } else {
       createProfileMutation.mutate({
@@ -292,7 +292,7 @@ export default function MentorProfile() {
         grade,
         bio,
         hourlyRate: "0",
-        region,
+        region: regions[0] || null,
       });
     }
   };
@@ -559,25 +559,35 @@ export default function MentorProfile() {
                             </SelectContent>
                           </Select>
                         </div>
-                      </div>
-
-                      <div className="space-y-1.5">
-                        <Label htmlFor="region" className="text-sm font-medium">
-                          지역 <span className="text-red-500">*</span>
-                        </Label>
-                        <Select value={region || ""} onValueChange={(value: any) => setRegion(value || undefined)}>
-                          <SelectTrigger id="region" className={emptyFields.has("region") ? "border-red-400" : ""}>
-                            <SelectValue placeholder="지역 선택" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {Object.entries(REGION_LABELS).map(([value, label]) => (
-                              <SelectItem key={value} value={value}>{label}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        {emptyFields.has("region") && (
-                          <p className="text-xs text-red-500">지역을 선택해주세요.</p>
-                        )}
+                        <div className="space-y-1.5">
+                          <Label className="text-sm font-medium">
+                            지역 <span className="text-red-500">*</span>
+                          </Label>
+                          <div className="border rounded-md p-3 bg-white max-h-40 overflow-y-auto" id="regions">
+                            <div className="grid grid-cols-2 gap-2">
+                              {Object.entries(REGION_LABELS).map(([value, label]) => (
+                                <label key={value} className="flex items-center space-x-2 cursor-pointer">
+                                  <input
+                                    type="checkbox"
+                                    checked={regions.includes(value as any)}
+                                    onChange={(e) => {
+                                      if (e.target.checked) {
+                                        setRegions([...regions, value as any]);
+                                      } else {
+                                        setRegions(regions.filter(r => r !== value));
+                                      }
+                                    }}
+                                    className="w-4 h-4 rounded border-gray-300"
+                                  />
+                                  <span className="text-sm">{label}</span>
+                                </label>
+                              ))}
+                            </div>
+                          </div>
+                          {emptyFields.has("regions") && (
+                            <p className="text-xs text-red-500">지역을 선택해주세요.</p>
+                          )}
+                        </div>
                       </div>
 
                       <div className="space-y-1.5">
