@@ -1077,3 +1077,22 @@
   - [x] App.tsx에 라우팅 추가 (/privacy-policy)
 - [x] 전체 테스트 실행 및 검증 (102/102 통과)
 - [x] 프로젝트 상태 확인 (정상 작동)
+
+
+## pt 2.6 - 멘토/멘티 프로필 페이지 분리
+- [x] 멘티용 별도 프로필 페이지 생성 (StudentProfile.tsx)
+  - [x] 멘토 프로필 확인 로직 추가 (trpc.mentor.getMyProfile)
+  - [x] 멘토인 경우 MentorProfile로 자동 리다이렉트
+  - [x] 멘토 찾기 버튼 추가
+  - [x] 멘토 등록 안내 카드 추가
+  - [x] 반응형 디자인 적용
+- [x] MentorProfile 페이지를 멘토 전용으로 변경
+  - [x] 멘티가 접속하면 자동으로 StudentProfile로 리다이렉트
+  - [x] 멘토 프로필 페이지 헬더 명확히 유지
+- [x] 라우팅 및 네비게이션 업데이트
+  - [x] App.tsx에 StudentProfile 라우트 추가 (/student-profile)
+  - [x] StudentProfile 동적 로드 설정
+- [x] 전체 테스트 및 검증
+  - [x] 멘토 접속 시 MentorProfile 줜시 (자동 리다이렉트)
+  - [x] 멘티 접속 시 StudentProfile 줜시 (자동 리다이렉트)
+  - [x] 모든 테스트 통과 확인 (102/102)

@@ -51,6 +51,18 @@ export default function MentorProfile() {
 
   const { user, isAuthenticated } = useAuth();
   const [, setLocation] = useLocation();
+
+  // 멘티인 경우 StudentProfile 페이지로 리다이렉트
+  const { data: profile, isLoading } = trpc.mentor.getMyProfile.useQuery(undefined, {
+    enabled: isAuthenticated,
+  });
+
+  useEffect(() => {
+    if (!isLoading && !profile && isAuthenticated) {
+      setLocation("/student-profile");
+    }
+  }, [profile, isLoading, isAuthenticated, setLocation]);
+
   const [university, setUniversity] = useState("");
   const [major, setMajor] = useState("");
   const [grade, setGrade] = useState<"1" | "2" | "3" | "4" | "graduate">("1");
@@ -85,10 +97,6 @@ export default function MentorProfile() {
       setConsultationTypes(myConsultationTypes.map((ct: any) => ct.consultationType));
     }
   }, [myConsultationTypes]);
-
-  const { data: profile, isLoading } = trpc.mentor.getMyProfile.useQuery(undefined, {
-    enabled: isAuthenticated,
-  });
 
   const { data: verification, refetch: refetchVerification } = trpc.verification.getMyVerification.useQuery(undefined, {
     enabled: isAuthenticated,

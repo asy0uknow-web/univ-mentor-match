@@ -2,8 +2,8 @@ import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { trpc } from "@/lib/trpc";
-import { Link } from "wouter";
-import { MessageCircle, Calendar, User, Mail, Phone, LogOut } from "lucide-react";
+import { Link, useLocation } from "wouter";
+import { MessageCircle, Calendar, User, Mail, Phone, LogOut, Search, Loader2 } from "lucide-react";
 import { useEffect } from "react";
 import { getLoginUrl } from "@/const";
 import { PageLayout } from "@/components/layout";
@@ -14,7 +14,30 @@ export default function StudentProfile() {
     setPageMeta(PAGE_META.profile);
   }, []);
 
-  const { user, isAuthenticated, logout } = useAuth();
+  const { user, isAuthenticated, logout, loading } = useAuth();
+  const [, setLocation] = useLocation();
+
+  // 멘토 프로필 확인
+  const { data: mentorProfile } = trpc.mentor.getMyProfile.useQuery(undefined, {
+    enabled: isAuthenticated,
+  });
+
+  // 멘토인 경우 MentorProfile 페이지로 리다이렉트
+  useEffect(() => {
+    if (!loading && mentorProfile) {
+      setLocation("/my-profile");
+    }
+  }, [mentorProfile, loading, setLocation]);
+
+  if (loading) {
+    return (
+      <PageLayout>
+        <div className="flex items-center justify-center min-h-screen">
+          <Loader2 className="h-8 w-8 animate-spin text-green-500" />
+        </div>
+      </PageLayout>
+    );
+  }
 
   if (!isAuthenticated) {
     return (
@@ -92,7 +115,7 @@ export default function StudentProfile() {
               <div className="text-center py-8 text-muted-foreground">
                 <p className="mb-4">아직 신청한 상담이 없습니다.</p>
                 <Link href="/mentors">
-                  <Button>멘토 찾기</Button>
+                  <Button className="bg-green-600 hover:bg-green-700 text-white">멘토 찾기</Button>
                 </Link>
               </div>
             </CardContent>
@@ -131,17 +154,67 @@ export default function StudentProfile() {
             </CardContent>
           </Card>
 
+          {/* 멘토 찾기 안내 카드 */}
+          <Card className="mb-6 border-blue-200 bg-blue-50 shadow-sm">
+            <CardContent className="pt-6">
+              <div className="flex items-start gap-3">
+                <div className="w-9 h-9 rounded-xl bg-blue-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <Search className="h-4 w-4 text-blue-600" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-semibold text-blue-900 mb-1">
+                    멘토를 찾고 있으신가요?
+                  </h3>
+                  <p className="text-sm text-blue-800 mb-3">
+                    전문 멘토들과 함께 대학 입시, 진로 상담, 학업 관리 등 다양한 도움을 받을 수 있습니다.
+                  </p>
+                  <Link href="/mentors">
+                    <Button
+                      className="bg-blue-600 hover:bg-blue-700 text-white"
+                      size="sm"
+                    >
+                      <Search className="h-4 w-4 mr-2" />
+                      멘토 찾기
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* 멘토 등록 안내 카드 */}
+          <Card className="mb-6 border-amber-200 bg-amber-50 shadow-sm">
+            <CardContent className="pt-6">
+              <div className="flex items-start gap-3">
+                <div className="w-9 h-9 rounded-xl bg-amber-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <User className="h-4 w-4 text-amber-600" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-semibold text-amber-900 mb-1">
+                    멘토로 활동하고 싶으신가요?
+                  </h3>
+                  <p className="text-sm text-amber-800 mb-3">
+                    대학생이라면 누구나 멘토로 등록하여 후배들을 도와줄 수 있습니다. 멘토 활동으로 보람찬 경험을 쌓아보세요.
+                  </p>
+                  <Link href="/my-profile">
+                    <Button
+                      className="bg-amber-600 hover:bg-amber-700 text-white"
+                      size="sm"
+                    >
+                      멘토 등록하기
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
           {/* 계정 관리 */}
           <Card className="border-red-200 bg-red-50">
             <CardHeader>
               <CardTitle className="text-base">계정 관리</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
-              <Link href="/my-profile">
-                <Button variant="outline" className="w-full">
-                  개인 정보 수정
-                </Button>
-              </Link>
               <Button
                 variant="destructive"
                 className="w-full"

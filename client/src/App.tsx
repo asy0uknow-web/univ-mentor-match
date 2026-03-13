@@ -20,6 +20,7 @@ const DeleteAccount = lazy(() => import("./pages/DeleteAccount"));
 const AdminBugReports = lazy(() => import("./pages/AdminBugReports"));
 const CompleteProfile = lazy(() => import("./pages/CompleteProfile"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
+const StudentProfile = lazy(() => import("./pages/StudentProfile"));
 
 function Router() {
   return (
@@ -29,6 +30,7 @@ function Router() {
         <Route path={"/mentors"} component={Mentors} />
         <Route path={"/mentor/:id"} component={MentorDetail} />
         <Route path={"/my-profile"} component={MentorProfile} />
+        <Route path={"/student-profile"} component={StudentProfile} />
         <Route path={"/bookings"} component={Bookings} />
         <Route path={"/notifications"} component={Notifications} />
         <Route path={"/messages"} component={Messages} />
