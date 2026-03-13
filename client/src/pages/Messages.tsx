@@ -1,6 +1,6 @@
-'use client';
+import PageLayout from "@/components/layout/PageLayout";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { trpc } from "@/lib/trpc";
@@ -12,23 +12,13 @@ import { getLoginUrl } from "@/const";
 import { toast } from "sonner";
 import { format, formatDistanceToNow } from "date-fns";
 import { ko } from "date-fns/locale";
-import { PageLayout } from "@/components/layout";
-import { setPageMeta, PAGE_META } from "@/lib/seo";
 
-// Shared keys with MentorDetail / Bookings etc.
-// We use sessionStorage to pass "open this conversation" intent when navigating
-// to /messages, without relying on query strings (router-safe).
-const OPEN_CONVERSATION_KEY = "univmatch:openConversationUserId";
-const DRAFT_MESSAGE_KEY = "univmatch:draftMessage";
+const COOKIE_NAME = "session_id";
 
-export default function Messages() {
-
-  useEffect(() => {
-    setPageMeta(PAGE_META.messages);
-  }, []);
+export function Messages() {
   const { user, isAuthenticated } = useAuth();
-  const [selectedConversation, setSelectedConversation] = useState<number | null>(null);
   const [messageContent, setMessageContent] = useState("");
+  const [selectedConversation, setSelectedConversation] = useState<number | null>(null);
   const [consultationType, setConsultationType] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -54,34 +44,13 @@ export default function Messages() {
   // If another page (e.g., MentorDetail) asked us to open a specific conversation,
   // read it once from sessionStorage.
   useEffect(() => {
-    if (!isAuthenticated) return;
-
-    try {
-      const rawUserId = sessionStorage.getItem(OPEN_CONVERSATION_KEY);
-      if (rawUserId) {
-        const otherUserId = Number(rawUserId);
-        if (!Number.isNaN(otherUserId) && otherUserId > 0) {
-          setSelectedConversation(otherUserId);
-        }
-        sessionStorage.removeItem(OPEN_CONVERSATION_KEY);
-      }
-
-      const draft = sessionStorage.getItem(DRAFT_MESSAGE_KEY);
-      if (draft && draft.trim().length > 0) {
-        // Only prefill if the input is still empty to avoid overwriting user typing.
-        setMessageContent((prev) => (prev.trim().length === 0 ? draft : prev));
-        sessionStorage.removeItem(DRAFT_MESSAGE_KEY);
-      }
-
-      const type = sessionStorage.getItem("univmatch:consultationType");
-      if (type) {
-        setConsultationType(type);
-        sessionStorage.removeItem("univmatch:consultationType");
-      }
-    } catch {
-      // Ignore storage errors (private mode, restrictive browsers, etc.)
+    const storedConversationId = sessionStorage.getItem("openConversationId");
+    if (storedConversationId) {
+      setSelectedConversation(parseInt(storedConversationId));
+      sessionStorage.removeItem("openConversationId");
     }
-  }, [isAuthenticated]);
+  }, []);
+
   const { data: inbox } = trpc.message.getInbox.useQuery(undefined, {
     enabled: isAuthenticated,
   });
@@ -91,35 +60,27 @@ export default function Messages() {
     { enabled: isAuthenticated && selectedConversation !== null }
   );
 
+  // 멘토 프로필 정보 조회
+  const { data: mentorProfile } = trpc.mentor.getById.useQuery(
+    { mentorId: selectedConversation || 0 },
+    { enabled: isAuthenticated && selectedConversation !== null }
+  );
 
   // 자동 스크롤 - 새 메시지가 추가되면 하단으로 스크롤
   const scrollToBottom = () => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-    }
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   useEffect(() => {
-    // 대화 데이터가 변경될 때마다 스크롤
-    if (conversation && conversation.length > 0) {
-      setTimeout(() => {
-        scrollToBottom();
-      }, 50);
-    }
-  }, [conversation, conversation?.length]);
-
-  const utils = trpc.useUtils();
+    scrollToBottom();
+  }, [conversation]);
 
   const sendMessageMutation = trpc.message.send.useMutation({
     onSuccess: () => {
       setMessageContent("");
-      toast.success("메시지가 전송되었습니다.");
-      utils.message.getConversation.invalidate();
-      utils.message.getInbox.invalidate();
-      // 메시지 전송 후 약간의 지연 후 스크롤
-      setTimeout(() => {
-        scrollToBottom();
-      }, 100);
+      if (textareaRef.current) {
+        textareaRef.current.style.height = 'auto';
+      }
     },
     onError: (error) => {
       toast.error(`메시지 전송 실패: ${error.message}`);
@@ -149,24 +110,6 @@ export default function Messages() {
   const insertTemplate = (template: string) => {
     setMessageContent((prev) => (prev ? prev + "\n\n" + template : template));
   };
-
-  if (!isAuthenticated) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Card className="max-w-md">
-          <CardHeader>
-            <CardTitle>로그인이 필요합니다</CardTitle>
-            <CardDescription>메시지를 보려면 로그인해주세요.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <a href={getLoginUrl()}>
-              <Button className="w-full">로그인</Button>
-            </a>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
 
   // Group messages by conversation
   const conversations = inbox?.reduce((acc: any, msg) => {
@@ -204,6 +147,13 @@ export default function Messages() {
       }
     }
     
+    // 멘토 프로필에서 사용자 정보 조회
+    if (userId === selectedConversation && mentorProfile) {
+      // 멘토 프로필에는 name 필드가 없으므로, 메시지에서 이름을 찾지 못하면
+      // 멘토 대학 이름과 전공으로 표시
+      return mentorProfile.profile?.major || mentorProfile.profile?.university || `User ${userId}`;
+    }
+    
     return `User ${userId}`;
   };
 
@@ -220,17 +170,16 @@ export default function Messages() {
 
 
   const getConsultationTypeLabel = (type: string | null) => {
-    if (!type) return "";
-    const typeLabels: Record<string, string> = {
-      "career_counseling": "진로상담",
-      "university_tour": "대학탐방",
-      "resume_consulting": "생기부컨설팅",
-      "academic_management": "학업관리"
+    const labels: Record<string, string> = {
+      career: "커리어 상담",
+      academic: "학업 상담",
+      major: "전공 상담",
+      university_life: "대학생활 상담",
+      other: "기타 상담",
     };
-    return typeLabels[type] || "";
+    return labels[type || ""] || type || "상담";
   };
 
-  // 상대적 시간 표시 함수
   const getRelativeTime = (date: string | Date) => {
     try {
       return formatDistanceToNow(new Date(date), { 
@@ -242,16 +191,36 @@ export default function Messages() {
     }
   };
 
+  if (!isAuthenticated) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Card className="w-full max-w-md">
+          <CardHeader>
+            <CardTitle>로그인 필요</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-muted-foreground mb-4">
+              상담을 조율하려면 로그인이 필요합니다.
+            </p>
+            <a href={getLoginUrl()}>
+              <Button className="w-full">로그인</Button>
+            </a>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <PageLayout>
       {/* Content */}
-      <div ref={containerRef} className="container mx-auto px-4 py-8 h-screen flex flex-col">
+      <div ref={containerRef} className="container mx-auto px-4 py-8 flex flex-col" style={{ height: 'calc(100vh - 120px)' }}>
         <div className="mb-6">
           <h1 className="text-3xl font-bold">상담 조율</h1>
           <p className="text-muted-foreground mt-1">상담 일정, 시간, 장소를 조율하세요</p>        
         </div>
 
-        <div className="flex-1 flex gap-4 overflow-hidden min-h-0">
+        <div className="flex-1 flex gap-4 overflow-hidden" style={{ minHeight: 0 }}>
           {/* Sidebar - Conversations List */}
           <div className={`${sidebarOpen ? 'w-80' : 'w-0'} transition-all duration-300 overflow-hidden flex flex-col`}>
             <Card className="h-full flex flex-col border-r">
@@ -327,7 +296,7 @@ export default function Messages() {
           </div>
 
           {/* Main Conversation Area */}
-          <div className="flex-1 flex flex-col overflow-hidden min-h-0">
+          <div className="flex-1 flex flex-col overflow-hidden" style={{ minHeight: 0 }}>
             {/* Toggle Sidebar Button */}
             <div className="mb-4">
               <Button
@@ -342,7 +311,7 @@ export default function Messages() {
             </div>
 
             {selectedConversation ? (
-              <Card className="flex flex-col h-full overflow-hidden min-h-0">
+              <Card className="flex flex-col h-full overflow-hidden" style={{ minHeight: 0 }}>
                 <CardHeader className="border-b">
                   <div className="flex items-center justify-between">
                     <CardTitle className="text-lg">
@@ -356,7 +325,7 @@ export default function Messages() {
                   </div>
                 </CardHeader>
 
-                <CardContent className="flex-1 overflow-y-auto p-4 space-y-4 flex flex-col-reverse min-h-0">
+                <CardContent className="flex-1 overflow-y-auto p-4 space-y-4 flex flex-col-reverse" style={{ minHeight: 0 }}>
                   {conversation && conversation.length > 0 ? (
                     <>
                       <div ref={messagesEndRef} />
@@ -393,7 +362,7 @@ export default function Messages() {
                   )}
                 </CardContent>
 
-                <CardContent className="border-t pt-4 space-y-3">
+                <CardContent className="border-t pt-4 space-y-3 flex-shrink-0">
                   <div className="grid grid-cols-3 gap-2">
                     <Button
                       variant="outline"
@@ -473,3 +442,5 @@ export default function Messages() {
     </PageLayout>
   );
 }
+
+export default Messages;
