@@ -1,4 +1,3 @@
-import PageLayout from "@/components/layout/PageLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,7 +14,7 @@ import { ko } from "date-fns/locale";
 
 const COOKIE_NAME = "session_id";
 
-export function Messages() {
+export default function Messages() {
   const { user, isAuthenticated } = useAuth();
   const [messageContent, setMessageContent] = useState("");
   const [selectedConversation, setSelectedConversation] = useState<number | null>(null);
@@ -30,7 +29,7 @@ export function Messages() {
   const adjustTextareaHeight = useCallback(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
-      const newHeight = Math.min(textareaRef.current.scrollHeight, 120);
+      const newHeight = Math.min(textareaRef.current.scrollHeight, 100);
       textareaRef.current.style.height = `${newHeight}px`;
     }
   }, []);
@@ -51,168 +50,110 @@ export function Messages() {
     }
   }, []);
 
-  const { data: inbox } = trpc.message.getInbox.useQuery(undefined, {
+  // Fetch conversations
+  const conversationsQuery = trpc.message.getInbox.useQuery(undefined, {
     enabled: isAuthenticated,
   });
 
-  const { data: conversation } = trpc.message.getConversation.useQuery(
-    { otherUserId: selectedConversation || 0 },
+  // Fetch conversation with selected user
+  const conversationQuery = trpc.message.getConversation.useQuery(
+    { otherUserId: selectedConversation! },
     { enabled: isAuthenticated && selectedConversation !== null }
   );
 
-  // 멘토 프로필 정보 조회
-  const { data: mentorProfile } = trpc.mentor.getById.useQuery(
-    { mentorId: selectedConversation || 0 },
-    { enabled: isAuthenticated && selectedConversation !== null }
-  );
-
-  // 자동 스크롤 - 새 메시지가 추가되면 하단으로 스크롤
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [conversation]);
-
+  // Send message mutation
   const sendMessageMutation = trpc.message.send.useMutation({
     onSuccess: () => {
       setMessageContent("");
       if (textareaRef.current) {
         textareaRef.current.style.height = 'auto';
       }
+      conversationQuery.refetch();
+      conversationsQuery.refetch();
     },
     onError: (error) => {
-      toast.error(`메시지 전송 실패: ${error.message}`);
+      toast.error(error.message || "메시지 전송에 실패했습니다.");
     },
   });
 
-  const handleSendMessage = () => {
-    if (!messageContent.trim() || !selectedConversation) {
-      toast.error("메시지 내용을 입력해주세요.");
-      return;
-    }
+  // Insert template text
+  const insertTemplate = (text: string) => {
+    setMessageContent((prev) => (prev ? prev + "\n" + text : text));
+    setTimeout(() => adjustTextareaHeight(), 0);
+  };
 
-    sendMessageMutation.mutate({
+  // Handle send message
+  const handleSendMessage = async () => {
+    if (!messageContent.trim() || !selectedConversation) return;
+
+    await sendMessageMutation.mutateAsync({
       recipientId: selectedConversation,
       content: messageContent,
     });
-    
-    // 메시지 전송 후 입력창 초기화 및 높이 조정
-    setTimeout(() => {
-      if (textareaRef.current) {
-        textareaRef.current.style.height = 'auto';
-      }
-      scrollToBottom();
-    }, 150);
   };
 
-  const insertTemplate = (template: string) => {
-    setMessageContent((prev) => (prev ? prev + "\n\n" + template : template));
-  };
-
-  // Group messages by conversation
-  const conversations = inbox?.reduce((acc: any, msg) => {
-    const otherUserId = msg.senderId === user?.id ? msg.recipientId : msg.senderId;
-    if (!acc[otherUserId]) {
-      acc[otherUserId] = [];
-    }
-    acc[otherUserId].push(msg);
-    return acc;
-  }, {}) || {};
-
-  // Extract user name from messages - MUST be defined before use
+  // Get other user name
   const getOtherUserName = (userId: number) => {
-    const msgs: any[] = conversations[userId] || [];
-    
-    // 메시지 배열에서 해당 사용자의 실명을 찾기
-    for (const msg of msgs) {
-      if (msg.senderId === userId && msg.senderName) {
-        return msg.senderName;
-      }
-      if (msg.recipientId === userId && msg.recipientName) {
-        return msg.recipientName;
-      }
+    if (!conversationQuery.data || conversationQuery.data.length === 0) {
+      return `User ${userId}`;
     }
-    
-    // 선택된 대화의 상대방이면 conversation 데이터에서 이름 찾기
-    if (userId === selectedConversation && conversation && conversation.length > 0) {
-      for (const msg of conversation) {
-        if (msg.senderId === userId && msg.senderName) {
-          return msg.senderName;
-        }
-        if (msg.recipientId === userId && msg.recipientName) {
-          return msg.recipientName;
-        }
-      }
+
+    const firstMsg = conversationQuery.data[0];
+    if (firstMsg.senderId === user?.id) {
+      return firstMsg.recipientName || `User ${userId}`;
+    } else {
+      return firstMsg.senderName || `User ${userId}`;
     }
-    
-    // 멘토 프로필에서 사용자 정보 조회
-    if (userId === selectedConversation && mentorProfile) {
-      // 멘토 프로필에는 name 필드가 없으므로, 메시지에서 이름을 찾지 못하면
-      // 멘토 대학 이름과 전공으로 표시
-      return mentorProfile.profile?.major || mentorProfile.profile?.university || `User ${userId}`;
-    }
-    
-    return `User ${userId}`;
   };
 
-  // Filter conversations based on search query
-  const filteredConversations = Object.entries(conversations).filter(([userId, msgs]: [string, any]) => {
-    const otherUserName = getOtherUserName(parseInt(userId));
-    return otherUserName.toLowerCase().includes(searchQuery.toLowerCase());
-  });
+  // Get relative time
+  const getRelativeTime = (date: string | Date) => {
+    return formatDistanceToNow(new Date(date), {
+      addSuffix: true,
+      locale: ko,
+    });
+  };
 
-  // Find related booking from conversation
-  const selectedConversationMessages = selectedConversation
-    ? conversations[selectedConversation] || []
+  // Filter conversations
+  const filteredConversations = conversationsQuery.data
+    ? Object.entries(
+        conversationsQuery.data.reduce(
+          (acc: Record<string, any[]>, msg: any) => {
+            const userId =
+              msg.senderId === user?.id ? msg.recipientId : msg.senderId;
+            const userName =
+              msg.senderId === user?.id ? msg.recipientName : msg.senderName;
+            if (!acc[userId]) acc[userId] = [];
+            acc[userId].push({ ...msg, displayName: userName });
+            return acc;
+          },
+          {}
+        )
+      ).filter(([_, msgs]) => {
+        const displayName = msgs[0]?.displayName || "";
+        return displayName
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase());
+      })
     : [];
 
-
-  const getConsultationTypeLabel = (type: string | null) => {
-    const labels: Record<string, string> = {
-      career: "커리어 상담",
-      academic: "학업 상담",
-      major: "전공 상담",
-      university_life: "대학생활 상담",
-      other: "기타 상담",
-    };
-    return labels[type || ""] || type || "상담";
-  };
-
-  const getRelativeTime = (date: string | Date) => {
-    try {
-      return formatDistanceToNow(new Date(date), { 
-        addSuffix: true, 
-        locale: ko 
-      });
-    } catch {
-      return format(new Date(date), "PPp", { locale: ko });
-    }
-  };
+  const conversation = conversationQuery.data || [];
 
   if (!isAuthenticated) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Card className="w-full max-w-md">
-          <CardHeader>
-            <CardTitle>로그인 필요</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-muted-foreground mb-4">
-              상담을 조율하려면 로그인이 필요합니다.
-            </p>
-            <a href={getLoginUrl()}>
-              <Button className="w-full">로그인</Button>
-            </a>
-          </CardContent>
-        </Card>
+      <div className="flex items-center justify-center h-screen">
+        <div className="text-center">
+          <p className="text-muted-foreground mb-4">로그인이 필요합니다.</p>
+          <Link href={getLoginUrl()}>
+            <Button>로그인</Button>
+          </Link>
+        </div>
       </div>
     );
   }
 
   return (
-    <PageLayout>
+    <div>
       {/* Content */}
       <div ref={containerRef} className="container mx-auto px-4 py-8 flex flex-col" style={{ height: 'calc(100vh - 120px)' }}>
         <div className="mb-6">
@@ -243,43 +184,24 @@ export function Messages() {
                   <div className="space-y-2">
                     {filteredConversations.map(([userId, msgs]: [string, any]) => {
                       const lastMsg = msgs[0];
-                      const isSelected = parseInt(userId) === selectedConversation;
-                      const isConsultationRequest = lastMsg.content.includes("[상담 신청]");
-                      
+                      const isSelected = selectedConversation === parseInt(userId);
                       return (
                         <button
                           key={userId}
-                          onClick={() => {
-                            setSelectedConversation(parseInt(userId));
-                            // 모바일에서는 자동으로 사이드바 닫기
-                            if (window.innerWidth < 1024) {
-                              setSidebarOpen(false);
-                            }
-                          }}
-                          className={`w-full text-left p-3 rounded-lg transition-all border-2 ${
+                          onClick={() => setSelectedConversation(parseInt(userId))}
+                          className={`w-full text-left p-3 rounded-lg transition-colors ${
                             isSelected
-                              ? "bg-primary/10 border-primary"
-                              : "bg-muted/50 border-transparent hover:bg-muted/80"
+                              ? "bg-primary text-primary-foreground"
+                              : "hover:bg-muted"
                           }`}
                         >
-                          <div className="flex items-start justify-between gap-2">
-                            <div className="flex-1 min-w-0">
-                              <p className="font-semibold text-sm">
-                                {lastMsg.senderId === user?.id
-                                  ? `To: ${getOtherUserName(parseInt(userId))}`
-                                  : `From: ${getOtherUserName(parseInt(userId))}`}
-                              </p>
-                              <p className="text-xs opacity-75 truncate line-clamp-2">
-                                {isConsultationRequest
-                                  ? "상담 신청 메시지"
-                                  : lastMsg.content}
-                              </p>
-                            </div>
-                            {isConsultationRequest && (
-                              <Clock className="h-4 w-4 text-amber-500 flex-shrink-0 mt-1" />
-                            )}
-                          </div>
-                          <p className="text-xs opacity-50 mt-2">
+                          <p className="font-medium text-sm">
+                            {lastMsg.displayName || `User ${userId}`}
+                          </p>
+                          <p className="text-xs opacity-70 truncate mt-1">
+                            {lastMsg.content}
+                          </p>
+                          <p className="text-xs opacity-50 mt-1">
                             {getRelativeTime(lastMsg.createdAt)}
                           </p>
                         </button>
@@ -287,9 +209,11 @@ export function Messages() {
                     })}
                   </div>
                 ) : (
-                  <p className="text-muted-foreground text-center py-8">
-                    아직 메시지가 없습니다.
-                  </p>
+                  <div className="flex items-center justify-center h-full">
+                    <p className="text-muted-foreground text-sm">
+                      대화가 없습니다.
+                    </p>
+                  </div>
                 )}
               </CardContent>
             </Card>
@@ -303,16 +227,14 @@ export function Messages() {
                 variant="outline"
                 size="sm"
                 onClick={() => setSidebarOpen(!sidebarOpen)}
-                className="gap-2"
               >
-                {sidebarOpen ? <XIcon className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
                 {sidebarOpen ? '대화목록 닫기' : '대화목록 열기'}
               </Button>
             </div>
 
             {selectedConversation ? (
-              <Card className="flex flex-col h-[calc(100vh-250px)] overflow-hidden" style={{ minHeight: 0 }}>
-                <CardHeader className="border-b">
+              <Card className="flex flex-col h-[calc(100vh-200px)] overflow-hidden" style={{ minHeight: 0 }}>
+                <CardHeader className="border-b shrink-0">
                   <div className="flex items-center justify-between">
                     <CardTitle className="text-lg">
                       {getOtherUserName(selectedConversation)}와의 대화
@@ -362,8 +284,9 @@ export function Messages() {
                   )}
                 </CardContent>
 
-                <CardContent className="border-t pt-4 space-y-3 shrink-0">
-                  <div className="grid grid-cols-3 gap-2">
+                <CardContent className="border-t pt-2 pb-2 px-3 shrink-0 space-y-2">
+                  {/* 도구 모음 - 반응형 */}
+                  <div className="flex gap-1 overflow-x-auto pb-1 -mx-3 px-3">
                     <Button
                       variant="outline"
                       size="sm"
@@ -372,8 +295,11 @@ export function Messages() {
                           "📅 일정 제안\n\n편한 날짜와 시간을 알려주세요."
                         )
                       }
+                      className="flex-shrink-0 text-xs h-8 px-2"
+                      title="일정 제안"
                     >
-                      📅 일정 제안
+                      <span className="hidden sm:inline">📅 일정</span>
+                      <span className="sm:hidden">📅</span>
                     </Button>
                     <Button
                       variant="outline"
@@ -383,8 +309,11 @@ export function Messages() {
                           "📍 장소 제안\n\n어디서 만날까요? (온/오프라인)"
                         )
                       }
+                      className="flex-shrink-0 text-xs h-8 px-2"
+                      title="장소 제안"
                     >
-                      📍 장소 제안
+                      <span className="hidden sm:inline">📍 장소</span>
+                      <span className="sm:hidden">📍</span>
                     </Button>
                     <Button
                       variant="outline"
@@ -394,36 +323,43 @@ export function Messages() {
                           "💳 결제 안내\n\n결제 방법과 일정을 확인해주세요."
                         )
                       }
+                      className="flex-shrink-0 text-xs h-8 px-2"
+                      title="결제 안내"
                     >
-                      💳 결제 안내
+                      <span className="hidden sm:inline">💳 결제</span>
+                      <span className="sm:hidden">💳</span>
                     </Button>
                   </div>
 
-                  <Textarea
-                    ref={textareaRef}
-                    placeholder="메시지를 입력하세요..."
-                    value={messageContent}
-                    onChange={handleMessageChange}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" && e.ctrlKey) {
-                        handleSendMessage();
-                      }
-                    }}
-                    className="resize-none overflow-hidden"
-                    style={{
-                      minHeight: '48px',
-                      maxHeight: '120px',
-                      height: 'auto'
-                    }}
-                  />
-                  <Button
-                    onClick={handleSendMessage}
-                    disabled={!messageContent.trim() || sendMessageMutation.isPending}
-                    className="w-full"
-                  >
-                    <Send className="h-4 w-4 mr-2" />
-                    메시지 전송
-                  </Button>
+                  {/* 메시지 입력 영역 */}
+                  <div className="flex gap-2 items-end">
+                    <Textarea
+                      ref={textareaRef}
+                      placeholder="메시지를 입력하세요..."
+                      value={messageContent}
+                      onChange={handleMessageChange}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" && e.ctrlKey) {
+                          handleSendMessage();
+                        }
+                      }}
+                      className="resize-none overflow-hidden flex-1"
+                      style={{
+                        minHeight: '40px',
+                        maxHeight: '100px',
+                        height: 'auto'
+                      }}
+                    />
+                    <Button
+                      onClick={handleSendMessage}
+                      disabled={!messageContent.trim() || sendMessageMutation.isPending}
+                      size="sm"
+                      className="flex-shrink-0 h-10 w-10 p-0"
+                      title="메시지 전송 (Ctrl+Enter)"
+                    >
+                      <Send className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
             ) : (
@@ -439,8 +375,6 @@ export function Messages() {
           </div>
         </div>
       </div>
-    </PageLayout>
+    </div>
   );
 }
-
-export default Messages;
