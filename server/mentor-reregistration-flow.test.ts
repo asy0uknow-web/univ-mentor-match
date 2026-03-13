@@ -30,7 +30,7 @@ describe("mentor re-registration full flow", () => {
       grade: "2",
       bio: "테스트 멘토입니다",
       hourlyRate: "30000",
-      field: "engineering",
+
       region: "seoul",
       verificationStatus: "pending",
       isActive: true,

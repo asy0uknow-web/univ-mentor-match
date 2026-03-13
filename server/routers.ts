@@ -35,7 +35,7 @@ import {
   approveMentorVerification,
   rejectMentorVerification,
   updateMentorVerification,
-  getMentorsByField,
+
   getMentorsByRegion,
   getMentorsByFieldAndRegion,
   addGalleryImage,
@@ -923,14 +923,6 @@ export const appRouter = router({
       }),
   }),
   mentorSearch: router({
-    getByField: publicProcedure
-      .input(z.object({
-        field: z.enum(["engineering", "natural_science", "business", "humanities", "education", "liberal_arts", "medicine"]),
-      }))
-      .query(async ({ input }) => {
-        return await getMentorsByField(input.field);
-      }),
-
     getByRegion: publicProcedure
       .input(z.object({
         region: z.enum(["seoul", "gyeonggi", "incheon", "gangwon", "chungcheong", "jeolla", "gyeongsang", "jeju"]),

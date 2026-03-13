@@ -49,8 +49,7 @@ export const mentorProfiles = mysqlTable("mentor_profiles", {
   userId: int("userId").notNull().unique(), // References users.id - UNIQUE constraint to ensure one active profile per user
   university: varchar("university", { length: 255 }).notNull(),
   major: varchar("major", { length: 255 }).notNull(),
-  // Field of study: 이공계, 자연계, 상경계, 어문계, 사범계, 문과계, 의학계
-  field: mysqlEnum("field", ["engineering", "natural_science", "business", "humanities", "education", "liberal_arts", "medicine"]),
+
   // Region: 서울, 경기, 인천, 강원, 충청, 전라, 경상, 제주
   region: mysqlEnum("region", ["seoul", "gyeonggi", "incheon", "gangwon", "chungcheong", "jeolla", "gyeongsang", "jeju"]),
   grade: mysqlEnum("grade", ["1", "2", "3", "4", "graduate"]).notNull(),

@@ -139,7 +139,6 @@ describe('Mentor Registration Flow', () => {
       university: '이화여자대학교',
       major: '화학과',
       grade: '4',
-      field: 'natural_science',
       region: 'seoul',
       hourlyRate: '50000',
       bio: '',
@@ -153,7 +152,7 @@ describe('Mentor Registration Flow', () => {
     expect(profile?.university).toBe('이화여자대학교');
     expect(profile?.major).toBe('화학과');
     expect(profile?.grade).toBe('4');
-    expect(profile?.field).toBe('natural_science');
+
     expect(profile?.region).toBe('seoul');
     expect(Number(profile?.hourlyRate)).toBe(50000);
   });

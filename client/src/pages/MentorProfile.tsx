@@ -22,15 +22,7 @@ const CONSULTATION_TYPE_LABELS: Record<string, string> = {
   academic_management: "학업관리",
 };
 
-const FIELD_LABELS: Record<string, string> = {
-  engineering: "공학",
-  natural_science: "자연과학",
-  business: "경영/경제",
-  humanities: "인문학",
-  education: "교육",
-  liberal_arts: "교양",
-  medicine: "의학",
-};
+
 
 const REGION_LABELS: Record<string, string> = {
   seoul: "서울",
@@ -67,7 +59,7 @@ export default function MentorProfile() {
   const [major, setMajor] = useState("");
   const [grade, setGrade] = useState<"1" | "2" | "3" | "4" | "graduate">("1");
   const [bio, setBio] = useState("");
-  const [field, setField] = useState<"engineering" | "natural_science" | "business" | "humanities" | "education" | "liberal_arts" | "medicine" | undefined>();
+
   const [region, setRegion] = useState<"seoul" | "gyeonggi" | "incheon" | "gangwon" | "chungcheong" | "jeolla" | "gyeongsang" | "jeju" | undefined>();
   const [dragActive, setDragActive] = useState(false);
   const [uploadedImages, setUploadedImages] = useState<Array<{ url: string; caption: string }>>([]);
@@ -174,7 +166,7 @@ export default function MentorProfile() {
       setMajor(profile.major);
       setGrade(profile.grade);
       setBio(profile.bio || "");
-      setField(profile.field || undefined);
+
       setRegion(profile.region || undefined);
     }
   }, [profile]);
@@ -267,7 +259,7 @@ export default function MentorProfile() {
     const empty = new Set<string>();
     if (!university) empty.add("university");
     if (!major) empty.add("major");
-    if (!field) empty.add("field");
+
     if (!region) empty.add("region");
 
     if (empty.size > 0) {
@@ -291,7 +283,6 @@ export default function MentorProfile() {
         grade,
         bio,
         hourlyRate: "0",
-        field,
         region,
       });
     } else {
@@ -301,7 +292,6 @@ export default function MentorProfile() {
         grade,
         bio,
         hourlyRate: "0",
-        field,
         region,
       });
     }
@@ -568,24 +558,6 @@ export default function MentorProfile() {
                               <SelectItem value="graduate">대학원</SelectItem>
                             </SelectContent>
                           </Select>
-                        </div>
-                        <div className="space-y-1.5">
-                          <Label htmlFor="field" className="text-sm font-medium">
-                            분야 <span className="text-red-500">*</span>
-                          </Label>
-                          <Select value={field || ""} onValueChange={(value: any) => setField(value || undefined)}>
-                            <SelectTrigger id="field" className={emptyFields.has("field") ? "border-red-400" : ""}>
-                              <SelectValue placeholder="분야 선택" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {Object.entries(FIELD_LABELS).map(([value, label]) => (
-                                <SelectItem key={value} value={value}>{label}</SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          {emptyFields.has("field") && (
-                            <p className="text-xs text-red-500">분야를 선택해주세요.</p>
-                          )}
                         </div>
                       </div>
 

@@ -480,7 +480,7 @@ function MentorCard({
       grade: string;
       region: string | null;
       bio: string | null;
-      field: string | null;
+
       hourlyRate: string | null;
       availableSlots: string | null;
       isActive: boolean;

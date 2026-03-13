@@ -43,6 +43,13 @@
       "when": 1772807245348,
       "tag": "0005_outstanding_tyrannus",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1773402249192,
+      "tag": "0006_dazzling_whirlwind",
+      "breakpoints": true
     }
   ]
 }

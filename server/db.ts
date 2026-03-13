@@ -783,30 +783,6 @@ export async function getMentorsByFieldAndRegion(
   return result;
 }
 
-export async function getMentorsByField(
-  field: "engineering" | "natural_science" | "business" | "humanities" | "education" | "liberal_arts" | "medicine"
-) {
-  const db = await getDb();
-  if (!db) throw new Error("Database not available");
-  
-  const result = await db
-    .select({
-      profile: mentorProfiles,
-      user: users,
-    })
-    .from(mentorProfiles)
-    .innerJoin(users, eq(mentorProfiles.userId, users.id))
-    .where(
-      and(
-        eq(mentorProfiles.field, field),
-        eq(mentorProfiles.isActive, true),
-        eq(mentorProfiles.verificationStatus, "approved")
-      )
-    )
-    .orderBy(desc(mentorProfiles.averageRating));
-  
-  return result;
-}
 
 export async function getMentorsByRegion(
   region: "seoul" | "gyeonggi" | "incheon" | "gangwon" | "chungcheong" | "jeolla" | "gyeongsang" | "jeju"

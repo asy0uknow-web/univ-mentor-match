@@ -1148,3 +1148,11 @@
   - [x] messagesEndRef 위치 동적 조정 (하단으로 이동)
   - [x] CardContent를 div로 변경하여 Flexbox 레이아웃 정상 동작
   - [x] 모든 테스트 통과 (102/102)
+
+## 데이터베이스 스키마 개선 - 분야 필드 제거
+- [x] mentorProfiles 테이블에서 field 컬럼 삭제
+- [x] 분야 관련 코드 제거 (MentorProfile.tsx, Mentors.tsx, server/db.ts, server/routers.ts)
+- [x] 학과(major) 기반 검색으로 변경
+- [x] 데이터베이스 마이그레이션 실행 (pnpm db:push)
+- [x] 테스트 검증 (102/102 통과)
+- [x] 체크포인트 저장
