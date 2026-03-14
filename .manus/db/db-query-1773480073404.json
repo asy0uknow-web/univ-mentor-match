@@ -1,0 +1,19 @@
+{
+  "query": "\nSELECT b.id, b.studentId, b.mentorId, u.name as studentName, u2.name as mentorName, b.status, b.createdAt\nFROM bookings b\nJOIN users u ON b.studentId = u.id\nJOIN mentor_profiles mp ON b.mentorId = mp.id\nJOIN users u2 ON mp.userId = u2.id\nWHERE u.email = 'test-mentee@test.com' AND u2.name = '이윤호'\nORDER BY b.createdAt DESC;\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute \nSELECT b.id, b.studentId, b.mentorId, u.name as studentName, u2.name as mentorName, b.status, b.createdAt\nFROM bookings b\nJOIN users u ON b.studentId = u.id\nJOIN mentor_profiles mp ON b.mentorId = mp.id\nJOIN users u2 ON mp.userId = u2.id\nWHERE u.email = 'test-mentee@test.com' AND u2.name = '이윤호'\nORDER BY b.createdAt DESC;\n",
+  "rows": [
+    {
+      "id": "30003",
+      "studentId": "3270082",
+      "mentorId": "330001",
+      "studentName": "테스트멘티",
+      "mentorName": "이윤호",
+      "status": "confirmed",
+      "createdAt": "2026-03-14 09:16:52"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tstudentId\tmentorId\tstudentName\tmentorName\tstatus\tcreatedAt\n30003\t3270082\t330001\t테스트멘티\t이윤호\tconfirmed\t2026-03-14 09:16:52\n",
+  "stderr": "",
+  "execution_time_ms": 1525
+}

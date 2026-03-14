@@ -317,18 +317,33 @@ export async function getBookingsByStudent(studentId: number) {
   return result;
 }
 
-export async function getBookingsByMentor(mentorId: number) {
+export async function getBookingsByMentor(mentorUserId: number) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
+  
+  // mentorUserId로 mentor_profiles의 ID를 찾기
+  const mentorProfile = await db
+    .select({ id: mentorProfiles.id })
+    .from(mentorProfiles)
+    .where(eq(mentorProfiles.userId, mentorUserId))
+    .limit(1);
+  
+  if (!mentorProfile || mentorProfile.length === 0) {
+    return [];
+  }
+  
+  const mentorProfileId = mentorProfile[0].id;
   
   const result = await db
     .select({
       booking: bookings,
       student: users,
+      mentor: mentorProfiles,
     })
     .from(bookings)
     .innerJoin(users, eq(bookings.studentId, users.id))
-    .where(eq(bookings.mentorId, mentorId))
+    .innerJoin(mentorProfiles, eq(bookings.mentorId, mentorProfiles.id))
+    .where(eq(bookings.mentorId, mentorProfileId))
     .orderBy(desc(bookings.createdAt));
   
   return result;

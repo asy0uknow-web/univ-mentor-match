@@ -26,7 +26,7 @@ export default function Bookings() {
   });
 
   // 멘토 역할: 받은 상담 신청 조회
-  const { data: mentorBookings, isLoading: mentorBookingsLoading } = trpc.booking.getMyBookings.useQuery(undefined, {
+  const { data: mentorBookings, isLoading: mentorBookingsLoading } = trpc.mentor.getMyBookings.useQuery(undefined, {
     enabled: isAuthenticated && user?.userType === "university_student",
   });
 
@@ -172,11 +172,11 @@ export default function Bookings() {
                       <div className="flex items-center gap-2 mb-2">
                         <User className="h-4 w-4 text-muted-foreground" />
                         <CardTitle className="text-xl">
-                          {item.mentor?.name || "학생"}
+                          {item.student?.name || "학생"}
                         </CardTitle>
                       </div>
                       <CardDescription>
-                        {item.mentor?.email}
+                        {item.student?.email}
                       </CardDescription>
                     </div>
                     {getStatusBadge(item.booking.status)}
@@ -216,7 +216,7 @@ export default function Bookings() {
                     {/* 액션 버튼 */}
                     <div className="flex gap-2 pt-2">
                       <Button 
-                        onClick={() => handleStartConversation(item.mentor?.id || 0)}
+                        onClick={() => handleStartConversation(item.student?.id || 0)}
                         className="flex-1"
                       >
                         <MessageCircle className="h-4 w-4 mr-2" />

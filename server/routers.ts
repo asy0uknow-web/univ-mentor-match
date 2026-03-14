@@ -381,6 +381,15 @@ export const appRouter = router({
           isRead: false,
         });
 
+        // 멘토에게 메시지 생성 (상담 신청 정보 포함)
+        const messageContent = `${studentNameForNotif} 학생이 ${consultationLabel} 상담을 신청했습니다.\n\n📅 예정 날짜: ${formattedDate} ${formattedTime}\n⏱️ 상담 시간: ${duration}시간\n💰 상담료: ${totalAmount}원\n\n메시지를 통해 상담을 수락하거나 거절할 수 있습니다.`;
+        await createMessage({
+          senderId: ctx.user.id,
+          recipientId: input.mentorId,
+          content: messageContent,
+          bookingId: bookingId,
+        });
+
         return { 
           success: true,
           bookingId,

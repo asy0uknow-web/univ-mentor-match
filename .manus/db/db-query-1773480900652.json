@@ -1,0 +1,17 @@
+{
+  "query": "\nSELECT u.id, u.name, u.email, u.userType, u.loginMethod\nFROM users u\nLEFT JOIN mentor_profiles mp ON u.id = mp.userId\nWHERE mp.id IS NULL AND u.userType = 'high_school_student'\nORDER BY u.createdAt DESC\nLIMIT 5;\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute \nSELECT u.id, u.name, u.email, u.userType, u.loginMethod\nFROM users u\nLEFT JOIN mentor_profiles mp ON u.id = mp.userId\nWHERE mp.id IS NULL AND u.userType = 'high_school_student'\nORDER BY u.createdAt DESC\nLIMIT 5;\n",
+  "rows": [
+    {
+      "id": "2550046",
+      "name": "양주혁",
+      "email": "yjh03220@naver.com",
+      "userType": "high_school_student",
+      "loginMethod": "email"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\temail\tuserType\tloginMethod\n2550046\t양주혁\tyjh03220@naver.com\thigh_school_student\temail\n",
+  "stderr": "",
+  "execution_time_ms": 1506
+}
