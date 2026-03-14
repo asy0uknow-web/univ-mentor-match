@@ -1,0 +1,8 @@
+{
+  "query": "\nINSERT INTO bookings (studentId, mentorId, scheduledAt, consultationType, status, createdAt, updatedAt)\nSELECT \n  (SELECT id FROM users WHERE email = 'test-mentee@test.com'),\n  (SELECT id FROM mentor_profiles WHERE userId = (SELECT id FROM users WHERE name = '이윤호')),\n  DATE_ADD(NOW(), INTERVAL 1 DAY),\n  'career_counseling',\n  'pending',\n  NOW(),\n  NOW();\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute \nINSERT INTO bookings (studentId, mentorId, scheduledAt, consultationType, status, createdAt, updatedAt)\nSELECT \n  (SELECT id FROM users WHERE email = 'test-mentee@test.com'),\n  (SELECT id FROM mentor_profiles WHERE userId = (SELECT id FROM users WHERE name = '이윤호')),\n  DATE_ADD(NOW(), INTERVAL 1 DAY),\n  'career_counseling',\n  'pending',\n  NOW(),\n  NOW();\n",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1364 (HY000) at line 2: Field 'duration' doesn't have a default value"
+  ]
+}

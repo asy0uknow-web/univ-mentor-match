@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useLocation } from "wouter";
+import { Link, useLocation } from "wouter";
 import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,6 +22,8 @@ export default function CompleteProfile() {
   const [isLoading, setIsLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [userEmail, setUserEmail] = useState("");
+  const [privacyAgreed, setPrivacyAgreed] = useState(false);
+  const [termsAgreed, setTermsAgreed] = useState(false);
 
   // 멘토 전용 필드
   const [university, setUniversity] = useState("");
@@ -166,6 +168,9 @@ export default function CompleteProfile() {
       if (!school.trim()) newErrors.school = "학교를 입력해주세요";
       if (!menteeRegion) newErrors.menteeRegion = "상담 희망 지역을 선택해주세요";
     }
+
+    if (!privacyAgreed) newErrors.privacyAgreed = "개인정보처리방침에 동의해주세요";
+    if (!termsAgreed) newErrors.termsAgreed = "이용약관에 동의해주세요";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -609,6 +614,55 @@ export default function CompleteProfile() {
                       </div>
                     </>
                   )}
+
+                  {/* 개인정보 동의 */}
+                  <div className="space-y-3 pt-2 border-t border-gray-200">
+                    <p className="text-sm font-semibold text-gray-700">약관 동의 (필수)</p>
+
+                    <label className="flex items-start gap-3 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={privacyAgreed}
+                        onChange={(e) => {
+                          setPrivacyAgreed(e.target.checked);
+                          if (errors.privacyAgreed) setErrors({ ...errors, privacyAgreed: "" });
+                        }}
+                        className="mt-0.5 rounded"
+                      />
+                      <span className="text-sm text-gray-700">
+                        (필수){" "}
+                        <Link href="/privacy-policy" target="_blank" className="text-primary underline hover:text-primary/80">
+                          개인정보처리방침
+                        </Link>
+                        에 동의합니다.
+                      </span>
+                    </label>
+                    {errors.privacyAgreed && (
+                      <p className="text-sm text-red-500 ml-7">{errors.privacyAgreed}</p>
+                    )}
+
+                    <label className="flex items-start gap-3 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={termsAgreed}
+                        onChange={(e) => {
+                          setTermsAgreed(e.target.checked);
+                          if (errors.termsAgreed) setErrors({ ...errors, termsAgreed: "" });
+                        }}
+                        className="mt-0.5 rounded"
+                      />
+                      <span className="text-sm text-gray-700">
+                        (필수){" "}
+                        <Link href="/terms" target="_blank" className="text-primary underline hover:text-primary/80">
+                          이용약관
+                        </Link>
+                        에 동의합니다.
+                      </span>
+                    </label>
+                    {errors.termsAgreed && (
+                      <p className="text-sm text-red-500 ml-7">{errors.termsAgreed}</p>
+                    )}
+                  </div>
 
                   <div className="flex gap-3 pt-4">
                     <Button

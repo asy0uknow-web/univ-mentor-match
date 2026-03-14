@@ -1,0 +1,70 @@
+{
+  "query": "SELECT id, name, email, userType FROM users WHERE userType = 'university_student' OR userType = 'high_school_student' ORDER BY createdAt DESC LIMIT 10;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute SELECT id, name, email, userType FROM users WHERE userType = 'university_student' OR userType = 'high_school_student' ORDER BY createdAt DESC LIMIT 10;",
+  "rows": [
+    {
+      "id": "3270057",
+      "name": "Deleted Profile Test",
+      "email": "NULL",
+      "userType": "university_student"
+    },
+    {
+      "id": "3270055",
+      "name": "ReReg Test Mentor",
+      "email": "NULL",
+      "userType": "university_student"
+    },
+    {
+      "id": "3270021",
+      "name": "Deleted Profile Test",
+      "email": "NULL",
+      "userType": "university_student"
+    },
+    {
+      "id": "3270020",
+      "name": "ReReg Test Mentor",
+      "email": "NULL",
+      "userType": "university_student"
+    },
+    {
+      "id": "3240014",
+      "name": "Deleted Profile Test",
+      "email": "NULL",
+      "userType": "university_student"
+    },
+    {
+      "id": "3240013",
+      "name": "ReReg Test Mentor",
+      "email": "NULL",
+      "userType": "university_student"
+    },
+    {
+      "id": "3210038",
+      "name": "Deleted Profile Test",
+      "email": "NULL",
+      "userType": "university_student"
+    },
+    {
+      "id": "3210037",
+      "name": "ReReg Test Mentor",
+      "email": "NULL",
+      "userType": "university_student"
+    },
+    {
+      "id": "3210032",
+      "name": "Deleted Profile Test",
+      "email": "NULL",
+      "userType": "university_student"
+    },
+    {
+      "id": "3210031",
+      "name": "ReReg Test Mentor",
+      "email": "NULL",
+      "userType": "university_student"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\temail\tuserType\n3270057\tDeleted Profile Test\tNULL\tuniversity_student\n3270055\tReReg Test Mentor\tNULL\tuniversity_student\n3270021\tDeleted Profile Test\tNULL\tuniversity_student\n3270020\tReReg Test Mentor\tNULL\tuniversity_student\n3240014\tDeleted Profile Test\tNULL\tuniversity_student\n3240013\tReReg Test Mentor\tNULL\tuniversity_student\n3210038\tDeleted Profile Test\tNULL\tuniversity_student\n3210037\tReReg Test Mentor\tNULL\tuniversity_student\n3210032\tDeleted Profile Test\tNULL\tuniversity_student\n3210031\tReReg Test Mentor\tNULL\tuniversity_student\n",
+  "stderr": "",
+  "execution_time_ms": 1560
+}
