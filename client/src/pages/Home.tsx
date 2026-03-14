@@ -46,7 +46,7 @@ const BlobBackground = ({ idx }: { idx: number }) => (
 );
 
 export default function Home() {
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, loading } = useAuth();
   const [, navigate] = useLocation();
   const [currentKeywordIndex, setCurrentKeywordIndex] = useState(0);
   
@@ -69,11 +69,13 @@ export default function Home() {
 
   // OAuth 로그인 후 프로필 미완성 시 리다이렉트
   // name과 userType이 모두 있어야 프로필 완성으로 간주
+  // loading 중에는 리다이렉트하지 않음 (refetch 중 일시적 null 방지)
   useEffect(() => {
+    if (loading) return; // 로딩 중이면 무시
     if (isAuthenticated && user && (!user.name || !user.userType)) {
       navigate("/complete-profile", { replace: true });
     }
-  }, [isAuthenticated, user, navigate]);
+  }, [isAuthenticated, user, navigate, loading]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -83,8 +85,8 @@ export default function Home() {
     return () => clearInterval(interval);
   }, [keywords.length]);
 
-  // 프로필 완성 페이지로 리다이렉트 중이면 로드 표시
-  if (isAuthenticated && user && (!user.name || !user.userType)) {
+  // 프로필 완성 페이지로 리다이렉트 중이면 로드 표시 (로딩 완료 후에만)
+  if (!loading && isAuthenticated && user && (!user.name || !user.userType)) {
     return (
       <PageLayout showFooter>
         <div className="flex items-center justify-center min-h-screen">
