@@ -68,9 +68,9 @@ export default function Home() {
   }, []);
 
   // OAuth 로그인 후 프로필 미완성 시 리다이렉트
+  // name과 userType이 모두 있어야 프로필 완성으로 간주
   useEffect(() => {
-    if (isAuthenticated && user && !user.name) {
-      // 실명이 없으면 프로필 완성 페이지로 이동
+    if (isAuthenticated && user && (!user.name || !user.userType)) {
       navigate("/complete-profile", { replace: true });
     }
   }, [isAuthenticated, user, navigate]);
@@ -84,7 +84,7 @@ export default function Home() {
   }, [keywords.length]);
 
   // 프로필 완성 페이지로 리다이렉트 중이면 로드 표시
-  if (isAuthenticated && user && !user.name) {
+  if (isAuthenticated && user && (!user.name || !user.userType)) {
     return (
       <PageLayout showFooter>
         <div className="flex items-center justify-center min-h-screen">

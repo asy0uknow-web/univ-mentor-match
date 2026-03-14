@@ -47,7 +47,8 @@ import {
 import { CONSULTATION_PRODUCT, MIN_BOOKING_DURATION, MAX_BOOKING_DURATION } from "./products";
 import { storagePut } from "./storage";
 import { eq } from "drizzle-orm";
-import { mentorGallery, messages, notifications, bookings, reviews, mentorProfiles, mentorVerifications, users, bugReports, mentorConsultationTypes } from "../drizzle/schema";
+import { mentorGallery, messages, notifications, bookings, reviews, mentorProfiles, mentorVerifications, users, bugReports, mentorConsultationTypes, consultationProposals } from "../drizzle/schema";
+import { and, eq as drizzleEq, or as drizzleOr, desc as drizzleDesc } from "drizzle-orm";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2025-12-15.clover",
@@ -1093,6 +1094,390 @@ export const appRouter = router({
           .where(eq(bugReports.id, input.id));
 
         return { success: true };
+      }),
+  }),
+
+  // ===== 상담 제안 (Consultation Proposals) =====
+  proposal: router({
+    // 상담 일정 제안 생성
+    create: protectedProcedure
+      .input(z.object({
+        receiverId: z.number(),
+        scheduledAt: z.string(),
+        consultationMode: z.enum(["online", "offline"]),
+        location: z.string().optional(),
+        duration: z.number().min(0.5).max(4),
+        consultationType: z.enum(["resume_consulting", "career_counseling", "academic_management", "university_tour"]),
+        note: z.string().optional(),
+        bookingId: z.number().optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+        const userId = ctx.user!.id;
+
+        // 제안 생성
+        const result = await db.insert(consultationProposals).values({
+          proposerId: userId,
+          receiverId: input.receiverId,
+          bookingId: input.bookingId ?? null,
+          status: "pending",
+          scheduledAt: new Date(input.scheduledAt),
+          consultationMode: input.consultationMode,
+          location: input.location ?? null,
+          duration: String(input.duration),
+          consultationType: input.consultationType,
+          note: input.note ?? null,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        });
+
+        const insertId = (result as any).insertId ?? (result as any)[0]?.insertId;
+        const proposalId = Number(insertId);
+
+        // 제안 카드 메시지 생성
+        const proposerUser = await db.select({ name: users.name }).from(users).where(eq(users.id, userId)).limit(1);
+        const proposerName = proposerUser[0]?.name ?? "상담자";
+        const modeText = input.consultationMode === "online" ? "온라인" : "오프라인";
+        const dateText = new Date(input.scheduledAt).toLocaleString("ko-KR", { year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit" });
+        const content = JSON.stringify({
+          type: "proposal",
+          proposalId,
+          scheduledAt: input.scheduledAt,
+          consultationMode: input.consultationMode,
+          location: input.location,
+          duration: input.duration,
+          consultationType: input.consultationType,
+          note: input.note,
+          proposerName,
+          status: "pending",
+        });
+
+        const msgResult = await db.insert(messages).values({
+          senderId: userId,
+          recipientId: input.receiverId,
+          content,
+          messageType: "proposal",
+          proposalId,
+          isRead: false,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        });
+
+        // 알림 생성
+        await db.insert(notifications).values({
+          userId: input.receiverId,
+          type: "booking_request",
+          title: "상담 일정 제안이 도착했어요",
+          message: `${proposerName}님이 ${dateText} ${modeText} 상담을 제안했어요.`,
+          isRead: false,
+          relatedId: proposalId,
+          createdAt: new Date(),
+        });
+
+        return { success: true, proposalId };
+      }),
+
+    // 제안 수락
+    accept: protectedProcedure
+      .input(z.object({ proposalId: z.number() }))
+      .mutation(async ({ ctx, input }) => {
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+        const userId = ctx.user!.id;
+
+        const proposal = await db.select().from(consultationProposals).where(eq(consultationProposals.id, input.proposalId)).limit(1);
+        if (!proposal[0]) throw new Error("제안을 찾을 수 없습니다");
+        if (proposal[0].receiverId !== userId) throw new Error("수락 권한이 없습니다");
+        if (proposal[0].status !== "pending" && proposal[0].status !== "counter_proposed") throw new Error("수락할 수 없는 상태입니다");
+
+        await db.update(consultationProposals).set({
+          status: "accepted",
+          acceptedAt: new Date(),
+          updatedAt: new Date(),
+        }).where(eq(consultationProposals.id, input.proposalId));
+
+        // 제안자에게 알림
+        const receiverUser = await db.select({ name: users.name }).from(users).where(eq(users.id, userId)).limit(1);
+        const receiverName = receiverUser[0]?.name ?? "상대방";
+        await db.insert(notifications).values({
+          userId: proposal[0].proposerId,
+          type: "booking_confirmed",
+          title: "상담 일정이 확정되었어요!",
+          message: `${receiverName}님이 상담 일정을 수락했어요. 상담이 확정되었습니다.`,
+          isRead: false,
+          relatedId: input.proposalId,
+          createdAt: new Date(),
+        });
+
+        // 확정 메시지 생성
+        const content = JSON.stringify({
+          type: "proposal_status",
+          proposalId: input.proposalId,
+          status: "accepted",
+          message: "상담이 확정되었어요 🎉",
+        });
+        await db.insert(messages).values({
+          senderId: userId,
+          recipientId: proposal[0].proposerId,
+          content,
+          messageType: "proposal",
+          proposalId: input.proposalId,
+          isRead: false,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        });
+
+        return { success: true };
+      }),
+
+    // 제안 거절
+    reject: protectedProcedure
+      .input(z.object({ proposalId: z.number(), reason: z.string().optional() }))
+      .mutation(async ({ ctx, input }) => {
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+        const userId = ctx.user!.id;
+
+        const proposal = await db.select().from(consultationProposals).where(eq(consultationProposals.id, input.proposalId)).limit(1);
+        if (!proposal[0]) throw new Error("제안을 찾을 수 없습니다");
+        if (proposal[0].receiverId !== userId) throw new Error("거절 권한이 없습니다");
+        if (proposal[0].status !== "pending" && proposal[0].status !== "counter_proposed") throw new Error("거절할 수 없는 상태입니다");
+
+        await db.update(consultationProposals).set({
+          status: "rejected",
+          updatedAt: new Date(),
+        }).where(eq(consultationProposals.id, input.proposalId));
+
+        // 제안자에게 알림
+        const receiverUser = await db.select({ name: users.name }).from(users).where(eq(users.id, userId)).limit(1);
+        const receiverName = receiverUser[0]?.name ?? "상대방";
+        await db.insert(notifications).values({
+          userId: proposal[0].proposerId,
+          type: "booking_cancelled",
+          title: "상담 일정 제안이 거절되었어요",
+          message: `${receiverName}님이 상담 일정 제안을 거절했어요.`,
+          isRead: false,
+          relatedId: input.proposalId,
+          createdAt: new Date(),
+        });
+
+        // 거절 메시지 생성
+        const content = JSON.stringify({
+          type: "proposal_status",
+          proposalId: input.proposalId,
+          status: "rejected",
+          message: input.reason ? `일정 제안이 거절되었어요. (${input.reason})` : "일정 제안이 거절되었어요.",
+        });
+        await db.insert(messages).values({
+          senderId: userId,
+          recipientId: proposal[0].proposerId,
+          content,
+          messageType: "proposal",
+          proposalId: input.proposalId,
+          isRead: false,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        });
+
+        return { success: true };
+      }),
+
+    // 수정 제안 (카운터 제안)
+    counterPropose: protectedProcedure
+      .input(z.object({
+        proposalId: z.number(),
+        scheduledAt: z.string(),
+        consultationMode: z.enum(["online", "offline"]),
+        location: z.string().optional(),
+        duration: z.number().min(0.5).max(4),
+        consultationType: z.enum(["resume_consulting", "career_counseling", "academic_management", "university_tour"]),
+        note: z.string().optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+        const userId = ctx.user!.id;
+
+        const original = await db.select().from(consultationProposals).where(eq(consultationProposals.id, input.proposalId)).limit(1);
+        if (!original[0]) throw new Error("제안을 찾을 수 없습니다");
+        if (original[0].receiverId !== userId) throw new Error("수정 제안 권한이 없습니다");
+
+        // 기존 제안 상태 변경
+        await db.update(consultationProposals).set({
+          status: "counter_proposed",
+          updatedAt: new Date(),
+        }).where(eq(consultationProposals.id, input.proposalId));
+
+        // 새 제안 생성 (역할 바꿔서)
+        const newResult = await db.insert(consultationProposals).values({
+          proposerId: userId,
+          receiverId: original[0].proposerId,
+          bookingId: original[0].bookingId,
+          status: "pending",
+          scheduledAt: new Date(input.scheduledAt),
+          consultationMode: input.consultationMode,
+          location: input.location ?? null,
+          duration: String(input.duration),
+          consultationType: input.consultationType,
+          note: input.note ?? null,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        });
+        const newInsertId = (newResult as any).insertId ?? (newResult as any)[0]?.insertId;
+        const newProposalId = Number(newInsertId);
+
+        // 수정 제안 메시지 생성
+        const proposerUser = await db.select({ name: users.name }).from(users).where(eq(users.id, userId)).limit(1);
+        const proposerName = proposerUser[0]?.name ?? "상담자";
+        const content = JSON.stringify({
+          type: "proposal",
+          proposalId: newProposalId,
+          scheduledAt: input.scheduledAt,
+          consultationMode: input.consultationMode,
+          location: input.location,
+          duration: input.duration,
+          consultationType: input.consultationType,
+          note: input.note,
+          proposerName,
+          status: "pending",
+          isCounter: true,
+        });
+        await db.insert(messages).values({
+          senderId: userId,
+          recipientId: original[0].proposerId,
+          content,
+          messageType: "proposal",
+          proposalId: newProposalId,
+          isRead: false,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        });
+
+        // 알림
+        await db.insert(notifications).values({
+          userId: original[0].proposerId,
+          type: "schedule_changed",
+          title: "상담 일정 수정 제안이 도착했어요",
+          message: `${proposerName}님이 상담 일정 수정을 제안했어요.`,
+          isRead: false,
+          relatedId: newProposalId,
+          createdAt: new Date(),
+        });
+
+        return { success: true, newProposalId };
+      }),
+
+    // 상담 완료 처리
+    complete: protectedProcedure
+      .input(z.object({ proposalId: z.number() }))
+      .mutation(async ({ ctx, input }) => {
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+        const userId = ctx.user!.id;
+
+        const proposal = await db.select().from(consultationProposals).where(eq(consultationProposals.id, input.proposalId)).limit(1);
+        if (!proposal[0]) throw new Error("제안을 찾을 수 없습니다");
+        if (proposal[0].proposerId !== userId && proposal[0].receiverId !== userId) throw new Error("권한이 없습니다");
+        if (proposal[0].status !== "accepted") throw new Error("확정된 상담만 완료 처리할 수 있습니다");
+
+        await db.update(consultationProposals).set({
+          status: "completed",
+          completedAt: new Date(),
+          updatedAt: new Date(),
+        }).where(eq(consultationProposals.id, input.proposalId));
+
+        // 완료 메시지
+        const content = JSON.stringify({
+          type: "proposal_status",
+          proposalId: input.proposalId,
+          status: "completed",
+          message: "상담이 완료되었어요! 후기를 남겨보세요 ⭐",
+        });
+        const otherUserId = proposal[0].proposerId === userId ? proposal[0].receiverId : proposal[0].proposerId;
+        await db.insert(messages).values({
+          senderId: userId,
+          recipientId: otherUserId,
+          content,
+          messageType: "proposal",
+          proposalId: input.proposalId,
+          isRead: false,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        });
+
+        // 양쪽 알림
+        await db.insert(notifications).values({
+          userId: otherUserId,
+          type: "booking_confirmed",
+          title: "상담이 완료되었어요!",
+          message: "상담이 완료되었습니다. 후기를 남겨보세요.",
+          isRead: false,
+          relatedId: input.proposalId,
+          createdAt: new Date(),
+        });
+
+        return { success: true };
+      }),
+
+    // 제안 취소
+    cancel: protectedProcedure
+      .input(z.object({ proposalId: z.number() }))
+      .mutation(async ({ ctx, input }) => {
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+        const userId = ctx.user!.id;
+
+        const proposal = await db.select().from(consultationProposals).where(eq(consultationProposals.id, input.proposalId)).limit(1);
+        if (!proposal[0]) throw new Error("제안을 찾을 수 없습니다");
+        if (proposal[0].proposerId !== userId) throw new Error("취소 권한이 없습니다");
+        if (proposal[0].status !== "pending") throw new Error("대기 중인 제안만 취소할 수 있습니다");
+
+        await db.update(consultationProposals).set({
+          status: "cancelled",
+          updatedAt: new Date(),
+        }).where(eq(consultationProposals.id, input.proposalId));
+
+        return { success: true };
+      }),
+
+    // 제안 상세 조회
+    getById: protectedProcedure
+      .input(z.object({ proposalId: z.number() }))
+      .query(async ({ ctx, input }) => {
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+        const userId = ctx.user!.id;
+
+        const proposal = await db.select().from(consultationProposals).where(eq(consultationProposals.id, input.proposalId)).limit(1);
+        if (!proposal[0]) throw new Error("제안을 찾을 수 없습니다");
+        if (proposal[0].proposerId !== userId && proposal[0].receiverId !== userId) throw new Error("조회 권한이 없습니다");
+
+        return proposal[0];
+      }),
+
+    // 나의 제안 목록 조회 (채팅방 내 활성 제안)
+    getActiveForConversation: protectedProcedure
+      .input(z.object({ otherUserId: z.number() }))
+      .query(async ({ ctx, input }) => {
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+        const userId = ctx.user!.id;
+
+        const proposals = await db.select().from(consultationProposals)
+          .where(
+            drizzleOr(
+              drizzleEq(consultationProposals.proposerId, userId),
+              drizzleEq(consultationProposals.receiverId, userId)
+            )
+          )
+          .orderBy(drizzleDesc(consultationProposals.createdAt));
+
+        // 해당 대화 상대와의 제안만 필터링
+        return proposals.filter(p =>
+          (p.proposerId === userId && p.receiverId === input.otherUserId) ||
+          (p.receiverId === userId && p.proposerId === input.otherUserId)
+        );
       }),
   }),
 });

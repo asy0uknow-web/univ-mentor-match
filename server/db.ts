@@ -1,4 +1,4 @@
-import { eq, and, or, desc, sql, inArray } from "drizzle-orm";
+import { eq, and, or, desc, asc, sql, inArray } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import { 
   InsertUser, 
@@ -473,7 +473,7 @@ export async function getMessagesBetweenUsers(userId1: number, userId2: number) 
         and(eq(messages.senderId, userId2), eq(messages.recipientId, userId1))
       )
     )
-    .orderBy(desc(messages.createdAt));
+    .orderBy(asc(messages.createdAt));
   
   const [sender, recipient, senderMentorProfile, recipientMentorProfile] = await Promise.all([
     db.select({ name: users.name }).from(users).where(eq(users.id, userId1)).limit(1),

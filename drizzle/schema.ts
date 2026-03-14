@@ -152,12 +152,53 @@ export const messages = mysqlTable("messages", {
   content: text("content").notNull(),
   isRead: boolean("isRead").default(false).notNull(),
   bookingId: int("bookingId"),
+  // Message type: text = 일반 메시지, proposal = 상담 일정 제안 카드
+  messageType: mysqlEnum("messageType", ["text", "proposal"]).default("text").notNull(),
+  // Proposal ID if this message is a proposal card
+  proposalId: int("proposalId"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });
 
 export type Message = typeof messages.$inferSelect;
 export type InsertMessage = typeof messages.$inferInsert;
+
+/**
+ * Consultation proposals - 채팅 내 상담 일정 제안 카드
+ * 멘토 또는 멘티가 채팅에서 상담 일정을 제안하고 상대방이 수락/거절/수정 제안할 수 있음
+ */
+export const consultationProposals = mysqlTable("consultation_proposals", {
+  id: int("id").autoincrement().primaryKey(),
+  // 제안한 사람
+  proposerId: int("proposerId").notNull(),
+  // 제안 받은 사람
+  receiverId: int("receiverId").notNull(),
+  // 연결된 booking ID (있는 경우)
+  bookingId: int("bookingId"),
+  // 제안 상태: pending(대기), accepted(수락), rejected(거절), counter_proposed(수정 제안), cancelled(취소), completed(완료)
+  status: mysqlEnum("status", ["pending", "accepted", "rejected", "counter_proposed", "cancelled", "completed"]).default("pending").notNull(),
+  // 상담 예정 날짜/시간
+  scheduledAt: timestamp("scheduledAt").notNull(),
+  // 상담 방식: online(온라인), offline(오프라인)
+  consultationMode: mysqlEnum("consultationMode", ["online", "offline"]).notNull(),
+  // 상담 장소 (오프라인인 경우)
+  location: varchar("location", { length: 500 }),
+  // 상담 시간 (시간 단위)
+  duration: decimal("duration", { precision: 3, scale: 1 }).notNull(),
+  // 상담 유형
+  consultationType: mysqlEnum("consultationType", ["resume_consulting", "career_counseling", "academic_management", "university_tour"]).default("career_counseling").notNull(),
+  // 제안 메모
+  note: text("note"),
+  // 수락된 시각
+  acceptedAt: timestamp("acceptedAt"),
+  // 완료된 시각
+  completedAt: timestamp("completedAt"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type ConsultationProposal = typeof consultationProposals.$inferSelect;
+export type InsertConsultationProposal = typeof consultationProposals.$inferInsert;
 /**
  * Mentor verification requests with student ID image
  */
