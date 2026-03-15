@@ -208,13 +208,12 @@ export default function CompleteProfile() {
 
       // 사용자 데이터 갱신 (mutation의 onSuccess에서 처리됨)
       
-      // 2초 후 홈페이지로 이동
+      // 3초 후 홈페이지로 이동 (사용자가 진행 바 100% 상태를 볼 수 있도록)
       setTimeout(() => {
         navigate("/", { replace: true });
-      }, 2000);
+      }, 3000);
 
-      // 진행률을 100%로 업데이트 (선택사항)
-      // setUserRole(null); // 필요시 초기화
+
     } catch (error: any) {
       setErrors({
         submit: error.message || "프로필 저장에 실패했습니다",
