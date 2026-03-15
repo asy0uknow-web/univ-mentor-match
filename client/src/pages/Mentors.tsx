@@ -544,7 +544,7 @@ function MentorCard({
           {/* 첫째 줄: 멘토 이름 */}
           <div className="flex items-center gap-2">
             <h3 className="text-lg font-bold leading-tight">
-              {mentor.user.name}
+              {mentor.user.name || "멘토"}
             </h3>
             {mentor.profile.verificationStatus === "approved" && (
               <>
