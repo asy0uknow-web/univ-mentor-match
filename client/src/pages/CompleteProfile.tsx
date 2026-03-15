@@ -24,6 +24,7 @@ export default function CompleteProfile() {
   const [userEmail, setUserEmail] = useState("");
   const [privacyAgreed, setPrivacyAgreed] = useState(false);
   const [termsAgreed, setTermsAgreed] = useState(false);
+  const [isProfileSaved, setIsProfileSaved] = useState(false); // 프로필 저장 완료 상태
 
   // 멘토 전용 필드
   const [university, setUniversity] = useState("");
@@ -200,6 +201,7 @@ export default function CompleteProfile() {
       });
 
       setSuccessMessage("프로필이 저장되었습니다.");
+      setIsProfileSaved(true); // 진행 바 100%로 업데이트
       setName("");
       setPhoneNumber("");
       setErrors({});
@@ -259,12 +261,12 @@ export default function CompleteProfile() {
               <div className="mb-6">
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-sm font-semibold text-gray-700">진행률</span>
-                  <span className="text-sm font-bold text-primary">{userRole ? '50%' : '0%'}</span>
+                  <span className="text-sm font-bold text-primary">{isProfileSaved ? '100%' : userRole ? '50%' : '0%'}</span>
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
                   <div
                     className="bg-gradient-to-r from-green-400 to-blue-400 h-full rounded-full transition-all duration-500 ease-out"
-                    style={{ width: userRole ? '50%' : '0%' }}
+                    style={{ width: isProfileSaved ? '100%' : userRole ? '50%' : '0%' }}
                   />
                 </div>
               </div>
