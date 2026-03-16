@@ -113,7 +113,7 @@ export default function Login() {
           <Button
             type="submit"
             disabled={isLoading || loginMutation.isPending}
-            className="w-full bg-gold-500 hover:bg-gold-600 text-white font-semibold py-2 rounded-lg transition-colors"
+            className="w-full bg-primary hover:bg-primary/90 text-white font-semibold py-3 rounded-lg transition-colors mt-2"
           >
             {isLoading || loginMutation.isPending ? "로그인 중..." : "로그인"}
           </Button>
