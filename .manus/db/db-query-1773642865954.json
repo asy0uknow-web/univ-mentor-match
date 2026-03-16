@@ -1,0 +1,9 @@
+{
+  "query": "DELETE FROM consultation_proposals;\nDELETE FROM notifications;\nDELETE FROM messages;\nDELETE FROM mentor_consultation_types;\nDELETE FROM mentor_profiles;\nDELETE FROM users;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute DELETE FROM consultation_proposals;\nDELETE FROM notifications;\nDELETE FROM messages;\nDELETE FROM mentor_consultation_types;\nDELETE FROM mentor_profiles;\nDELETE FROM users;",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 2885
+}

@@ -1253,3 +1253,11 @@
 - [x] 라우팅 수정 (기존 OAuth 제거, Navbar 수정)
 - [x] useAuth 훈 유지 (이메일/비밀번호 인증 지원)
 - [x] 테스트 124/124 통과 및 체크포인트 저장
+
+## pt 4.0 - 이메일 인증 기능 구현 (간단한 방식 - 토큰만 생성)
+- [x] DB 스키마: emailVerificationTokens 테이블 추가 (토큰, 만료시간, 사용자ID)
+- [x] 백엔드: 이메일 인증 토큰 생성 및 저장 API (email-verification.ts)
+- [x] 백엔드: requestEmailVerification 및 verifyEmail 가늤 추가 (routers.ts)
+- [x] 프론트엔드: 이메일 인증 페이지 (VerifyEmail.tsx)
+- [x] 프론트엔드: 토큰 동동 내동 및 입력 기능
+- [x] 테스트 124/124 통과 및 체크포인트 저장

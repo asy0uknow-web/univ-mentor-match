@@ -48,6 +48,8 @@ import { CONSULTATION_PRODUCT, MIN_BOOKING_DURATION, MAX_BOOKING_DURATION } from
 import { storagePut } from "./storage";
 import { hashPassword, verifyPassword, validateEmail, validatePasswordStrength } from "./auth-utils";
 import { signupProcedure, loginProcedure } from "./auth-procedures";
+import { createVerificationToken, verifyEmailToken, getPendingVerificationToken } from "./email-verification";
+import { emailVerificationTokens } from "../drizzle/schema";
 import { eq } from "drizzle-orm";
 import { mentorGallery, messages, notifications, bookings, reviews, mentorProfiles, mentorVerifications, users, bugReports, mentorConsultationTypes, consultationProposals } from "../drizzle/schema";
 import { and, eq as drizzleEq, or as drizzleOr, desc as drizzleDesc } from "drizzle-orm";
@@ -112,6 +114,32 @@ export const appRouter = router({
       }),
     signup: signupProcedure,
     login: loginProcedure,
+    requestEmailVerification: protectedProcedure
+      .mutation(async ({ ctx }) => {
+        // 이미 검증된 이메일이면 에러
+        if (ctx.user.emailVerified) {
+          throw new Error("Email already verified");
+        }
+
+        // 기존 토큰이 있는지 확인
+        const existingToken = await getPendingVerificationToken(ctx.user.id);
+        if (existingToken) {
+          return { token: existingToken }; // 기존 토큰 반환
+        }
+
+        // 새 토큰 생성
+        const token = await createVerificationToken(ctx.user.id);
+        return { token };
+      }),
+    verifyEmail: publicProcedure
+      .input(z.object({ token: z.string() }))
+      .mutation(async ({ input }) => {
+        const result = await verifyEmailToken(input.token);
+        if (!result) {
+          throw new Error("Invalid or expired token");
+        }
+        return { success: true, userId: result.userId };
+      }),
   }),
 
   user: router({

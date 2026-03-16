@@ -5,78 +5,8 @@
     {
       "idx": 0,
       "version": "5",
-      "when": 1771522392481,
-      "tag": "0000_illegal_wolfpack",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "5",
-      "when": 1771592364151,
-      "tag": "0001_quick_sandman",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "5",
-      "when": 1771857641958,
-      "tag": "0002_fast_mandarin",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "5",
-      "when": 1772722186118,
-      "tag": "0003_busy_trish_tilby",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "5",
-      "when": 1772806441330,
-      "tag": "0004_rich_warlock",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "5",
-      "when": 1772807245348,
-      "tag": "0005_outstanding_tyrannus",
-      "breakpoints": true
-    },
-    {
-      "idx": 6,
-      "version": "5",
-      "when": 1773402249192,
-      "tag": "0006_dazzling_whirlwind",
-      "breakpoints": true
-    },
-    {
-      "idx": 7,
-      "version": "5",
-      "when": 1773405592862,
-      "tag": "0007_fat_gauntlet",
-      "breakpoints": true
-    },
-    {
-      "idx": 8,
-      "version": "5",
-      "when": 1773405720373,
-      "tag": "0008_needy_sister_grimm",
-      "breakpoints": true
-    },
-    {
-      "idx": 9,
-      "version": "5",
-      "when": 1773482844895,
-      "tag": "0009_modern_loners",
-      "breakpoints": true
-    },
-    {
-      "idx": 10,
-      "version": "5",
-      "when": 1773583000995,
-      "tag": "0010_unusual_the_spike",
+      "when": 1773642955908,
+      "tag": "0000_jazzy_shen",
       "breakpoints": true
     }
   ]

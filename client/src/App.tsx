@@ -23,6 +23,7 @@ const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const StudentProfile = lazy(() => import("./pages/StudentProfile"));
 const SignUp = lazy(() => import("./pages/SignUp"));
 const Login = lazy(() => import("./pages/Login"));
+const VerifyEmail = lazy(() => import("./pages/VerifyEmail"));
 
 function Router() {
   return (
@@ -31,6 +32,7 @@ function Router() {
         <Route path={"\\"} component={Home} />
         <Route path={"/signup"} component={SignUp} />
         <Route path={"/login"} component={Login} />
+        <Route path={"/verify-email"} component={VerifyEmail} />
         <Route path={"/mentors"} component={Mentors} />
         <Route path={"/mentor/:id"} component={MentorDetail} />
         <Route path={"/my-profile"} component={MentorProfile} />
