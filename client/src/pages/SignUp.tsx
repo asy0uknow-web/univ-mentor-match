@@ -101,11 +101,11 @@ export default function SignUp() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-cream-50 to-cream-100 flex items-center justify-center p-4">
-      <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-8">
+      <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-8 max-h-[90vh] overflow-y-auto">
         <h1 className="text-3xl font-bold text-navy-900 mb-2">회원가입</h1>
         <p className="text-gray-600 mb-6">UnivMatch에 가입하세요</p>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-3">
           {/* 이메일 */}
           <div className="space-y-2">
             <Label htmlFor="email" className="text-navy-900 font-semibold">
@@ -190,8 +190,7 @@ export default function SignUp() {
             />
             {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
             <p className="text-xs text-gray-500 mt-1">
-              • 최소 8자 이상<br />
-              • 대문자, 소문자, 숫자 포함
+              • 최소 8자 이상 • 대문자, 소문자, 숫자 포함
             </p>
           </div>
 
@@ -220,14 +219,14 @@ export default function SignUp() {
           <Button
             type="submit"
             disabled={isLoading || signupMutation.isPending}
-            className="w-full bg-gold-500 hover:bg-gold-600 text-white font-semibold py-2 rounded-lg transition-colors"
+            className="w-full bg-gold-500 hover:bg-gold-600 text-white font-semibold py-3 rounded-lg transition-colors mt-6"
           >
             {isLoading || signupMutation.isPending ? "가입 중..." : "회원가입"}
           </Button>
         </form>
 
         {/* 로그인 링크 */}
-        <p className="text-center text-gray-600 mt-6">
+        <p className="text-center text-gray-600 mt-4">
           이미 계정이 있으신가요?{" "}
           <button
             onClick={() => navigate("/login")}
