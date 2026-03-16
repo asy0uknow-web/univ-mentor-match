@@ -1,6 +1,6 @@
 import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
-import { getLoginUrl } from "@/const";
+
 import { Link } from "wouter";
 import { LogOut, Trash2, ChevronDown, Bug } from "lucide-react";
 import {
@@ -188,14 +188,24 @@ export default function Navbar({ onBugReport }: NavbarProps) {
             ) : (
               <>
                 {/* 로그인 버튼 */}
-                <a href={getLoginUrl()} aria-label="로그인 페이지로 이동">
+                <Link href="/login" aria-label="로그인 페이지로 이동">
                   <Button 
                     size="sm"
                     className="rounded-full bg-primary hover:bg-primary/90 text-white font-semibold px-4 sm:px-6 text-xs sm:text-sm"
                   >
-                    유니브매치 로그인
+                    로그인
                   </Button>
-                </a>
+                </Link>
+                {/* 회원가입 버튼 */}
+                <Link href="/signup" aria-label="회원가입 페이지로 이동">
+                  <Button 
+                    size="sm"
+                    variant="outline"
+                    className="rounded-full border-primary text-primary hover:bg-primary/10 font-semibold px-4 sm:px-6 text-xs sm:text-sm"
+                  >
+                    회원가입
+                  </Button>
+                </Link>
               </>
             )}
           </div>

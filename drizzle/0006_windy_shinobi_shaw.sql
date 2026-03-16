@@ -1,1 +1,0 @@
-ALTER TABLE `bookings` ADD `consultationType` enum('resume_consulting','career_counseling','academic_management','university_tour') DEFAULT 'career_counseling' NOT NULL;

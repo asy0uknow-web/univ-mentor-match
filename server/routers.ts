@@ -46,6 +46,8 @@ import {
 } from "./db";
 import { CONSULTATION_PRODUCT, MIN_BOOKING_DURATION, MAX_BOOKING_DURATION } from "./products";
 import { storagePut } from "./storage";
+import { hashPassword, verifyPassword, validateEmail, validatePasswordStrength } from "./auth-utils";
+import { signupProcedure, loginProcedure } from "./auth-procedures";
 import { eq } from "drizzle-orm";
 import { mentorGallery, messages, notifications, bookings, reviews, mentorProfiles, mentorVerifications, users, bugReports, mentorConsultationTypes, consultationProposals } from "../drizzle/schema";
 import { and, eq as drizzleEq, or as drizzleOr, desc as drizzleDesc } from "drizzle-orm";
@@ -108,6 +110,8 @@ export const appRouter = router({
         await updateUserType(ctx.user.id, input.userType);
         return { success: true };
       }),
+    signup: signupProcedure,
+    login: loginProcedure,
   }),
 
   user: router({

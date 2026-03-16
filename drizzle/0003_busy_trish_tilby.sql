@@ -1,1 +1,0 @@
-ALTER TABLE `mentor_profiles` MODIFY COLUMN `hourlyRate` decimal(10,2) DEFAULT '0';

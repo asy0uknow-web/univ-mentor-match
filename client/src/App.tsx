@@ -21,12 +21,16 @@ const AdminBugReports = lazy(() => import("./pages/AdminBugReports"));
 const CompleteProfile = lazy(() => import("./pages/CompleteProfile"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const StudentProfile = lazy(() => import("./pages/StudentProfile"));
+const SignUp = lazy(() => import("./pages/SignUp"));
+const Login = lazy(() => import("./pages/Login"));
 
 function Router() {
   return (
     <Suspense fallback={<div className="flex items-center justify-center min-h-screen">로딩 중...</div>}>
       <Switch>
         <Route path={"\\"} component={Home} />
+        <Route path={"/signup"} component={SignUp} />
+        <Route path={"/login"} component={Login} />
         <Route path={"/mentors"} component={Mentors} />
         <Route path={"/mentor/:id"} component={MentorDetail} />
         <Route path={"/my-profile"} component={MentorProfile} />
