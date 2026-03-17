@@ -1,11 +1,10 @@
-import { Link } from "wouter";
-
-export default function Footer() {
+// 개선된 Footer 컴포넌트
+export const ImprovedFooter = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-gray-900 text-gray-300" role="contentinfo" aria-label="사이트 정보">
-      <div className="container mx-auto px-4 py-12 sm:py-16 md:py-20">
+    <footer className="bg-gray-900 text-gray-300 py-12 sm:py-16 md:py-20">
+      <div className="container mx-auto px-4">
         {/* Main Footer Content */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 sm:gap-12 mb-12 sm:mb-16">
           {/* Company Info */}
@@ -24,10 +23,10 @@ export default function Footer() {
           <div>
             <h3 className="text-white font-bold text-lg mb-4">서비스</h3>
             <ul className="space-y-2 text-sm">
-              <li><Link href="/mentors" className="hover:text-white transition-colors">멘토 찾기</Link></li>
-              <li><Link href="/my-profile" className="hover:text-white transition-colors">내 프로필</Link></li>
-              <li><Link href="/messages" className="hover:text-white transition-colors">메시지</Link></li>
-              <li><Link href="/bookings" className="hover:text-white transition-colors">상담 문의</Link></li>
+              <li><a href="/mentors" className="hover:text-white transition-colors">멘토 찾기</a></li>
+              <li><a href="/my-profile" className="hover:text-white transition-colors">내 프로필</a></li>
+              <li><a href="/messages" className="hover:text-white transition-colors">메시지</a></li>
+              <li><a href="/bookings" className="hover:text-white transition-colors">상담 문의</a></li>
             </ul>
           </div>
 
@@ -46,10 +45,10 @@ export default function Footer() {
           <div>
             <h3 className="text-white font-bold text-lg mb-4">약관</h3>
             <ul className="space-y-2 text-sm">
-              <li><Link href="/terms" className="hover:text-white transition-colors">이용약관</Link></li>
-              <li><Link href="/privacy-policy" className="hover:text-white transition-colors">개인정보처리방침</Link></li>
-              <li><a href="#" className="hover:text-white transition-colors">환불 정책</a></li>
-              <li><a href="mailto:support@univmatch.com" className="hover:text-white transition-colors">문의하기</a></li>
+              <li><a href="/terms" className="hover:text-white transition-colors">이용약관</a></li>
+              <li><a href="/privacy" className="hover:text-white transition-colors">개인정보처리방침</a></li>
+              <li><a href="/refund" className="hover:text-white transition-colors">환불 정책</a></li>
+              <li><a href="/contact" className="hover:text-white transition-colors">문의하기</a></li>
             </ul>
           </div>
         </div>
@@ -58,7 +57,7 @@ export default function Footer() {
         <div className="border-t border-gray-700 mb-8"></div>
 
         {/* Bottom Footer */}
-        <div className="flex flex-col sm:flex-row justify-between items-center text-xs sm:text-sm text-gray-400 mb-8">
+        <div className="flex flex-col sm:flex-row justify-between items-center text-xs sm:text-sm text-gray-400">
           <p>
             &copy; {currentYear} 유니브매치. All rights reserved.
           </p>
@@ -70,7 +69,7 @@ export default function Footer() {
         </div>
 
         {/* Trust Badge */}
-        <div className="pt-8 border-t border-gray-700 text-center">
+        <div className="mt-8 pt-8 border-t border-gray-700 text-center">
           <p className="text-xs text-gray-400 mb-3">
             🛡️ 모든 멘토는 검증되었으며, 안전한 상담 환경을 보장합니다.
           </p>
@@ -81,4 +80,4 @@ export default function Footer() {
       </div>
     </footer>
   );
-}
+};

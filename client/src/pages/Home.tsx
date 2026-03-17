@@ -6,6 +6,12 @@ import { PageLayout } from "@/components/layout";
 import { setPageMeta, PAGE_META } from "@/lib/seo";
 import { trpc } from "@/lib/trpc";
 import { getLoginUrl } from "@/const";
+import { MentorVerificationSection } from "@/components/home/MentorVerificationSection";
+import { ConsultationSafetySection } from "@/components/home/ConsultationSafetySection";
+import { ParentFAQSection } from "@/components/home/ParentFAQSection";
+import { CompanyInfoSection } from "@/components/home/CompanyInfoSection";
+import { ContactSection } from "@/components/home/ContactSection";
+import { ImprovedFooter } from "@/components/home/ImprovedFooter";
 
 // Line Art Icons Component - How It Works Section
 const SearchIcon = () => (
@@ -257,6 +263,21 @@ export default function Home() {
 
         </div>
       </section>
+
+      {/* Mentor Verification Section */}
+      <MentorVerificationSection />
+
+      {/* Consultation Safety Section */}
+      <ConsultationSafetySection />
+
+      {/* Parent FAQ Section */}
+      <ParentFAQSection />
+
+      {/* Company Info Section */}
+      <CompanyInfoSection />
+
+      {/* Contact Section */}
+      <ContactSection />
 
       {/* How It Works */}
       <section id="how-it-works" role="region" className="py-16 sm:py-28 md:py-32 bg-white" aria-label="이용 방법">
