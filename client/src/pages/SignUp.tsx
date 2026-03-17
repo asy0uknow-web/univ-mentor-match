@@ -23,13 +23,7 @@ export default function SignUp() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
 
-  const utils = trpc.useUtils();
-  const signupMutation = trpc.auth.signup.useMutation({
-    onSuccess: async () => {
-      // 회원가입 성공 후 auth.me 쿼리 갱신
-      await utils.auth.me.invalidate();
-    },
-  });
+  const signupMutation = trpc.auth.signup.useMutation();
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
@@ -96,10 +90,7 @@ export default function SignUp() {
       });
 
       toast.success("회원가입이 완료되었습니다!");
-      // 약간의 지연 후 홈으로 이동 (쿼리 갱신 완료 대기)
-      setTimeout(() => {
-        navigate("/");
-      }, 300);
+      navigate("/");
     } catch (error: any) {
       const errorMessage = error.message || "회원가입에 실패했습니다";
       toast.error(errorMessage);
