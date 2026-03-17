@@ -197,7 +197,7 @@ export default function Home() {
       </section>
 
       {/* Problem Definition Section */}
-      <section id="service-intro" role="region" className="py-16 sm:py-24 md:py-32 bg-slate-50" aria-label="문제 정의">
+      <section id="service-intro" role="region" className="py-16 sm:py-24 md:py-32 bg-white" aria-label="문제 정의">
         <div className="container mx-auto px-4">
           {/* Top Headline */}
           <div className="max-w-4xl mx-auto text-center mb-8 sm:mb-12 md:mb-16">
@@ -266,7 +266,7 @@ export default function Home() {
       </section>
 
       {/* How It Works Section */}
-      <section id="how-it-works" role="region" className="py-16 sm:py-24 md:py-32 bg-blue-50" aria-label="이용 방법">
+      <section id="how-it-works" role="region" className="py-16 sm:py-24 md:py-32 bg-white" aria-label="이용 방법">
         <div className="container mx-auto px-4">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-12 sm:mb-16 text-foreground" id="how-heading">
             이용 방법
@@ -316,7 +316,7 @@ export default function Home() {
       </section>
 
       {/* Featured Mentors Section */}
-      <section id="featured-mentors" role="region" className="py-16 sm:py-24 md:py-32 bg-green-50" aria-label="추천 멘토">
+      <section id="featured-mentors" role="region" className="py-16 sm:py-24 md:py-32 bg-white" aria-label="추천 멘토">
         <div className="container mx-auto px-4">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-12 sm:mb-16 text-foreground">
             지금 가장 인기 있는 멘토들
@@ -326,28 +326,28 @@ export default function Home() {
       </section>
 
       {/* Testimonials Section */}
-      <section id="testimonials" role="region" className="py-16 sm:py-24 md:py-32 bg-purple-50" aria-label="상담 후기">
+      <section id="testimonials" role="region" className="py-16 sm:py-24 md:py-32 bg-white" aria-label="상담 후기">
         <div className="container mx-auto px-4">
           <TestimonialsSection />
         </div>
       </section>
 
       {/* Mentor Verification Section */}
-      <section id="mentor-verification" role="region" className="py-16 sm:py-24 md:py-32 bg-amber-50" aria-label="멘토 검증">
+      <section id="mentor-verification" role="region" className="py-16 sm:py-24 md:py-32 bg-white" aria-label="멘토 검증">
         <div className="container mx-auto px-4">
           <MentorVerificationSection />
         </div>
       </section>
 
       {/* FAQ Section */}
-      <section id="faq" role="region" className="py-16 sm:py-24 md:py-32 bg-rose-50" aria-label="자주 묻는 질문">
+      <section id="faq" role="region" className="py-16 sm:py-24 md:py-32 bg-white" aria-label="자주 묻는 질문">
         <div className="container mx-auto px-4">
           <IntegratedFAQSection />
         </div>
       </section>
 
       {/* Contact Section */}
-      <section id="contact" role="region" className="py-16 sm:py-24 md:py-32 bg-cyan-50" aria-label="문의 채널">
+      <section id="contact" role="region" className="py-16 sm:py-24 md:py-32 bg-white" aria-label="문의 채널">
         <div className="container mx-auto px-4">
           <ContactSection />
         </div>
