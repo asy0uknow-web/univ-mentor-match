@@ -6,6 +6,8 @@ import { eq } from "drizzle-orm";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { COOKIE_NAME } from "@shared/const";
 import { users } from "../drizzle/schema";
+import { SignJWT } from "jose";
+import { ENV } from "./_core/env";
 
 export const signupProcedure = publicProcedure
   .input(z.object({
@@ -80,11 +82,18 @@ export const signupProcedure = publicProcedure
       role: user.role,
     };
 
+    // JWT 토큰 생성
+    const secret = new TextEncoder().encode(ENV.cookieSecret);
+    const sessionToken = await new SignJWT(sessionData)
+      .setProtectedHeader({ alg: "HS256" })
+      .setExpirationTime("7d")
+      .sign(secret);
+
     const cookieOptions = getSessionCookieOptions(ctx.req);
-    ctx.res.setHeader(
-      "Set-Cookie",
-      `${COOKIE_NAME}=${JSON.stringify(sessionData)}; Path=/; HttpOnly; SameSite=Lax${cookieOptions.secure ? "; Secure" : ""}; Max-Age=${60 * 60 * 24 * 7}`
-    );
+    ctx.res.cookie(COOKIE_NAME, sessionToken, {
+      ...cookieOptions,
+      maxAge: 60 * 60 * 24 * 7 * 1000,
+    });
 
     return {
       success: true,
@@ -133,11 +142,18 @@ export const loginProcedure = publicProcedure
       role: user.role,
     };
 
+    // JWT 토큰 생성
+    const secret = new TextEncoder().encode(ENV.cookieSecret);
+    const sessionToken = await new SignJWT(sessionData)
+      .setProtectedHeader({ alg: "HS256" })
+      .setExpirationTime("7d")
+      .sign(secret);
+
     const cookieOptions = getSessionCookieOptions(ctx.req);
-    ctx.res.setHeader(
-      "Set-Cookie",
-      `${COOKIE_NAME}=${JSON.stringify(sessionData)}; Path=/; HttpOnly; SameSite=Lax${cookieOptions.secure ? "; Secure" : ""}; Max-Age=${60 * 60 * 24 * 7}`
-    );
+    ctx.res.cookie(COOKIE_NAME, sessionToken, {
+      ...cookieOptions,
+      maxAge: 60 * 60 * 24 * 7 * 1000,
+    });
 
     return {
       success: true,
