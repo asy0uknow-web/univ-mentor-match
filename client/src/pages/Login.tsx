@@ -13,7 +13,13 @@ export default function Login() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
 
-  const loginMutation = trpc.auth.login.useMutation();
+  const utils = trpc.useUtils();
+  const loginMutation = trpc.auth.login.useMutation({
+    onSuccess: async () => {
+      // 로그인 성공 후 auth.me 쿼리 갱신
+      await utils.auth.me.invalidate();
+    },
+  });
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
@@ -51,7 +57,10 @@ export default function Login() {
       });
 
       toast.success("로그인이 완료되었습니다!");
-      navigate("/");
+      // 약간의 지연 후 홈으로 이동 (쿼리 갱신 완료 대기)
+      setTimeout(() => {
+        navigate("/");
+      }, 300);
     } catch (error: any) {
       const errorMessage = error.message || "로그인에 실패했습니다";
       toast.error(errorMessage);
