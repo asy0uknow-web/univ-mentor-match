@@ -7,11 +7,12 @@ import { setPageMeta, PAGE_META } from "@/lib/seo";
 import { trpc } from "@/lib/trpc";
 import { getLoginUrl } from "@/const";
 import { MentorVerificationSection } from "@/components/home/MentorVerificationSection";
-import { ConsultationSafetySection } from "@/components/home/ConsultationSafetySection";
-import { ParentFAQSection } from "@/components/home/ParentFAQSection";
 import { CompanyInfoSection } from "@/components/home/CompanyInfoSection";
 import { ContactSection } from "@/components/home/ContactSection";
 import { ImprovedFooter } from "@/components/home/ImprovedFooter";
+import { FeaturedMentorsSlide } from "@/components/home/FeaturedMentorsSlide";
+import { TestimonialsSection } from "@/components/home/TestimonialsSection";
+import { IntegratedFAQSection } from "@/components/home/IntegratedFAQSection";
 
 // Line Art Icons Component - How It Works Section
 const SearchIcon = () => (
@@ -315,14 +316,17 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Featured Mentors Slide */}
+      <FeaturedMentorsSlide />
+
+      {/* Testimonials Section */}
+      <TestimonialsSection />
+
       {/* Mentor Verification Section */}
       <MentorVerificationSection />
 
-      {/* Consultation Safety Section */}
-      <ConsultationSafetySection />
-
-      {/* Parent FAQ Section */}
-      <ParentFAQSection />
+      {/* Integrated FAQ & Safety Section */}
+      <IntegratedFAQSection />
 
       {/* Company Info Section */}
       <CompanyInfoSection />
