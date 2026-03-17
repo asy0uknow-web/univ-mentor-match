@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight, Cpu, Microscope, Briefcase, BookOpen, GraduationCap, Lightbulb, Stethoscope } from "lucide-react";
+import { useLocation } from "wouter";
 import { trpc } from "@/lib/trpc";
 
 interface FeaturedMentor {
@@ -50,6 +51,7 @@ const getFieldLabel = (field?: string) => {
 };
 
 export const FeaturedMentorsSlide = () => {
+  const [, setLocation] = useLocation();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlay, setIsAutoPlay] = useState(true);
 
@@ -217,7 +219,10 @@ export const FeaturedMentorsSlide = () => {
                   </div>
 
                   {/* CTA Button */}
-                  <button className="w-full py-3 px-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors">
+                  <button
+                    onClick={() => setLocation(`/mentor/${mentor.id}`)}
+                    className="w-full py-3 px-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors"
+                  >
                     프로필 보기
                   </button>
                 </div>
