@@ -1,5 +1,5 @@
-import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/_core/hooks/useAuth";
 import { Link, useLocation } from "wouter";
 import { useEffect, useState } from "react";
 import { PageLayout } from "@/components/layout";
@@ -197,7 +197,7 @@ export default function Home() {
       </section>
 
       {/* Problem Definition Section */}
-      <section id="service-intro" role="region" className="py-16 sm:py-24 md:py-32 bg-white" aria-label="문제 정의">
+      <section id="service-intro" role="region" className="py-16 sm:py-24 md:py-32 bg-slate-50" aria-label="문제 정의">
         <div className="container mx-auto px-4">
           {/* Top Headline */}
           <div className="max-w-4xl mx-auto text-center mb-8 sm:mb-12 md:mb-16">
@@ -265,8 +265,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* How It Works */}
-      <section id="how-it-works" role="region" className="py-16 sm:py-28 md:py-32 bg-white" aria-label="이용 방법">
+      {/* How It Works Section */}
+      <section id="how-it-works" role="region" className="py-16 sm:py-24 md:py-32 bg-blue-50" aria-label="이용 방법">
         <div className="container mx-auto px-4">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-12 sm:mb-16 text-foreground" id="how-heading">
             이용 방법
@@ -286,29 +286,28 @@ export default function Home() {
                 },
                 { 
                   title: "1:1 상담", 
-                  desc: "예약된 시간에 1:1 상담으로 진로에 대한 조언을 받으세요",                  iconComponent: ChatIcon
-                },
+                  desc: "멘토와 실시간 채팅으로 진로, 학업, 대학 생활에 대해 솔직하게 이야기하세요",
+                  iconComponent: ChatIcon
+                }
               ].map(({ title, desc, iconComponent: IconComponent }, idx) => (
-                <div 
-                  key={idx} 
-                  className="bg-white rounded-3xl p-8 sm:p-10 shadow-md hover:shadow-xl transition-all duration-300 hover:scale-105 cursor-pointer"
+                <div
+                  key={idx}
+                  className="bg-white rounded-2xl p-6 sm:p-8 shadow-md hover:shadow-lg transition-shadow duration-300"
                 >
-                  <div className="flex flex-col items-center text-center h-full justify-center">
-                    {/* Icon with Blob Background */}
-                    <div className="relative w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 mb-8 flex items-center justify-center">
-                      <BlobBackground idx={idx} />
-                      <div className="relative z-10">
-                        <IconComponent />
-                      </div>
-                    </div>
-                    
-                    <h3 className="text-2xl sm:text-3xl font-bold mb-6 text-foreground">
-                      {title}
-                    </h3>
-                    <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
-                      {desc}
-                    </p>
+                  {/* Icon */}
+                  <div className="mb-6 sm:mb-8 flex justify-center">
+                    <IconComponent />
                   </div>
+                  
+                  {/* Title */}
+                  <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-foreground mb-3 sm:mb-4 text-center">
+                    {title}
+                  </h3>
+                  
+                  {/* Description */}
+                  <p className="text-sm sm:text-base text-muted-foreground leading-relaxed text-center">
+                    {desc}
+                  </p>
                 </div>
               ))}
             </div>
@@ -316,43 +315,46 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Featured Mentors Slide */}
-      <FeaturedMentorsSlide />
-
-      {/* Testimonials Section */}
-      <TestimonialsSection />
-
-      {/* Mentor Verification Section */}
-      <MentorVerificationSection />
-
-      {/* Integrated FAQ & Safety Section */}
-      <IntegratedFAQSection />
-
-
-
-      {/* Contact Section */}
-      <ContactSection />
-
-      {/* CTA Section with Blobs */}
-      <section role="region" className="relative py-12 sm:py-20 bg-white overflow-hidden" aria-label="시작하기">
-        {/* Organic Blobs Background */}
-        <div className="organic-blob blob-1" style={{ bottom: '-100px', left: '-100px', opacity: 0.06 }}></div>
-        <div className="organic-blob blob-2" style={{ bottom: '50px', right: '-50px', opacity: 0.06 }}></div>
-        
-        <div className="container mx-auto px-4 text-center relative z-10">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 sm:mb-6 text-foreground" id="cta-heading">
-            지금 바로 시작하세요
+      {/* Featured Mentors Section */}
+      <section id="featured-mentors" role="region" className="py-16 sm:py-24 md:py-32 bg-green-50" aria-label="추천 멘토">
+        <div className="container mx-auto px-4">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-12 sm:mb-16 text-foreground">
+            지금 가장 인기 있는 멘토들
           </h2>
-          <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-6 sm:mb-8 max-w-2xl mx-auto">
-            수많은 고등학생들이 유니브매치를 통해 꿈에 한 걸음 더 다가가고 있습니다
-          </p>
-          <a href={getLoginUrl()} className="inline-block">
-            <Button size="lg" className="text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 shadow-lg hover:shadow-xl transition-shadow">
-              유니브매치 로그인
-            </Button>
-          </a>
+          <FeaturedMentorsSlide />
         </div>
       </section>
+
+      {/* Testimonials Section */}
+      <section id="testimonials" role="region" className="py-16 sm:py-24 md:py-32 bg-purple-50" aria-label="상담 후기">
+        <div className="container mx-auto px-4">
+          <TestimonialsSection />
+        </div>
+      </section>
+
+      {/* Mentor Verification Section */}
+      <section id="mentor-verification" role="region" className="py-16 sm:py-24 md:py-32 bg-amber-50" aria-label="멘토 검증">
+        <div className="container mx-auto px-4">
+          <MentorVerificationSection />
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section id="faq" role="region" className="py-16 sm:py-24 md:py-32 bg-rose-50" aria-label="자주 묻는 질문">
+        <div className="container mx-auto px-4">
+          <IntegratedFAQSection />
+        </div>
+      </section>
+
+      {/* Contact Section */}
+      <section id="contact" role="region" className="py-16 sm:py-24 md:py-32 bg-cyan-50" aria-label="문의 채널">
+        <div className="container mx-auto px-4">
+          <ContactSection />
+        </div>
+      </section>
+
+      {/* Footer */}
+      <ImprovedFooter />
     </PageLayout>
   );
 }
