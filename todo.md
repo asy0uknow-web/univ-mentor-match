@@ -1301,3 +1301,10 @@
 - [x] 데이터베이스 마이그레이션 실행
 - [x] 관련 코드 리팩토링 (db.ts, routers.ts, 컴포넌트 등)
 - [x] 테스트 수정 및 재실행 (124/124 테스트 통과)
+
+
+## 홈페이지 섹션 제거 (pt 5.4)
+- [x] Home.tsx에서 팀소개 섹션 제거 (CompanyInfoSection 제거)
+- [x] Home.tsx에서 핵심가치 섹션 제거 (CompanyInfoSection 제거)
+- [x] CompanyInfoSection 컴포넌트 import 제거
+- [x] 테스트 및 검증 (124/124 테스트 통과)

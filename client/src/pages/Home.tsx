@@ -7,7 +7,7 @@ import { setPageMeta, PAGE_META } from "@/lib/seo";
 import { trpc } from "@/lib/trpc";
 import { getLoginUrl } from "@/const";
 import { MentorVerificationSection } from "@/components/home/MentorVerificationSection";
-import { CompanyInfoSection } from "@/components/home/CompanyInfoSection";
+
 import { ContactSection } from "@/components/home/ContactSection";
 import { ImprovedFooter } from "@/components/home/ImprovedFooter";
 import { FeaturedMentorsSlide } from "@/components/home/FeaturedMentorsSlide";
@@ -328,8 +328,7 @@ export default function Home() {
       {/* Integrated FAQ & Safety Section */}
       <IntegratedFAQSection />
 
-      {/* Company Info Section */}
-      <CompanyInfoSection />
+
 
       {/* Contact Section */}
       <ContactSection />
