@@ -141,25 +141,7 @@ export default function MentorProfile() {
     },
   });
 
-  const reactivateProfileMutation = trpc.mentor.reactivateProfile.useMutation({
-    onSuccess: () => {
-      toast.success("멘토 프로필이 다시 활성화되었습니다!");
-      utils.mentor.getMyProfile.invalidate();
-    },
-    onError: (error) => {
-      toast.error(`멘토 재등록 실패: ${error.message}`);
-    },
-  });
 
-  const deactivateProfileMutation = trpc.mentor.deactivateProfile.useMutation({
-    onSuccess: () => {
-      toast.success("멘토 활동이 중지되었습니다.");
-      utils.mentor.getMyProfile.invalidate();
-    },
-    onError: (error) => {
-      toast.error(`멘토 활동 중지 실패: ${error.message}`);
-    },
-  });
 
   useEffect(() => {
     if (profile) {
@@ -363,43 +345,7 @@ export default function MentorProfile() {
               </div>
             ) : (
               <>
-                {/* 비활성화 상태 카드 */}
-                {profile && !profile.isActive && (
-                  <Card className="mb-5 border-red-200 bg-red-50 shadow-sm">
-                    <CardContent className="pt-5">
-                      <div className="flex items-start gap-3">
-                        <div className="w-9 h-9 rounded-xl bg-red-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                          <ShieldOff className="h-4 w-4 text-red-500" />
-                        </div>
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-1">
-                            <span className="font-semibold text-red-800 text-sm">멘토 활동 중지됨</span>
-                            <Badge className="bg-red-100 text-red-700 border-red-200 hover:bg-red-100 text-xs">비활성</Badge>
-                          </div>
-                          <p className="text-sm text-red-700 mb-3">
-                            현재 멘토 프로필이 비활성화 상태입니다. 멘토 활동을 재개하려면 아래 버튼을 클릭하세요.
-                          </p>
-                          <Button
-                            size="sm"
-                            className="bg-red-600 hover:bg-red-700 text-white"
-                            onClick={() => {
-                              if (confirm("멘토 활동을 다시 시작하시겠습니까?")) {
-                                reactivateProfileMutation.mutate();
-                              }
-                            }}
-                            disabled={reactivateProfileMutation.isPending}
-                          >
-                            {reactivateProfileMutation.isPending ? (
-                              <><Loader2 className="h-3 w-3 animate-spin mr-1.5" />처리 중...</>
-                            ) : (
-                              <><RefreshCw className="h-3 w-3 mr-1.5" />멘토 활동 재개</>
-                            )}
-                          </Button>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                )}
+
 
                 {/* [오류1 수정] 인증 상태 카드 - 상태별 정확한 메시지 표시 */}
                 {profile && (
@@ -616,57 +562,17 @@ export default function MentorProfile() {
                       </div>
 
                       <div className="pt-2 space-y-2">
-                        {!profile || profile.isActive ? (
-                          <>
-                            <Button
-                              type="submit"
-                              className="w-full bg-green-600 hover:bg-green-700"
-                              disabled={createProfileMutation.isPending || updateProfileMutation.isPending}
-                            >
-                              {createProfileMutation.isPending || updateProfileMutation.isPending ? (
-                                <><Loader2 className="h-4 w-4 animate-spin mr-2" />처리 중...</>
-                              ) : (
-                                profile ? "프로필 저장" : "멘토로 등록하기"
-                              )}
-                            </Button>
-                            {profile && profile.isActive && (
-                              <Button
-                                type="button"
-                                variant="outline"
-                                className="w-full border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300"
-                                onClick={() => {
-                                  if (confirm("멘토 활동을 중지하시겠습니까? 나중에 다시 시작할 수 있습니다.")) {
-                                    deactivateProfileMutation.mutate();
-                                  }
-                                }}
-                                disabled={deactivateProfileMutation.isPending}
-                              >
-                                {deactivateProfileMutation.isPending ? (
-                                  <><Loader2 className="h-4 w-4 animate-spin mr-2" />처리 중...</>
-                                ) : (
-                                  "멘토 활동 중지"
-                                )}
-                              </Button>
-                            )}
-                          </>
-                        ) : (
-                          <Button
-                            type="button"
-                            className="w-full bg-green-600 hover:bg-green-700"
-                            onClick={() => {
-                              if (confirm("멘토 활동을 재개하시겠습니까?")) {
-                                reactivateProfileMutation.mutate();
-                              }
-                            }}
-                            disabled={reactivateProfileMutation.isPending}
-                          >
-                            {reactivateProfileMutation.isPending ? (
-                              <><Loader2 className="h-4 w-4 animate-spin mr-2" />처리 중...</>
-                            ) : (
-                              "멘토 활동 재개"
-                            )}
-                          </Button>
-                        )}
+                        <Button
+                          type="submit"
+                          className="w-full bg-green-600 hover:bg-green-700"
+                          disabled={createProfileMutation.isPending || updateProfileMutation.isPending}
+                        >
+                          {createProfileMutation.isPending || updateProfileMutation.isPending ? (
+                            <><Loader2 className="h-4 w-4 animate-spin mr-2" />처리 중...</>
+                          ) : (
+                            profile ? "프로필 저장" : "멘토로 등록하기"
+                          )}
+                        </Button>
                       </div>
                     </form>
                   </CardContent>

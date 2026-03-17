@@ -43,7 +43,6 @@ describe("mentor re-registration full flow", () => {
 
     expect(profile.length).toBe(1);
     expect(profile[0].verificationStatus).toBe("pending");
-    expect(profile[0].isActive).toBe(true);
     expect(profile[0].isDeleted).toBe(false);
   });
 
@@ -83,7 +82,6 @@ describe("mentor re-registration full flow", () => {
     ).limit(1);
 
     expect(approvedProfile[0].verificationStatus).toBe("approved");
-    expect(approvedProfile[0].isActive).toBe(true);
   });
 
   it("should soft-delete mentor profile (admin delete or deactivation)", async () => {
@@ -111,7 +109,7 @@ describe("mentor re-registration full flow", () => {
     ).limit(1);
 
     expect(softDeleted.length).toBe(1);
-    expect(softDeleted[0].isActive).toBe(false);
+    expect(softDeleted[0].isDeleted).toBe(true);
   });
 
   it("should re-register mentor with pending status and create new verification", async () => {
@@ -145,7 +143,6 @@ describe("mentor re-registration full flow", () => {
 
     expect(reregisteredProfile.length).toBe(1);
     expect(reregisteredProfile[0].verificationStatus).toBe("pending");
-    expect(reregisteredProfile[0].isActive).toBe(true);
     expect(reregisteredProfile[0].isDeleted).toBe(false);
     expect(reregisteredProfile[0].university).toBe("고려대학교");
   });
@@ -179,14 +176,12 @@ describe("mentor re-registration full flow", () => {
       and(
         eq(mentorProfiles.userId, testUserId),
         eq(mentorProfiles.isDeleted, false),
-        eq(mentorProfiles.verificationStatus, "approved"),
-        eq(mentorProfiles.isActive, true)
+        eq(mentorProfiles.verificationStatus, "approved")
       )
     ).limit(1);
 
     expect(activeProfile.length).toBe(1);
     expect(activeProfile[0].verificationStatus).toBe("approved");
-    expect(activeProfile[0].isActive).toBe(true);
     expect(activeProfile[0].isDeleted).toBe(false);
   });
 
@@ -234,7 +229,6 @@ describe("mentor re-registration full flow", () => {
 
     expect(deletedProfile.length).toBe(1);
     expect(deletedProfile[0].verificationStatus).toBe("rejected");
-    expect(deletedProfile[0].isActive).toBe(false);
     expect(deletedProfile[0].isDeleted).toBe(true);
 
     // Verify active profile WAS updated

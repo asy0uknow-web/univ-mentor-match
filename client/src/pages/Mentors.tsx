@@ -483,7 +483,6 @@ function MentorCard({
 
       hourlyRate: string | null;
       availableSlots: string | null;
-      isActive: boolean;
       verificationStatus: string;
       isDeleted: boolean;
       averageRating: string | null;

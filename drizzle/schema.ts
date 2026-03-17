@@ -27,7 +27,6 @@ export const users = mysqlTable("users", {
   stripeCustomerId: varchar("stripeCustomerId", { length: 255 }),
   // Phone number for contact
   phoneNumber: varchar("phoneNumber", { length: 20 }),
-  password: varchar("password", { length: 255 }),
   // Verification status: not_verified, pending, verified, rejected
   verificationStatus: mysqlEnum("verificationStatus", ["not_verified", "pending", "verified", "rejected"]).default("not_verified").notNull(),
   // Verification method: none, kakao_pay, nice, manual
@@ -63,8 +62,6 @@ export const mentorProfiles = mysqlTable("mentor_profiles", {
   hourlyRate: decimal("hourlyRate", { precision: 10, scale: 2 }).default("0"),
   // Available time slots (stored as JSON string)
   availableSlots: text("availableSlots"),
-  // Profile visibility
-  isActive: boolean("isActive").default(true).notNull(),
   // Verification status: pending, approved, rejected
   verificationStatus: mysqlEnum("verificationStatus", ["pending", "approved", "rejected"]).default("pending").notNull(),
   // Soft delete flag: true = deleted/archived, false = active

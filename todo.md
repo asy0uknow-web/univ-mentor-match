@@ -1293,3 +1293,11 @@
 - [x] 회원가입 페이지 Set-Cookie 헤더 오류 원인 분석
 - [x] 인증 관련 라우터에서 Set-Cookie 헤더 문제 수정 (JSON.stringify 대신 JWT 토큰 사용)
 - [x] 테스트 및 검증 (123/124 테스트 통과)
+
+
+## 데이터베이스 스키마 정리 (pt 5.3)
+- [x] users 테이블에서 password 컬럼 제거
+- [x] mentor_profiles 테이블에서 isActive 컬럼 제거
+- [x] 데이터베이스 마이그레이션 실행
+- [x] 관련 코드 리팩토링 (db.ts, routers.ts, 컴포넌트 등)
+- [x] 테스트 수정 및 재실행 (124/124 테스트 통과)

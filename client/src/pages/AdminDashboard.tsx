@@ -428,12 +428,12 @@ export default function AdminDashboard() {
                                 </Badge>
                                 <Badge
                                   className={
-                                    mentor.profile.isActive
+                                    mentor.profile.verificationStatus === "approved"
                                       ? "bg-blue-100 text-blue-700 border-blue-200 hover:bg-blue-100"
                                       : "bg-gray-100 text-gray-500 border-gray-200 hover:bg-gray-100"
                                   }
                                 >
-                                  {mentor.profile.isActive ? "활성" : "비활성"}
+                                  {mentor.profile.verificationStatus === "approved" ? "인증" : "대기중"}
                                 </Badge>
                               </div>
                               <p className="text-sm text-gray-600 mb-1">

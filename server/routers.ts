@@ -248,7 +248,6 @@ export const appRouter = router({
         field: z.enum(["engineering", "natural_science", "business", "humanities", "education", "liberal_arts", "medicine"]).optional(),
         region: z.enum(["seoul", "gyeonggi", "incheon", "gangwon", "chungcheong", "jeolla", "gyeongsang", "jeju"]).optional(),
         availableSlots: z.string().optional(),
-        isActive: z.boolean().optional(),
       }))
       .mutation(async ({ ctx, input }) => {
         await updateMentorProfile(ctx.user.id, input);
@@ -271,30 +270,7 @@ export const appRouter = router({
       return await getBookingsByMentor(ctx.user.id);
     }),
 
-    reactivateProfile: protectedProcedure.mutation(async ({ ctx }) => {
-      const existingProfile = await getMentorProfileByUserId(ctx.user.id);
-      if (!existingProfile) {
-        throw new Error("등록된 멘토 프로필이 없습니다");
-      }
-      if (existingProfile.isActive) {
-        throw new Error("이미 활성화된 프로필입니다");
-      }
-      // 프로필을 다시 활성화
-      await updateMentorProfile(ctx.user.id, { isActive: true });
-      return { success: true };
-    }),
 
-    deactivateProfile: protectedProcedure.mutation(async ({ ctx }) => {
-      const existingProfile = await getMentorProfileByUserId(ctx.user.id);
-      if (!existingProfile) {
-        throw new Error("등록된 멘토 프로필이 없습니다");
-      }
-      if (!existingProfile.isActive) {
-        throw new Error("이미 비활성화된 프로필입니다");
-      }
-      await updateMentorProfile(ctx.user.id, { isActive: false });
-      return { success: true };
-    }),
 
     getMyConsultationTypes: protectedProcedure.query(async ({ ctx }) => {
       const db = await getDb();
@@ -814,7 +790,6 @@ export const appRouter = router({
               major: input.major,
               grade: gradeValue,
               region: regionValue,
-              isActive: true,
               isDeleted: false,
               verificationStatus: "pending",
               createdAt: new Date(),
@@ -829,7 +804,6 @@ export const appRouter = router({
                 major: input.major,
                 grade: gradeValue,
                 region: regionValue,
-                isActive: true,
                 isDeleted: false,
                 updatedAt: new Date(),
               })
@@ -928,7 +902,13 @@ export const appRouter = router({
         if (ctx.user?.role !== "admin") {
           throw new Error("Only admins can delete mentor profiles");
         }
-        await updateMentorProfile(input.mentorId, { isActive: false });
+        // Mark profile as deleted instead of deactivating
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+        await db.update(mentorProfiles).set({
+          isDeleted: true,
+          updatedAt: new Date(),
+        }).where(eq(mentorProfiles.userId, input.mentorId));
         return { success: true };
       }),
 

@@ -142,7 +142,6 @@ export async function createMentorProfile(profile: InsertMentorProfile) {
     await db.update(mentorProfiles).set({
       ...profile,
       verificationStatus: "pending",
-      isActive: true,
       isDeleted: false,
     }).where(
       and(
@@ -164,7 +163,6 @@ export async function createMentorProfile(profile: InsertMentorProfile) {
       await db.update(mentorProfiles).set({
         ...profile,
         verificationStatus: "pending",
-        isActive: true,
         isDeleted: false,
       }).where(eq(mentorProfiles.id, deletedProfile[0].id));
     } else {
@@ -172,7 +170,6 @@ export async function createMentorProfile(profile: InsertMentorProfile) {
       await db.insert(mentorProfiles).values({
         ...profile,
         verificationStatus: "pending",
-        isActive: true,
         isDeleted: false,
       });
     }
@@ -217,7 +214,6 @@ export async function getAllActiveMentors() {
     .innerJoin(users, eq(mentorProfiles.userId, users.id))
     .where(
       and(
-        eq(mentorProfiles.isActive, true),
         eq(mentorProfiles.verificationStatus, "approved"),
         eq(mentorProfiles.isDeleted, false)
       )
@@ -627,7 +623,6 @@ export async function approveMentorVerification(verificationId: number) {
   // Update mentor profile verification status (only active profiles)
   await db.update(mentorProfiles).set({
     verificationStatus: "approved",
-    isActive: true,
   }).where(
     and(
       eq(mentorProfiles.userId, verification[0].userId),
@@ -782,7 +777,6 @@ export async function getMentorsByFieldAndRegion(
       conditions.push(inArray(mentorProfiles.region, filteredRegions));
     }
   }
-  conditions.push(eq(mentorProfiles.isActive, true));
   conditions.push(eq(mentorProfiles.verificationStatus, "approved"));
   
   const result = await db
@@ -815,7 +809,6 @@ export async function getMentorsByRegion(
     .where(
       and(
         eq(mentorProfiles.region, region),
-        eq(mentorProfiles.isActive, true),
         eq(mentorProfiles.verificationStatus, "approved")
       )
     )
