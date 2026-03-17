@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Cpu, Microscope, Briefcase, BookOpen, GraduationCap, Lightbulb, Stethoscope } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 
 interface FeaturedMentor {
@@ -8,10 +8,46 @@ interface FeaturedMentor {
   university: string;
   major: string;
   bio: string;
+  field?: string;
   image?: string;
   rating: number;
   reviewCount: number;
 }
+
+const getFieldIcon = (field?: string) => {
+  const iconProps = { className: "w-5 h-5" };
+  switch (field) {
+    case "engineering":
+      return <Cpu {...iconProps} />;
+    case "natural_science":
+      return <Microscope {...iconProps} />;
+    case "business":
+      return <Briefcase {...iconProps} />;
+    case "humanities":
+      return <BookOpen {...iconProps} />;
+    case "education":
+      return <GraduationCap {...iconProps} />;
+    case "liberal_arts":
+      return <Lightbulb {...iconProps} />;
+    case "medicine":
+      return <Stethoscope {...iconProps} />;
+    default:
+      return null;
+  }
+};
+
+const getFieldLabel = (field?: string) => {
+  const labels: Record<string, string> = {
+    engineering: "공학",
+    natural_science: "자연과학",
+    business: "경영/상경",
+    humanities: "인문학",
+    education: "교육",
+    liberal_arts: "교양",
+    medicine: "의학",
+  };
+  return labels[field || ""] || "전공 미등록";
+};
 
 export const FeaturedMentorsSlide = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -29,6 +65,7 @@ export const FeaturedMentorsSlide = () => {
     university: mentor.university || "대학명 미등록",
     major: mentor.major || "전공 미등록",
     bio: mentor.bio || "자기소개 미등록",
+    field: mentor.field,
     rating: mentor.averageRating ? parseFloat(mentor.averageRating.toString()) : 0,
     reviewCount: mentor.reviewCount || 0,
   }));
@@ -140,6 +177,16 @@ export const FeaturedMentorsSlide = () => {
                   <p className="text-sm font-semibold text-blue-600 mb-4">
                     {mentor.major}
                   </p>
+
+                  {/* Professional Field Badge */}
+                  {mentor.field && (
+                    <div className="flex items-center gap-2 mb-4 px-3 py-2 bg-blue-50 rounded-lg w-fit">
+                      <span className="text-blue-600">{getFieldIcon(mentor.field)}</span>
+                      <span className="text-xs sm:text-sm font-medium text-blue-700">
+                        {getFieldLabel(mentor.field)}
+                      </span>
+                    </div>
+                  )}
 
                   <p className="text-sm sm:text-base text-muted-foreground mb-6 line-clamp-2">
                     {mentor.bio}

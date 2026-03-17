@@ -282,6 +282,7 @@ export const appRouter = router({
             university: mentorProfiles.university,
             major: mentorProfiles.major,
             bio: mentorProfiles.bio,
+            field: mentorProfiles.field,
             averageRating: mentorProfiles.averageRating,
             reviewCount: mentorProfiles.reviewCount,
           })

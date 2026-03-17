@@ -58,6 +58,8 @@ export const mentorProfiles = mysqlTable("mentor_profiles", {
   grade: mysqlEnum("grade", ["1", "2", "3", "4", "graduate"]).notNull(),
 
   bio: text("bio"),
+  // Professional field: engineering, natural_science, business, humanities, education, liberal_arts, medicine
+  field: mysqlEnum("field", ["engineering", "natural_science", "business", "humanities", "education", "liberal_arts", "medicine"]),
   // Hourly consultation fee in KRW (deprecated - use consultation type pricing instead)
   hourlyRate: decimal("hourlyRate", { precision: 10, scale: 2 }).default("0"),
   // Available time slots (stored as JSON string)
