@@ -264,21 +264,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Mentor Verification Section */}
-      <MentorVerificationSection />
-
-      {/* Consultation Safety Section */}
-      <ConsultationSafetySection />
-
-      {/* Parent FAQ Section */}
-      <ParentFAQSection />
-
-      {/* Company Info Section */}
-      <CompanyInfoSection />
-
-      {/* Contact Section */}
-      <ContactSection />
-
       {/* How It Works */}
       <section id="how-it-works" role="region" className="py-16 sm:py-28 md:py-32 bg-white" aria-label="이용 방법">
         <div className="container mx-auto px-4">
@@ -329,6 +314,21 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Mentor Verification Section */}
+      <MentorVerificationSection />
+
+      {/* Consultation Safety Section */}
+      <ConsultationSafetySection />
+
+      {/* Parent FAQ Section */}
+      <ParentFAQSection />
+
+      {/* Company Info Section */}
+      <CompanyInfoSection />
+
+      {/* Contact Section */}
+      <ContactSection />
 
       {/* CTA Section with Blobs */}
       <section role="region" className="relative py-12 sm:py-20 bg-white overflow-hidden" aria-label="시작하기">
