@@ -1308,3 +1308,11 @@
 - [x] Home.tsx에서 핵심가치 섹션 제거 (CompanyInfoSection 제거)
 - [x] CompanyInfoSection 컴포넌트 import 제거
 - [x] 테스트 및 검증 (124/124 테스트 통과)
+
+
+## 추천 멘토 슬라이드 동적화 (pt 5.5)
+- [x] FeaturedMentorsSlide 컴포넌트 분석
+- [x] TRPC 쿼리로 실제 멘토 데이터 조회 (mentor.getTopMentors 추가)
+- [x] 슬라이드에 멘토 프로필 데이터 바인딩
+- [x] 로딩 및 에러 상태 처리
+- [x] 테스트 및 검증 (124/124 테스트 통과)

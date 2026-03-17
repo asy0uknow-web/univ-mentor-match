@@ -266,6 +266,39 @@ export const appRouter = router({
         return await getMentorById(input.mentorId);
       }),
 
+    getTopMentors: publicProcedure
+      .input(z.object({
+        limit: z.number().min(1).max(20).default(6),
+      }))
+      .query(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+
+        const topMentors = await db
+          .select({
+            id: mentorProfiles.id,
+            userId: mentorProfiles.userId,
+            name: users.name,
+            university: mentorProfiles.university,
+            major: mentorProfiles.major,
+            bio: mentorProfiles.bio,
+            averageRating: mentorProfiles.averageRating,
+            reviewCount: mentorProfiles.reviewCount,
+          })
+          .from(mentorProfiles)
+          .innerJoin(users, drizzleEq(mentorProfiles.userId, users.id))
+          .where(
+            and(
+              drizzleEq(mentorProfiles.verificationStatus, "approved"),
+              drizzleEq(mentorProfiles.isDeleted, false)
+            )
+          )
+          .orderBy(drizzleDesc(mentorProfiles.averageRating))
+          .limit(input.limit);
+
+        return topMentors;
+      }),
+
     getMyBookings: protectedProcedure.query(async ({ ctx }) => {
       return await getBookingsByMentor(ctx.user.id);
     }),
