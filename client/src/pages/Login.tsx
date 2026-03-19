@@ -45,10 +45,14 @@ export default function Login() {
     setIsLoading(true);
 
     try {
+      const utils = trpc.useUtils();
       await loginMutation.mutateAsync({
         email,
         password,
       });
+
+      // 로그인 후 auth.me 쿼리 강제 갱신
+      await utils.auth.me.invalidate();
 
       toast.success("로그인이 완료되었습니다!");
       navigate("/");
