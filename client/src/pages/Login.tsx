@@ -13,6 +13,7 @@ export default function Login() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
 
+  const utils = trpc.useUtils();
   const loginMutation = trpc.auth.login.useMutation();
 
   const validateForm = () => {
@@ -45,7 +46,6 @@ export default function Login() {
     setIsLoading(true);
 
     try {
-      const utils = trpc.useUtils();
       await loginMutation.mutateAsync({
         email,
         password,
