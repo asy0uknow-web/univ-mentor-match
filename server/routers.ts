@@ -43,6 +43,16 @@ import {
   deleteGalleryImage,
   updateGalleryImageOrder,
   getDb,
+  updateMessage,
+  deleteMessage,
+  addMessageReaction,
+  getMessageReactions,
+  updateTypingStatus,
+  getTypingStatus,
+  getUserProfile,
+  upsertUserProfile,
+  updateUserOnlineStatus,
+  markAllMessagesAsRead,
 } from "./db";
 import { CONSULTATION_PRODUCT, MIN_BOOKING_DURATION, MAX_BOOKING_DURATION } from "./products";
 import { storagePut } from "./storage";
@@ -701,6 +711,95 @@ export const appRouter = router({
     getUnreadCount: protectedProcedure.query(async ({ ctx }) => {
       return await getUnreadMessagesCount(ctx.user.id);
     }),
+
+    // 메시지 수정
+    editMessage: protectedProcedure
+      .input(z.object({
+        messageId: z.number(),
+        content: z.string().min(1).max(2000),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        return await updateMessage(input.messageId, ctx.user.id, input.content);
+      }),
+
+    // 메시지 삭제 (소프트 삭제)
+    deleteMessage: protectedProcedure
+      .input(z.object({ messageId: z.number() }))
+      .mutation(async ({ ctx, input }) => {
+        return await deleteMessage(input.messageId, ctx.user.id);
+      }),
+
+    // 메시지 반응 토글
+    toggleReaction: protectedProcedure
+      .input(z.object({
+        messageId: z.number(),
+        emoji: z.string().min(1).max(10),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        return await addMessageReaction(input.messageId, ctx.user.id, input.emoji);
+      }),
+
+    // 메시지 반응 조회
+    getReactions: protectedProcedure
+      .input(z.object({ messageIds: z.array(z.number()) }))
+      .query(async ({ input }) => {
+        return await getMessageReactions(input.messageIds);
+      }),
+
+    // 타이핑 상태 업데이트
+    setTyping: protectedProcedure
+      .input(z.object({
+        partnerId: z.number(),
+        isTyping: z.boolean(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        return await updateTypingStatus(ctx.user.id, input.partnerId, input.isTyping);
+      }),
+
+    // 타이핑 상태 조회
+    getTyping: protectedProcedure
+      .input(z.object({ partnerId: z.number() }))
+      .query(async ({ ctx, input }) => {
+        return await getTypingStatus(ctx.user.id, input.partnerId);
+      }),
+
+    // 대화 전체 읽음 처리
+    markConversationAsRead: protectedProcedure
+      .input(z.object({ otherUserId: z.number() }))
+      .mutation(async ({ ctx, input }) => {
+        return await markAllMessagesAsRead(ctx.user.id, input.otherUserId);
+      }),
+
+    // 프로필 이미지 업데이트
+    updateProfileImage: protectedProcedure
+      .input(z.object({
+        fileData: z.string(),
+        fileName: z.string(),
+        mimeType: z.string(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const allowedMimeTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
+        if (!allowedMimeTypes.includes(input.mimeType)) {
+          throw new Error("Unsupported file format");
+        }
+        const buffer = Buffer.from(input.fileData, "base64");
+        const maxSize = 5 * 1024 * 1024;
+        if (buffer.length > maxSize) throw new Error("File size must be less than 5MB");
+        const timestamp = Date.now();
+        const randomSuffix = Math.random().toString(36).substring(2, 15);
+        const fileExtension = input.fileName.split(".").pop() || "jpg";
+        const secureFileName = `profile/${ctx.user.id}/${timestamp}-${randomSuffix}.${fileExtension}`;
+        const { url } = await storagePut(secureFileName, buffer, input.mimeType);
+        await upsertUserProfile(ctx.user.id, { profileImageUrl: url });
+        return { success: true, imageUrl: url };
+      }),
+
+    // 프로필 정보 조회
+    getProfile: protectedProcedure
+      .input(z.object({ userId: z.number() }))
+      .query(async ({ input }) => {
+        return await getUserProfile(input.userId);
+      }),
   }),
 
   verification: router({

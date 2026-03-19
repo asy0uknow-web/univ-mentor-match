@@ -1365,3 +1365,22 @@
 - [ ] 대화 목록 개선 (읽지 않은 메시지 배지, 온라인 상태)
 - [ ] 상담 제안 카드 UX 개선 (배경색 강화, 모바일 버튼 레이아웃)
 - [ ] 메시지 시간 표시 개선 (호버 시 정확한 시간)
+
+## 메시지 기능 UX 전면 개선 (2026-03-19)
+- [x] DB 스키마 확장: message_reactions, user_typing_status, user_profiles 테이블 추가
+- [x] messages 테이블에 isEdited, originalContent, isDeleted, deletedAt 컬럼 추가
+- [x] 읽음 표시 (체크마크) - 내가 보낸 메시지의 읽음 여부 표시
+- [x] 메시지 그룹화 - 같은 발신자의 5분 이내 연속 메시지 그룹화
+- [x] 아바타 표시 - 대화 목록 및 채팅창에 이니셜 기반 아바타 표시
+- [x] 타이핑 표시기 - 상대방이 입력 중일 때 애니메이션 표시
+- [x] 메시지 수정 기능 - 내가 보낸 메시지 수정 (수정됨 표시)
+- [x] 메시지 삭제 기능 - 소프트 삭제 (삭제된 메시지 표시)
+- [x] 이모지 반응 기능 - 6가지 이모지 반응 토글
+- [x] 날짜 구분선 - 날짜별 메시지 구분
+- [x] 메시지 내 검색 - 대화 내 키워드 검색
+- [x] 대화 목록 개선 - 읽지 않은 메시지 개수 배지, 검색 아이콘, 아바타
+- [x] 대화 전체 읽음 처리 - 대화 열 때 자동 읽음 처리
+- [x] 메시지 시간 표시 개선 - 오늘은 HH:mm, 어제는 "어제", 그 이전은 M/d
+- [x] 전체 시간 툴팁 - 메시지 버블 hover 시 전체 날짜/시간 표시
+- [x] 새 API 엔드포인트 추가: editMessage, deleteMessage, toggleReaction, getReactions, setTyping, getTyping, markConversationAsRead, updateProfileImage, getProfile
+- [x] 테스트 11개 추가 및 통과 (전체 135/135)

@@ -11,13 +11,14 @@ import { Link } from "wouter";
 import {
   Send, MessageSquare, Clock, CheckCircle2, XCircle, AlertCircle,
   Menu, X as XIcon, Calendar, MapPin, Video, Users, ChevronRight,
-  ThumbsUp, ThumbsDown, RefreshCw, Star
+  ThumbsUp, ThumbsDown, RefreshCw, Star, Pencil, Trash2, Search,
+  Check, CheckCheck, MoreHorizontal, Smile
 } from "lucide-react";
 import { useAuth } from "@/_core/hooks/useAuth";
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { getLoginUrl } from "@/const";
 import { toast } from "sonner";
-import { format, formatDistanceToNow } from "date-fns";
+import { format, formatDistanceToNow, isToday, isYesterday, differenceInMinutes } from "date-fns";
 import { ko } from "date-fns/locale";
 
 // ===== 상담 유형 상수 =====
@@ -38,21 +39,194 @@ const PROPOSAL_STATUS = {
   completed: { label: "상담 완료", color: "text-purple-600", bg: "bg-purple-50 border-purple-200", icon: Star },
 } as const;
 
+// 이모지 반응 목록
+const REACTION_EMOJIS = ["👍", "❤️", "😂", "😮", "😢", "🔥"];
+
+// ===== 아바타 컴포넌트 =====
+function Avatar({ name, profileImageUrl, size = "md" }: { name: string; profileImageUrl?: string | null; size?: "sm" | "md" | "lg" }) {
+  const sizeClass = { sm: "w-7 h-7 text-xs", md: "w-9 h-9 text-sm", lg: "w-12 h-12 text-base" }[size];
+  const initial = name ? name.charAt(0) : "?";
+  const colors = ["bg-violet-500", "bg-blue-500", "bg-emerald-500", "bg-amber-500", "bg-rose-500", "bg-indigo-500"];
+  const colorIdx = name ? name.charCodeAt(0) % colors.length : 0;
+
+  if (profileImageUrl) {
+    return (
+      <div className={`${sizeClass} rounded-full overflow-hidden shrink-0`}>
+        <img src={profileImageUrl} alt={name} className="w-full h-full object-cover" />
+      </div>
+    );
+  }
+  return (
+    <div className={`${sizeClass} rounded-full ${colors[colorIdx]} text-white flex items-center justify-center font-semibold shrink-0`}>
+      {initial}
+    </div>
+  );
+}
+
+// ===== 읽음 표시 컴포넌트 =====
+function ReadReceipt({ isRead, isMe }: { isRead: boolean; isMe: boolean }) {
+  if (!isMe) return null;
+  return (
+    <span className="inline-flex items-center ml-1">
+      {isRead ? (
+        <CheckCheck className="h-3 w-3 text-blue-400" />
+      ) : (
+        <Check className="h-3 w-3 text-muted-foreground/60" />
+      )}
+    </span>
+  );
+}
+
+// ===== 타이핑 표시기 =====
+function TypingIndicator({ name }: { name: string }) {
+  return (
+    <div className="flex items-center gap-2 px-4 py-2">
+      <div className="flex gap-1 items-center bg-muted rounded-2xl px-3 py-2">
+        <span className="text-xs text-muted-foreground mr-1">{name}님이 입력 중</span>
+        <span className="flex gap-0.5">
+          {[0, 1, 2].map(i => (
+            <span
+              key={i}
+              className="w-1.5 h-1.5 bg-muted-foreground/60 rounded-full animate-bounce"
+              style={{ animationDelay: `${i * 0.15}s` }}
+            />
+          ))}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+// ===== 날짜 구분선 =====
+function DateDivider({ date }: { date: Date }) {
+  let label = "";
+  if (isToday(date)) label = "오늘";
+  else if (isYesterday(date)) label = "어제";
+  else label = format(date, "yyyy년 M월 d일 (E)", { locale: ko });
+
+  return (
+    <div className="flex items-center gap-3 my-4">
+      <div className="flex-1 h-px bg-border" />
+      <span className="text-xs text-muted-foreground bg-background px-2 whitespace-nowrap">{label}</span>
+      <div className="flex-1 h-px bg-border" />
+    </div>
+  );
+}
+
+// ===== 이모지 반응 표시 =====
+function ReactionBubbles({ reactions, currentUserId, messageId, onToggle }: {
+  reactions: any[];
+  currentUserId: number;
+  messageId: number;
+  onToggle: (emoji: string) => void;
+}) {
+  if (!reactions || reactions.length === 0) return null;
+
+  const grouped = reactions.reduce((acc: Record<string, { count: number; users: number[] }>, r: any) => {
+    if (!acc[r.emoji]) acc[r.emoji] = { count: 0, users: [] };
+    acc[r.emoji].count++;
+    acc[r.emoji].users.push(r.userId);
+    return acc;
+  }, {});
+
+  return (
+    <div className="flex flex-wrap gap-1 mt-1">
+      {Object.entries(grouped).map(([emoji, { count, users }]) => {
+        const isMyReaction = users.includes(currentUserId);
+        return (
+          <button
+            key={emoji}
+            onClick={() => onToggle(emoji)}
+            className={`flex items-center gap-0.5 px-2 py-0.5 rounded-full text-xs border transition-all ${
+              isMyReaction
+                ? "bg-primary/10 border-primary/30 text-primary"
+                : "bg-muted/60 border-border hover:bg-muted"
+            }`}
+          >
+            <span>{emoji}</span>
+            <span className="font-medium">{count}</span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+// ===== 이모지 피커 =====
+function EmojiPicker({ onSelect, onClose }: { onSelect: (emoji: string) => void; onClose: () => void }) {
+  return (
+    <div className="absolute bottom-full mb-1 bg-background border rounded-xl shadow-lg p-2 flex gap-1 z-50">
+      {REACTION_EMOJIS.map(emoji => (
+        <button
+          key={emoji}
+          onClick={() => { onSelect(emoji); onClose(); }}
+          className="text-lg hover:scale-125 transition-transform p-1 rounded"
+        >
+          {emoji}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+// ===== 메시지 액션 메뉴 =====
+function MessageActions({ isMe, onEdit, onDelete, onReact, isDeleted }: {
+  isMe: boolean;
+  onEdit?: () => void;
+  onDelete?: () => void;
+  onReact: () => void;
+  isDeleted: boolean;
+}) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className={`flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity ${isMe ? "flex-row-reverse" : "flex-row"}`}>
+      <button
+        onClick={onReact}
+        className="p-1 rounded hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
+        title="반응 추가"
+      >
+        <Smile className="h-3.5 w-3.5" />
+      </button>
+      {isMe && !isDeleted && (
+        <div className="relative">
+          <button
+            onClick={() => setOpen(!open)}
+            className="p-1 rounded hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <MoreHorizontal className="h-3.5 w-3.5" />
+          </button>
+          {open && (
+            <div className={`absolute bottom-full mb-1 bg-background border rounded-xl shadow-lg py-1 z-50 min-w-[100px] ${isMe ? "right-0" : "left-0"}`}>
+              {onEdit && (
+                <button
+                  onClick={() => { onEdit(); setOpen(false); }}
+                  className="w-full flex items-center gap-2 px-3 py-1.5 text-sm hover:bg-muted transition-colors"
+                >
+                  <Pencil className="h-3.5 w-3.5" /> 수정
+                </button>
+              )}
+              {onDelete && (
+                <button
+                  onClick={() => { onDelete(); setOpen(false); }}
+                  className="w-full flex items-center gap-2 px-3 py-1.5 text-sm text-red-500 hover:bg-red-50 transition-colors"
+                >
+                  <Trash2 className="h-3.5 w-3.5" /> 삭제
+                </button>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ===== 상담 제안 폼 컴포넌트 =====
 function ProposalFormDialog({
-  open,
-  onClose,
-  onSubmit,
-  receiverId,
-  initialData,
-  isCounter = false,
+  open, onClose, onSubmit, receiverId, initialData, isCounter = false,
 }: {
-  open: boolean;
-  onClose: () => void;
-  onSubmit: (data: any) => void;
-  receiverId: number;
-  initialData?: any;
-  isCounter?: boolean;
+  open: boolean; onClose: () => void; onSubmit: (data: any) => void;
+  receiverId: number; initialData?: any; isCounter?: boolean;
 }) {
   const [scheduledDate, setScheduledDate] = useState(initialData?.scheduledAt ? format(new Date(initialData.scheduledAt), "yyyy-MM-dd") : "");
   const [scheduledTime, setScheduledTime] = useState(initialData?.scheduledAt ? format(new Date(initialData.scheduledAt), "HH:mm") : "");
@@ -63,20 +237,9 @@ function ProposalFormDialog({
   const [note, setNote] = useState(initialData?.note ?? "");
 
   const handleSubmit = () => {
-    if (!scheduledDate || !scheduledTime) {
-      toast.error("날짜와 시간을 입력해주세요.");
-      return;
-    }
+    if (!scheduledDate || !scheduledTime) { toast.error("날짜와 시간을 입력해주세요."); return; }
     const scheduledAt = new Date(`${scheduledDate}T${scheduledTime}`).toISOString();
-    onSubmit({
-      receiverId,
-      scheduledAt,
-      consultationMode: mode,
-      location: mode === "offline" ? location : undefined,
-      duration: parseFloat(duration),
-      consultationType,
-      note: note || undefined,
-    });
+    onSubmit({ receiverId, scheduledAt, consultationMode: mode, location: mode === "offline" ? location : undefined, duration: parseFloat(duration), consultationType, note: note || undefined });
     onClose();
   };
 
@@ -100,41 +263,28 @@ function ProposalFormDialog({
               <Input type="time" value={scheduledTime} onChange={e => setScheduledTime(e.target.value)} />
             </div>
           </div>
-
           <div className="space-y-1">
             <Label>상담 방식</Label>
             <div className="flex gap-2">
-              <button
-                type="button"
-                onClick={() => setMode("online")}
-                className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg border-2 text-sm font-medium transition-all ${mode === "online" ? "border-primary bg-primary/10 text-primary" : "border-muted hover:border-primary/40"}`}
-              >
+              <button type="button" onClick={() => setMode("online")} className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg border-2 text-sm font-medium transition-all ${mode === "online" ? "border-primary bg-primary/10 text-primary" : "border-muted hover:border-primary/40"}`}>
                 <Video className="h-4 w-4" /> 온라인
               </button>
-              <button
-                type="button"
-                onClick={() => setMode("offline")}
-                className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg border-2 text-sm font-medium transition-all ${mode === "offline" ? "border-primary bg-primary/10 text-primary" : "border-muted hover:border-primary/40"}`}
-              >
+              <button type="button" onClick={() => setMode("offline")} className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg border-2 text-sm font-medium transition-all ${mode === "offline" ? "border-primary bg-primary/10 text-primary" : "border-muted hover:border-primary/40"}`}>
                 <Users className="h-4 w-4" /> 오프라인
               </button>
             </div>
           </div>
-
           {mode === "offline" && (
             <div className="space-y-1">
               <Label>장소</Label>
               <Input placeholder="예: 강남역 스타벅스 2층" value={location} onChange={e => setLocation(e.target.value)} />
             </div>
           )}
-
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1">
               <Label>상담 시간</Label>
               <Select value={duration} onValueChange={setDuration}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
+                <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="0.5">30분</SelectItem>
                   <SelectItem value="1">1시간</SelectItem>
@@ -147,9 +297,7 @@ function ProposalFormDialog({
             <div className="space-y-1">
               <Label>상담 유형</Label>
               <Select value={consultationType} onValueChange={setConsultationType}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
+                <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
                   {Object.entries(CONSULTATION_TYPES).map(([key, label]) => (
                     <SelectItem key={key} value={key}>{label}</SelectItem>
@@ -158,16 +306,9 @@ function ProposalFormDialog({
               </Select>
             </div>
           </div>
-
           <div className="space-y-1">
             <Label>메모 (선택)</Label>
-            <Textarea
-              placeholder="상담에서 다루고 싶은 내용을 간략히 적어주세요"
-              value={note}
-              onChange={e => setNote(e.target.value)}
-              className="resize-none"
-              rows={2}
-            />
+            <Textarea placeholder="상담에서 다루고 싶은 내용을 간략히 적어주세요" value={note} onChange={e => setNote(e.target.value)} className="resize-none" rows={2} />
           </div>
         </div>
         <DialogFooter>
@@ -183,27 +324,14 @@ function ProposalFormDialog({
 }
 
 // ===== 상담 제안 카드 컴포넌트 =====
-function ProposalCard({
-  proposalData,
-  isMyMessage,
-  currentUserId,
-  onAccept,
-  onReject,
-  onCounter,
-  onComplete,
-}: {
-  proposalData: any;
-  isMyMessage: boolean;
-  currentUserId: number;
-  onAccept: (id: number) => void;
-  onReject: (id: number) => void;
-  onCounter: (proposal: any) => void;
-  onComplete: (id: number) => void;
+function ProposalCard({ proposalData, isMyMessage, currentUserId, onAccept, onReject, onCounter, onComplete }: {
+  proposalData: any; isMyMessage: boolean; currentUserId: number;
+  onAccept: (id: number) => void; onReject: (id: number) => void;
+  onCounter: (proposal: any) => void; onComplete: (id: number) => void;
 }) {
   const status = proposalData.status as keyof typeof PROPOSAL_STATUS;
   const statusInfo = PROPOSAL_STATUS[status] ?? PROPOSAL_STATUS.pending;
   const StatusIcon = statusInfo.icon;
-
   const scheduledDate = new Date(proposalData.scheduledAt);
   const formattedDate = format(scheduledDate, "M월 d일 (E) HH:mm", { locale: ko });
   const durationLabel = parseFloat(proposalData.duration) === 0.5 ? "30분" : `${proposalData.duration}시간`;
@@ -214,7 +342,6 @@ function ProposalCard({
 
   return (
     <div className={`rounded-xl border-2 overflow-hidden ${statusInfo.bg} max-w-sm w-full`}>
-      {/* 헤더 */}
       <div className={`px-4 py-2 flex items-center gap-2 border-b ${statusInfo.bg}`}>
         <StatusIcon className={`h-4 w-4 ${statusInfo.color}`} />
         <span className={`text-sm font-semibold ${statusInfo.color}`}>{statusInfo.label}</span>
@@ -222,8 +349,6 @@ function ProposalCard({
           <span className="ml-auto text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">수정 제안</span>
         )}
       </div>
-
-      {/* 내용 */}
       <div className="px-4 py-3 space-y-2 bg-white/80">
         <div className="flex items-center gap-2 text-sm">
           <Calendar className="h-4 w-4 text-primary shrink-0" />
@@ -235,60 +360,32 @@ function ProposalCard({
           ) : (
             <MapPin className="h-4 w-4 text-orange-500 shrink-0" />
           )}
-          <span>
-            {proposalData.consultationMode === "online" ? "온라인" : `오프라인${proposalData.location ? ` · ${proposalData.location}` : ""}`}
-          </span>
+          <span>{proposalData.consultationMode === "online" ? "온라인" : `오프라인${proposalData.location ? ` · ${proposalData.location}` : ""}`}</span>
         </div>
         <div className="flex items-center gap-4 text-xs text-muted-foreground">
-          <span className="flex items-center gap-1">
-            <Clock className="h-3 w-3" /> {durationLabel}
-          </span>
-          <span className="flex items-center gap-1">
-            <ChevronRight className="h-3 w-3" /> {typeLabel}
-          </span>
+          <span className="flex items-center gap-1"><Clock className="h-3 w-3" /> {durationLabel}</span>
+          <span className="flex items-center gap-1"><ChevronRight className="h-3 w-3" /> {typeLabel}</span>
         </div>
         {proposalData.note && (
-          <p className="text-xs text-muted-foreground bg-muted/50 rounded-lg px-3 py-2 mt-1">
-            💬 {proposalData.note}
-          </p>
+          <p className="text-xs text-muted-foreground bg-muted/50 rounded-lg px-3 py-2 mt-1">💬 {proposalData.note}</p>
         )}
       </div>
-
-      {/* 액션 버튼 */}
       {canAct && (
         <div className="px-4 py-3 flex gap-2 border-t bg-white/60">
-          <Button
-            size="sm"
-            className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white"
-            onClick={() => onAccept(proposalData.proposalId)}
-          >
+          <Button size="sm" className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white" onClick={() => onAccept(proposalData.proposalId)}>
             <ThumbsUp className="h-3 w-3 mr-1" /> 수락
           </Button>
-          <Button
-            size="sm"
-            variant="outline"
-            className="flex-1 border-blue-300 text-blue-700 hover:bg-blue-50"
-            onClick={() => onCounter(proposalData)}
-          >
+          <Button size="sm" variant="outline" className="flex-1 border-blue-300 text-blue-700 hover:bg-blue-50" onClick={() => onCounter(proposalData)}>
             <RefreshCw className="h-3 w-3 mr-1" /> 수정 제안
           </Button>
-          <Button
-            size="sm"
-            variant="outline"
-            className="flex-1 border-red-300 text-red-600 hover:bg-red-50"
-            onClick={() => onReject(proposalData.proposalId)}
-          >
+          <Button size="sm" variant="outline" className="flex-1 border-red-300 text-red-600 hover:bg-red-50" onClick={() => onReject(proposalData.proposalId)}>
             <ThumbsDown className="h-3 w-3 mr-1" /> 거절
           </Button>
         </div>
       )}
       {canComplete && (
         <div className="px-4 py-3 border-t bg-white/60">
-          <Button
-            size="sm"
-            className="w-full bg-purple-600 hover:bg-purple-700 text-white"
-            onClick={() => onComplete(proposalData.proposalId)}
-          >
+          <Button size="sm" className="w-full bg-purple-600 hover:bg-purple-700 text-white" onClick={() => onComplete(proposalData.proposalId)}>
             <Star className="h-3 w-3 mr-1" /> 상담 완료 처리
           </Button>
         </div>
@@ -297,12 +394,11 @@ function ProposalCard({
   );
 }
 
-// ===== 상태 메시지 배너 컴포넌트 =====
+// ===== 상태 메시지 배너 =====
 function StatusBanner({ statusData }: { statusData: any }) {
   const status = statusData.status as keyof typeof PROPOSAL_STATUS;
   const statusInfo = PROPOSAL_STATUS[status] ?? PROPOSAL_STATUS.pending;
   const StatusIcon = statusInfo.icon;
-
   return (
     <div className={`flex items-center justify-center gap-2 px-4 py-2 rounded-lg border ${statusInfo.bg} text-sm`}>
       <StatusIcon className={`h-4 w-4 ${statusInfo.color}`} />
@@ -321,6 +417,11 @@ export function Messages() {
   const [showProposalForm, setShowProposalForm] = useState(false);
   const [counterProposalData, setCounterProposalData] = useState<any>(null);
   const [showCounterForm, setShowCounterForm] = useState(false);
+  const [editingMessageId, setEditingMessageId] = useState<number | null>(null);
+  const [editContent, setEditContent] = useState("");
+  const [emojiPickerMessageId, setEmojiPickerMessageId] = useState<number | null>(null);
+  const [messageSearch, setMessageSearch] = useState("");
+  const [showMessageSearch, setShowMessageSearch] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const utils = trpc.useUtils();
@@ -350,6 +451,23 @@ export function Messages() {
     { enabled: isAuthenticated && selectedConversation !== null, refetchInterval: 3000 }
   );
 
+  // 타이핑 상태 조회 (3초마다)
+  const { data: typingStatus } = trpc.message.getTyping.useQuery(
+    { partnerId: selectedConversation || 0 },
+    { enabled: isAuthenticated && selectedConversation !== null, refetchInterval: 3000 }
+  );
+
+  // 메시지 반응 조회
+  const messageIds = useMemo(() => {
+    if (!conversation) return [];
+    return (conversation as any[]).map((m: any) => m.id).filter(Boolean);
+  }, [conversation]);
+
+  const { data: reactions } = trpc.message.getReactions.useQuery(
+    { messageIds },
+    { enabled: messageIds.length > 0, refetchInterval: 5000 }
+  );
+
   const scrollToBottom = useCallback(() => {
     setTimeout(() => messagesEndRef.current?.scrollIntoView({ behavior: "smooth" }), 100);
   }, []);
@@ -358,15 +476,68 @@ export function Messages() {
     scrollToBottom();
   }, [conversation]);
 
+  // 대화 열 때 읽음 처리
+  useEffect(() => {
+    if (selectedConversation && isAuthenticated) {
+      markConversationAsReadMutation.mutate({ otherUserId: selectedConversation });
+    }
+  }, [selectedConversation]);
+
+  // 타이핑 상태 전송 (디바운스)
+  const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const handleTyping = useCallback(() => {
+    if (!selectedConversation) return;
+    setTypingMutation.mutate({ partnerId: selectedConversation, isTyping: true });
+    if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+    typingTimeoutRef.current = setTimeout(() => {
+      if (selectedConversation) setTypingMutation.mutate({ partnerId: selectedConversation, isTyping: false });
+    }, 3000);
+  }, [selectedConversation]);
+
   // ===== Mutations =====
   const sendMessageMutation = trpc.message.send.useMutation({
     onSuccess: () => {
       setMessageContent("");
       if (textareaRef.current) textareaRef.current.style.height = "auto";
+      if (selectedConversation) setTypingMutation.mutate({ partnerId: selectedConversation, isTyping: false });
       utils.message.getConversation.invalidate();
       utils.message.getInbox.invalidate();
     },
     onError: (e) => toast.error(`전송 실패: ${e.message}`),
+  });
+
+  const editMessageMutation = trpc.message.editMessage.useMutation({
+    onSuccess: () => {
+      setEditingMessageId(null);
+      setEditContent("");
+      utils.message.getConversation.invalidate();
+      toast.success("메시지가 수정되었습니다.");
+    },
+    onError: (e) => toast.error(`수정 실패: ${e.message}`),
+  });
+
+  const deleteMessageMutation = trpc.message.deleteMessage.useMutation({
+    onSuccess: () => {
+      utils.message.getConversation.invalidate();
+      toast.success("메시지가 삭제되었습니다.");
+    },
+    onError: (e) => toast.error(`삭제 실패: ${e.message}`),
+  });
+
+  const toggleReactionMutation = trpc.message.toggleReaction.useMutation({
+    onSuccess: () => {
+      utils.message.getReactions.invalidate();
+    },
+    onError: (e) => toast.error(`반응 실패: ${e.message}`),
+  });
+
+  const setTypingMutation = trpc.message.setTyping.useMutation();
+
+  const markConversationAsReadMutation = trpc.message.markConversationAsRead.useMutation({
+    onSuccess: () => {
+      utils.message.getInbox.invalidate();
+      utils.message.getUnreadCount.invalidate();
+    },
   });
 
   const createProposalMutation = trpc.proposal.create.useMutation({
@@ -420,16 +591,26 @@ export function Messages() {
     scrollToBottom();
   };
 
-  const handleProposalSubmit = (data: any) => {
-    createProposalMutation.mutate(data);
+  const handleEditSubmit = (messageId: number) => {
+    if (!editContent.trim()) return;
+    editMessageMutation.mutate({ messageId, content: editContent });
   };
 
+  const handleDeleteMessage = (messageId: number) => {
+    if (window.confirm("메시지를 삭제하시겠어요?")) {
+      deleteMessageMutation.mutate({ messageId });
+    }
+  };
+
+  const handleToggleReaction = (messageId: number, emoji: string) => {
+    toggleReactionMutation.mutate({ messageId, emoji });
+    setEmojiPickerMessageId(null);
+  };
+
+  const handleProposalSubmit = (data: any) => createProposalMutation.mutate(data);
   const handleCounterSubmit = (data: any) => {
     if (!counterProposalData) return;
-    counterProposeMutation.mutate({
-      proposalId: counterProposalData.proposalId,
-      ...data,
-    });
+    counterProposeMutation.mutate({ proposalId: counterProposalData.proposalId, ...data });
   };
 
   // ===== 대화 목록 처리 =====
@@ -455,21 +636,80 @@ export function Messages() {
     return `사용자 ${userId}`;
   };
 
+  const getUnreadCount = (userId: number) => {
+    const msgs: any[] = conversations[userId] || [];
+    return msgs.filter((m: any) => m.recipientId === user?.id && !m.isRead).length;
+  };
+
   const filteredConversations = Object.entries(conversations).filter(([userId]: [string, any]) =>
     getOtherUserName(parseInt(userId)).toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const getRelativeTime = (date: string | Date) => {
     try {
-      return formatDistanceToNow(new Date(date), { addSuffix: true, locale: ko });
+      const d = new Date(date);
+      if (isToday(d)) return format(d, "HH:mm");
+      if (isYesterday(d)) return "어제";
+      return format(d, "M/d");
     } catch {
-      return format(new Date(date), "PPp", { locale: ko });
+      return "";
     }
   };
 
+  const getFullTime = (date: string | Date) => {
+    try {
+      return format(new Date(date), "yyyy년 M월 d일 HH:mm", { locale: ko });
+    } catch { return ""; }
+  };
+
+  // 메시지 그룹화 (같은 발신자, 5분 이내)
+  const groupedMessages = useMemo(() => {
+    if (!conversation) return [];
+    const msgs = conversation as any[];
+    const filtered = messageSearch
+      ? msgs.filter(m => m.content?.toLowerCase().includes(messageSearch.toLowerCase()))
+      : msgs;
+
+    const groups: { date: Date; messages: any[] }[] = [];
+    let currentDate: Date | null = null;
+    let currentGroup: any[] = [];
+
+    filtered.forEach((msg, idx) => {
+      const msgDate = new Date(msg.createdAt);
+      const prevMsg = idx > 0 ? filtered[idx - 1] : null;
+
+      // 날짜 변경 체크
+      const needsDateDivider = !currentDate ||
+        msgDate.toDateString() !== currentDate.toDateString();
+
+      if (needsDateDivider) {
+        if (currentGroup.length > 0) groups.push({ date: currentDate!, messages: currentGroup });
+        currentDate = msgDate;
+        currentGroup = [];
+      }
+
+      // 메시지 그룹화 정보 추가
+      const isSameSender = prevMsg && prevMsg.senderId === msg.senderId;
+      const isWithinTimeWindow = prevMsg && differenceInMinutes(msgDate, new Date(prevMsg.createdAt)) < 5;
+      const isGrouped = isSameSender && isWithinTimeWindow && !needsDateDivider;
+
+      currentGroup.push({ ...msg, isGrouped, isLast: true });
+      // 이전 메시지의 isLast를 false로
+      if (currentGroup.length > 1) currentGroup[currentGroup.length - 2].isLast = false;
+    });
+
+    if (currentGroup.length > 0) groups.push({ date: currentDate!, messages: currentGroup });
+    return groups;
+  }, [conversation, messageSearch]);
+
+  const otherUserName = selectedConversation ? getOtherUserName(selectedConversation) : "";
+
   // ===== 메시지 렌더링 =====
-  const renderMessage = (msg: any, idx: number) => {
+  const renderMessage = (msg: any) => {
     const isMe = msg.senderId === user?.id;
+    const msgReactions = reactions?.filter((r: any) => r.messageId === msg.id) || [];
+    const isEditing = editingMessageId === msg.id;
+    const showEmojiPicker = emojiPickerMessageId === msg.id;
 
     // proposal 타입 메시지 처리
     if (msg.messageType === "proposal") {
@@ -478,15 +718,13 @@ export function Messages() {
 
       if (parsed?.type === "proposal") {
         return (
-          <div key={idx} className={`flex ${isMe ? "justify-end" : "justify-start"}`}>
+          <div className={`flex ${isMe ? "justify-end" : "justify-start"} group`}>
             <div className="max-w-sm w-full">
               <p className={`text-xs mb-1 ${isMe ? "text-right" : "text-left"} text-muted-foreground`}>
                 {isMe ? "상담 일정 제안을 보냈어요" : "상담 일정 제안이 도착했어요"}
               </p>
               <ProposalCard
-                proposalData={parsed}
-                isMyMessage={isMe}
-                currentUserId={user?.id ?? 0}
+                proposalData={parsed} isMyMessage={isMe} currentUserId={user?.id ?? 0}
                 onAccept={(id) => acceptProposalMutation.mutate({ proposalId: id })}
                 onReject={(id) => rejectProposalMutation.mutate({ proposalId: id })}
                 onCounter={(data) => { setCounterProposalData(data); setShowCounterForm(true); }}
@@ -502,7 +740,7 @@ export function Messages() {
 
       if (parsed?.type === "proposal_status") {
         return (
-          <div key={idx} className="flex justify-center my-2">
+          <div className="flex justify-center my-2">
             <StatusBanner statusData={parsed} />
           </div>
         );
@@ -511,12 +749,97 @@ export function Messages() {
 
     // 일반 텍스트 메시지
     return (
-      <div key={idx} className={`flex ${isMe ? "justify-end" : "justify-start"}`}>
-        <div className={`max-w-[70%] px-4 py-2.5 rounded-2xl ${isMe ? "bg-primary text-primary-foreground rounded-br-sm" : "bg-muted rounded-bl-sm"}`}>
-          <p className="text-sm whitespace-pre-wrap break-words leading-relaxed">{msg.content}</p>
-          <p className={`text-xs mt-1 ${isMe ? "text-primary-foreground/70" : "text-muted-foreground"}`}>
-            {getRelativeTime(msg.createdAt)}
-          </p>
+      <div className={`flex items-end gap-2 ${isMe ? "flex-row-reverse" : "flex-row"} group`}>
+        {/* 아바타 (그룹화되지 않은 마지막 메시지에만 표시) */}
+        {!isMe && (
+          <div className={`${msg.isLast ? "opacity-100" : "opacity-0"} transition-opacity`}>
+            <Avatar name={msg.senderName || ""} size="sm" />
+          </div>
+        )}
+
+        <div className={`flex flex-col ${isMe ? "items-end" : "items-start"} max-w-[70%]`}>
+          {/* 발신자 이름 (그룹화되지 않은 첫 메시지에만 표시) */}
+          {!isMe && !msg.isGrouped && (
+            <p className="text-xs text-muted-foreground mb-1 px-1">{msg.senderName}</p>
+          )}
+
+          <div className={`flex items-end gap-1 ${isMe ? "flex-row-reverse" : "flex-row"}`}>
+            {/* 메시지 액션 */}
+            <div className="relative">
+              <MessageActions
+                isMe={isMe}
+                onEdit={!msg.isDeleted ? () => { setEditingMessageId(msg.id); setEditContent(msg.content); } : undefined}
+                onDelete={!msg.isDeleted ? () => handleDeleteMessage(msg.id) : undefined}
+                onReact={() => setEmojiPickerMessageId(showEmojiPicker ? null : msg.id)}
+                isDeleted={msg.isDeleted}
+              />
+              {showEmojiPicker && (
+                <EmojiPicker
+                  onSelect={(emoji) => handleToggleReaction(msg.id, emoji)}
+                  onClose={() => setEmojiPickerMessageId(null)}
+                />
+              )}
+            </div>
+
+            <div className="flex flex-col">
+              {/* 메시지 버블 */}
+              {isEditing ? (
+                <div className="flex flex-col gap-2 min-w-[200px]">
+                  <Textarea
+                    value={editContent}
+                    onChange={e => setEditContent(e.target.value)}
+                    className="resize-none text-sm"
+                    rows={2}
+                    autoFocus
+                  />
+                  <div className="flex gap-1 justify-end">
+                    <Button size="sm" variant="outline" onClick={() => setEditingMessageId(null)}>취소</Button>
+                    <Button size="sm" onClick={() => handleEditSubmit(msg.id)}>저장</Button>
+                  </div>
+                </div>
+              ) : (
+                <div
+                  className={`px-3.5 py-2.5 ${
+                    msg.isGrouped
+                      ? isMe ? "rounded-2xl rounded-tr-md" : "rounded-2xl rounded-tl-md"
+                      : isMe ? "rounded-2xl rounded-br-sm" : "rounded-2xl rounded-bl-sm"
+                  } ${
+                    msg.isDeleted
+                      ? "bg-muted/50 border border-dashed border-muted-foreground/30"
+                      : isMe
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-muted"
+                  }`}
+                  title={getFullTime(msg.createdAt)}
+                >
+                  <p className={`text-sm whitespace-pre-wrap break-words leading-relaxed ${msg.isDeleted ? "text-muted-foreground italic" : ""}`}>
+                    {msg.content}
+                  </p>
+                  {msg.isEdited && !msg.isDeleted && (
+                    <span className={`text-[10px] ${isMe ? "text-primary-foreground/60" : "text-muted-foreground/60"}`}> (수정됨)</span>
+                  )}
+                </div>
+              )}
+
+              {/* 반응 표시 */}
+              {msgReactions.length > 0 && (
+                <ReactionBubbles
+                  reactions={msgReactions}
+                  currentUserId={user?.id ?? 0}
+                  messageId={msg.id}
+                  onToggle={(emoji) => handleToggleReaction(msg.id, emoji)}
+                />
+              )}
+            </div>
+
+            {/* 시간 + 읽음 표시 (마지막 메시지에만) */}
+            {msg.isLast && (
+              <div className={`flex items-center gap-0.5 mb-1 ${isMe ? "flex-row-reverse" : "flex-row"}`}>
+                <span className="text-[10px] text-muted-foreground whitespace-nowrap">{getRelativeTime(msg.createdAt)}</span>
+                <ReadReceipt isRead={msg.isRead} isMe={isMe} />
+              </div>
+            )}
+          </div>
         </div>
       </div>
     );
@@ -554,22 +877,33 @@ export function Messages() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="pb-3">
-                <Input placeholder="대화 검색..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder="대화 검색..."
+                    value={searchQuery}
+                    onChange={e => setSearchQuery(e.target.value)}
+                    className="pl-9"
+                  />
+                </div>
               </CardContent>
               <CardContent className="flex-1 overflow-y-auto p-3">
                 {filteredConversations.length > 0 ? (
-                  <div className="space-y-2">
+                  <div className="space-y-1">
                     {filteredConversations.map(([userId, msgs]: [string, any]) => {
                       const lastMsg = msgs[0];
                       const isSelected = parseInt(userId) === selectedConversation;
+                      const unreadCount = getUnreadCount(parseInt(userId));
                       let preview = lastMsg.content;
-                      if (lastMsg.messageType === "proposal") {
+                      if (lastMsg.isDeleted) preview = "삭제된 메시지";
+                      else if (lastMsg.messageType === "proposal") {
                         try {
                           const p = JSON.parse(lastMsg.content);
                           if (p.type === "proposal") preview = "📅 상담 일정 제안";
                           else if (p.type === "proposal_status") preview = p.message;
                         } catch {}
                       }
+                      const name = getOtherUserName(parseInt(userId));
                       return (
                         <button
                           key={userId}
@@ -577,15 +911,27 @@ export function Messages() {
                             setSelectedConversation(parseInt(userId));
                             if (window.innerWidth < 1024) setSidebarOpen(false);
                           }}
-                          className={`w-full text-left p-3 rounded-xl transition-all border-2 ${isSelected ? "bg-primary/10 border-primary" : "bg-muted/40 border-transparent hover:bg-muted/70"}`}
+                          className={`w-full text-left p-3 rounded-xl transition-all ${isSelected ? "bg-primary/10 border-2 border-primary" : "hover:bg-muted/60 border-2 border-transparent"}`}
                         >
-                          <div className="flex items-start justify-between gap-2">
+                          <div className="flex items-center gap-3">
+                            <div className="relative">
+                              <Avatar name={name} size="md" />
+                            </div>
                             <div className="flex-1 min-w-0">
-                              <p className="font-semibold text-sm truncate">{getOtherUserName(parseInt(userId))}</p>
-                              <p className="text-xs text-muted-foreground truncate mt-0.5">{preview}</p>
+                              <div className="flex items-center justify-between gap-1">
+                                <p className={`font-semibold text-sm truncate ${unreadCount > 0 ? "text-foreground" : "text-foreground/80"}`}>{name}</p>
+                                <span className="text-[10px] text-muted-foreground shrink-0">{getRelativeTime(lastMsg.createdAt)}</span>
+                              </div>
+                              <div className="flex items-center justify-between gap-1 mt-0.5">
+                                <p className={`text-xs truncate ${unreadCount > 0 ? "text-foreground font-medium" : "text-muted-foreground"}`}>{preview}</p>
+                                {unreadCount > 0 && (
+                                  <span className="shrink-0 bg-primary text-primary-foreground text-[10px] font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1">
+                                    {unreadCount > 99 ? "99+" : unreadCount}
+                                  </span>
+                                )}
+                              </div>
                             </div>
                           </div>
-                          <p className="text-xs text-muted-foreground/60 mt-1">{getRelativeTime(lastMsg.createdAt)}</p>
                         </button>
                       );
                     })}
@@ -599,7 +945,7 @@ export function Messages() {
 
           {/* 메인 채팅 영역 */}
           <div className="flex-1 flex flex-col overflow-hidden" style={{ minHeight: 0 }}>
-            <div className="mb-3">
+            <div className="mb-3 flex items-center gap-2">
               <Button variant="outline" size="sm" onClick={() => setSidebarOpen(!sidebarOpen)} className="gap-2">
                 {sidebarOpen ? <XIcon className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
                 {sidebarOpen ? "목록 닫기" : "목록 열기"}
@@ -610,26 +956,74 @@ export function Messages() {
               <Card className="flex flex-col overflow-hidden flex-1" style={{ minHeight: 0 }}>
                 {/* 채팅 헤더 */}
                 <CardHeader className="border-b shrink-0 py-3">
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="text-base">{getOtherUserName(selectedConversation)}님과의 대화</CardTitle>
-                    <Link href="/mentors">
-                      <Button variant="outline" size="sm">멘토 목록</Button>
-                    </Link>
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-3">
+                      <Avatar name={otherUserName} size="md" />
+                      <div>
+                        <CardTitle className="text-base">{otherUserName}</CardTitle>
+                        {typingStatus?.isTyping && (
+                          <p className="text-xs text-muted-foreground">입력 중...</p>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setShowMessageSearch(!showMessageSearch)}
+                        className={showMessageSearch ? "bg-muted" : ""}
+                      >
+                        <Search className="h-4 w-4" />
+                      </Button>
+                      <Link href="/mentors">
+                        <Button variant="outline" size="sm">멘토 목록</Button>
+                      </Link>
+                    </div>
                   </div>
+                  {/* 메시지 내 검색 */}
+                  {showMessageSearch && (
+                    <div className="mt-2 relative">
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        placeholder="대화 내 검색..."
+                        value={messageSearch}
+                        onChange={e => setMessageSearch(e.target.value)}
+                        className="pl-9"
+                        autoFocus
+                      />
+                    </div>
+                  )}
                 </CardHeader>
 
                 {/* 메시지 목록 */}
-                <div className="flex-1 overflow-y-auto p-4 space-y-3" style={{ minHeight: 0 }}>
-                  {conversation && conversation.length > 0 ? (
-                    <>
-                      {(conversation as any[]).map((msg, idx) => renderMessage(msg, idx))}
+                <div className="flex-1 overflow-y-auto p-4" style={{ minHeight: 0 }}>
+                  {groupedMessages.length > 0 ? (
+                    <div className="space-y-1">
+                      {groupedMessages.map((group, gIdx) => (
+                        <div key={gIdx}>
+                          <DateDivider date={group.date} />
+                          <div className="space-y-1">
+                            {group.messages.map((msg, mIdx) => (
+                              <div key={msg.id || mIdx} className={`${msg.isGrouped ? "mt-0.5" : "mt-3"}`}>
+                                {renderMessage(msg)}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                      {/* 타이핑 표시기 */}
+                      {typingStatus?.isTyping && (
+                        <TypingIndicator name={otherUserName} />
+                      )}
                       <div ref={messagesEndRef} />
-                    </>
+                    </div>
                   ) : (
                     <div className="flex items-center justify-center h-full">
                       <div className="text-center">
                         <MessageSquare className="h-10 w-10 mx-auto text-muted-foreground/40 mb-3" />
-                        <p className="text-muted-foreground text-sm">아직 메시지가 없습니다.<br />상담 일정을 제안해보세요!</p>
+                        <p className="text-muted-foreground text-sm">
+                          {messageSearch ? "검색 결과가 없습니다." : "아직 메시지가 없습니다.\n상담 일정을 제안해보세요!"}
+                        </p>
                       </div>
                     </div>
                   )}
@@ -637,7 +1031,6 @@ export function Messages() {
 
                 {/* 입력 영역 */}
                 <CardContent className="border-t pt-3 pb-3 shrink-0 space-y-2">
-                  {/* 상담 제안 버튼 */}
                   <div className="flex gap-2">
                     <Button
                       variant="outline"
@@ -649,14 +1042,16 @@ export function Messages() {
                       상담 일정 제안
                     </Button>
                   </div>
-
-                  {/* 메시지 입력 */}
                   <div className="flex gap-2 items-end">
                     <Textarea
                       ref={textareaRef}
                       placeholder="메시지를 입력하세요... (Ctrl+Enter로 전송)"
                       value={messageContent}
-                      onChange={e => { setMessageContent(e.target.value); adjustTextareaHeight(); }}
+                      onChange={e => {
+                        setMessageContent(e.target.value);
+                        adjustTextareaHeight();
+                        handleTyping();
+                      }}
                       onKeyDown={e => { if (e.key === "Enter" && e.ctrlKey) handleSendMessage(); }}
                       className="resize-none flex-1"
                       style={{ minHeight: "48px", maxHeight: "120px" }}
@@ -684,7 +1079,6 @@ export function Messages() {
         </div>
       </div>
 
-      {/* 상담 제안 폼 다이얼로그 */}
       {showProposalForm && selectedConversation && (
         <ProposalFormDialog
           open={showProposalForm}
@@ -694,7 +1088,6 @@ export function Messages() {
         />
       )}
 
-      {/* 수정 제안 폼 다이얼로그 */}
       {showCounterForm && counterProposalData && selectedConversation && (
         <ProposalFormDialog
           open={showCounterForm}

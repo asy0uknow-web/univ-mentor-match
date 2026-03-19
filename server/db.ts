@@ -17,7 +17,12 @@ import {
   InsertMentorVerification,
   mentorGallery,
   InsertMentorGallery,
-  mentorConsultationTypes
+  mentorConsultationTypes,
+  messageReactions,
+  InsertMessageReaction,
+  userTypingStatus,
+  userProfiles,
+  InsertUserProfile
 } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
@@ -851,4 +856,159 @@ export async function updateGalleryImageOrder(imageId: number, displayOrder: num
   if (!db) throw new Error("Database not available");
   
   await db.update(mentorGallery).set({ displayOrder }).where(eq(mentorGallery.id, imageId));
+}
+
+// ===== 메시지 수정/삭제 =====
+export async function updateMessage(messageId: number, userId: number, newContent: string) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  // 원본 메시지 확인
+  const existing = await db.select().from(messages).where(eq(messages.id, messageId)).limit(1);
+  if (existing.length === 0) throw new Error("Message not found");
+  if (existing[0].senderId !== userId) throw new Error("Unauthorized");
+  if (existing[0].isDeleted) throw new Error("Cannot edit deleted message");
+  
+  await db.update(messages).set({
+    content: newContent,
+    isEdited: true,
+    originalContent: existing[0].isEdited ? existing[0].originalContent : existing[0].content,
+  }).where(eq(messages.id, messageId));
+  
+  return { success: true };
+}
+
+export async function deleteMessage(messageId: number, userId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const existing = await db.select().from(messages).where(eq(messages.id, messageId)).limit(1);
+  if (existing.length === 0) throw new Error("Message not found");
+  if (existing[0].senderId !== userId) throw new Error("Unauthorized");
+  
+  await db.update(messages).set({
+    isDeleted: true,
+    deletedAt: new Date(),
+    content: "이 메시지는 삭제되었습니다.",
+  }).where(eq(messages.id, messageId));
+  
+  return { success: true };
+}
+
+// ===== 메시지 반응 =====
+export async function addMessageReaction(messageId: number, userId: number, emoji: string) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  // 이미 같은 이모지로 반응했는지 확인
+  const existing = await db.select().from(messageReactions)
+    .where(and(eq(messageReactions.messageId, messageId), eq(messageReactions.userId, userId), eq(messageReactions.emoji, emoji)))
+    .limit(1);
+  
+  if (existing.length > 0) {
+    // 이미 반응했으면 제거 (토글)
+    await db.delete(messageReactions)
+      .where(and(eq(messageReactions.messageId, messageId), eq(messageReactions.userId, userId), eq(messageReactions.emoji, emoji)));
+    return { action: "removed" };
+  } else {
+    await db.insert(messageReactions).values({ messageId, userId, emoji });
+    return { action: "added" };
+  }
+}
+
+export async function getMessageReactions(messageIds: number[]) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  if (messageIds.length === 0) return [];
+  
+  const reactions = await db.select().from(messageReactions)
+    .where(inArray(messageReactions.messageId, messageIds));
+  
+  return reactions;
+}
+
+// ===== 타이핑 상태 =====
+export async function updateTypingStatus(userId: number, partnerId: number, isTyping: boolean) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  // upsert typing status
+  const existing = await db.select().from(userTypingStatus)
+    .where(and(eq(userTypingStatus.userId, userId), eq(userTypingStatus.conversationPartnerId, partnerId)))
+    .limit(1);
+  
+  if (existing.length > 0) {
+    await db.update(userTypingStatus).set({ isTyping })
+      .where(and(eq(userTypingStatus.userId, userId), eq(userTypingStatus.conversationPartnerId, partnerId)));
+  } else {
+    await db.insert(userTypingStatus).values({ userId, conversationPartnerId: partnerId, isTyping });
+  }
+  
+  return { success: true };
+}
+
+export async function getTypingStatus(userId: number, partnerId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const result = await db.select().from(userTypingStatus)
+    .where(and(eq(userTypingStatus.userId, partnerId), eq(userTypingStatus.conversationPartnerId, userId)))
+    .limit(1);
+  
+  if (result.length === 0) return { isTyping: false };
+  
+  // 5초 이상 지났으면 타이핑 중 아님
+  const lastUpdated = new Date(result[0].lastUpdatedAt).getTime();
+  const now = Date.now();
+  if (now - lastUpdated > 5000) return { isTyping: false };
+  
+  return { isTyping: result[0].isTyping };
+}
+
+// ===== 사용자 프로필 =====
+export async function getUserProfile(userId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const result = await db.select().from(userProfiles).where(eq(userProfiles.userId, userId)).limit(1);
+  return result.length > 0 ? result[0] : null;
+}
+
+export async function upsertUserProfile(userId: number, data: Partial<InsertUserProfile>) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const existing = await db.select().from(userProfiles).where(eq(userProfiles.userId, userId)).limit(1);
+  
+  if (existing.length > 0) {
+    await db.update(userProfiles).set({ ...data, updatedAt: new Date() }).where(eq(userProfiles.userId, userId));
+  } else {
+    await db.insert(userProfiles).values({ userId, ...data });
+  }
+  
+  return { success: true };
+}
+
+export async function updateUserOnlineStatus(userId: number, isOnline: boolean) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const existing = await db.select().from(userProfiles).where(eq(userProfiles.userId, userId)).limit(1);
+  
+  if (existing.length > 0) {
+    await db.update(userProfiles).set({ isOnline, lastActiveAt: new Date() }).where(eq(userProfiles.userId, userId));
+  } else {
+    await db.insert(userProfiles).values({ userId, isOnline, lastActiveAt: new Date() });
+  }
+}
+
+export async function markAllMessagesAsRead(currentUserId: number, otherUserId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  await db.update(messages).set({ isRead: true })
+    .where(and(eq(messages.senderId, otherUserId), eq(messages.recipientId, currentUserId), eq(messages.isRead, false)));
+  
+  return { success: true };
 }

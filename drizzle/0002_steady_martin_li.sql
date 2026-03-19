@@ -1,1 +1,0 @@
-ALTER TABLE `mentor_profiles` ADD `field` enum('engineering','natural_science','business','humanities','education','liberal_arts','medicine');

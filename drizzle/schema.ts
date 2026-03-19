@@ -42,6 +42,25 @@ export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
 
 /**
+ * User profiles - 사용자 프로필 정보 (프로필 사진, 온라인 상태 등)
+ */
+export const userProfiles = mysqlTable("user_profiles", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull().unique(),
+  // 프로필 사진 URL
+  profileImageUrl: varchar("profileImageUrl", { length: 500 }),
+  // 온라인 상태
+  isOnline: boolean("isOnline").default(false).notNull(),
+  // 마지막 활동 시간
+  lastActiveAt: timestamp("lastActiveAt").defaultNow().notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type UserProfile = typeof userProfiles.$inferSelect;
+export type InsertUserProfile = typeof userProfiles.$inferInsert;
+
+/**
  * University student mentor profiles
  */
 // Hybrid approach: UNIQUE userId + isDeleted flag for soft delete
@@ -159,12 +178,49 @@ export const messages = mysqlTable("messages", {
   messageType: mysqlEnum("messageType", ["text", "proposal"]).default("text").notNull(),
   // Proposal ID if this message is a proposal card
   proposalId: int("proposalId"),
+  // 메시지 수정 여부
+  isEdited: boolean("isEdited").default(false).notNull(),
+  // 원본 메시지 내용 (수정된 경우)
+  originalContent: text("originalContent"),
+  // 메시지 삭제 여부 (소프트 삭제)
+  isDeleted: boolean("isDeleted").default(false).notNull(),
+  // 삭제된 시간
+  deletedAt: timestamp("deletedAt"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });
 
 export type Message = typeof messages.$inferSelect;
 export type InsertMessage = typeof messages.$inferInsert;
+
+/**
+ * Message reactions - 메시지에 대한 이모지 반응
+ */
+export const messageReactions = mysqlTable("message_reactions", {
+  id: int("id").autoincrement().primaryKey(),
+  messageId: int("messageId").notNull(),
+  userId: int("userId").notNull(),
+  // 이모지 (👍, ❤️, 😂, 😮, 😢, 🔥 등)
+  emoji: varchar("emoji", { length: 10 }).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type MessageReaction = typeof messageReactions.$inferSelect;
+export type InsertMessageReaction = typeof messageReactions.$inferInsert;
+
+/**
+ * User typing status - 사용자 타이핑 상태 (실시간)
+ */
+export const userTypingStatus = mysqlTable("user_typing_status", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(),
+  conversationPartnerId: int("conversationPartnerId").notNull(),
+  isTyping: boolean("isTyping").default(false).notNull(),
+  lastUpdatedAt: timestamp("lastUpdatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type UserTypingStatus = typeof userTypingStatus.$inferSelect;
+export type InsertUserTypingStatus = typeof userTypingStatus.$inferInsert;
 
 /**
  * Consultation proposals - 채팅 내 상담 일정 제안 카드
@@ -202,6 +258,7 @@ export const consultationProposals = mysqlTable("consultation_proposals", {
 
 export type ConsultationProposal = typeof consultationProposals.$inferSelect;
 export type InsertConsultationProposal = typeof consultationProposals.$inferInsert;
+
 /**
  * Mentor verification requests with student ID image
  */
