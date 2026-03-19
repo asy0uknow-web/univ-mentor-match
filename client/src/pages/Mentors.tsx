@@ -175,11 +175,17 @@ export default function Mentors() {
 
       // 분야 필터링 (현재는 선택된 전공이 있으면 필터링 적용)
       if (selectedMajors.length > 0) {
+        // 선택된 majorId를 실제 학과명으로 변환
+        const selectedMajorNames = selectedMajors.map((majorId) => {
+          const majorName = getMajorNames([majorId])[0];
+          return majorName?.toLowerCase() || "";
+        }).filter(name => name !== "");
+
         // 멘토의 전공이 선택된 전공 중 하나와 일치하는지 확인
-        const mentorMajorMatch = selectedMajors.some((majorId) => {
-          // 전공 ID와 멘토의 전공명을 비교 (현재는 간단한 매칭)
-          return mentor.profile.major?.toLowerCase().includes(majorId.replace(/_/g, ' ').toLowerCase());
-        });
+        const mentorMajor = mentor.profile.major?.toLowerCase() || "";
+        const mentorMajorMatch = selectedMajorNames.some((majorName) => 
+          mentorMajor === majorName
+        );
 
         if (!mentorMajorMatch) {
           return false;
