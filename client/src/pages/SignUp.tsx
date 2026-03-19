@@ -23,7 +23,6 @@ export default function SignUp() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
 
-  const utils = trpc.useUtils();
   const signupMutation = trpc.auth.signup.useMutation();
 
   const validateForm = () => {
@@ -89,9 +88,6 @@ export default function SignUp() {
         name,
         userType: userType as "high_school_student" | "university_student",
       });
-
-      // 회원가입 후 auth.me 쿼리 강제 갱신
-      await utils.auth.me.invalidate();
 
       toast.success("회원가입이 완료되었습니다!");
       navigate("/");

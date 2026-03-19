@@ -13,7 +13,6 @@ export default function Login() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
 
-  const utils = trpc.useUtils();
   const loginMutation = trpc.auth.login.useMutation();
 
   const validateForm = () => {
@@ -50,9 +49,6 @@ export default function Login() {
         email,
         password,
       });
-
-      // 로그인 후 auth.me 쿼리 강제 갱신
-      await utils.auth.me.invalidate();
 
       toast.success("로그인이 완료되었습니다!");
       navigate("/");
