@@ -145,8 +145,50 @@ export default function Mentors() {
 
   // 필터링된 멘토 목록
   const filteredMentors = useMemo(() => {
-    return mentorsData || [];
-  }, [mentorsData]);
+    if (!mentorsData) return [];
+
+    return mentorsData.filter((mentor) => {
+      // 검색어 필터링
+      if (debouncedSearch.trim()) {
+        const searchLower = debouncedSearch.toLowerCase();
+        const mentorName = mentor.user.name?.toLowerCase() || "";
+        const university = mentor.profile.university?.toLowerCase() || "";
+        const major = mentor.profile.major?.toLowerCase() || "";
+        const bio = mentor.profile.bio?.toLowerCase() || "";
+
+        if (
+          !mentorName.includes(searchLower) &&
+          !university.includes(searchLower) &&
+          !major.includes(searchLower) &&
+          !bio.includes(searchLower)
+        ) {
+          return false;
+        }
+      }
+
+      // 지역 필터링
+      if (selectedRegions.length > 0) {
+        if (!mentor.profile.region || !selectedRegions.includes(mentor.profile.region)) {
+          return false;
+        }
+      }
+
+      // 분야 필터링 (현재는 선택된 전공이 있으면 필터링 적용)
+      if (selectedMajors.length > 0) {
+        // 멘토의 전공이 선택된 전공 중 하나와 일치하는지 확인
+        const mentorMajorMatch = selectedMajors.some((majorId) => {
+          // 전공 ID와 멘토의 전공명을 비교 (현재는 간단한 매칭)
+          return mentor.profile.major?.toLowerCase().includes(majorId.replace(/_/g, ' ').toLowerCase());
+        });
+
+        if (!mentorMajorMatch) {
+          return false;
+        }
+      }
+
+      return true;
+    });
+  }, [mentorsData, debouncedSearch, selectedRegions, selectedMajors]);
 
   // 필터링된 학과 목록
   const filteredMajorsBySearch = useMemo(() => {
