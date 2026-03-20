@@ -90,12 +90,7 @@ export default function SignUp() {
       });
 
       toast.success("회원가입이 완료되었습니다!");
-      // 멘토 선택 시 멘토 프로필 설정 페이지로, 멘티 선택 시 홈으로 이동
-      if (userType === "university_student") {
-        navigate("/complete-profile");
-      } else {
-        navigate("/");
-      }
+      navigate("/");
     } catch (error: any) {
       const errorMessage = error.message || "회원가입에 실패했습니다";
       toast.error(errorMessage);
