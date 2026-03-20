@@ -320,11 +320,14 @@ export default function MentorDetail() {
                     </div>
                   )
                 ) : (
-                  <a href={getLoginUrl()}>
+                  <button
+                    onClick={() => setLocation("/login")}
+                    className="w-full"
+                  >
                     <Button className="w-full" size="lg">
                       로그인하고 상담 조율하기
                     </Button>
-                  </a>
+                  </button>
                 )}
                 <p className="text-xs text-muted-foreground text-center">
                   상담 유형을 선택하고 메시지에서 세부 일정을 조율하세요.
