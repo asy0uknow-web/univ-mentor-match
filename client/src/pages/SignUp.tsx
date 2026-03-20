@@ -5,13 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+
 
 export default function SignUp() {
   const [, navigate] = useLocation();
@@ -19,7 +13,7 @@ export default function SignUp() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [name, setName] = useState("");
-  const [userType, setUserType] = useState<"high_school_student" | "university_student" | "">("");
+;
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
 
@@ -62,10 +56,7 @@ export default function SignUp() {
       newErrors.confirmPassword = "비밀번호가 일치하지 않습니다";
     }
 
-    // 역할 선택 검증
-    if (!userType) {
-      newErrors.userType = "역할을 선택해주세요";
-    }
+
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -86,7 +77,7 @@ export default function SignUp() {
         email,
         password,
         name,
-        userType: userType as "high_school_student" | "university_student",
+        userType: "high_school_student",
       });
 
       toast.success("회원가입이 완료되었습니다!");
@@ -148,27 +139,7 @@ export default function SignUp() {
             {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
           </div>
 
-          {/* 역할 선택 */}
-          <div className="space-y-2">
-            <Label htmlFor="userType" className="text-navy-900 font-semibold">
-              역할 선택
-            </Label>
-            <Select value={userType} onValueChange={(value) => {
-              setUserType(value as "high_school_student" | "university_student");
-              if (errors.userType) {
-                setErrors({ ...errors, userType: "" });
-              }
-            }}>
-              <SelectTrigger className={`border-2 ${errors.userType ? "border-red-500" : "border-gray-300"}`}>
-                <SelectValue placeholder="역할을 선택해주세요" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="high_school_student">고등학생</SelectItem>
-                <SelectItem value="university_student">대학생 (멘토)</SelectItem>
-              </SelectContent>
-            </Select>
-            {errors.userType && <p className="text-red-500 text-sm">{errors.userType}</p>}
-          </div>
+
 
           {/* 비밀번호 */}
           <div className="space-y-2">
