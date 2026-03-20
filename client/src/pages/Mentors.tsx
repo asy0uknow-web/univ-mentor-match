@@ -2,7 +2,7 @@ import { Card } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { trpc } from "@/lib/trpc";
 import { Link } from "wouter";
-import { Search, X, ChevronRight, Star, MapPin, BadgeCheck } from "lucide-react";
+import { Search, X, ChevronRight, Star, MapPin, BadgeCheck, Sparkles } from "lucide-react";
 import { useState, useEffect, useMemo } from "react";
 import { PageLayout } from "@/components/layout";
 import { setPageMeta, PAGE_META } from "@/lib/seo";
@@ -644,19 +644,27 @@ function MentorCard({
               </div>
             )}
 
-            {/* 우측: Star 아이콘 + 평점 및 후기 개수 */}
+            {/* 우측: Star 아이콘 + 평점 및 후기 개수 또는 신규 멘토 배지 */}
             <div className="ml-auto flex items-center gap-1 text-xs text-muted-foreground">
-              <Star className="h-3.5 w-3.5" />
-              {ratingValue ? (
-                <span className="font-medium text-foreground">
-                  {ratingValue}
-                  <span className="text-muted-foreground font-normal">
-                    {" "}
-                    ({mentor.profile.reviewCount})
-                  </span>
+              {mentor.profile.reviewCount === 0 ? (
+                <span className="inline-block bg-blue-100 text-blue-700 px-2 py-1 rounded-full font-medium text-xs">
+                  🆕 신규 멘토
                 </span>
               ) : (
-                <span>평점 없음</span>
+                <>
+                  <Star className="h-3.5 w-3.5" />
+                  {ratingValue ? (
+                    <span className="font-medium text-foreground">
+                      {ratingValue}
+                      <span className="text-muted-foreground font-normal">
+                        {" "}
+                        ({mentor.profile.reviewCount})
+                      </span>
+                    </span>
+                  ) : (
+                    <span>평점 없음</span>
+                  )}
+                </>
               )}
             </div>
           </div>
