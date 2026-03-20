@@ -9,7 +9,7 @@ import { getLoginUrl } from "@/const";
 import { MentorVerificationSection } from "@/components/home/MentorVerificationSection";
 
 
-import { ImprovedFooter } from "@/components/home/ImprovedFooter";
+
 import { FeaturedMentorsSlide } from "@/components/home/FeaturedMentorsSlide";
 import { TestimonialsSection } from "@/components/home/TestimonialsSection";
 import { IntegratedFAQSection } from "@/components/home/IntegratedFAQSection";
@@ -346,8 +346,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Footer */}
-      <ImprovedFooter />
+
     </PageLayout>
   );
 }
