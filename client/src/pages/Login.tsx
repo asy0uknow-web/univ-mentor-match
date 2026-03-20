@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function Login() {
   const [, navigate] = useLocation();
@@ -12,6 +13,7 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
+  const queryClient = useQueryClient();
 
   const loginMutation = trpc.auth.login.useMutation();
 
@@ -49,6 +51,9 @@ export default function Login() {
         email,
         password,
       });
+
+      // auth.me 쿼리 강제 재실행하여 UI 즉시 업데이트
+      await queryClient.invalidateQueries({ queryKey: ["auth", "me"] });
 
       toast.success("로그인이 완료되었습니다!");
       navigate("/");
