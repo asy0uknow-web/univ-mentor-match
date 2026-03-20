@@ -47,13 +47,15 @@ export default function Login() {
     setIsLoading(true);
 
     try {
-      await loginMutation.mutateAsync({
+      const response = await loginMutation.mutateAsync({
         email,
         password,
       });
 
-      // auth.me 쿼리 강제 재실행하여 UI 즉시 업데이트
-      await queryClient.invalidateQueries({ queryKey: ["auth", "me"] });
+      // 서버에서 받은 사용자 정보를 캐시에 직접 설정하여 즉시 업데이트
+      if (response.user) {
+        queryClient.setQueryData(["auth", "me"], response.user);
+      }
 
       toast.success("로그인이 완료되었습니다!");
       navigate("/");
