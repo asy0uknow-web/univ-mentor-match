@@ -14,7 +14,7 @@ export const signupProcedure = publicProcedure
     email: z.string().email(),
     password: z.string().min(8),
     name: z.string().min(1).max(255),
-    userType: z.enum(["high_school_student", "university_student"]),
+    userType: z.enum(["high_school_student", "university_student"]).optional(),
   }))
   .mutation(async ({ ctx, input }) => {
     const db = await getDb();
