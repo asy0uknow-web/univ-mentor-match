@@ -82,9 +82,13 @@ export const signupProcedure = publicProcedure
       role: user.role,
     };
 
-    // JWT 토큰 생성
+    // JWT 토큰 생성 (openId 필드 포함)
     const secret = new TextEncoder().encode(ENV.cookieSecret);
-    const sessionToken = await new SignJWT(sessionData)
+    const sessionToken = await new SignJWT({
+      openId: user.openId,
+      appId: ENV.appId,
+      name: user.name,
+    })
       .setProtectedHeader({ alg: "HS256" })
       .setExpirationTime("7d")
       .sign(secret);
@@ -142,9 +146,13 @@ export const loginProcedure = publicProcedure
       role: user.role,
     };
 
-    // JWT 토큰 생성
+    // JWT 토큰 생성 (openId 필드 포함)
     const secret = new TextEncoder().encode(ENV.cookieSecret);
-    const sessionToken = await new SignJWT(sessionData)
+    const sessionToken = await new SignJWT({
+      openId: user.openId,
+      appId: ENV.appId,
+      name: user.name,
+    })
       .setProtectedHeader({ alg: "HS256" })
       .setExpirationTime("7d")
       .sign(secret);

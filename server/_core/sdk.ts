@@ -268,6 +268,22 @@ class SDKServer {
 
     const sessionUserId = session.openId;
     const signedInAt = new Date();
+    
+    // 자체 로그인 사용자인 경우 (openId가 email_로 시작)
+    if (sessionUserId.startsWith("email_")) {
+      // 자체 로그인 사용자는 openId로 직접 조회
+      let user = await db.getUserByOpenId(sessionUserId);
+      if (!user) {
+        throw ForbiddenError("User not found");
+      }
+      await db.upsertUser({
+        openId: user.openId,
+        lastSignedIn: signedInAt,
+      });
+      return user;
+    }
+    
+    // OAuth 사용자인 경우
     let user = await db.getUserByOpenId(sessionUserId);
 
     // If user not in DB, sync from OAuth server automatically
