@@ -8,7 +8,7 @@ import { trpc } from "@/lib/trpc";
 import { getLoginUrl } from "@/const";
 import { MentorVerificationSection } from "@/components/home/MentorVerificationSection";
 
-import { ContactSection } from "@/components/home/ContactSection";
+
 import { ImprovedFooter } from "@/components/home/ImprovedFooter";
 import { FeaturedMentorsSlide } from "@/components/home/FeaturedMentorsSlide";
 import { TestimonialsSection } from "@/components/home/TestimonialsSection";
@@ -343,13 +343,6 @@ export default function Home() {
       <section id="faq" role="region" className="py-16 sm:py-24 md:py-32 bg-white" aria-label="자주 묻는 질문">
         <div className="container mx-auto px-4">
           <IntegratedFAQSection />
-        </div>
-      </section>
-
-      {/* Contact Section */}
-      <section id="contact" role="region" className="py-16 sm:py-24 md:py-32 bg-white" aria-label="문의 채널">
-        <div className="container mx-auto px-4">
-          <ContactSection />
         </div>
       </section>
 
