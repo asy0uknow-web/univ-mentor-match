@@ -77,11 +77,11 @@ export default function SignUp() {
         email,
         password,
         name,
-        userType: "high_school_student",
+        userType: undefined as any,
       });
 
-      toast.success("회원가입이 완료되었습니다!");
-      navigate("/");
+      toast.success("회원가입이 완료되었습니다! 로그인 페이지로 이동합니다.");
+      navigate("/login");
     } catch (error: any) {
       const errorMessage = error.message || "회원가입에 실패했습니다";
       toast.error(errorMessage);
