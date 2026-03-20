@@ -135,14 +135,23 @@ export default function MentorDetail() {
                       </CardDescription>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 text-primary">
-                    <Star className="h-6 w-6 fill-current" />
-                    <span className="text-2xl font-bold">
-                      {parseFloat(mentor.profile.averageRating || "0").toFixed(1)}
-                    </span>
-                    <span className="text-muted-foreground">
-                      ({mentor.profile.reviewCount}개 리뷰)
-                    </span>
+                  <div className="flex items-center gap-2">
+                    {mentor.profile.reviewCount === 0 ? (
+                      <div className="flex items-center gap-2 bg-gradient-to-r from-blue-50 to-cyan-50 px-4 py-2 rounded-full border border-blue-200">
+                        <span className="text-2xl">🆕</span>
+                        <span className="font-semibold text-blue-700">신규 멘토</span>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-2 text-primary">
+                        <Star className="h-6 w-6 fill-current" />
+                        <span className="text-2xl font-bold">
+                          {parseFloat(mentor.profile.averageRating || "0").toFixed(1)}
+                        </span>
+                        <span className="text-muted-foreground">
+                          ({mentor.profile.reviewCount}개 리뷰)
+                        </span>
+                      </div>
+                    )}
                   </div>
                 </div>
               </CardHeader>
