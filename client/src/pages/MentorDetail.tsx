@@ -324,12 +324,12 @@ export default function MentorDetail() {
                     className="w-full"
                   >
                     <Button className="w-full" size="lg">
-                      로그인하고 상담 조율하기
+                      로그인하고 상담 신청하기
                     </Button>
                   </button>
                 )}
                 <p className="text-xs text-muted-foreground text-center">
-                  상담 유형을 선택하고 메시지에서 세부 일정을 조율하세요.
+                  상담 유형을 선택하고 메시지에서 상담을 신청하세요.
                 </p>
               </CardContent>
             </Card>

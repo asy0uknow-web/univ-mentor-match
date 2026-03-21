@@ -863,8 +863,8 @@ export function Messages() {
     <PageLayout>
       <div className="container mx-auto px-4 py-8 flex flex-col" style={{ height: "calc(100vh - 160px)" }}>
         <div className="mb-6">
-          <h1 className="text-3xl font-bold">상담 조율</h1>
-          <p className="text-muted-foreground mt-1">채팅으로 일정을 조율하고 상담을 확정하세요</p>
+          <h1 className="text-3xl font-bold">상담 신청</h1>
+          <p className="text-muted-foreground mt-1">메시지로 상담을 신청하고 상담을 확정하세요</p>
         </div>
 
         <div className="flex-1 flex gap-4 overflow-hidden" style={{ minHeight: 0 }}>
