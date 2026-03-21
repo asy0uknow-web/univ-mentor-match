@@ -1,0 +1,9 @@
+{
+  "query": "UPDATE users SET name = '멘토1' WHERE id = 4410009;\nUPDATE users SET name = '멘토2' WHERE id = 4410015;\nUPDATE users SET name = '멘토3' WHERE id = 4410049;\nUPDATE users SET name = '멘토4' WHERE id = 4410055;\nUPDATE users SET name = '멘토5' WHERE id = 4500053;\nUPDATE users SET name = '멘토6' WHERE id = 4500058;\nUPDATE users SET name = '멘토7' WHERE id = 4500071;\nUPDATE users SET name = '멘토8' WHERE id = 4500077;\nUPDATE users SET name = '멘토9' WHERE id = 4500100;\nUPDATE users SET name = '멘토10' WHERE id = 4500106;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute UPDATE users SET name = '멘토1' WHERE id = 4410009;\nUPDATE users SET name = '멘토2' WHERE id = 4410015;\nUPDATE users SET name = '멘토3' WHERE id = 4410049;\nUPDATE users SET name = '멘토4' WHERE id = 4410055;\nUPDATE users SET name = '멘토5' WHERE id = 4500053;\nUPDATE users SET name = '멘토6' WHERE id = 4500058;\nUPDATE users SET name = '멘토7' WHERE id = 4500071;\nUPDATE users SET name = '멘토8' WHERE id = 4500077;\nUPDATE users SET name = '멘토9' WHERE id = 4500100;\nUPDATE users SET name = '멘토10' WHERE id = 4500106;",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 3498
+}

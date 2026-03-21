@@ -1,0 +1,95 @@
+{
+  "query": "SELECT u.id, u.name, u.email FROM users u WHERE u.userType = 'university_student' ORDER BY u.id;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute SELECT u.id, u.name, u.email FROM users u WHERE u.userType = 'university_student' ORDER BY u.id;",
+  "rows": [
+    {
+      "id": "3840007",
+      "name": "최세영",
+      "email": "syoung.choi327@gmail.com"
+    },
+    {
+      "id": "4110002",
+      "name": "양주혁",
+      "email": "1111@naver.com"
+    },
+    {
+      "id": "4170010",
+      "name": "테스트 멘토",
+      "email": "test-mentor-1773928756000@test.com"
+    },
+    {
+      "id": "4200008",
+      "name": "최세영",
+      "email": "1@naver.com"
+    },
+    {
+      "id": "4410001",
+      "name": "최세영",
+      "email": "s8079349@naver.com"
+    },
+    {
+      "id": "4410009",
+      "name": "ReReg Test Mentor",
+      "email": "NULL"
+    },
+    {
+      "id": "4410015",
+      "name": "Deleted Profile Test",
+      "email": "NULL"
+    },
+    {
+      "id": "4410049",
+      "name": "ReReg Test Mentor",
+      "email": "NULL"
+    },
+    {
+      "id": "4410055",
+      "name": "Deleted Profile Test",
+      "email": "NULL"
+    },
+    {
+      "id": "4470011",
+      "name": "이윤호",
+      "email": "2003yunho@gmail.com"
+    },
+    {
+      "id": "4470024",
+      "name": "테스트멘토",
+      "email": "test-mentor@example.com"
+    },
+    {
+      "id": "4500053",
+      "name": "ReReg Test Mentor",
+      "email": "NULL"
+    },
+    {
+      "id": "4500058",
+      "name": "Deleted Profile Test",
+      "email": "NULL"
+    },
+    {
+      "id": "4500071",
+      "name": "ReReg Test Mentor",
+      "email": "NULL"
+    },
+    {
+      "id": "4500077",
+      "name": "Deleted Profile Test",
+      "email": "NULL"
+    },
+    {
+      "id": "4500100",
+      "name": "ReReg Test Mentor",
+      "email": "NULL"
+    },
+    {
+      "id": "4500106",
+      "name": "Deleted Profile Test",
+      "email": "NULL"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\temail\n3840007\t최세영\tsyoung.choi327@gmail.com\n4110002\t양주혁\t1111@naver.com\n4170010\t테스트 멘토\ttest-mentor-1773928756000@test.com\n4200008\t최세영\t1@naver.com\n4410001\t최세영\ts8079349@naver.com\n4410009\tReReg Test Mentor\tNULL\n4410015\tDeleted Profile Test\tNULL\n4410049\tReReg Test Mentor\tNULL\n4410055\tDeleted Profile Test\tNULL\n4470011\t이윤호\t2003yunho@gmail.com\n4470024\t테스트멘토\ttest-mentor@example.com\n4500053\tReReg Test Mentor\tNULL\n4500058\tDeleted Profile Test\tNULL\n4500071\tReReg Test Mentor\tNULL\n4500077\tDeleted Profile Test\tNULL\n4500100\tReReg Test Mentor\tNULL\n4500106\tDeleted Profile Test\tNULL\n",
+  "stderr": "",
+  "execution_time_ms": 1540
+}
