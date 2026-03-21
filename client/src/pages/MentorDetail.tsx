@@ -137,9 +137,8 @@ export default function MentorDetail() {
                   </div>
                   <div className="flex items-center gap-2">
                     {mentor.profile.reviewCount === 0 ? (
-                      <div className="flex items-center gap-2 bg-gradient-to-r from-blue-50 to-cyan-50 px-4 py-2 rounded-full border border-blue-200">
-                        <span className="text-2xl">🆕</span>
-                        <span className="font-semibold text-blue-700">신규 멘토</span>
+                      <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 shadow-sm">
+                        <span className="text-xs font-bold tracking-wider text-emerald-700 uppercase">New</span>
                       </div>
                     ) : (
                       <div className="flex items-center gap-2 text-primary">
@@ -234,7 +233,7 @@ export default function MentorDetail() {
           <div className="lg:col-span-1">
             <Card className="sticky top-24">
               <CardHeader>
-                <CardTitle>상담 조율</CardTitle>
+                <CardTitle>{user?.id === mentor?.user?.id ? "상담 조율" : "상담 신청"}</CardTitle>
                 <CardDescription>상담 유형을 선택하세요</CardDescription>
               </CardHeader>
               <CardContent className="space-y-3">
@@ -253,7 +252,7 @@ export default function MentorDetail() {
                             return;
                           }
                           try {
-                            sessionStorage.setItem(OPEN_CONVERSATION_KEY, String(recipientId));
+                            sessionStorage.setItem("openConversationId", String(recipientId));
                             sessionStorage.setItem("univmatch:consultationType", "career_counseling");
                             sessionStorage.setItem(DRAFT_MESSAGE_KEY, "안녕하세요! 진로상담을 받고 싶습니다.");
                           } catch {}
@@ -271,7 +270,7 @@ export default function MentorDetail() {
                             return;
                           }
                           try {
-                            sessionStorage.setItem(OPEN_CONVERSATION_KEY, String(recipientId));
+                            sessionStorage.setItem("openConversationId", String(recipientId));
                             sessionStorage.setItem("univmatch:consultationType", "university_tour");
                             sessionStorage.setItem(DRAFT_MESSAGE_KEY, "안녕하세요! 대학탐방을 받고 싶습니다.");
                           } catch {}
@@ -289,7 +288,7 @@ export default function MentorDetail() {
                             return;
                           }
                           try {
-                            sessionStorage.setItem(OPEN_CONVERSATION_KEY, String(recipientId));
+                            sessionStorage.setItem("openConversationId", String(recipientId));
                             sessionStorage.setItem("univmatch:consultationType", "resume_consulting");
                             sessionStorage.setItem(DRAFT_MESSAGE_KEY, "안녕하세요! 생기부컨설팅을 받고 싶습니다.");
                           } catch {}
@@ -307,7 +306,7 @@ export default function MentorDetail() {
                             return;
                           }
                           try {
-                            sessionStorage.setItem(OPEN_CONVERSATION_KEY, String(recipientId));
+                            sessionStorage.setItem("openConversationId", String(recipientId));
                             sessionStorage.setItem("univmatch:consultationType", "academic_management");
                             sessionStorage.setItem(DRAFT_MESSAGE_KEY, "안녕하세요! 학업관리 상담을 받고 싶습니다.");
                           } catch {}

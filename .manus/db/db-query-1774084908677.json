@@ -1,0 +1,9 @@
+{
+  "query": "\nINSERT INTO users (openId, email, passwordHash, name, userType, role, emailVerified, loginMethod, createdAt, updatedAt) \nVALUES (\n  'b0a33931-0e70-442b-af46-6ac19a8495ec',\n  'test-mentee@example.com',\n  'a09b1e8d0992c1d01923e36cb080aaceac8c61d0494e80da949eb027c6b5ed7bfc0f7cc7cbbe6549c5705e7be6bb419a0e529f730cfe96d4ae82b26f2215f721',\n  '테스트멘티',\n  'high_school_student',\n  'user',\n  1,\n  'email',\n  NOW(),\n  NOW()\n)\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute \nINSERT INTO users (openId, email, passwordHash, name, userType, role, emailVerified, loginMethod, createdAt, updatedAt) \nVALUES (\n  'b0a33931-0e70-442b-af46-6ac19a8495ec',\n  'test-mentee@example.com',\n  'a09b1e8d0992c1d01923e36cb080aaceac8c61d0494e80da949eb027c6b5ed7bfc0f7cc7cbbe6549c5705e7be6bb419a0e529f730cfe96d4ae82b26f2215f721',\n  '테스트멘티',\n  'high_school_student',\n  'user',\n  1,\n  'email',\n  NOW(),\n  NOW()\n)\n",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 1630
+}

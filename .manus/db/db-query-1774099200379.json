@@ -1,0 +1,14 @@
+{
+  "query": "\nSELECT mv.status, mp.verificationStatus \nFROM mentor_verifications mv\nLEFT JOIN mentor_profiles mp ON mv.userId = mp.userId\nWHERE mv.userId = 4470024\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute \nSELECT mv.status, mp.verificationStatus \nFROM mentor_verifications mv\nLEFT JOIN mentor_profiles mp ON mv.userId = mp.userId\nWHERE mv.userId = 4470024\n",
+  "rows": [
+    {
+      "status": "approved",
+      "verificationStatus": "approved"
+    }
+  ],
+  "messages": [],
+  "stdout": "status\tverificationStatus\napproved\tapproved\n",
+  "stderr": "",
+  "execution_time_ms": 1592
+}
