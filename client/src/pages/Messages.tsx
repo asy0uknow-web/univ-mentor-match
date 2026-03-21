@@ -636,6 +636,11 @@ export function Messages() {
     return `사용자 ${userId}`;
   };
 
+  const getOtherUserDisplayName = (userId: number) => {
+    const name = getOtherUserName(userId);
+    return name.includes('멘토님') || name.includes('멘티님') ? name : `${name}님`;
+  };
+
   const getUnreadCount = (userId: number) => {
     const msgs: any[] = conversations[userId] || [];
     return msgs.filter((m: any) => m.recipientId === user?.id && !m.isRead).length;
@@ -702,7 +707,7 @@ export function Messages() {
     return groups;
   }, [conversation, messageSearch]);
 
-  const otherUserName = selectedConversation ? getOtherUserName(selectedConversation) : "";
+  const otherUserName = selectedConversation ? getOtherUserDisplayName(selectedConversation) : "";
 
   // ===== 메시지 렌더링 =====
   const renderMessage = (msg: any) => {
@@ -958,7 +963,7 @@ export function Messages() {
                 <CardHeader className="border-b shrink-0 py-3">
                   <div className="flex items-center justify-between gap-2">
                     <div className="flex items-center gap-3">
-                      <Avatar name={otherUserName} size="md" />
+                      <Avatar name={getOtherUserName(selectedConversation || 0)} size="md" />
                       <div>
                         <CardTitle className="text-base">{otherUserName}</CardTitle>
                         {typingStatus?.isTyping && (
