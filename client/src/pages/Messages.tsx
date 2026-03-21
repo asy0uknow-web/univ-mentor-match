@@ -7,7 +7,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { trpc } from "@/lib/trpc";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import {
   Send, MessageSquare, Clock, CheckCircle2, XCircle, AlertCircle,
   Menu, X as XIcon, Calendar, MapPin, Video, Users, ChevronRight,
@@ -549,11 +549,13 @@ export function Messages() {
     onError: (e) => toast.error(`제안 실패: ${e.message}`),
   });
 
+  const [, navigate] = useLocation();
   const acceptProposalMutation = trpc.proposal.accept.useMutation({
     onSuccess: () => {
       toast.success("상담 일정이 확정되었어요! 🎉");
       utils.message.getConversation.invalidate();
       utils.message.getInbox.invalidate();
+      setTimeout(() => navigate("/bookings"), 1500);
     },
     onError: (e) => toast.error(`수락 실패: ${e.message}`),
   });

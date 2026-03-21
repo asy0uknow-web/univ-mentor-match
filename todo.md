@@ -1384,3 +1384,13 @@
 - [x] 전체 시간 툴팁 - 메시지 버블 hover 시 전체 날짜/시간 표시
 - [x] 새 API 엔드포인트 추가: editMessage, deleteMessage, toggleReaction, getReactions, setTyping, getTyping, markConversationAsRead, updateProfileImage, getProfile
 - [x] 테스트 11개 추가 및 통과 (전체 135/135)
+
+
+## 기능 추가 - 상담 일정 제안 응답 시스템
+- [x] 상담 일정 제안 데이터 구조 분석 및 DB 스키마 확인
+- [x] 상대방이 볼 수 있는 제안 응답 UI 구현 (수락/거절/추가조율 버튼)
+- [x] 수락 기능 구현 (예약 내역으로 이동, 확정 메시지 전송)
+- [x] 거절 기능 구현 (거절 메시지 전송)
+- [x] 추가조율 기능 구현 (일정/장소 수정 폼 표시)
+- [x] 응답 상태 저장 및 동기화
+- [x] 테스트 및 검증 (135/135 통과)
