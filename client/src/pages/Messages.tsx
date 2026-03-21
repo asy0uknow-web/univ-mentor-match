@@ -622,7 +622,7 @@ export function Messages() {
   }, {}) || {};
 
   const getOtherUserName = (userId: number) => {
-    // 먼저 conversations[userId]에서 상대방 이름 찾기
+    // 1. 먼저 conversations[userId]에서 상대방 이름 찾기
     const msgs: any[] = conversations[userId] || [];
     if (msgs.length > 0) {
       const msg = msgs[0]; // 첫 번째 메시지 사용
@@ -636,7 +636,7 @@ export function Messages() {
       }
     }
     
-    // 그 다음 selectedConversation의 메시지에서 찾기
+    // 2. 그 다음 selectedConversation의 메시지에서 찾기
     if (userId === selectedConversation && conversation) {
       const msgs = conversation as any[];
       if (msgs.length > 0) {
@@ -646,6 +646,21 @@ export function Messages() {
         }
         if (msg.recipientId === user?.id && msg.senderName) {
           return msg.senderName;
+        }
+      }
+    }
+    
+    // 3. inbox에서 해당 userId와 관련된 메시지 찾기 (메시지 전송 전에도 이름 표시)
+    if (inbox && inbox.length > 0) {
+      const relevantMsg = inbox.find((msg: any) => 
+        (msg.senderId === userId || msg.recipientId === userId)
+      );
+      if (relevantMsg) {
+        if (relevantMsg.senderId === userId && relevantMsg.senderName) {
+          return relevantMsg.senderName;
+        }
+        if (relevantMsg.recipientId === userId && relevantMsg.recipientName) {
+          return relevantMsg.recipientName;
         }
       }
     }
