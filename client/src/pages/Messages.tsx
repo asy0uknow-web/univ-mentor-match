@@ -622,17 +622,34 @@ export function Messages() {
   }, {}) || {};
 
   const getOtherUserName = (userId: number) => {
+    // 먼저 conversations[userId]에서 상대방 이름 찾기
     const msgs: any[] = conversations[userId] || [];
-    for (const msg of msgs) {
-      if (msg.senderId === userId && msg.senderName) return msg.senderName;
-      if (msg.recipientId === userId && msg.recipientName) return msg.recipientName;
-    }
-    if (userId === selectedConversation && conversation) {
-      for (const msg of conversation) {
-        if ((msg as any).senderId === userId && (msg as any).senderName) return (msg as any).senderName;
-        if ((msg as any).recipientId === userId && (msg as any).recipientName) return (msg as any).recipientName;
+    if (msgs.length > 0) {
+      const msg = msgs[0]; // 첫 번째 메시지 사용
+      // 현재 사용자가 발신자면 recipientName 반환
+      if (msg.senderId === user?.id && msg.recipientName) {
+        return msg.recipientName;
+      }
+      // 현재 사용자가 수신자면 senderName 반환
+      if (msg.recipientId === user?.id && msg.senderName) {
+        return msg.senderName;
       }
     }
+    
+    // 그 다음 selectedConversation의 메시지에서 찾기
+    if (userId === selectedConversation && conversation) {
+      const msgs = conversation as any[];
+      if (msgs.length > 0) {
+        const msg = msgs[0];
+        if (msg.senderId === user?.id && msg.recipientName) {
+          return msg.recipientName;
+        }
+        if (msg.recipientId === user?.id && msg.senderName) {
+          return msg.senderName;
+        }
+      }
+    }
+    
     return `사용자 ${userId}`;
   };
 

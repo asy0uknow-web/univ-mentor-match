@@ -1,0 +1,22 @@
+{
+  "query": "-- 사용자 정보\nSELECT 'users' as table_name, id, name, email, userType FROM users WHERE id = 4470024;\n\n-- 멘토 프로필 정보\nSELECT 'mentor_profiles' as table_name, id, userId, university, major, grade, verificationStatus FROM mentor_profiles WHERE userId = 4470024;\n\n-- 멘토 인증 정보\nSELECT 'mentor_verifications' as table_name, id, userId, status FROM mentor_verifications WHERE userId = 4470024;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute -- 사용자 정보\nSELECT 'users' as table_name, id, name, email, userType FROM users WHERE id = 4470024;\n\n-- 멘토 프로필 정보\nSELECT 'mentor_profiles' as table_name, id, userId, university, major, grade, verificationStatus FROM mentor_profiles WHERE userId = 4470024;\n\n-- 멘토 인증 정보\nSELECT 'mentor_verifications' as table_name, id, userId, status FROM mentor_verifications WHERE userId = 4470024;",
+  "rows": [
+    {
+      "table_name": "users",
+      "id": "4470024",
+      "name": "테스트멘토",
+      "email": "test-mentor@example.com",
+      "userType": "university_student"
+    }
+  ],
+  "messages": [
+    "table_name\tid\tuserId\tuniversity\tmajor\tgrade\tverificationStatus",
+    "mentor_profiles\t1080002\t4470024\t서울대학교\t컴퓨터공학과\t3\tapproved",
+    "table_name\tid\tuserId\tstatus",
+    "mentor_verifications\t990001\t4470024\tapproved"
+  ],
+  "stdout": "table_name\tid\tname\temail\tuserType\nusers\t4470024\t테스트멘토\ttest-mentor@example.com\tuniversity_student\ntable_name\tid\tuserId\tuniversity\tmajor\tgrade\tverificationStatus\nmentor_profiles\t1080002\t4470024\t서울대학교\t컴퓨터공학과\t3\tapproved\ntable_name\tid\tuserId\tstatus\nmentor_verifications\t990001\t4470024\tapproved\n",
+  "stderr": "",
+  "execution_time_ms": 2004
+}

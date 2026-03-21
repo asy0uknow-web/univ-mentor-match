@@ -1,0 +1,10 @@
+{
+  "query": "-- 사용자 정보\nSELECT 'users' as table_name, id, name, email, userType FROM users WHERE id = 4470024;\n\n-- 멘토 프로필 정보\nSELECT 'mentor_profiles' as table_name, id, userId, school, major, grade FROM mentor_profiles WHERE userId = 4470024;\n\n-- 멘토 인증 정보\nSELECT 'mentor_verifications' as table_name, id, userId, status FROM mentor_verifications WHERE userId = 4470024;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute -- 사용자 정보\nSELECT 'users' as table_name, id, name, email, userType FROM users WHERE id = 4470024;\n\n-- 멘토 프로필 정보\nSELECT 'mentor_profiles' as table_name, id, userId, school, major, grade FROM mentor_profiles WHERE userId = 4470024;\n\n-- 멘토 인증 정보\nSELECT 'mentor_verifications' as table_name, id, userId, status FROM mentor_verifications WHERE userId = 4470024;",
+  "returncode": 1,
+  "logs": [
+    "table_name\tid\tname\temail\tuserType",
+    "users\t4470024\t테스트멘토\ttest-mentor@example.com\tuniversity_student",
+    "ERROR 1054 (42S22) at line 5: Unknown column 'school' in 'field list'"
+  ]
+}
