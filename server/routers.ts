@@ -1288,6 +1288,7 @@ export const appRouter = router({
         const content = JSON.stringify({
           type: "proposal",
           proposalId,
+          receiverId: input.receiverId,
           scheduledAt: input.scheduledAt,
           consultationMode: input.consultationMode,
           location: input.location,
@@ -1341,6 +1342,36 @@ export const appRouter = router({
           acceptedAt: new Date(),
           updatedAt: new Date(),
         }).where(eq(consultationProposals.id, input.proposalId));
+
+        // booking 생성
+        const pricePerHour = 40000; // 기본 상담료
+        const duration = typeof proposal[0].duration === 'string' ? parseFloat(proposal[0].duration) : proposal[0].duration;
+        const totalAmount = pricePerHour * duration;
+        
+        console.log('[Accept] Creating booking with:', {
+          studentId: proposal[0].receiverId,
+          mentorId: proposal[0].proposerId,
+          duration,
+          totalAmount,
+        });
+        
+        try {
+          await db.insert(bookings).values({
+            studentId: proposal[0].receiverId,
+            mentorId: proposal[0].proposerId,
+            scheduledAt: proposal[0].scheduledAt,
+            duration: duration.toString() as any,
+            totalAmount: totalAmount.toString() as any,
+            consultationType: proposal[0].consultationType as any,
+            status: "confirmed",
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          });
+          console.log('[Accept] Booking created successfully');
+        } catch (bookingError) {
+          console.error('[Accept] Booking creation error:', bookingError);
+          throw bookingError;
+        }
 
         // 제안자에게 알림
         const receiverUser = await db.select({ name: users.name }).from(users).where(eq(users.id, userId)).limit(1);
@@ -1478,6 +1509,7 @@ export const appRouter = router({
         const content = JSON.stringify({
           type: "proposal",
           proposalId: newProposalId,
+          receiverId: original[0].proposerId,
           scheduledAt: input.scheduledAt,
           consultationMode: input.consultationMode,
           location: input.location,

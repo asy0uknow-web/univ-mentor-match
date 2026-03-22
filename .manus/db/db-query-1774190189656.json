@@ -1,0 +1,18 @@
+{
+  "query": "SELECT b.id, b.studentId, b.mentorId, b.scheduledAt, b.status, b.createdAt FROM bookings b ORDER BY b.createdAt DESC LIMIT 5;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute SELECT b.id, b.studentId, b.mentorId, b.scheduledAt, b.status, b.createdAt FROM bookings b ORDER BY b.createdAt DESC LIMIT 5;",
+  "rows": [
+    {
+      "id": "30003",
+      "studentId": "3270082",
+      "mentorId": "330001",
+      "scheduledAt": "2026-03-15 09:16:52",
+      "status": "confirmed",
+      "createdAt": "2026-03-14 09:16:52"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tstudentId\tmentorId\tscheduledAt\tstatus\tcreatedAt\n30003\t3270082\t330001\t2026-03-15 09:16:52\tconfirmed\t2026-03-14 09:16:52\n",
+  "stderr": "",
+  "execution_time_ms": 1546
+}

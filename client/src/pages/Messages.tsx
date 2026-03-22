@@ -256,11 +256,29 @@ function ProposalFormDialog({
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1">
               <Label>날짜</Label>
-              <Input type="date" value={scheduledDate} onChange={e => setScheduledDate(e.target.value)} />
+              <Input 
+                type="text" 
+                placeholder="yyyy-MM-dd"
+                value={scheduledDate} 
+                onChange={(e) => {
+                  const val = e.target.value;
+                  // 날짜 형식 검증: yyyy-MM-dd (입력 중에도 업데이트)
+                  setScheduledDate(val);
+                }}
+              />
             </div>
             <div className="space-y-1">
               <Label>시간</Label>
-              <Input type="time" value={scheduledTime} onChange={e => setScheduledTime(e.target.value)} />
+              <Input 
+                type="text" 
+                placeholder="HH:mm"
+                value={scheduledTime} 
+                onChange={(e) => {
+                  const val = e.target.value;
+                  // 시간 형식 검증: HH:mm (입력 중에도 업데이트)
+                  setScheduledTime(val);
+                }}
+              />
             </div>
           </div>
           <div className="space-y-1">
@@ -763,7 +781,7 @@ export function Messages() {
                 {isMe ? "상담 일정 제안을 보냈어요" : "상담 일정 제안이 도착했어요"}
               </p>
               <ProposalCard
-                proposalData={parsed} isMyMessage={isMe} currentUserId={user?.id ?? 0}
+                proposalData={{ ...parsed, receiverId: msg.recipientId }} isMyMessage={isMe} currentUserId={user?.id ?? 0}
                 onAccept={(id) => acceptProposalMutation.mutate({ proposalId: id })}
                 onReject={(id) => rejectProposalMutation.mutate({ proposalId: id })}
                 onCounter={(data) => { setCounterProposalData(data); setShowCounterForm(true); }}
@@ -780,7 +798,7 @@ export function Messages() {
       if (parsed?.type === "proposal_status") {
         return (
           <div className="flex justify-center my-2">
-            <StatusBanner statusData={parsed} />
+            <StatusBanner statusData={{ ...parsed, receiverId: msg.recipientId }} />
           </div>
         );
       }

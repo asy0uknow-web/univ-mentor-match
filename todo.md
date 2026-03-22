@@ -1394,3 +1394,22 @@
 - [x] 추가조율 기능 구현 (일정/장소 수정 폼 표시)
 - [x] 응답 상태 저장 및 동기화
 - [x] 테스트 및 검증 (135/135 통과)
+
+
+## 버그 수정 - 상담 일정 제안 버튼 미표시 (2026-03-22)
+- [x] 문제 분석: ProposalCard에서 receiverId가 JSON에 없어 버튼이 렌더링되지 않음
+- [x] 서버 코드 수정: 제안 메시지 생성 시 receiverId 필드 추가 (routers.ts 1291줄)
+- [x] 서버 코드 수정: 수정 제안 메시지 생성 시 receiverId 필드 추가 (routers.ts 1482줄)
+- [x] 클라이언트 코드 수정: ProposalCard에 msg.recipientId를 proposalData.receiverId로 매핑 (Messages.tsx 754줄)
+- [x] Input 컴포넌트 수정: date/time input에 대한 composition 처리 비활성화 (input.tsx)
+- [x] ProposalDialog 수정: date/time input을 text input으로 변경하여 호환성 개선 (Messages.tsx 259-260줄)
+- [x] 서버 코드 수정: accept 뮤테이션에 booking 생성 로직 추가 (routers.ts 1355-1366줄)
+- [x] 테스트 및 검증: 새로운 제안 메시지에서 버튼 렌더링 확인, receiverId 정상 저장 확인
+
+## 기능 개선 - 상담 일정 제안 수락 후 예약 내역 이동
+- [x] accept 뮤테이션에서 booking 테이블에 데이터 생성
+- [x] 상담료 계산 로직 추가 (시간당 40,000원 기본값)
+- [x] booking status를 "confirmed"로 설정
+- [x] 수락 후 예약 내역 페이지로 자동 이동 (기존 기능 유지)
+- [x] 예약 내역에 새로운 booking이 표시되는지 확인
+- [x] 테스트 및 검증 (135/135 통과)

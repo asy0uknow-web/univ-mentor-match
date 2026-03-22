@@ -1,0 +1,70 @@
+{
+  "query": "SELECT id, email, name, role FROM users LIMIT 10;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute SELECT id, email, name, role FROM users LIMIT 10;",
+  "rows": [
+    {
+      "id": "99901",
+      "email": "test-ux-a-1774104188514@test.com",
+      "name": "테스트유저A",
+      "role": "user"
+    },
+    {
+      "id": "99902",
+      "email": "test-ux-b-1774104188514@test.com",
+      "name": "테스트유저B",
+      "role": "user"
+    },
+    {
+      "id": "3660019",
+      "email": "yjh032201@gmail.com",
+      "name": "NULL",
+      "role": "user"
+    },
+    {
+      "id": "3750001",
+      "email": "4g6hbs46s8@privaterelay.appleid.com",
+      "name": "윤호 이",
+      "role": "user"
+    },
+    {
+      "id": "3840007",
+      "email": "syoung.choi327@gmail.com",
+      "name": "최세영",
+      "role": "user"
+    },
+    {
+      "id": "4110002",
+      "email": "1111@naver.com",
+      "name": "양주혁",
+      "role": "user"
+    },
+    {
+      "id": "4170009",
+      "email": "test-mentee-1773928749000@test.com",
+      "name": "테스트 멘티",
+      "role": "user"
+    },
+    {
+      "id": "4170010",
+      "email": "test-mentor-1773928756000@test.com",
+      "name": "테스트 멘토",
+      "role": "user"
+    },
+    {
+      "id": "4200008",
+      "email": "1@naver.com",
+      "name": "최세영",
+      "role": "user"
+    },
+    {
+      "id": "4200011",
+      "email": "testuser@example.com",
+      "name": "테스트사용자",
+      "role": "user"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\temail\tname\trole\n99901\ttest-ux-a-1774104188514@test.com\t테스트유저A\tuser\n99902\ttest-ux-b-1774104188514@test.com\t테스트유저B\tuser\n3660019\tyjh032201@gmail.com\tNULL\tuser\n3750001\t4g6hbs46s8@privaterelay.appleid.com\t윤호 이\tuser\n3840007\tsyoung.choi327@gmail.com\t최세영\tuser\n4110002\t1111@naver.com\t양주혁\tuser\n4170009\ttest-mentee-1773928749000@test.com\t테스트 멘티\tuser\n4170010\ttest-mentor-1773928756000@test.com\t테스트 멘토\tuser\n4200008\t1@naver.com\t최세영\tuser\n4200011\ttestuser@example.com\t테스트사용자\tuser\n",
+  "stderr": "",
+  "execution_time_ms": 1628
+}
