@@ -13,52 +13,31 @@ import { MentorVerificationSection } from "@/components/home/MentorVerificationS
 import { FeaturedMentorsSlide } from "@/components/home/FeaturedMentorsSlide";
 import { TestimonialsSection } from "@/components/home/TestimonialsSection";
 import { IntegratedFAQSection } from "@/components/home/IntegratedFAQSection";
-import {
-  ModernSearchIcon,
-  ModernCalendarIcon,
-  ModernMessageIcon,
-  ModernInfoIcon,
-  ModernTrustIcon,
-  ModernCostIcon,
-  IconWithBackground
-} from "@/components/home/ModernIcons";
 
-// Modern Icons Components
+// Line Art Icons Component - How It Works Section
 const SearchIcon = () => (
-  <IconWithBackground>
-    <ModernSearchIcon />
-  </IconWithBackground>
+  <div className="text-5xl sm:text-6xl md:text-7xl">🔍</div>
 );
 
 const CalendarIcon = () => (
-  <IconWithBackground>
-    <ModernCalendarIcon />
-  </IconWithBackground>
+  <div className="text-5xl sm:text-6xl md:text-7xl">📅</div>
 );
 
 const ChatIcon = () => (
-  <IconWithBackground>
-    <ModernMessageIcon />
-  </IconWithBackground>
+  <div className="text-5xl sm:text-6xl md:text-7xl">👨‍👩‍💼</div>
 );
 
-// Service Intro Icons
+// Line Art Icons Component - Service Intro Section
 const InfoIcon = () => (
-  <IconWithBackground>
-    <ModernInfoIcon />
-  </IconWithBackground>
+  <div className="text-5xl sm:text-6xl md:text-7xl">📄</div>
 );
 
 const TrustIcon = () => (
-  <IconWithBackground>
-    <ModernTrustIcon />
-  </IconWithBackground>
+  <div className="text-5xl sm:text-6xl md:text-7xl">⚠️</div>
 );
 
 const CostIcon = () => (
-  <IconWithBackground>
-    <ModernCostIcon />
-  </IconWithBackground>
+  <div className="text-5xl sm:text-6xl md:text-7xl">💸</div>
 );
 
 // Organic Blob Background Component
@@ -261,9 +240,12 @@ export default function Home() {
                   key={idx}
                   className="bg-white rounded-2xl p-6 sm:p-8 shadow-md hover:shadow-lg transition-shadow duration-300"
                 >
-                  {/* Icon with Background */}
-                  <div className="mb-6 sm:mb-8">
-                    <IconComponent />
+                  {/* Icon with Blob Background */}
+                  <div className="relative w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 mb-6 sm:mb-8 flex items-center justify-center">
+                    <BlobBackground idx={idx + 100} />
+                    <div className="relative z-10">
+                      <IconComponent />
+                    </div>
                   </div>
                   
                   {/* Title */}

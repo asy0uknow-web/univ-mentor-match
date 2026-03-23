@@ -1,9 +1,3 @@
-import {
-  ModernStudentIDIcon,
-  ModernCheckmarkIcon,
-  ModernShieldIcon
-} from "./ModernIcons";
-
 // 멘토 검증 방식 섹션 컴포넌트
 export const MentorVerificationSection = () => {
   const verificationSteps = [
@@ -11,19 +5,19 @@ export const MentorVerificationSection = () => {
       step: 1,
       title: "학생증 인증",
       description: "모든 멘토는 유효한 학생증을 제출하여 대학생임을 증명합니다.",
-      iconComponent: ModernStudentIDIcon
+      icon: "🎓"
     },
     {
       step: 2,
       title: "신원 확인",
       description: "제출된 학생증을 통해 신원을 확인하고 검증합니다.",
-      iconComponent: ModernCheckmarkIcon
+      icon: "✅"
     },
     {
       step: 3,
       title: "검증 완료",
       description: "검증된 멘토만 플랫폼에서 활동할 수 있습니다.",
-      iconComponent: ModernShieldIcon
+      icon: "🛡️"
     }
   ];
 
@@ -43,35 +37,32 @@ export const MentorVerificationSection = () => {
         {/* Verification Steps */}
         <div className="max-w-5xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
-            {verificationSteps.map((item, idx) => {
-              const IconComponent = item.iconComponent;
-              return (
-                <div
-                  key={idx}
-                  className="bg-white rounded-2xl p-6 sm:p-8 shadow-md hover:shadow-lg transition-shadow duration-300 relative"
-                >
-                  {/* Step Number Badge */}
-                  <div className="absolute -top-4 -left-4 w-10 h-10 sm:w-12 sm:h-12 bg-primary rounded-full flex items-center justify-center text-white font-bold text-sm sm:text-base">
-                    {item.step}
-                  </div>
-
-                  {/* Icon */}
-                  <div className="mb-4 sm:mb-6 flex justify-center">
-                    <IconComponent />
-                  </div>
-
-                  {/* Title */}
-                  <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-foreground mb-3 sm:mb-4">
-                    {item.title}
-                  </h3>
-
-                  {/* Description */}
-                  <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
-                    {item.description}
-                  </p>
+            {verificationSteps.map((item, idx) => (
+              <div
+                key={idx}
+                className="bg-white rounded-2xl p-6 sm:p-8 shadow-md hover:shadow-lg transition-shadow duration-300 relative"
+              >
+                {/* Step Number Badge */}
+                <div className="absolute -top-4 -left-4 w-10 h-10 sm:w-12 sm:h-12 bg-primary rounded-full flex items-center justify-center text-white font-bold text-sm sm:text-base">
+                  {item.step}
                 </div>
-              );
-            })}
+
+                {/* Icon */}
+                <div className="text-4xl sm:text-5xl mb-4 sm:mb-6">
+                  {item.icon}
+                </div>
+
+                {/* Title */}
+                <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-foreground mb-3 sm:mb-4">
+                  {item.title}
+                </h3>
+
+                {/* Description */}
+                <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
+                  {item.description}
+                </p>
+              </div>
+            ))}
           </div>
 
           {/* Additional Info */}
