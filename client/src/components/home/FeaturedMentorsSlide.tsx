@@ -11,6 +11,7 @@ interface FeaturedMentor {
   bio: string;
   field?: string;
   image?: string;
+  profileImageUrl?: string;
   rating: number;
   reviewCount: number;
 }
@@ -69,6 +70,7 @@ export const FeaturedMentorsSlide = () => {
     major: mentor.major || "전공 미등록",
     bio: mentor.bio || "자기소개 미등록",
     field: mentor.field,
+    profileImageUrl: mentor.profileImageUrl,
     rating: mentor.averageRating ? parseFloat(mentor.averageRating.toString()) : 0,
     reviewCount: mentor.reviewCount || 0,
   }));
@@ -224,8 +226,28 @@ export const FeaturedMentorsSlide = () => {
                 style={{ height: `${maxCardHeight}px` }}
               >
                 {/* Mentor Image Placeholder */}
-                <div className="w-full flex-shrink-0 bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white text-5xl font-bold" style={{ height: '192px' }}>
-                  {mentor.name.charAt(0)}
+                <div className="w-full flex-shrink-0 flex items-center justify-center overflow-hidden" style={{ height: '192px', backgroundColor: mentor.profileImageUrl ? 'transparent' : '#ffffff' }}>
+                  {mentor.profileImageUrl ? (
+                    <img
+                      src={mentor.profileImageUrl}
+                      alt={mentor.name}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="flex items-center justify-center w-full h-full bg-white">
+                      <svg
+                        width="80"
+                        height="80"
+                        viewBox="0 0 100 100"
+                        className="text-blue-600"
+                        fill="currentColor"
+                      >
+                        {/* 유니브매치 로고 아이콘 */}
+                        <circle cx="50" cy="25" r="12" fill="currentColor" />
+                        <path d="M30 45 Q30 40 35 40 L65 40 Q70 40 70 45 L70 75 Q70 80 65 80 L35 80 Q30 80 30 75 Z" stroke="currentColor" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    </div>
+                  )}
                 </div>
 
                 {/* Mentor Info */}
