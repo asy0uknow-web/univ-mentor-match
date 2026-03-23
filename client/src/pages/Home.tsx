@@ -13,31 +13,52 @@ import { MentorVerificationSection } from "@/components/home/MentorVerificationS
 import { FeaturedMentorsSlide } from "@/components/home/FeaturedMentorsSlide";
 import { TestimonialsSection } from "@/components/home/TestimonialsSection";
 import { IntegratedFAQSection } from "@/components/home/IntegratedFAQSection";
+import {
+  ModernSearchIcon,
+  ModernCalendarIcon,
+  ModernMessageIcon,
+  ModernInfoIcon,
+  ModernTrustIcon,
+  ModernCostIcon,
+  IconWithBackground
+} from "@/components/home/ModernIcons";
 
-// Line Art Icons Component - How It Works Section
+// Modern Icons Components
 const SearchIcon = () => (
-  <div className="text-5xl sm:text-6xl md:text-7xl">🔍</div>
+  <IconWithBackground>
+    <ModernSearchIcon />
+  </IconWithBackground>
 );
 
 const CalendarIcon = () => (
-  <div className="text-5xl sm:text-6xl md:text-7xl">📅</div>
+  <IconWithBackground>
+    <ModernCalendarIcon />
+  </IconWithBackground>
 );
 
 const ChatIcon = () => (
-  <div className="text-5xl sm:text-6xl md:text-7xl">👨‍👩‍💼</div>
+  <IconWithBackground>
+    <ModernMessageIcon />
+  </IconWithBackground>
 );
 
-// Line Art Icons Component - Service Intro Section
+// Service Intro Icons
 const InfoIcon = () => (
-  <div className="text-5xl sm:text-6xl md:text-7xl">📄</div>
+  <IconWithBackground>
+    <ModernInfoIcon />
+  </IconWithBackground>
 );
 
 const TrustIcon = () => (
-  <div className="text-5xl sm:text-6xl md:text-7xl">⚠️</div>
+  <IconWithBackground>
+    <ModernTrustIcon />
+  </IconWithBackground>
 );
 
 const CostIcon = () => (
-  <div className="text-5xl sm:text-6xl md:text-7xl">💸</div>
+  <IconWithBackground>
+    <ModernCostIcon />
+  </IconWithBackground>
 );
 
 // Organic Blob Background Component
@@ -240,12 +261,9 @@ export default function Home() {
                   key={idx}
                   className="bg-white rounded-2xl p-6 sm:p-8 shadow-md hover:shadow-lg transition-shadow duration-300"
                 >
-                  {/* Icon with Blob Background */}
-                  <div className="relative w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 mb-6 sm:mb-8 flex items-center justify-center">
-                    <BlobBackground idx={idx + 100} />
-                    <div className="relative z-10">
-                      <IconComponent />
-                    </div>
+                  {/* Icon with Background */}
+                  <div className="mb-6 sm:mb-8">
+                    <IconComponent />
                   </div>
                   
                   {/* Title */}
