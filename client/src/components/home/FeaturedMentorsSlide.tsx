@@ -161,7 +161,7 @@ export const FeaturedMentorsSlide = () => {
             {visibleMentors.map((mentor) => (
               <div
                 key={mentor.id}
-                className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden hover:scale-105 cursor-pointer"
+                className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden hover:scale-105 cursor-pointer flex flex-col h-full"
               >
                 {/* Mentor Image Placeholder */}
                 <div className="w-full h-48 sm:h-56 bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white text-5xl font-bold">
@@ -190,7 +190,7 @@ export const FeaturedMentorsSlide = () => {
                     </div>
                   )}
 
-                  <p className="text-sm sm:text-base text-muted-foreground mb-6 line-clamp-2">
+                  <p className="text-sm sm:text-base text-muted-foreground mb-6 line-clamp-3 h-16">
                     {mentor.bio}
                   </p>
 
@@ -227,7 +227,7 @@ export const FeaturedMentorsSlide = () => {
                   {/* CTA Button */}
                   <button
                     onClick={() => setLocation(`/mentor/${mentor.id}`)}
-                    className="w-full py-3 px-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors"
+                    className="w-full py-3 px-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors mt-auto"
                   >
                     프로필 보기
                   </button>
