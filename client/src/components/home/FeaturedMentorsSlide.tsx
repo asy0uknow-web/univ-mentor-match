@@ -86,24 +86,67 @@ export const FeaturedMentorsSlide = () => {
   useEffect(() => {
     if (!isAutoPlay || mentors.length === 0) return;
     const timer = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % mentors.length);
+      if (mentors.length >= 12) {
+        // 12명 이상: 3명씩 페이지 단위로 슬라이드
+        const maxPages = Math.ceil(mentors.length / 3);
+        setCurrentIndex((prev) => {
+          const nextPage = Math.floor(prev / 3) + 1;
+          return (nextPage % maxPages) * 3;
+        });
+      } else {
+        // 12명 미만: 순환
+        setCurrentIndex((prev) => (prev + 1) % mentors.length);
+      }
     }, 5000);
     return () => clearInterval(timer);
   }, [isAutoPlay, mentors.length]);
 
   const handlePrev = () => {
     setIsAutoPlay(false);
-    setCurrentIndex((prev) => (prev - 1 + mentors.length) % mentors.length);
+    if (mentors.length >= 12) {
+      // 12명 이상: 3명씩 이전 페이지로
+      const maxPages = Math.ceil(mentors.length / 3);
+      setCurrentIndex((prev) => {
+        const currentPage = Math.floor(prev / 3);
+        const prevPage = (currentPage - 1 + maxPages) % maxPages;
+        return prevPage * 3;
+      });
+    } else {
+      // 12명 미만: 순환
+      setCurrentIndex((prev) => (prev - 1 + mentors.length) % mentors.length);
+    }
   };
 
   const handleNext = () => {
     setIsAutoPlay(false);
-    setCurrentIndex((prev) => (prev + 1) % mentors.length);
+    if (mentors.length >= 12) {
+      // 12명 이상: 3명씩 다음 페이지로
+      const maxPages = Math.ceil(mentors.length / 3);
+      setCurrentIndex((prev) => {
+        const currentPage = Math.floor(prev / 3);
+        const nextPage = (currentPage + 1) % maxPages;
+        return nextPage * 3;
+      });
+    } else {
+      // 12명 미만: 순환
+      setCurrentIndex((prev) => (prev + 1) % mentors.length);
+    }
   };
 
+  // 중복 제거: 멘토가 12명 이상이면 순환하지 않음
   const visibleMentors = [];
-  for (let i = 0; i < Math.min(3, mentors.length); i++) {
-    visibleMentors.push(mentors[(currentIndex + i) % mentors.length]);
+  const maxVisible = Math.min(3, mentors.length);
+  for (let i = 0; i < maxVisible; i++) {
+    const index = currentIndex + i;
+    // 멘토가 12명 이상이면 순환하지 않고, 12명 미만이면 순환
+    if (mentors.length >= 12) {
+      if (index < mentors.length) {
+        visibleMentors.push(mentors[index]);
+      }
+    } else {
+      // 12명 미만인 경우 순환
+      visibleMentors.push(mentors[index % mentors.length]);
+    }
   }
 
   // 로딩 상태
@@ -170,8 +213,9 @@ export const FeaturedMentorsSlide = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
             {visibleMentors.map((mentor) => (
               <div
-                key={mentor.id}
+                key={`${mentor.id}-${currentIndex}`}
                 className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden hover:scale-105 cursor-pointer flex flex-col h-full"
+                style={{ minHeight: maxCardHeight > 0 ? `${maxCardHeight}px` : 'auto' }}
               >
                 {/* Mentor Image Placeholder */}
                 <div className="w-full h-48 sm:h-56 bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white text-5xl font-bold">
@@ -247,7 +291,7 @@ export const FeaturedMentorsSlide = () => {
           </div>
 
           {/* Navigation Buttons */}
-          {mentors.length > 3 && (
+          {mentors.length > 3 && mentors.length >= 12 && (
             <div className="flex justify-center items-center gap-4 mt-8 sm:mt-12">
               <button
                 onClick={handlePrev}
@@ -259,19 +303,37 @@ export const FeaturedMentorsSlide = () => {
 
               {/* Dots Indicator */}
               <div className="flex gap-2">
-                {mentors.map((_, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => {
-                      setIsAutoPlay(false);
-                      setCurrentIndex(idx);
-                    }}
-                    className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all ${
-                      idx === currentIndex ? "bg-blue-600 w-8 sm:w-10" : "bg-gray-300"
-                    }`}
-                    aria-label={`${idx + 1}번째 멘토 보기`}
-                  />
-                ))}
+                {mentors.length >= 12 ? (
+                  // 12명 이상: 슬라이드 페이지 표시
+                  Array.from({ length: Math.ceil(mentors.length / 3) }).map((_, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => {
+                        setIsAutoPlay(false);
+                        setCurrentIndex(idx * 3);
+                      }}
+                      className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all ${
+                        Math.floor(currentIndex / 3) === idx ? "bg-blue-600 w-8 sm:w-10" : "bg-gray-300"
+                      }`}
+                      aria-label={`${idx + 1}번째 페이지 보기`}
+                    />
+                  ))
+                ) : (
+                  // 12명 미만: 개별 멘토 표시
+                  mentors.map((_, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => {
+                        setIsAutoPlay(false);
+                        setCurrentIndex(idx);
+                      }}
+                      className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all ${
+                        idx === currentIndex ? "bg-blue-600 w-8 sm:w-10" : "bg-gray-300"
+                      }`}
+                      aria-label={`${idx + 1}번째 멘토 보기`}
+                    />
+                  ))
+                )}
               </div>
 
               <button
@@ -285,7 +347,7 @@ export const FeaturedMentorsSlide = () => {
           )}
 
           {/* Auto-play indicator */}
-          {mentors.length > 3 && (
+          {mentors.length > 3 && mentors.length >= 12 && (
             <p className="text-center text-xs sm:text-sm text-muted-foreground mt-6">
               {isAutoPlay ? "자동 슬라이드 중..." : "수동 조작 중"}
             </p>
