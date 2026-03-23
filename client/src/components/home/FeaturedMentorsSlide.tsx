@@ -54,14 +54,15 @@ export const FeaturedMentorsSlide = () => {
   const [, setLocation] = useLocation();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlay, setIsAutoPlay] = useState(true);
+  const [maxCardHeight, setMaxCardHeight] = useState(0);
 
-  // 실제 멘토 데이터 조회 (평점 높은 순서, 최대 6개)
+  // 실제 멘토 데이터 조회 (평점 높은 순서, 최대 12개)
   const { data: mentorsData, isLoading, error } = trpc.mentor.getTopMentors.useQuery(
-    { limit: 6 },
+    { limit: 12 },
     { staleTime: 1000 * 60 * 5 } // 5분 캐시
   );
 
-  const mentors: FeaturedMentor[] = (mentorsData || []).map((mentor: any) => ({
+   const mentors: FeaturedMentor[] = (mentorsData || []).map((mentor: any) => ({
     id: mentor.id,
     name: mentor.name || "멘토",
     university: mentor.university || "대학명 미등록",
@@ -71,6 +72,15 @@ export const FeaturedMentorsSlide = () => {
     rating: mentor.averageRating ? parseFloat(mentor.averageRating.toString()) : 0,
     reviewCount: mentor.reviewCount || 0,
   }));
+
+  // 모든 멘토 데이터 로드 후 최대 높이 계산
+  useEffect(() => {
+    if (mentors.length === 0) return;
+    // 최대 높이 설정: 이미지(h-48 sm:h-56) + 정보 영역 + 여백
+    // 소개글이 3줄(line-clamp-3) + 배지 + 버튼
+    const estimatedHeight = 224 + 200; // 약 424px (h-48 = 192px + 정보 영역 약 200px)
+    setMaxCardHeight(estimatedHeight);
+  }, [mentors.length]);
 
   // 자동 슬라이드
   useEffect(() => {
@@ -190,7 +200,7 @@ export const FeaturedMentorsSlide = () => {
                     </div>
                   )}
 
-                  <p className="text-sm sm:text-base text-muted-foreground mb-6 line-clamp-3 h-16">
+                  <p className="text-sm sm:text-base text-muted-foreground mb-6 line-clamp-3" style={{ minHeight: '4rem' }}>
                     {mentor.bio}
                   </p>
 
