@@ -61,7 +61,7 @@ import { signupProcedure, loginProcedure } from "./auth-procedures";
 import { createVerificationToken, verifyEmailToken, getPendingVerificationToken } from "./email-verification";
 import { emailVerificationTokens } from "../drizzle/schema";
 import { eq } from "drizzle-orm";
-import { mentorGallery, messages, notifications, bookings, reviews, mentorProfiles, mentorVerifications, users, bugReports, mentorConsultationTypes, consultationProposals, userProfiles } from "../drizzle/schema";
+import { mentorGallery, messages, notifications, bookings, reviews, mentorProfiles, mentorVerifications, users, bugReports, mentorConsultationTypes, consultationProposals } from "../drizzle/schema";
 import { and, eq as drizzleEq, or as drizzleOr, desc as drizzleDesc } from "drizzle-orm";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
@@ -295,11 +295,9 @@ export const appRouter = router({
             field: mentorProfiles.field,
             averageRating: mentorProfiles.averageRating,
             reviewCount: mentorProfiles.reviewCount,
-            profileImageUrl: userProfiles.profileImageUrl,
           })
           .from(mentorProfiles)
           .innerJoin(users, drizzleEq(mentorProfiles.userId, users.id))
-          .leftJoin(userProfiles, drizzleEq(users.id, userProfiles.userId))
           .where(
             and(
               drizzleEq(mentorProfiles.verificationStatus, "approved"),
