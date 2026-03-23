@@ -73,14 +73,20 @@ export const FeaturedMentorsSlide = () => {
     reviewCount: mentor.reviewCount || 0,
   }));
 
-  // 모든 멘토 데이터 로드 후 최대 높이 계산
+  // 카드 높이를 고정값으로 설정 (모든 슬라이드에서 일관된 높이)
   useEffect(() => {
-    if (mentors.length === 0) return;
-    // 최대 높이 설정: 이미지(h-48 sm:h-56) + 정보 영역 + 여백
-    // 소개글이 3줄(line-clamp-3) + 배지 + 버튼
-    const estimatedHeight = 224 + 200; // 약 424px (h-48 = 192px + 정보 영역 약 200px)
-    setMaxCardHeight(estimatedHeight);
-  }, [mentors.length]);
+    // 고정 높이: 이미지(h-48 = 192px) + 정보 영역(약 280px) = 약 472px
+    // 이미지: 192px (h-48)
+    // 이름: 32px
+    // 대학/전공: 32px
+    // 필드 배지: 40px (선택사항)
+    // 소개글: 64px (min-height: 4rem)
+    // 배지/별점: 40px
+    // 버튼: 48px
+    // 여백: 24px
+    const FIXED_CARD_HEIGHT = 472;
+    setMaxCardHeight(FIXED_CARD_HEIGHT);
+  }, []);
 
   // 자동 슬라이드
   useEffect(() => {
@@ -215,7 +221,7 @@ export const FeaturedMentorsSlide = () => {
               <div
                 key={`${mentor.id}-${currentIndex}`}
                 className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden hover:scale-105 cursor-pointer flex flex-col h-full"
-                style={{ minHeight: maxCardHeight > 0 ? `${maxCardHeight}px` : 'auto' }}
+                style={{ height: `${maxCardHeight}px` }}
               >
                 {/* Mentor Image Placeholder */}
                 <div className="w-full h-48 sm:h-56 bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white text-5xl font-bold">
