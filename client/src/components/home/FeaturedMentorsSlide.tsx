@@ -196,8 +196,8 @@ export const FeaturedMentorsSlide = () => {
 
                   {/* Rating or New Mentor Badge */}
                   {mentor.reviewCount === 0 ? (
-                    <div className="inline-block bg-blue-100 text-blue-700 px-3 py-2 rounded-full font-medium text-sm mb-4">
-                      🆕 신규 멘토
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 shadow-sm mb-4">
+                      <span className="text-xs font-bold tracking-wider text-emerald-700 uppercase">New</span>
                     </div>
                   ) : (
                     <div className="flex items-center gap-2 mb-4">

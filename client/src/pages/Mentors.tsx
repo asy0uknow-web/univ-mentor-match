@@ -647,9 +647,9 @@ function MentorCard({
             {/* 우측: Star 아이콘 + 평점 및 후기 개수 또는 신규 멘토 배지 */}
             <div className="ml-auto flex items-center gap-1 text-xs text-muted-foreground">
               {mentor.profile.reviewCount === 0 ? (
-                <span className="inline-block bg-blue-100 text-blue-700 px-2 py-1 rounded-full font-medium text-xs">
-                  🆕 신규 멘토
-                </span>
+                <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 shadow-sm">
+                  <span className="text-xs font-bold tracking-wider text-emerald-700 uppercase">New</span>
+                </div>
               ) : (
                 <>
                   <Star className="h-3.5 w-3.5" />
