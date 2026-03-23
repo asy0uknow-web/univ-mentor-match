@@ -229,10 +229,40 @@ export const FeaturedMentorsSlide = () => {
                 </div>
 
                 {/* Mentor Info */}
-                <div className="p-6 sm:p-8">
-                  <h3 className="text-xl sm:text-2xl font-bold text-foreground mb-2">
-                    {mentor.name}
-                  </h3>
+                <div className="p-6 sm:p-8 flex flex-col flex-grow">
+                  {/* Name and Rating Row */}
+                  <div className="flex items-start justify-between gap-3 mb-4">
+                    <h3 className="text-xl sm:text-2xl font-bold text-foreground flex-1">
+                      {mentor.name}
+                    </h3>
+                    {/* Rating or New Badge */}
+                    {mentor.reviewCount === 0 ? (
+                      <div className="inline-flex items-center gap-1.5 px-2 py-1 rounded-lg bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 shadow-sm whitespace-nowrap flex-shrink-0">
+                        <span className="text-xs font-bold tracking-wider text-emerald-700 uppercase">New</span>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-1.5 flex-shrink-0">
+                        <div className="flex items-center">
+                          {[...Array(5)].map((_, i) => (
+                            <span
+                              key={i}
+                              className={`text-sm ${
+                                i < Math.floor(mentor.rating)
+                                  ? "text-yellow-400"
+                                  : "text-gray-300"
+                              }`}
+                            >
+                              ★
+                            </span>
+                          ))}
+                        </div>
+                        <span className="text-xs font-semibold text-foreground">
+                          {mentor.rating.toFixed(1)}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                  
                   <p className="text-sm text-muted-foreground mb-1">
                     {mentor.university}
                   </p>
@@ -251,46 +281,13 @@ export const FeaturedMentorsSlide = () => {
                   )}
 
                   {/* Bio Section with Dynamic Spacing */}
-                  <div className="mb-6 flex-grow">
+                  <div className="flex-grow mb-4">
                     {mentor.bio && mentor.bio !== "자기소개 미등록" ? (
                       <p className="text-sm sm:text-base text-muted-foreground line-clamp-3">
                         {mentor.bio}
                       </p>
-                    ) : (
-                      // 소개글이 없으면 여백으로 높이 채우기
-                      <div className="h-12"></div>
-                    )}
+                    ) : null}
                   </div>
-
-                  {/* Rating or New Mentor Badge */}
-                  {mentor.reviewCount === 0 ? (
-                    <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 shadow-sm mb-4">
-                      <span className="text-xs font-bold tracking-wider text-emerald-700 uppercase">New</span>
-                    </div>
-                  ) : (
-                    <div className="flex items-center gap-2 mb-4">
-                      <div className="flex items-center">
-                        {[...Array(5)].map((_, i) => (
-                          <span
-                            key={i}
-                            className={`text-lg ${
-                              i < Math.floor(mentor.rating)
-                                ? "text-yellow-400"
-                                : "text-gray-300"
-                            }`}
-                          >
-                            ★
-                          </span>
-                        ))}
-                      </div>
-                      <span className="text-sm font-semibold text-foreground">
-                        {mentor.rating.toFixed(1)}
-                      </span>
-                      <span className="text-xs text-muted-foreground">
-                        ({mentor.reviewCount}개 후기)
-                      </span>
-                    </div>
-                  )}
 
                   {/* CTA Button */}
                   <button
