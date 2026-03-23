@@ -224,7 +224,7 @@ export const FeaturedMentorsSlide = () => {
                 style={{ height: `${maxCardHeight}px` }}
               >
                 {/* Mentor Image Placeholder */}
-                <div className="w-full h-48 sm:h-56 bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white text-5xl font-bold">
+                <div className="w-full flex-shrink-0 bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white text-5xl font-bold" style={{ height: '192px' }}>
                   {mentor.name.charAt(0)}
                 </div>
 
