@@ -84,7 +84,7 @@ export const FeaturedMentorsSlide = () => {
     // 배지/별점: 40px
     // 버튼: 48px
     // 여백: 24px
-    const FIXED_CARD_HEIGHT = 472;
+    const FIXED_CARD_HEIGHT = 560;
     setMaxCardHeight(FIXED_CARD_HEIGHT);
   }, []);
 
