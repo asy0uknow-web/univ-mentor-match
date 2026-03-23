@@ -250,9 +250,17 @@ export const FeaturedMentorsSlide = () => {
                     </div>
                   )}
 
-                  <p className="text-sm sm:text-base text-muted-foreground mb-6 line-clamp-3" style={{ minHeight: '4rem' }}>
-                    {mentor.bio}
-                  </p>
+                  {/* Bio Section with Dynamic Spacing */}
+                  <div className="mb-6 flex-grow">
+                    {mentor.bio && mentor.bio !== "자기소개 미등록" ? (
+                      <p className="text-sm sm:text-base text-muted-foreground line-clamp-3">
+                        {mentor.bio}
+                      </p>
+                    ) : (
+                      // 소개글이 없으면 여백으로 높이 채우기
+                      <div className="h-12"></div>
+                    )}
+                  </div>
 
                   {/* Rating or New Mentor Badge */}
                   {mentor.reviewCount === 0 ? (
