@@ -225,18 +225,12 @@ export const FeaturedMentorsSlide = () => {
               >
                 {/* Mentor Image Placeholder */}
                 <div className="w-full flex-shrink-0 bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center" style={{ height: '192px' }}>
-                  {/* 유니브매치 아이콘 (배경색 없음) */}
-                  <svg
-                    width="80"
-                    height="80"
-                    viewBox="0 0 100 100"
-                    className="text-white"
-                    fill="currentColor"
-                  >
-                    {/* 유니브매치 로고 아이콘 */}
-                    <circle cx="50" cy="25" r="12" fill="currentColor" />
-                    <path d="M30 45 Q30 40 35 40 L65 40 Q70 40 70 45 L70 75 Q70 80 65 80 L35 80 Q30 80 30 75 Z" stroke="currentColor" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
+                  {/* 유니브매치 로고 이미지 */}
+                  <img
+                    src="/logonew.png"
+                    alt="유니브매치 로고"
+                    className="w-24 h-24 object-contain"
+                  />
                 </div>
 
                 {/* Mentor Info */}
