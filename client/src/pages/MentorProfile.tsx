@@ -68,6 +68,7 @@ export default function MentorProfile() {
   const [newCaption, setNewCaption] = useState("");
   const [emptyFields, setEmptyFields] = useState<Set<string>>(new Set());
   const [consultationTypes, setConsultationTypes] = useState<Array<"career_counseling" | "university_tour" | "resume_consulting" | "academic_management">>([]);
+  const [isEditingProfile, setIsEditingProfile] = useState(false);
 
   const utils = trpc.useUtils();
 
@@ -458,11 +459,21 @@ export default function MentorProfile() {
 
                 {/* 프로필 정보 카드 */}
                 <Card className="shadow-sm border-0 bg-white">
-                  <CardHeader className="pb-4">
-                    <CardTitle className="text-lg">프로필 정보</CardTitle>
-                    <CardDescription>
-                      멘토로 활동하기 위한 정보를 입력해주세요. <span className="text-red-500">*</span> 표시된 항목은 필수입니다.
-                    </CardDescription>
+                  <CardHeader className="pb-4 flex flex-row items-start justify-between">
+                    <div className="flex-1">
+                      <CardTitle className="text-lg">프로필 정보</CardTitle>
+                      <CardDescription>
+                        멘토로 활동하기 위한 정보를 입력해주세요. <span className="text-red-500">*</span> 표시된 항목은 필수입니다.
+                      </CardDescription>
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setIsEditingProfile(!isEditingProfile)}
+                      className="ml-2"
+                    >
+                      {isEditingProfile ? "완료" : "수정하기"}
+                    </Button>
                   </CardHeader>
                   <CardContent>
                     <form onSubmit={handleSubmit} className="space-y-5">
@@ -476,7 +487,8 @@ export default function MentorProfile() {
                             placeholder="예: 서울대학교"
                             value={university}
                             onChange={(e) => setUniversity(e.target.value)}
-                            className={emptyFields.has("university") ? "border-red-400 focus-visible:ring-red-400" : ""}
+                            disabled={!isEditingProfile}
+                            className={`${!isEditingProfile ? "bg-gray-50 cursor-not-allowed" : ""} ${emptyFields.has("university") ? "border-red-400 focus-visible:ring-red-400" : ""}`}
                           />
                           {emptyFields.has("university") && (
                             <p className="text-xs text-red-500">대학교를 입력해주세요.</p>
@@ -491,7 +503,8 @@ export default function MentorProfile() {
                             placeholder="예: 컴퓨터공학"
                             value={major}
                             onChange={(e) => setMajor(e.target.value)}
-                            className={emptyFields.has("major") ? "border-red-400 focus-visible:ring-red-400" : ""}
+                            disabled={!isEditingProfile}
+                            className={`${!isEditingProfile ? "bg-gray-50 cursor-not-allowed" : ""} ${emptyFields.has("major") ? "border-red-400 focus-visible:ring-red-400" : ""}`}
                           />
                           {emptyFields.has("major") && (
                             <p className="text-xs text-red-500">전공을 입력해주세요.</p>
