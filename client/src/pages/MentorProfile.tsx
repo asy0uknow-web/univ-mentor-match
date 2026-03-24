@@ -570,19 +570,6 @@ export default function MentorProfile() {
                         />
                       </div>
 
-                      <div className="pt-2 space-y-2">
-                        <Button
-                          type="submit"
-                          className="w-full bg-green-600 hover:bg-green-700"
-                          disabled={createProfileMutation.isPending || updateProfileMutation.isPending}
-                        >
-                          {createProfileMutation.isPending || updateProfileMutation.isPending ? (
-                            <><Loader2 className="h-4 w-4 animate-spin mr-2" />처리 중...</>
-                          ) : (
-                            profile ? "프로필 저장" : "멘토로 등록하기"
-                          )}
-                        </Button>
-                      </div>
                     </form>
                   </CardContent>
                 </Card>
@@ -733,7 +720,23 @@ export default function MentorProfile() {
                     </CardContent>
                   </Card>
                 )}
-              </>
+              {/* 저장 버튼 - 페이지 맨 밑 */}
+              {profile && (
+                <div className="mt-8 pt-6 border-t border-gray-200">
+                  <Button
+                    onClick={handleSubmit}
+                    className="w-full bg-green-600 hover:bg-green-700 py-3 text-base font-semibold"
+                    disabled={createProfileMutation.isPending || updateProfileMutation.isPending}
+                  >
+                    {createProfileMutation.isPending || updateProfileMutation.isPending ? (
+                      <><Loader2 className="h-4 w-4 animate-spin mr-2" />처리 중...</>
+                    ) : (
+                      "프로필 저장"
+                    )}
+                  </Button>
+                </div>
+              )}
+            </>
             )}
           </div>
         </div>
