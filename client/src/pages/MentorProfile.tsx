@@ -259,11 +259,15 @@ export default function MentorProfile() {
     setEmptyFields(new Set());
 
     // [오류3 수정] profile이 있으면 update, 없으면 create
+    // 학년 값 검증: 유효한 값만 전달
+    const validGrades = ["1", "2", "3", "4", "graduate"];
+    const validGrade = validGrades.includes(grade) ? grade : "1";
+    
     if (profile) {
       updateProfileMutation.mutate({
         university,
         major,
-        grade,
+        grade: validGrade,
         bio,
         hourlyRate: "0",
         region: regions[0] || null,
@@ -272,7 +276,7 @@ export default function MentorProfile() {
       createProfileMutation.mutate({
         university,
         major,
-        grade,
+        grade: validGrade,
         bio,
         hourlyRate: "0",
         region: regions[0] || null,
