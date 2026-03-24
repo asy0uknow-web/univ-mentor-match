@@ -278,6 +278,11 @@ export default function MentorProfile() {
         region: regions[0] || null,
       });
     }
+
+    // 프로필 저장 시 상담 유형도 함께 저장
+    if (consultationTypes.length > 0) {
+      updateConsultationTypesMutation.mutate({ consultationTypes });
+    }
   };
 
   const toggleConsultationType = (type: "career_counseling" | "university_tour" | "resume_consulting" | "academic_management") => {
@@ -285,7 +290,7 @@ export default function MentorProfile() {
       ? consultationTypes.filter((t) => t !== type)
       : [...consultationTypes, type];
     setConsultationTypes(updated);
-    updateConsultationTypesMutation.mutate({ consultationTypes: updated });
+    // 즉시 저장 대신 로컬 상태만 업데이트 (프로필 저장 시 함께 저장)
   };
 
   // 인증 상태별 UI 설정
@@ -583,7 +588,7 @@ export default function MentorProfile() {
                   <Card className="mt-5 shadow-sm border-0 bg-white">
                     <CardHeader className="pb-4">
                       <CardTitle className="text-lg">상담 유형</CardTitle>
-                      <CardDescription>제공할 수 있는 상담 유형을 선택하세요. 클릭 시 자동 저장됩니다.</CardDescription>
+                      <CardDescription>제공할 수 있는 상담 유형을 선택하세요.</CardDescription>
                     </CardHeader>
                     <CardContent>
                       <div className="grid grid-cols-2 gap-3">
