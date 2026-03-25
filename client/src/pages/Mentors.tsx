@@ -291,10 +291,12 @@ export default function Mentors() {
           </div>
 
           {/* 초기화 버튼 */}
-          {(selectedMajors.length > 0 || selectedRegions.length > 0) && (
+          {(selectedMajors.length > 0 || selectedRegions.length > 0 || debouncedSearch) && (
             <div className="flex justify-center mt-4">
               <Button
                 onClick={() => {
+                  setSearchTerm("");
+                  setDebouncedSearch("");
                   setSelectedMajors([]);
                   setSelectedRegions([]);
                 }}

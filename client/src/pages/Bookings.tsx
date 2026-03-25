@@ -158,7 +158,7 @@ export default function Bookings() {
     <PageLayout>
       {/* Content */}
       <div className="container mx-auto px-4 py-12">
-        <h1 className="text-4xl font-bold mb-8">받은 상담 신청</h1>
+        <h1 className="text-4xl font-bold mb-8">상담 예약 내역</h1>
 
         {mentorBookingsLoading ? (
           <p className="text-muted-foreground">로딩 중...</p>

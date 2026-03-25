@@ -256,29 +256,30 @@ function ProposalFormDialog({
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1">
               <Label>날짜</Label>
-              <Input 
-                type="text" 
-                placeholder="yyyy-MM-dd"
+              <input 
+                type="date" 
+                min={format(new Date(), "yyyy-MM-dd")}
                 value={scheduledDate} 
-                onChange={(e) => {
-                  const val = e.target.value;
-                  // 날짜 형식 검증: yyyy-MM-dd (입력 중에도 업데이트)
-                  setScheduledDate(val);
-                }}
+                onChange={(e) => setScheduledDate(e.target.value)}
+                className="w-full px-3 py-2 border border-input rounded-md bg-background text-sm"
               />
             </div>
             <div className="space-y-1">
               <Label>시간</Label>
-              <Input 
-                type="text" 
-                placeholder="HH:mm"
+              <select 
                 value={scheduledTime} 
-                onChange={(e) => {
-                  const val = e.target.value;
-                  // 시간 형식 검증: HH:mm (입력 중에도 업데이트)
-                  setScheduledTime(val);
-                }}
-              />
+                onChange={(e) => setScheduledTime(e.target.value)}
+                className="w-full px-3 py-2 border border-input rounded-md bg-background text-sm"
+              >
+                <option value="">시간 선택</option>
+                {Array.from({ length: 144 }, (_, i) => {
+                  const hour = Math.floor(i / 6);
+                  const minute = (i % 6) * 10;
+                  return `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
+                }).map((time) => (
+                  <option key={time} value={time}>{time}</option>
+                ))}
+              </select>
             </div>
           </div>
           <div className="space-y-1">
