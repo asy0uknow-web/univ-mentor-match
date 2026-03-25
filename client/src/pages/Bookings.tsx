@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { trpc } from "@/lib/trpc";
 import { Link, useLocation } from "wouter";
-import { GraduationCap, Calendar, Clock, MessageCircle, User, BookOpen, Trash2, ChevronDown } from "lucide-react";
+import { GraduationCap, Calendar, Clock, MessageCircle, User, BookOpen, Trash2, ChevronDown, RefreshCw } from "lucide-react";
 import BugReportModal from "@/components/BugReportModal";
 import { useState, useEffect } from "react";
 import { getLoginUrl } from "@/const";
@@ -229,6 +229,16 @@ export default function Bookings() {
                           disabled
                         >
                           메시지에서 응답
+                        </Button>
+                      )}
+                      {item.booking.status === "confirmed" && (
+                        <Button 
+                          variant="outline"
+                          onClick={() => handleStartConversation(item.student?.id || 0)}
+                          className="flex-1"
+                        >
+                          <RefreshCw className="h-4 w-4 mr-2" />
+                          수정요청
                         </Button>
                       )}
                     </div>

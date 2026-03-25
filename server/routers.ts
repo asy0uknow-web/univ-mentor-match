@@ -1344,21 +1344,37 @@ export const appRouter = router({
         }).where(eq(consultationProposals.id, input.proposalId));
 
         // booking 생성
+        // proposerId와 receiverId 중 누가 학생이고 누가 멘토인지 확인
+        const proposerUser = await db.select({ userType: users.userType }).from(users).where(eq(users.id, proposal[0].proposerId)).limit(1);
+        
+        let studentId: number;
+        let mentorId: number;
+        
+        if (proposerUser[0]?.userType === "university_student") {
+          // 멘토가 제안자인 경우
+          mentorId = proposal[0].proposerId;
+          studentId = proposal[0].receiverId;
+        } else {
+          // 학생이 제안자인 경우
+          studentId = proposal[0].proposerId;
+          mentorId = proposal[0].receiverId;
+        }
+        
         const pricePerHour = 40000; // 기본 상담료
         const duration = typeof proposal[0].duration === 'string' ? parseFloat(proposal[0].duration) : proposal[0].duration;
         const totalAmount = pricePerHour * duration;
         
         console.log('[Accept] Creating booking with:', {
-          studentId: proposal[0].receiverId,
-          mentorId: proposal[0].proposerId,
+          studentId,
+          mentorId,
           duration,
           totalAmount,
         });
         
         try {
           await db.insert(bookings).values({
-            studentId: proposal[0].receiverId,
-            mentorId: proposal[0].proposerId,
+            studentId,
+            mentorId,
             scheduledAt: proposal[0].scheduledAt,
             duration: duration.toString() as any,
             totalAmount: totalAmount.toString() as any,
