@@ -517,7 +517,7 @@ export default function MentorProfile() {
                           <Label htmlFor="grade" className="text-sm font-medium">학년</Label>
                           <Select value={grade} onValueChange={(value: any) => setGrade(value)}>
                             <SelectTrigger id="grade">
-                              <SelectValue />
+                              <SelectValue placeholder="학년을 선택해주세요" />
                             </SelectTrigger>
                             <SelectContent>
                               <SelectItem value="1">1학년</SelectItem>
