@@ -1537,3 +1537,12 @@
 - [x] Messages.tsx에서 자동 스크롤 기능 제거 (scrollToBottom 함수 및 useEffect 제거)
 - [x] handleSendMessage에서 scrollToBottom() 호출 제거
 - [x] 사용자가 수동으로 스크롤해야 하도록 변경
+
+## 버그 수정 - 프로필 완성 후 네비게이션 문제 (2026-03-26)
+- [x] CompleteProfile.tsx에서 프로필 저장 후 사용자 데이터 갱신 로직 수정
+  - 문제: refetch() 완료를 기다리지 않고 네비게이션 시도 → 사용자 상태 미업데이트 → complete-profile으로 돌아감
+  - 해결: handleSubmit의 setTimeout 콜백에서 await utils.auth.me.refetch() 추가
+  - 결과: 프로필 저장 → 사용자 데이터 갱신 → 홈페이지로 이동 (순차 실행)
+- [ ] 상담 희망 지역 드롭다운 선택 문제 (별도 UI 버그)
+  - 문제: browser_select_option으로 선택해도 값이 반영되지 않음
+  - 상태: 조사 중 (드롭다운 value 바인딩 문제 추정)

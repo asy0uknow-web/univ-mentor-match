@@ -92,7 +92,8 @@ export default function CompleteProfile() {
     onSuccess: async () => {
       // 프로필 저장 성공 후 사용자 데이터 즉시 재로드
       // invalidate만 쓰면 리동이 되지 않을 수 있으로 refetch 사용
-      await utils.auth.me.refetch();
+      // 주의: handleSubmit에서 명시적으로 refetch를 다시 호출하므로 여기서는 invalidate만 사용
+      await utils.auth.me.invalidate();
     },
   });
 
@@ -207,10 +208,12 @@ export default function CompleteProfile() {
       setPhoneNumber("");
       setErrors({});
 
-      // 사용자 데이터 갱신 (mutation의 onSuccess에서 이미 처리됨)
-      
+      // 사용자 데이터 갱신 완료를 기다린 후 네비게이션
       // 3초 후 홈페이지로 이동 (사용자가 100% 진행 바 볼 시간 확보)
-      setTimeout(() => {
+      setTimeout(async () => {
+        // refetch 완료를 기다림
+        await utils.auth.me.refetch();
+        // 그 후 홈페이지로 이동
         navigate("/", { replace: true });
       }, 3000);
 
