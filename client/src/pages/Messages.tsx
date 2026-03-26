@@ -487,13 +487,7 @@ export function Messages() {
     { enabled: messageIds.length > 0, refetchInterval: 5000 }
   );
 
-  const scrollToBottom = useCallback(() => {
-    setTimeout(() => messagesEndRef.current?.scrollIntoView({ behavior: "smooth" }), 100);
-  }, []);
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [conversation]);
+  // 자동 스크롤 기능 제거됨
 
   // 대화 열 때 읽음 처리
   useEffect(() => {
@@ -609,7 +603,6 @@ export function Messages() {
   const handleSendMessage = () => {
     if (!messageContent.trim() || !selectedConversation) return;
     sendMessageMutation.mutate({ recipientId: selectedConversation, content: messageContent });
-    scrollToBottom();
   };
 
   const handleEditSubmit = (messageId: number) => {

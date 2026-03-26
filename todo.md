@@ -1531,3 +1531,9 @@
 - [x] 당일 이전 날짜 선택 불가 설정 (HTML5 date picker min 속성)
 - [x] 시간을 10분 단위로 설정 (드롭다운 선택)
 - [x] 날짜/시간 선택기 구현 완료 (검색어 초기화 버튼 상태 검증 대기 중)
+
+
+## 기능 제거 완료 - Messages 페이지 자동 스크롤 (2026-03-25)
+- [x] Messages.tsx에서 자동 스크롤 기능 제거 (scrollToBottom 함수 및 useEffect 제거)
+- [x] handleSendMessage에서 scrollToBottom() 호출 제거
+- [x] 사용자가 수동으로 스크롤해야 하도록 변경
