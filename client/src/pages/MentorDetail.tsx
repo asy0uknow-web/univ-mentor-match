@@ -1,4 +1,3 @@
-'use client';
 import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,9 +11,6 @@ import { toast } from "sonner";
 import { PageLayout } from "@/components/layout";
 import { setPageMeta, PAGE_META } from "@/lib/seo";
 
-// When jumping to /messages from another page (e.g., mentor detail), we store
-// the target user id in sessionStorage so Messages.tsx can auto-open the right
-// conversation.
 const OPEN_CONVERSATION_KEY = "univmatch:openConversationUserId";
 const DRAFT_MESSAGE_KEY = "univmatch:draftMessage";
 
@@ -50,10 +46,10 @@ export default function MentorDetail() {
 
   if (!isValidMentorId) {
     return (
-      <div className="min-h-screen flex items-center justify-center flex-col gap-4">
-        <p className="text-muted-foreground">유효하지 않은 멘토 ID입니다.</p>
+      <div className="min-h-screen flex items-center justify-center flex-col gap-4 px-4">
+        <p className="text-muted-foreground text-sm sm:text-base">유효하지 않은 멘토 ID입니다.</p>
         <Link href="/mentors">
-          <Button variant="outline">멘토 목록으로 돌아가기</Button>
+          <Button variant="outline" className="text-xs sm:text-sm">멘토 목록으로 돌아가기</Button>
         </Link>
       </div>
     );
@@ -62,10 +58,10 @@ export default function MentorDetail() {
   if (isLoading) {
     return (
       <PageLayout>
-        <div className="container mx-auto px-4 py-24 flex items-center justify-center">
+        <div className="container mx-auto px-3 sm:px-4 py-12 sm:py-24 flex items-center justify-center">
           <div className="text-center space-y-4">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto" />
-            <p className="text-muted-foreground">멘토 정보를 불러오는 중...</p>
+            <p className="text-muted-foreground text-sm sm:text-base">멘토 정보를 불러오는 중...</p>
           </div>
         </div>
       </PageLayout>
@@ -75,13 +71,13 @@ export default function MentorDetail() {
   if (isError) {
     return (
       <PageLayout>
-        <div className="container mx-auto px-4 py-24 flex items-center justify-center flex-col gap-4">
-          <p className="text-destructive font-medium">멘토 정보를 불러오는 데 실패했습니다.</p>
-          <p className="text-muted-foreground text-sm">{error?.message || "네트워크 오류가 발생했습니다."}</p>
-          <div className="flex gap-3">
-            <Button variant="outline" onClick={() => window.location.reload()}>다시 시도</Button>
+        <div className="container mx-auto px-3 sm:px-4 py-12 sm:py-24 flex items-center justify-center flex-col gap-4">
+          <p className="text-destructive font-medium text-sm sm:text-base">멘토 정보를 불러오는 데 실패했습니다.</p>
+          <p className="text-muted-foreground text-xs sm:text-sm">{error?.message || "네트워크 오류가 발생했습니다."}</p>
+          <div className="flex gap-2 sm:gap-3 flex-wrap justify-center">
+            <Button variant="outline" onClick={() => window.location.reload()} className="text-xs sm:text-sm">다시 시도</Button>
             <Link href="/mentors">
-              <Button variant="outline">멘토 목록으로 돌아가기</Button>
+              <Button variant="outline" className="text-xs sm:text-sm">멘토 목록으로 돌아가기</Button>
             </Link>
           </div>
         </div>
@@ -92,250 +88,180 @@ export default function MentorDetail() {
   if (!mentor) {
     return (
       <PageLayout>
-        <div className="container mx-auto px-4 py-24 flex items-center justify-center flex-col gap-4">
-          <p className="text-muted-foreground">멘토를 찾을 수 없습니다.</p>
+        <div className="container mx-auto px-3 sm:px-4 py-12 sm:py-24 flex items-center justify-center flex-col gap-4">
+          <p className="text-muted-foreground text-sm sm:text-base">멘토를 찾을 수 없습니다.</p>
           <Link href="/mentors">
-            <Button variant="outline">멘토 목록으로 돌아가기</Button>
+            <Button variant="outline" className="text-xs sm:text-sm">멘토 목록으로 돌아가기</Button>
           </Link>
         </div>
       </PageLayout>
     );
   }
 
+  const handleMessageClick = () => {
+    if (!isAuthenticated) {
+      window.location.href = getLoginUrl();
+      return;
+    }
+    sessionStorage.setItem(OPEN_CONVERSATION_KEY, mentor.user.id.toString());
+    setLocation("/messages");
+  };
+
+  const handleBookingClick = () => {
+    if (!isAuthenticated) {
+      window.location.href = getLoginUrl();
+      return;
+    }
+    setLocation(`/bookings?mentorId=${mentorId}`);
+  };
+
   return (
     <PageLayout>
-      {/* Content */}
-      <div className="container mx-auto px-4 py-12">
+      <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-8">
         <Link href="/mentors">
-          <Button variant="ghost" className="mb-6">
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            멘토 목록으로
+          <Button variant="ghost" className="mb-3 sm:mb-4 px-2 sm:px-4 h-8 sm:h-10 text-xs sm:text-sm">
+            <ArrowLeft className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+            돌아가기
           </Button>
         </Link>
 
-        <div className="grid lg:grid-cols-3 gap-8">
-          {/* Mentor Profile */}
-          <div className="lg:col-span-2">
-            <Card>
-              <CardHeader>
-                <div className="flex items-start justify-between">
-                  <div className="flex items-start gap-4">
-                    {/* 멘토 프로필 아바타 */}
-                    <div className="w-24 h-24 rounded-full bg-muted flex items-center justify-center flex-shrink-0 overflow-hidden">
-                      <img
-                        src="https://d2xsxph8kpxj0f.cloudfront.net/310519663280786037/Gy6RaYwMhnXP5TJQbTpkxJ/mentor-default-avatar-XSMy7BuwnsbcDukFiGhL9q.webp"
-                        alt={mentor.user.name || "멘토 프로필"}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div>
-                      <CardTitle className="text-3xl">{mentor.user.name}</CardTitle>
-                      <CardDescription className="text-lg mt-2">
-                        {mentor.profile.university} · {mentor.profile.major} · {mentor.profile.grade}학년
-                      </CardDescription>
-                    </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+          <div className="lg:col-span-2 space-y-4 sm:space-y-6">
+            <Card className="overflow-hidden">
+              <CardContent className="p-3 sm:p-6">
+                <div className="flex flex-col sm:flex-row gap-3 sm:gap-6">
+                  <div className="flex-shrink-0">
+                    <img
+                      src="https://d2xsxph8kpxj0f.cloudfront.net/310519663280786037/Gy6RaYwMhnXP5TJQbTpkxJ/mentor-default-avatar-XSMy7BuwnsbcDukFiGhL9q.webp"
+                      alt={mentor.user.name || "멘토 프로필"}
+                      className="w-20 h-20 sm:w-32 sm:h-32 rounded-lg object-cover"
+                    />
                   </div>
-                  <div className="flex items-center gap-2">
-                    {mentor.profile.reviewCount === 0 ? (
-                      <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 shadow-sm">
-                        <span className="text-xs font-bold tracking-wider text-emerald-700 uppercase">New</span>
-                      </div>
-                    ) : (
-                      <div className="flex items-center gap-2 text-primary">
-                        <Star className="h-6 w-6 fill-current" />
-                        <span className="text-2xl font-bold">
-                          {parseFloat(mentor.profile.averageRating || "0").toFixed(1)}
-                        </span>
-                        <span className="text-muted-foreground">
-                          ({mentor.profile.reviewCount}개 리뷰)
-                        </span>
+
+                  <div className="flex-1 min-w-0">
+                    <h1 className="text-lg sm:text-2xl font-bold mb-1 sm:mb-2 truncate">{mentor.user.name}</h1>
+                    <div className="space-y-1 sm:space-y-2 text-xs sm:text-sm text-muted-foreground">
+                      <p className="flex items-center gap-1 sm:gap-2">
+                        <GraduationCap className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+                        <span className="truncate">{mentor.profile?.university}</span>
+                      </p>
+                      <p className="truncate">{mentor.profile?.major}</p>
+                      {mentor.profile?.grade && <p>{mentor.profile.grade}</p>}
+                    </div>
+
+                    {reviews && reviews.length > 0 && (
+                      <div className="flex items-center gap-1 sm:gap-2 mt-2 sm:mt-3">
+                        <div className="flex">
+                          {Array.from({ length: 5 }).map((_, i) => {
+                            const avgRating = Math.round(
+                              reviews.reduce((sum, r) => sum + (r.review.rating || 0), 0) / reviews.length
+                            );
+                            return (
+                              <Star
+                                key={i}
+                                className={`w-3 h-3 sm:w-4 sm:h-4 ${
+                                  i < avgRating
+                                    ? "fill-yellow-400 text-yellow-400"
+                                    : "text-gray-300"
+                                }`}
+                              />
+                            );
+                          })}
+                        </div>
+                        <span className="text-xs sm:text-sm">({reviews.length})</span>
                       </div>
                     )}
                   </div>
                 </div>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-6">
-                  <div>
-                    <h3 className="text-xl font-bold mb-2">소개</h3>
-                    <p className="text-muted-foreground whitespace-pre-wrap">
-                      {mentor.profile.bio || "소개글이 없습니다."}
-                    </p>
-                  </div>
-                </div>
               </CardContent>
             </Card>
 
-            {/* Gallery */}
-            <Card className="mt-6">
-              <CardHeader>
-                <CardTitle>대학생활 갤러리</CardTitle>
-                <CardDescription>멘토의 대학생활을 엿보세요</CardDescription>
-              </CardHeader>
-              <CardContent>
-                {gallery && gallery.length > 0 ? (
-                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {mentor.profile?.bio && (
+              <Card>
+                <CardHeader className="pb-2 sm:pb-3">
+                  <CardTitle className="text-base sm:text-lg">소개</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-xs sm:text-sm leading-relaxed text-muted-foreground whitespace-pre-wrap break-words">
+                    {mentor.profile.bio}
+                  </p>
+                </CardContent>
+              </Card>
+            )}
+
+
+
+            {gallery && gallery.length > 0 && (
+              <Card>
+                <CardHeader className="pb-2 sm:pb-3">
+                  <CardTitle className="text-base sm:text-lg">갤러리</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3">
                     {gallery.map((image) => (
-                      <div key={image.id} className="group relative overflow-hidden rounded-lg">
-                        <img
-                          src={image.imageUrl}
-                          alt={image.caption || "Gallery"}
-                          className="w-full h-40 object-cover group-hover:scale-105 transition-transform duration-300"
-                        />
-                        {image.caption && (
-                          <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3">
-                            <p className="text-white text-sm line-clamp-2">{image.caption}</p>
-                          </div>
-                        )}
-                      </div>
+                      <img
+                        key={image.id}
+                        src={image.imageUrl}
+                        alt="갤러리"
+                        className="w-full aspect-square object-cover rounded-lg"
+                      />
                     ))}
                   </div>
-                ) : (
-                  <p className="text-muted-foreground text-center py-8">아직 갤러리 사진이 없습니다</p>
-                )}
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            )}
 
-            {/* Reviews */}
-            <Card className="mt-6">
-              <CardHeader>
-                <CardTitle>리뷰</CardTitle>
-              </CardHeader>
-              <CardContent>
-                {reviews && reviews.length > 0 ? (
-                  <div className="space-y-4">
-                    {reviews.map((review) => (
-                      <div key={review.review.id} className="border-b border-border pb-4 last:border-0">
-                        <div className="flex items-center gap-2 mb-2">
-                          <div className="flex items-center text-primary">
-                            {Array.from({ length: review.review.rating }).map((_, i) => (
-                              <Star key={i} className="h-4 w-4 fill-current" />
-                            ))}
-                          </div>
-                    <span className="text-sm text-muted-foreground">
-                      {review.student.name || "익명"}
-                    </span>
+            {reviews && reviews.length > 0 && (
+              <Card>
+                <CardHeader className="pb-2 sm:pb-3">
+                  <CardTitle className="text-base sm:text-lg">후기</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3 sm:space-y-4">
+                  {reviews.map((review) => (
+                    <div key={review.review.id} className="pb-3 sm:pb-4 border-b last:border-b-0">
+                      <div className="flex items-start justify-between gap-2 mb-1 sm:mb-2">
+                        <p className="font-medium text-xs sm:text-sm">{review.student.name || "익명"}</p>
+                        <div className="flex">
+                          {Array.from({ length: review.review.rating }).map((_, i) => (
+                            <Star
+                              key={i}
+                              className="w-3 h-3 sm:w-4 sm:h-4 fill-yellow-400 text-yellow-400"
+                            />
+                          ))}
                         </div>
-                        <p className="text-muted-foreground">
-                          {review.review.comment || "리뷰 내용이 없습니다."}
-                        </p>
                       </div>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="text-muted-foreground">아직 리뷰가 없습니다.</p>
-                )}
-              </CardContent>
-            </Card>
+                      <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed break-words">
+                        {review.review.comment || "리뷰 내용이 없습니다."}
+                      </p>
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+            )}
           </div>
 
-          {/* Consultation Card */}
           <div className="lg:col-span-1">
-            <Card className="sticky top-24">
-              <CardHeader>
-                <CardTitle>{user?.id === mentor?.user?.id ? "상담 조율" : "상담 신청"}</CardTitle>
-                <CardDescription>상담 유형을 선택하세요</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                {isAuthenticated ? (
-                  user?.id === mentor?.user?.id ? (
-                    <div className="text-center py-6 text-muted-foreground text-sm">
-                      자신의 프로필에서는 상담을 신청할 수 없습니다.
-                    </div>
-                  ) : (
-                    <div className="space-y-2">
-                      <button
-                        onClick={() => {
-                          const recipientId = mentor?.user?.id;
-                          if (!recipientId) {
-                            toast.error("멘토 정보를 확인할 수 없습니다.");
-                            return;
-                          }
-                          try {
-                            sessionStorage.setItem("openConversationId", String(recipientId));
-                            sessionStorage.setItem("univmatch:consultationType", "career_counseling");
-                            sessionStorage.setItem(DRAFT_MESSAGE_KEY, "안녕하세요! 진로상담을 받고 싶습니다.");
-                          } catch {}
-                          setLocation("/messages");
-                        }}
-                        className="w-full px-4 py-2 rounded-lg border border-border hover:bg-accent transition-colors text-sm font-medium"
-                      >
-                        진로상담 (시간당 40,000원)
-                      </button>
-                      <button
-                        onClick={() => {
-                          const recipientId = mentor?.user?.id;
-                          if (!recipientId) {
-                            toast.error("멘토 정보를 확인할 수 없습니다.");
-                            return;
-                          }
-                          try {
-                            sessionStorage.setItem("openConversationId", String(recipientId));
-                            sessionStorage.setItem("univmatch:consultationType", "university_tour");
-                            sessionStorage.setItem(DRAFT_MESSAGE_KEY, "안녕하세요! 대학탐방을 받고 싶습니다.");
-                          } catch {}
-                          setLocation("/messages");
-                        }}
-                        className="w-full px-4 py-2 rounded-lg border border-border hover:bg-accent transition-colors text-sm font-medium"
-                      >
-                        대학탐방 (시간당 50,000원)
-                      </button>
-                      <button
-                        onClick={() => {
-                          const recipientId = mentor?.user?.id;
-                          if (!recipientId) {
-                            toast.error("멘토 정보를 확인할 수 없습니다.");
-                            return;
-                          }
-                          try {
-                            sessionStorage.setItem("openConversationId", String(recipientId));
-                            sessionStorage.setItem("univmatch:consultationType", "resume_consulting");
-                            sessionStorage.setItem(DRAFT_MESSAGE_KEY, "안녕하세요! 생기부컨설팅을 받고 싶습니다.");
-                          } catch {}
-                          setLocation("/messages");
-                        }}
-                        className="w-full px-4 py-2 rounded-lg border border-border hover:bg-accent transition-colors text-sm font-medium"
-                      >
-                        생기부컨설팅 (시간당 50,000원)
-                      </button>
-                      <button
-                        onClick={() => {
-                          const recipientId = mentor?.user?.id;
-                          if (!recipientId) {
-                            toast.error("멘토 정보를 확인할 수 없습니다.");
-                            return;
-                          }
-                          try {
-                            sessionStorage.setItem("openConversationId", String(recipientId));
-                            sessionStorage.setItem("univmatch:consultationType", "academic_management");
-                            sessionStorage.setItem(DRAFT_MESSAGE_KEY, "안녕하세요! 학업관리 상담을 받고 싶습니다.");
-                          } catch {}
-                          setLocation("/messages");
-                        }}
-                        className="w-full px-4 py-2 rounded-lg border border-border hover:bg-accent transition-colors text-sm font-medium"
-                      >
-                        학업관리 (시간당 40,000원)
-                      </button>
-                    </div>
-                  )
-                ) : (
-                  <button
-                    onClick={() => setLocation("/login")}
-                    className="w-full"
-                  >
-                    <Button className="w-full" size="lg">
-                      로그인하고 상담 신청하기
-                    </Button>
-                  </button>
-                )}
-                <p className="text-xs text-muted-foreground text-center">
-                  상담 유형을 선택하고 메시지에서 상담을 신청하세요.
-                </p>
-              </CardContent>
-            </Card>
+            <div className="sticky top-4 space-y-2 sm:space-y-3">
+              <Button
+                onClick={handleBookingClick}
+                className="w-full h-9 sm:h-10 text-xs sm:text-sm"
+              >
+                상담 예약하기
+              </Button>
+              <Button
+                onClick={handleMessageClick}
+                variant="outline"
+                className="w-full h-9 sm:h-10 text-xs sm:text-sm"
+              >
+                <MessageCircle className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                메시지 보내기
+              </Button>
+            </div>
           </div>
         </div>
       </div>
+
+      <BugReportModal isOpen={false} onClose={() => {}} />
     </PageLayout>
   );
 }
