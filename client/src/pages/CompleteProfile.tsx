@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
@@ -24,9 +24,8 @@ export default function CompleteProfile() {
   const [userEmail, setUserEmail] = useState("");
   const [privacyAgreed, setPrivacyAgreed] = useState(false);
   const [termsAgreed, setTermsAgreed] = useState(false);
-  const [isProfileSaved, setIsProfileSaved] = useState(false); // 프로필 저장 완료 상태
+  const [isProfileSaved, setIsProfileSaved] = useState(false);
 
-  // 멘토 전용 필드
   const [university, setUniversity] = useState("");
   const [major, setMajor] = useState("");
   const [grade, setGrade] = useState<"1" | "2" | "3" | "4" | "graduate" | "">("");
@@ -69,11 +68,9 @@ export default function CompleteProfile() {
     );
   };
 
-  // 멘티 전용 필드
   const [school, setSchool] = useState("");
   const [menteeRegion, setMenteeRegion] = useState("");
 
-  // 현재 사용자 정보 조회
   const { data: user } = trpc.auth.me.useQuery(undefined, {
     refetchOnWindowFocus: false,
   });
@@ -81,23 +78,16 @@ export default function CompleteProfile() {
   useEffect(() => {
     if (user) {
       setUserEmail(user.email || "");
-      // userType이 있어도 사용자가 역할을 직접 선택하도록 함
-      // 자동 설정은 하지 않음
     }
   }, [user]);
 
-  // 프로필 완성 API
   const utils = trpc.useUtils();
   const completeProfileMutation = trpc.verification.completeProfile.useMutation({
     onSuccess: async () => {
-      // 프로필 저장 성공 후 사용자 데이터 즉시 재로드
-      // invalidate만 쓰면 리동이 되지 않을 수 있으로 refetch 사용
-      // 주의: handleSubmit에서 명시적으로 refetch를 다시 호출하므로 여기서는 invalidate만 사용
       await utils.auth.me.invalidate();
     },
   });
 
-  // 휴대폰 번호 포맷팅
   const formatPhoneNumber = (value: string) => {
     const cleaned = value.replace(/\D/g, "");
     if (cleaned.length <= 3) return cleaned;
@@ -106,124 +96,9 @@ export default function CompleteProfile() {
   };
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const formatted = formatPhoneNumber(e.target.value);
-    setPhoneNumber(formatted);
+    setPhoneNumber(formatPhoneNumber(e.target.value));
     if (errors.phoneNumber) {
-      setErrors({ ...errors, phoneNumber: "" });
-    }
-  };
-
-  // 한글, 영어만 허용하는 필터
-  const filterSpecialCharacters = (value: string) => {
-    return value.replace(/[^\uac00-\ud7a3a-zA-Z\s]/g, "");
-  };
-
-  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setName(e.target.value);
-    if (errors.name) setErrors({ ...errors, name: "" });
-  };
-
-  const handleNameCompositionEnd = (e: React.CompositionEvent<HTMLInputElement>) => {
-    const filtered = filterSpecialCharacters(e.currentTarget.value);
-    setName(filtered);
-  };
-
-  const handleUniversityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setUniversity(e.target.value);
-    if (errors.university) setErrors({ ...errors, university: "" });
-  };
-
-  const handleUniversityCompositionEnd = (e: React.CompositionEvent<HTMLInputElement>) => {
-    const filtered = filterSpecialCharacters(e.currentTarget.value);
-    setUniversity(filtered);
-  };
-
-  const handleMajorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setMajor(e.target.value);
-    if (errors.major) setErrors({ ...errors, major: "" });
-  };
-
-  const handleMajorCompositionEnd = (e: React.CompositionEvent<HTMLInputElement>) => {
-    const filtered = filterSpecialCharacters(e.currentTarget.value);
-    setMajor(filtered);
-  }
-
-  const validateForm = () => {
-    const newErrors: Record<string, string> = {};
-
-    if (!name.trim()) {
-      newErrors.name = "이름을 입력해주세요";
-    }
-
-    if (!phoneNumber.trim()) {
-      newErrors.phoneNumber = "휴대폰 번호를 입력해주세요";
-    } else if (!/^01[0-9]-?\d{3,4}-?\d{4}$/.test(phoneNumber)) {
-      newErrors.phoneNumber = "유효한 휴대폰 번호를 입력해주세요";
-    }
-
-    if (userRole === "mentor") {
-      if (!university.trim()) newErrors.university = "대학교를 입력해주세요";
-      if (!major.trim()) newErrors.major = "학과를 입력해주세요";
-      if (!grade) newErrors.grade = "학년을 선택해주세요";
-      if (consultationTypes.length === 0) newErrors.consultationTypes = "상담 유형을 하나 이상 선택해주세요";
-      if (mentorRegions.length === 0) newErrors.mentorRegions = "상담 가능 지역을 하나 이상 선택해주세요";
-    } else if (userRole === "mentee") {
-      if (!school.trim()) newErrors.school = "학교를 입력해주세요";
-      if (!menteeRegion) newErrors.menteeRegion = "상담 희망 지역을 선택해주세요";
-    }
-
-    if (!privacyAgreed) newErrors.privacyAgreed = "개인정보처리방침에 동의해주세요";
-    if (!termsAgreed) newErrors.termsAgreed = "이용약관에 동의해주세요";
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!validateForm()) {
-      return;
-    }
-
-    setIsLoading(true);
-    try {
-      const result = await completeProfileMutation.mutateAsync({
-        name: name.trim(),
-        phoneNumber,
-        email: userEmail,
-        userRole: userRole!,
-        university: userRole === "mentor" ? university.trim() : undefined,
-        major: userRole === "mentor" ? major.trim() : undefined,
-        grade: userRole === "mentor" && grade ? (grade as "1" | "2" | "3" | "4" | "graduate") : undefined,
-        consultationTypes: userRole === "mentor" ? (consultationTypes as ("career_counseling" | "university_tour" | "resume_consulting" | "academic_management")[]) : undefined,
-        mentorRegion: userRole === "mentor" ? mentorRegions.join(",") : undefined,
-        school: userRole === "mentee" ? school.trim() : undefined,
-        menteeRegion: userRole === "mentee" ? menteeRegion : undefined,
-      });
-
-      setSuccessMessage("프로필이 저장되었습니다.");
-      setIsProfileSaved(true); // 진행 바 100%로 업데이트
-      setName("");
-      setPhoneNumber("");
-      setErrors({});
-
-      // 사용자 데이터 갱신 완료를 기다린 후 네비게이션
-      // 3초 후 홈페이지로 이동 (사용자가 100% 진행 바 볼 시간 확보)
-      setTimeout(async () => {
-        // refetch 완료를 기다림
-        await utils.auth.me.refetch();
-        // 그 후 홈페이지로 이동
-        navigate("/", { replace: true });
-      }, 3000);
-
-
-    } catch (error: any) {
-      setErrors({
-        submit: error.message || "프로필 저장에 실패했습니다",
-      });
-    } finally {
-      setIsLoading(false);
+      setErrors((prev) => ({ ...prev, phoneNumber: "" }));
     }
   };
 
@@ -252,19 +127,99 @@ export default function CompleteProfile() {
     }
   }, [showRegionDropdown]);
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setErrors({});
 
+    if (!name.trim()) {
+      setErrors((prev) => ({ ...prev, name: "이름을 입력해주세요" }));
+      return;
+    }
+    if (!phoneNumber || phoneNumber.replace(/\D/g, "").length < 10) {
+      setErrors((prev) => ({ ...prev, phoneNumber: "유효한 전화번호를 입력해주세요" }));
+      return;
+    }
+
+    if (userRole === "mentor") {
+      if (!university.trim()) {
+        setErrors((prev) => ({ ...prev, university: "대학명을 입력해주세요" }));
+        return;
+      }
+      if (!major.trim()) {
+        setErrors((prev) => ({ ...prev, major: "전공을 입력해주세요" }));
+        return;
+      }
+      if (!grade) {
+        setErrors((prev) => ({ ...prev, grade: "학년을 선택해주세요" }));
+        return;
+      }
+      if (mentorRegions.length === 0) {
+        setErrors((prev) => ({ ...prev, mentorRegions: "상담 가능 지역을 선택해주세요" }));
+        return;
+      }
+    } else if (userRole === "mentee") {
+      if (!school.trim()) {
+        setErrors((prev) => ({ ...prev, school: "학교명을 입력해주세요" }));
+        return;
+      }
+      if (!menteeRegion) {
+        setErrors((prev) => ({ ...prev, menteeRegion: "상담 희망 지역을 선택해주세요" }));
+        return;
+      }
+    }
+
+    setIsLoading(true);
+
+    try {
+      if (!userRole) {
+        setErrors((prev) => ({ ...prev, submit: "역할을 선택해주세요" }));
+        return;
+      }
+      await completeProfileMutation.mutateAsync({
+        userRole,
+        name: name.trim(),
+        phoneNumber,
+        email: userEmail,
+        university: userRole === "mentor" ? university.trim() : undefined,
+        major: userRole === "mentor" ? major.trim() : undefined,
+        grade: userRole === "mentor" ? (grade as "1" | "2" | "3" | "4" | "graduate") : undefined,
+        mentorRegion: userRole === "mentor" ? mentorRegions[0] : undefined,
+        consultationTypes: userRole === "mentor" ? (consultationTypes as ("career_counseling" | "university_tour" | "resume_consulting" | "academic_management")[]) : undefined,
+        school: userRole === "mentee" ? school.trim() : undefined,
+        menteeRegion: userRole === "mentee" ? menteeRegion : undefined,
+      });
+
+      setSuccessMessage("프로필이 저장되었습니다.");
+      setIsProfileSaved(true);
+      setName("");
+      setPhoneNumber("");
+      setErrors({});
+
+      setTimeout(async () => {
+        await utils.auth.me.refetch();
+        navigate("/", { replace: true });
+      }, 3000);
+    } catch (error: any) {
+      setErrors({
+        submit: error.message || "프로필 저장에 실패했습니다",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <PageLayout>
       <div className="min-h-screen bg-gradient-to-tr from-green-50 via-white to-blue-50">
-        <div className="container mx-auto px-4 py-8 max-w-2xl">
-          <Card>
-            <CardHeader>
-              {/* 진행률 표시기 */}
-              <div className="mb-6">
+        <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-8 max-w-2xl">
+          <Card className="shadow-sm sm:shadow-md">
+            <CardHeader className="px-3 sm:px-6 py-4 sm:py-6">
+              <div className="mb-4 sm:mb-6">
                 <div className="flex justify-between items-center mb-2">
-                  <span className="text-sm font-semibold text-gray-700">진행률</span>
-                  <span className="text-sm font-bold text-primary">{isProfileSaved ? '100%' : userRole ? '50%' : '0%'}</span>
+                  <span className="text-xs sm:text-sm font-semibold text-gray-700">진행률</span>
+                  <span className="text-xs sm:text-sm font-bold text-primary">
+                    {isProfileSaved ? '100%' : userRole ? '50%' : '0%'}
+                  </span>
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
                   <div
@@ -274,428 +229,233 @@ export default function CompleteProfile() {
                 </div>
               </div>
 
-              <CardTitle className="text-2xl">프로필 완성</CardTitle>
-              <CardDescription>
+              <CardTitle className="text-lg sm:text-2xl">프로필 완성</CardTitle>
+              <CardDescription className="text-xs sm:text-sm">
                 유니브매치에서 시작하는 솔직한 진로 상담을 위해 기본 정보를 입력해주세요.
               </CardDescription>
             </CardHeader>
-            <CardContent>
-            {successMessage && (
-              <Alert className="mb-6 border-green-200 bg-green-50">
-                <CheckCircle2 className="h-4 w-4 text-green-600" />
-                <AlertDescription className="text-green-800">
-                  {successMessage}
-                </AlertDescription>
-              </Alert>
-            )}
 
-            {errors.submit && (
-              <Alert className="mb-6 border-red-200 bg-red-50">
-                <AlertCircle className="h-4 w-4 text-red-600" />
-                <AlertDescription className="text-red-800">
-                  {errors.submit}
-                </AlertDescription>
-              </Alert>
-            )}
+            <CardContent className="px-3 sm:px-6 pb-4 sm:pb-6">
+              {successMessage && (
+                <Alert className="mb-4 sm:mb-6 border-green-200 bg-green-50">
+                  <CheckCircle2 className="h-4 w-4 text-green-600 flex-shrink-0" />
+                  <AlertDescription className="text-xs sm:text-sm text-green-800">
+                    {successMessage}
+                  </AlertDescription>
+                </Alert>
+              )}
 
-            <form onSubmit={handleSubmit} className="space-y-6">
-              {/* 역할 선택 */}
-              {!userRole && user && (
-                <div className="space-y-6">
-                  <div>
-                    <Label className="text-lg font-bold text-gray-900">
-                      당신의 역할을 선택해주세요
-                    </Label>
-                    <p className="text-sm text-gray-600 mt-2">
-                      유니브매치에서 어떤 역할로 활동하고 싶으신가요?
-                    </p>
-                  </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    {/* 멘토 카드 */}
+              {errors.submit && (
+                <Alert className="mb-4 sm:mb-6 border-red-200 bg-red-50">
+                  <AlertCircle className="h-4 w-4 text-red-600 flex-shrink-0" />
+                  <AlertDescription className="text-xs sm:text-sm text-red-800">
+                    {errors.submit}
+                  </AlertDescription>
+                </Alert>
+              )}
+
+              {!userRole ? (
+                <div className="space-y-3 sm:space-y-4">
+                  <p className="text-xs sm:text-sm font-semibold text-gray-700">당신의 역할을 선택해주세요</p>
+                  <div className="grid grid-cols-2 gap-2 sm:gap-3">
                     <button
-                      type="button"
                       onClick={() => setUserRole("mentor")}
-                      className="group aspect-[3/4] flex flex-col p-6 bg-white border-2 border-gray-200 rounded-2xl hover:border-green-400 hover:shadow-lg transition-all duration-300 overflow-hidden"
+                      className="p-3 sm:p-4 border-2 border-gray-200 rounded-lg hover:border-primary hover:bg-primary/5 transition text-xs sm:text-sm font-medium"
                     >
-                      {/* 상단: 아이콘 영역 */}
-                      <div className="flex-shrink-0 mb-4">
-                        <div className="w-16 h-16 mx-auto bg-gradient-to-br from-green-100 to-green-50 rounded-2xl flex items-center justify-center text-3xl group-hover:scale-110 transition-transform">
-                          👨‍🏫
-                        </div>
-                      </div>
-
-                      {/* 중단: 타이틀과 설명 */}
-                      <div className="flex-1 flex flex-col justify-center mb-4">
-                        <h3 className="text-xl font-bold text-gray-900 mb-2">멘토</h3>
-                        <p className="text-sm text-gray-600 leading-relaxed">
-                          대학생으로서 후배들의 진로를 함께 고민하고 경험을 나누며 성장하세요.
-                        </p>
-                      </div>
-
-                      {/* 하단: 배지 */}
-                      <div className="flex-shrink-0 flex flex-wrap gap-2">
-                        <span className="inline-block px-3 py-1 bg-green-100 text-green-700 text-xs font-semibold rounded-full">
-                          경험 공유
-                        </span>
-                        <span className="inline-block px-3 py-1 bg-green-100 text-green-700 text-xs font-semibold rounded-full">
-                          수익 창출
-                        </span>
-                        <span className="inline-block px-3 py-1 bg-green-100 text-green-700 text-xs font-semibold rounded-full">
-                          영향력
-                        </span>
-                      </div>
+                      🎓 멘토
                     </button>
-
-                    {/* 멘티 카드 */}
                     <button
-                      type="button"
                       onClick={() => setUserRole("mentee")}
-                      className="group aspect-[3/4] flex flex-col p-6 bg-white border-2 border-gray-200 rounded-2xl hover:border-blue-400 hover:shadow-lg transition-all duration-300 overflow-hidden"
+                      className="p-3 sm:p-4 border-2 border-gray-200 rounded-lg hover:border-primary hover:bg-primary/5 transition text-xs sm:text-sm font-medium"
                     >
-                      {/* 상단: 아이콘 영역 */}
-                      <div className="flex-shrink-0 mb-4">
-                        <div className="w-16 h-16 mx-auto bg-gradient-to-br from-blue-100 to-blue-50 rounded-2xl flex items-center justify-center text-3xl group-hover:scale-110 transition-transform">
-                          👨‍🎓
-                        </div>
-                      </div>
-
-                      {/* 중단: 타이틀과 설명 */}
-                      <div className="flex-1 flex flex-col justify-center mb-4">
-                        <h3 className="text-xl font-bold text-gray-900 mb-2">멘티</h3>
-                        <p className="text-sm text-gray-600 leading-relaxed">
-                          대학생 멘토로부터 진로 상담을 받고 미래의 방향을 함께 찾아보세요.
-                        </p>
-                      </div>
-
-                      {/* 하단: 배지 */}
-                      <div className="flex-shrink-0 flex flex-wrap gap-2">
-                        <span className="inline-block px-3 py-1 bg-blue-100 text-blue-700 text-xs font-semibold rounded-full">
-                          진로 상담
-                        </span>
-                        <span className="inline-block px-3 py-1 bg-blue-100 text-blue-700 text-xs font-semibold rounded-full">
-                          경험 학습
-                        </span>
-                        <span className="inline-block px-3 py-1 bg-blue-100 text-blue-700 text-xs font-semibold rounded-full">
-                          성장
-                        </span>
-                      </div>
+                      📚 멘티
                     </button>
                   </div>
                 </div>
-              )}
-
-              {userRole && (
-                <>
-                  {/* 공통 필드 */}
-                  <div className="space-y-2">
-                    <Label htmlFor="name">이름 *</Label>
+              ) : (
+                <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
+                  <div>
+                    <Label htmlFor="name" className="text-xs sm:text-sm">이름 *</Label>
                     <Input
                       id="name"
-                      type="text"
-                      placeholder="실명을 입력해주세요"
                       value={name}
-                      onChange={handleNameChange}
-                      onCompositionEnd={handleNameCompositionEnd}
-                      className={errors.name ? "border-red-500" : ""}
+                      onChange={(e) => {
+                        setName(e.target.value);
+                        if (errors.name) setErrors((prev) => ({ ...prev, name: "" }));
+                      }}
+                      placeholder="이름을 입력해주세요"
+                      className="mt-1 text-xs sm:text-sm h-8 sm:h-10"
                     />
-                    {errors.name && (
-                      <p className="text-sm text-red-500">{errors.name}</p>
-                    )}
+                    {errors.name && <p className="text-xs text-red-600 mt-1">{errors.name}</p>}
                   </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="phone">휴대폰 번호 *</Label>
+                  <div>
+                    <Label htmlFor="phone" className="text-xs sm:text-sm">전화번호 *</Label>
                     <Input
                       id="phone"
-                      type="tel"
-                      placeholder="010-1234-5678"
                       value={phoneNumber}
                       onChange={handlePhoneChange}
-                      className={errors.phoneNumber ? "border-red-500" : ""}
+                      placeholder="010-0000-0000"
+                      className="mt-1 text-xs sm:text-sm h-8 sm:h-10"
                     />
-                    {errors.phoneNumber && (
-                      <p className="text-sm text-red-500">{errors.phoneNumber}</p>
-                    )}
+                    {errors.phoneNumber && <p className="text-xs text-red-600 mt-1">{errors.phoneNumber}</p>}
                   </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="email">이메일</Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      value={userEmail}
-                      disabled
-                      className="bg-muted"
-                    />
-                  </div>
-
-
-
-                  {/* 멘니 전용 필드 */}
-                  {userRole === "mentor" && (
+                  {userRole === "mentor" ? (
                     <>
-                      <div className="space-y-2">
-                        <Label htmlFor="university">대학교 *</Label>
+                      <div>
+                        <Label htmlFor="university" className="text-xs sm:text-sm">대학명 *</Label>
                         <Input
                           id="university"
-                          type="text"
-                          placeholder="예: 서울대학교"
                           value={university}
-                          onChange={handleUniversityChange}
-                          onCompositionEnd={handleUniversityCompositionEnd}
-                          className={errors.university ? "border-red-500" : ""}
+                          onChange={(e) => {
+                            setUniversity(e.target.value);
+                            if (errors.university) setErrors((prev) => ({ ...prev, university: "" }));
+                          }}
+                          placeholder="예: 서울대학교"
+                          className="mt-1 text-xs sm:text-sm h-8 sm:h-10"
                         />
-                        {errors.university && (
-                          <p className="text-sm text-red-500">
-                            {errors.university}
-                          </p>
-                        )}
+                        {errors.university && <p className="text-xs text-red-600 mt-1">{errors.university}</p>}
                       </div>
 
-                      <div className="space-y-2">
-                        <Label htmlFor="major">학과 *</Label>
+                      <div>
+                        <Label htmlFor="major" className="text-xs sm:text-sm">전공 *</Label>
                         <Input
                           id="major"
-                          type="text"
-                          placeholder="예: 컴퓨터공학과"
                           value={major}
-                          onChange={handleMajorChange}
-                          onCompositionEnd={handleMajorCompositionEnd}
-                          className={errors.major ? "border-red-500" : ""}
+                          onChange={(e) => {
+                            setMajor(e.target.value);
+                            if (errors.major) setErrors((prev) => ({ ...prev, major: "" }));
+                          }}
+                          placeholder="예: 컴퓨터공학"
+                          className="mt-1 text-xs sm:text-sm h-8 sm:h-10"
                         />
-                        {errors.major && (
-                          <p className="text-sm text-red-500">{errors.major}</p>
-                        )}
+                        {errors.major && <p className="text-xs text-red-600 mt-1">{errors.major}</p>}
                       </div>
 
-                      {/* 학년 선택 */}
-                      <div className="space-y-2">
-                        <Label htmlFor="grade">학년 *</Label>
+                      <div>
+                        <Label htmlFor="grade" className="text-xs sm:text-sm">학년 *</Label>
                         <select
                           id="grade"
                           value={grade}
-                          onChange={(e) => setGrade(e.target.value as any)}
-                          className="w-full px-3 py-2 border border-border rounded-md bg-background"
+                          onChange={(e) => {
+                            setGrade(e.target.value as any);
+                            if (errors.grade) setErrors((prev) => ({ ...prev, grade: "" }));
+                          }}
+                          className="mt-1 w-full px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm border border-gray-300 rounded-md"
                         >
                           <option value="">학년을 선택해주세요</option>
                           {grades.map((g) => (
-                            <option key={g.value} value={g.value}>
-                              {g.label}
-                            </option>
+                            <option key={g.value} value={g.value}>{g.label}</option>
                           ))}
                         </select>
-                        {errors.grade && (
-                          <p className="text-sm text-red-500">{errors.grade}</p>
-                        )}
+                        {errors.grade && <p className="text-xs text-red-600 mt-1">{errors.grade}</p>}
                       </div>
 
-                      {/* 상담 유형 선택 */}
-                      <div className="space-y-2">
-                        <Label>상담 유형 *</Label>
-                        <div className="grid grid-cols-2 gap-2">
-                          {consultationTypeOptions.map((type) => (
-                            <label
-                              key={type.value}
-                              className="flex items-center gap-2 p-2 border border-border rounded-md hover:bg-muted cursor-pointer transition-colors"
-                            >
-                              <input
-                                type="checkbox"
-                                checked={consultationTypes.includes(type.value)}
-                                onChange={() => toggleConsultationType(type.value)}
-                                className="rounded"
-                              />
-                              <span className="text-sm">{type.label}</span>
-                            </label>
-                          ))}
-                        </div>
-                        {errors.consultationTypes && (
-                          <p className="text-sm text-red-500">
-                            {errors.consultationTypes}
-                          </p>
-                        )}
-                      </div>
-
-                      {/* 상담 가능 지역 */}
-                      <div className="space-y-2" ref={regionDropdownRef}>
-                        <Label>상담 가능 지역 *</Label>
-                        <Button
-                          type="button"
-                          onClick={() => setShowRegionDropdown(!showRegionDropdown)}
-                          variant="outline"
-                          className={`w-full justify-between ${
-                            errors.mentorRegions ? "border-red-500" : ""
-                          }`}
-                        >
-                          <span>
-                            {mentorRegions.length > 0
-                              ? `선택된 지역: ${mentorRegions.length}개`
-                              : "지역을 선택해주세요"}
-                          </span>
-                          {mentorRegions.length > 0 && (
-                            <span className="ml-2 bg-primary text-primary-foreground rounded-full px-2 py-0.5 text-xs font-semibold">
-                              {mentorRegions.length}
-                            </span>
-                          )}
-                        </Button>
-
-                        {/* 드롭다운 리스트 */}
-                        {showRegionDropdown && (
-                          <div className="absolute z-50 w-full max-w-sm bg-background border border-border rounded-md shadow-lg mt-1">
-                            <div className="p-2 space-y-1 max-h-64 overflow-y-auto">
+                      <div>
+                        <Label className="text-xs sm:text-sm">상담 가능 지역 *</Label>
+                        <div ref={regionDropdownRef} className="relative mt-1">
+                          <button
+                            type="button"
+                            onClick={() => setShowRegionDropdown(!showRegionDropdown)}
+                            className="w-full px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm border border-gray-300 rounded-md text-left bg-white"
+                          >
+                            {mentorRegions.length > 0 ? `${mentorRegions.length}개 지역 선택됨` : "지역을 선택해주세요"}
+                          </button>
+                          {showRegionDropdown && (
+                            <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-300 rounded-md shadow-lg z-10 max-h-48 overflow-y-auto">
                               {regions.map((region) => (
-                                <label
-                                  key={region.value}
-                                  className="flex items-center gap-2 p-2 rounded-md hover:bg-muted cursor-pointer transition-colors"
-                                >
+                                <label key={region.value} className="flex items-center px-2 sm:px-3 py-1.5 sm:py-2 hover:bg-gray-50 text-xs sm:text-sm cursor-pointer">
                                   <input
                                     type="checkbox"
                                     checked={mentorRegions.includes(region.value)}
                                     onChange={() => toggleRegion(region.value)}
-                                    className="rounded"
+                                    className="mr-2"
                                   />
-                                  <span className="text-sm">{region.label}</span>
+                                  {region.label}
                                 </label>
                               ))}
                             </div>
-                          </div>
-                        )}
+                          )}
+                        </div>
+                        {errors.mentorRegions && <p className="text-xs text-red-600 mt-1">{errors.mentorRegions}</p>}
+                      </div>
 
-                        {errors.mentorRegions && (
-                          <p className="text-sm text-red-500">
-                            {errors.mentorRegions}
-                          </p>
-                        )}
+                      <div>
+                        <Label className="text-xs sm:text-sm">상담 종류</Label>
+                        <div className="mt-2 space-y-1.5 sm:space-y-2">
+                          {consultationTypeOptions.map((type) => (
+                            <label key={type.value} className="flex items-center text-xs sm:text-sm cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={consultationTypes.includes(type.value)}
+                                onChange={() => toggleConsultationType(type.value)}
+                                className="mr-2"
+                              />
+                              {type.label}
+                            </label>
+                          ))}
+                        </div>
                       </div>
                     </>
-                  )}
-
-                  {/* 멘티 전용 필드 */}
-                  {userRole === "mentee" && (
+                  ) : (
                     <>
-                      <div className="space-y-2">
-                        <Label htmlFor="school">학교 *</Label>
+                      <div>
+                        <Label htmlFor="school" className="text-xs sm:text-sm">학교명 *</Label>
                         <Input
                           id="school"
-                          type="text"
-                          placeholder="예: 서울고등학교"
                           value={school}
                           onChange={(e) => {
                             setSchool(e.target.value);
-                            if (errors.school) setErrors({ ...errors, school: "" });
+                            if (errors.school) setErrors((prev) => ({ ...prev, school: "" }));
                           }}
-                          className={errors.school ? "border-red-500" : ""}
+                          placeholder="예: 서울고등학교"
+                          className="mt-1 text-xs sm:text-sm h-8 sm:h-10"
                         />
-                        {errors.school && (
-                          <p className="text-sm text-red-500">{errors.school}</p>
-                        )}
+                        {errors.school && <p className="text-xs text-red-600 mt-1">{errors.school}</p>}
                       </div>
 
-                      <div className="space-y-2">
-                        <Label htmlFor="menteeRegion">상담 희망 지역 *</Label>
+                      <div>
+                        <Label htmlFor="menteeRegion" className="text-xs sm:text-sm">상담 희망 지역 *</Label>
                         <select
                           id="menteeRegion"
                           value={menteeRegion}
                           onChange={(e) => {
                             setMenteeRegion(e.target.value);
-                            if (errors.menteeRegion)
-                              setErrors({ ...errors, menteeRegion: "" });
+                            if (errors.menteeRegion) setErrors((prev) => ({ ...prev, menteeRegion: "" }));
                           }}
-                          className={`w-full px-3 py-2 border rounded-md ${
-                            errors.menteeRegion ? "border-red-500" : ""
-                          }`}
+                          className="mt-1 w-full px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm border border-gray-300 rounded-md"
                         >
                           <option value="">지역을 선택해주세요</option>
-                          {regions.map((r) => (
-                            <option key={r.value} value={r.value}>
-                              {r.label}
-                            </option>
+                          {regions.map((region) => (
+                            <option key={region.value} value={region.value}>{region.label}</option>
                           ))}
                         </select>
-                        {errors.menteeRegion && (
-                          <p className="text-sm text-red-500">
-                            {errors.menteeRegion}
-                          </p>
-                        )}
+                        {errors.menteeRegion && <p className="text-xs text-red-600 mt-1">{errors.menteeRegion}</p>}
                       </div>
                     </>
                   )}
 
-                  {/* 개인정보 동의 */}
-                  <div className="space-y-3 pt-2 border-t border-gray-200">
-                    <p className="text-sm font-semibold text-gray-700">약관 동의 (필수)</p>
-
-                    <label className="flex items-start gap-3 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={privacyAgreed}
-                        onChange={(e) => {
-                          setPrivacyAgreed(e.target.checked);
-                          if (errors.privacyAgreed) setErrors({ ...errors, privacyAgreed: "" });
-                        }}
-                        className="mt-0.5 rounded"
-                      />
-                      <span className="text-sm text-gray-700">
-                        (필수){" "}
-                        <Link href="/privacy-policy" target="_blank" className="text-primary underline hover:text-primary/80">
-                          개인정보처리방침
-                        </Link>
-                        에 동의합니다.
-                      </span>
-                    </label>
-                    {errors.privacyAgreed && (
-                      <p className="text-sm text-red-500 ml-7">{errors.privacyAgreed}</p>
-                    )}
-
-                    <label className="flex items-start gap-3 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={termsAgreed}
-                        onChange={(e) => {
-                          setTermsAgreed(e.target.checked);
-                          if (errors.termsAgreed) setErrors({ ...errors, termsAgreed: "" });
-                        }}
-                        className="mt-0.5 rounded"
-                      />
-                      <span className="text-sm text-gray-700">
-                        (필수){" "}
-                        <Link href="/terms" target="_blank" className="text-primary underline hover:text-primary/80">
-                          이용약관
-                        </Link>
-                        에 동의합니다.
-                      </span>
-                    </label>
-                    {errors.termsAgreed && (
-                      <p className="text-sm text-red-500 ml-7">{errors.termsAgreed}</p>
-                    )}
-                  </div>
-
-                  <div className="flex gap-3 pt-4">
+                  <div className="flex gap-2 sm:gap-3 pt-2 sm:pt-4">
                     <Button
                       type="button"
                       variant="outline"
                       onClick={() => setUserRole(null)}
-                      disabled={isLoading}
+                      className="flex-1 text-xs sm:text-sm h-8 sm:h-10"
                     >
-                      이전
+                      뒤로
                     </Button>
                     <Button
                       type="submit"
                       disabled={isLoading}
-                      className="flex-1"
+                      className="flex-1 text-xs sm:text-sm h-8 sm:h-10"
                     >
-                      {isLoading ? (
-                        <>
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          저장 중...
-                        </>
-                      ) : (
-                        "프로필 저장"
-                      )}
+                      {isLoading && <Loader2 className="mr-2 h-3 w-3 sm:h-4 sm:w-4 animate-spin" />}
+                      프로필 저장
                     </Button>
                   </div>
-                </>
+                </form>
               )}
-            </form>
             </CardContent>
           </Card>
         </div>
