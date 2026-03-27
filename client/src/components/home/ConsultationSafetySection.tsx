@@ -63,15 +63,15 @@ export const ConsultationSafetySection = () => {
           </div>
 
           {/* Emergency Contact */}
-          <div className="mt-12 sm:mt-16 bg-red-50 rounded-2xl p-6 sm:p-8 border-2 border-red-200">
-            <h3 className="text-lg sm:text-xl font-bold text-red-900 mb-3 sm:mb-4">
-              🚨 긴급 상황 시
+          <div className="mt-12 sm:mt-16 bg-amber-50 rounded-2xl p-6 sm:p-8 border-2 border-amber-200">
+            <h3 className="text-lg sm:text-xl font-bold text-amber-900 mb-3 sm:mb-4">
+              ℹ️ 문제가 발생하신가요?
             </h3>
-            <p className="text-base sm:text-lg text-red-800 mb-4">
-              부적절한 상담이나 문제 상황이 발생하면 즉시 고객센터에 연락하세요.
+            <p className="text-base sm:text-lg text-amber-800 mb-4">
+              부적절한 상담이나 문제 상황이 발생하면 언제든 고객센터에 연락주세요. 우리는 24시간 대응 가능합니다.
             </p>
-            <p className="text-sm sm:text-base text-red-700">
-              <span className="font-bold">고객센터:</span> support@univmatch.com | <span className="font-bold">전화:</span> 1234-5678
+            <p className="text-sm sm:text-base text-amber-700">
+              <span className="font-bold">이메일:</span> support@univmatch.com | <span className="font-bold">전화:</span> 1234-5678
             </p>
           </div>
         </div>
