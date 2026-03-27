@@ -32,15 +32,15 @@ export default function Bookings() {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Card className="max-w-md">
+      <div className="min-h-screen flex items-center justify-center px-4">
+        <Card className="w-full max-w-md">
           <CardHeader>
-            <CardTitle>로그인이 필요합니다</CardTitle>
-            <CardDescription>예약 내역을 보려면 로그인해주세요.</CardDescription>
+            <CardTitle className="text-lg sm:text-xl">로그인이 필요합니다</CardTitle>
+            <CardDescription className="text-xs sm:text-sm">예약 내역을 보려면 로그인해주세요.</CardDescription>
           </CardHeader>
           <CardContent>
             <a href={getLoginUrl()}>
-              <Button className="w-full">로그인</Button>
+              <Button className="w-full text-xs sm:text-sm h-9 sm:h-10">로그인</Button>
             </a>
           </CardContent>
         </Card>
@@ -52,15 +52,15 @@ export default function Bookings() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "pending":
-        return <Badge variant="secondary">대기 중</Badge>;
+        return <Badge variant="secondary" className="text-xs">대기 중</Badge>;
       case "confirmed":
-        return <Badge className="bg-green-500">수락됨</Badge>;
+        return <Badge className="bg-green-500 text-xs">수락됨</Badge>;
       case "completed":
-        return <Badge className="bg-blue-500">완료됨</Badge>;
+        return <Badge className="bg-blue-500 text-xs">완료됨</Badge>;
       case "cancelled":
-        return <Badge variant="destructive">거절됨</Badge>;
+        return <Badge variant="destructive" className="text-xs">거절됨</Badge>;
       default:
-        return <Badge>{status}</Badge>;
+        return <Badge className="text-xs">{status}</Badge>;
     }
   };
 
@@ -88,50 +88,50 @@ export default function Bookings() {
     return (
       <PageLayout>
         {/* Content */}
-        <div className="container mx-auto px-4 py-12">
-          <h1 className="text-4xl font-bold mb-8">예약 내역</h1>
+        <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-12">
+          <h1 className="text-2xl sm:text-4xl font-bold mb-4 sm:mb-8">예약 내역</h1>
 
           {bookingsLoading ? (
-            <p className="text-muted-foreground">로딩 중...</p>
+            <p className="text-xs sm:text-sm text-muted-foreground">로딩 중...</p>
           ) : bookings && bookings.length > 0 ? (
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               {bookings.map((item) => (
-                <Card key={item.booking.id}>
-                  <CardHeader>
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <CardTitle className="text-xl">
+                <Card key={item.booking.id} className="overflow-hidden">
+                  <CardHeader className="pb-2 sm:pb-4 px-3 sm:px-6">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex-1 min-w-0">
+                        <CardTitle className="text-base sm:text-xl truncate">
                           {item.mentor.name || "멘토"}
                         </CardTitle>
-                        <CardDescription>
+                        <CardDescription className="text-xs sm:text-sm truncate">
                           {item.mentorProfile?.university} · {item.mentorProfile?.major}
                         </CardDescription>
                       </div>
                       {getStatusBadge(item.booking.status)}
                     </div>
                   </CardHeader>
-                  <CardContent>
-                    <div className="grid md:grid-cols-2 gap-4 mb-4">
-                      <div className="flex items-center gap-2 text-muted-foreground">
-                        <Calendar className="h-4 w-4" />
-                        <span>
-                          {format(new Date(item.booking.scheduledAt), "PPP", { locale: ko })}
+                  <CardContent className="px-3 sm:px-6 pb-3 sm:pb-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4 mb-3 sm:mb-4">
+                      <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground">
+                        <Calendar className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
+                        <span className="truncate">
+                          {format(new Date(item.booking.scheduledAt), "MMM dd", { locale: ko })}
                         </span>
                       </div>
-                      <div className="flex items-center gap-2 text-muted-foreground">
-                        <Clock className="h-4 w-4" />
+                      <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground">
+                        <Clock className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
                         <span>{item.booking.duration}시간</span>
                       </div>
-                      <div className="flex items-center gap-2 text-muted-foreground">
-                        <BookOpen className="h-4 w-4" />
-                        <span>{getConsultationTypeName(item.booking.consultationType)}</span>
+                      <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground col-span-1 sm:col-span-2">
+                        <BookOpen className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
+                        <span className="truncate">{getConsultationTypeName(item.booking.consultationType)}</span>
                       </div>
                     </div>
 
                     {item.booking.studentMessage && (
-                      <div className="mt-4 p-3 bg-muted rounded-lg">
-                        <p className="text-sm text-muted-foreground">전달 메시지</p>
-                        <p className="mt-1 text-sm whitespace-pre-wrap">{item.booking.studentMessage}</p>
+                      <div className="mt-3 p-2 sm:p-3 bg-muted rounded-lg">
+                        <p className="text-xs text-muted-foreground mb-1">전달 메시지</p>
+                        <p className="text-xs sm:text-sm whitespace-pre-wrap line-clamp-3">{item.booking.studentMessage}</p>
                       </div>
                     )}
                   </CardContent>
@@ -140,10 +140,10 @@ export default function Bookings() {
             </div>
           ) : (
             <Card>
-              <CardContent className="py-12 text-center">
-                <p className="text-muted-foreground mb-4">예약 내역이 존재하지 않습니다.</p>
+              <CardContent className="py-8 sm:py-12 text-center px-4">
+                <p className="text-xs sm:text-sm text-muted-foreground mb-4">예약 내역이 존재하지 않습니다.</p>
                 <Link href="/mentors">
-                  <Button>멘토 찾아보기</Button>
+                  <Button className="text-xs sm:text-sm h-8 sm:h-10">멘토 찾아보기</Button>
                 </Link>
               </CardContent>
             </Card>
@@ -157,75 +157,75 @@ export default function Bookings() {
   return (
     <PageLayout>
       {/* Content */}
-      <div className="container mx-auto px-4 py-12">
-        <h1 className="text-4xl font-bold mb-8">상담 예약 내역</h1>
+      <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-12">
+        <h1 className="text-2xl sm:text-4xl font-bold mb-4 sm:mb-8">상담 예약 내역</h1>
 
         {mentorBookingsLoading ? (
-          <p className="text-muted-foreground">로딩 중...</p>
+          <p className="text-xs sm:text-sm text-muted-foreground">로딩 중...</p>
         ) : mentorBookings && mentorBookings.length > 0 ? (
-          <div className="space-y-4">
+          <div className="space-y-3 sm:space-y-4">
             {mentorBookings.map((item: any) => (
-              <Card key={item.booking.id} className={item.booking.status === "pending" ? "border-amber-200 bg-amber-50/30" : ""}>
-                <CardHeader>
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <div className="flex items-center gap-2 mb-2">
-                        <User className="h-4 w-4 text-muted-foreground" />
-                        <CardTitle className="text-xl">
+              <Card key={item.booking.id} className={`overflow-hidden ${item.booking.status === "pending" ? "border-amber-200 bg-amber-50/30" : ""}`}>
+                <CardHeader className="pb-2 sm:pb-4 px-3 sm:px-6">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1 sm:mb-2">
+                        <User className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground flex-shrink-0" />
+                        <CardTitle className="text-base sm:text-xl truncate">
                           {item.student?.name || "학생"}
                         </CardTitle>
                       </div>
-                      <CardDescription>
+                      <CardDescription className="text-xs sm:text-sm truncate">
                         {item.student?.email}
                       </CardDescription>
                     </div>
                     {getStatusBadge(item.booking.status)}
                   </div>
                 </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
+                <CardContent className="px-3 sm:px-6 pb-3 sm:pb-4">
+                  <div className="space-y-3 sm:space-y-4">
                     {/* 상담 정보 */}
-                    <div className="grid md:grid-cols-2 gap-4">
-                      <div className="flex items-center gap-2 text-muted-foreground">
-                        <Calendar className="h-4 w-4" />
-                        <span>
-                          {format(new Date(item.booking.scheduledAt), "PPP", { locale: ko })}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4">
+                      <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground">
+                        <Calendar className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
+                        <span className="truncate">
+                          {format(new Date(item.booking.scheduledAt), "MMM dd", { locale: ko })}
                         </span>
                       </div>
-                      <div className="flex items-center gap-2 text-muted-foreground">
-                        <Clock className="h-4 w-4" />
+                      <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground">
+                        <Clock className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
                         <span>{item.booking.duration}시간</span>
                       </div>
-                      <div className="flex items-center gap-2 text-muted-foreground">
-                        <BookOpen className="h-4 w-4" />
-                        <span>{getConsultationTypeName(item.booking.consultationType)}</span>
+                      <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground">
+                        <BookOpen className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
+                        <span className="truncate">{getConsultationTypeName(item.booking.consultationType)}</span>
                       </div>
-                      <div className="flex items-center gap-2 text-muted-foreground font-semibold">
+                      <div className="flex items-center gap-2 text-xs sm:text-sm font-semibold">
                         <span className="text-primary">₩{parseInt(item.booking.totalAmount).toLocaleString()}</span>
                       </div>
                     </div>
 
                     {/* 학생 메시지 */}
                     {item.booking.studentMessage && (
-                      <div className="p-3 bg-muted rounded-lg border-l-4 border-primary">
-                        <p className="text-sm text-muted-foreground mb-2">학생 메시지</p>
-                        <p className="text-sm whitespace-pre-wrap">{item.booking.studentMessage}</p>
+                      <div className="p-2 sm:p-3 bg-muted rounded-lg border-l-4 border-primary">
+                        <p className="text-xs text-muted-foreground mb-1 sm:mb-2">학생 메시지</p>
+                        <p className="text-xs sm:text-sm whitespace-pre-wrap line-clamp-3">{item.booking.studentMessage}</p>
                       </div>
                     )}
 
                     {/* 액션 버튼 */}
-                    <div className="flex gap-2 pt-2">
+                    <div className="flex flex-col sm:flex-row gap-2 pt-2">
                       <Button 
                         onClick={() => handleStartConversation(item.student?.id || 0)}
-                        className="flex-1"
+                        className="flex-1 text-xs sm:text-sm h-8 sm:h-9"
                       >
-                        <MessageCircle className="h-4 w-4 mr-2" />
+                        <MessageCircle className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                         메시지 열기
                       </Button>
                       {item.booking.status === "pending" && (
                         <Button 
                           variant="outline"
-                          className="flex-1"
+                          className="flex-1 text-xs sm:text-sm h-8 sm:h-9"
                           disabled
                         >
                           메시지에서 응답
@@ -235,9 +235,9 @@ export default function Bookings() {
                         <Button 
                           variant="outline"
                           onClick={() => handleStartConversation(item.student?.id || 0)}
-                          className="flex-1"
+                          className="flex-1 text-xs sm:text-sm h-8 sm:h-9"
                         >
-                          <RefreshCw className="h-4 w-4 mr-2" />
+                          <RefreshCw className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                           수정요청
                         </Button>
                       )}
@@ -249,8 +249,8 @@ export default function Bookings() {
           </div>
         ) : (
           <Card>
-            <CardContent className="py-12 text-center">
-              <p className="text-muted-foreground mb-4">아직 예약 내역이 없습니다.</p>
+            <CardContent className="py-8 sm:py-12 text-center px-4">
+              <p className="text-xs sm:text-sm text-muted-foreground mb-4">아직 예약 내역이 없습니다.</p>
             </CardContent>
           </Card>
         )}

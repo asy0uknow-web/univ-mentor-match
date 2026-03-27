@@ -912,33 +912,33 @@ export function Messages() {
 
   return (
     <PageLayout>
-      <div className="container mx-auto px-4 py-8 flex flex-col" style={{ height: "calc(100vh - 160px)" }}>
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold">상담 신청</h1>
-          <p className="text-muted-foreground mt-1">메시지로 상담을 신청하고 상담을 확정하세요</p>
+      <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-8 flex flex-col h-[calc(100vh-160px)] md:h-[calc(100vh-180px)]">
+        <div className="mb-4 sm:mb-6">
+          <h1 className="text-2xl sm:text-3xl font-bold">상담 신청</h1>
+          <p className="text-xs sm:text-sm text-muted-foreground mt-1">메시지로 상담을 신청하고 상담을 확정하세요</p>
         </div>
 
-        <div className="flex-1 flex gap-4 overflow-hidden" style={{ minHeight: 0 }}>
+        <div className="flex-1 flex gap-2 sm:gap-4 overflow-hidden" style={{ minHeight: 0 }}>
           {/* 사이드바 */}
-          <div className={`${sidebarOpen ? "w-80" : "w-0"} transition-all duration-300 overflow-hidden flex flex-col shrink-0`}>
+          <div className={`${sidebarOpen ? "w-full sm:w-80" : "w-0"} transition-all duration-300 overflow-hidden flex flex-col shrink-0`}>
             <Card className="h-full flex flex-col">
-              <CardHeader className="pb-3">
-                <CardTitle className="flex items-center gap-2 text-base">
+              <CardHeader className="pb-2 sm:pb-3">
+                <CardTitle className="flex items-center gap-2 text-sm sm:text-base">
                   <MessageSquare className="h-4 w-4" /> 대화 목록
                 </CardTitle>
               </CardHeader>
-              <CardContent className="pb-3">
+              <CardContent className="pb-2 sm:pb-3 px-3 sm:px-4">
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input
                     placeholder="대화 검색..."
                     value={searchQuery}
                     onChange={e => setSearchQuery(e.target.value)}
-                    className="pl-9"
+                    className="pl-9 text-xs sm:text-sm h-8 sm:h-9"
                   />
                 </div>
               </CardContent>
-              <CardContent className="flex-1 overflow-y-auto p-3">
+              <CardContent className="flex-1 overflow-y-auto p-2 sm:p-3">
                 {filteredConversations.length > 0 ? (
                   <div className="space-y-1">
                     {filteredConversations.map(([userId, msgs]: [string, any]) => {
@@ -962,15 +962,13 @@ export function Messages() {
                             setSelectedConversation(parseInt(userId));
                             if (window.innerWidth < 1024) setSidebarOpen(false);
                           }}
-                          className={`w-full text-left p-3 rounded-xl transition-all ${isSelected ? "bg-primary/10 border-2 border-primary" : "hover:bg-muted/60 border-2 border-transparent"}`}
+                          className={`w-full text-left p-2 sm:p-3 rounded-lg sm:rounded-xl transition-all text-xs sm:text-sm ${isSelected ? "bg-primary/10 border-2 border-primary" : "hover:bg-muted/60 border-2 border-transparent"}`}
                         >
-                          <div className="flex items-center gap-3">
-                            <div className="relative">
-                              <Avatar name={name} size="md" />
-                            </div>
+                          <div className="flex items-center gap-2 sm:gap-3">
+                            <Avatar name={name} size="sm" />
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center justify-between gap-1">
-                                <p className={`font-semibold text-sm truncate ${unreadCount > 0 ? "text-foreground" : "text-foreground/80"}`}>{name}</p>
+                                <p className={`font-semibold truncate ${unreadCount > 0 ? "text-foreground" : "text-foreground/80"}`}>{name}</p>
                                 <span className="text-[10px] text-muted-foreground shrink-0">{getRelativeTime(lastMsg.createdAt)}</span>
                               </div>
                               <div className="flex items-center justify-between gap-1 mt-0.5">
@@ -996,38 +994,37 @@ export function Messages() {
 
           {/* 메인 채팅 영역 */}
           <div className="flex-1 flex flex-col overflow-hidden" style={{ minHeight: 0 }}>
-            <div className="mb-3 flex items-center gap-2">
-              <Button variant="outline" size="sm" onClick={() => setSidebarOpen(!sidebarOpen)} className="gap-2">
+            <div className="mb-2 sm:mb-3 flex items-center gap-2">
+              <Button variant="outline" size="sm" onClick={() => setSidebarOpen(!sidebarOpen)} className="sm:hidden h-8 w-8 p-0">
                 {sidebarOpen ? <XIcon className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
-                {sidebarOpen ? "목록 닫기" : "목록 열기"}
               </Button>
             </div>
 
             {selectedConversation ? (
               <Card className="flex flex-col overflow-hidden flex-1" style={{ minHeight: 0 }}>
                 {/* 채팅 헤더 */}
-                <CardHeader className="border-b shrink-0 py-3">
+                <CardHeader className="border-b shrink-0 py-2 sm:py-3">
                   <div className="flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-3">
-                      <Avatar name={getOtherUserName(selectedConversation || 0)} size="md" />
+                    <div className="flex items-center gap-2 sm:gap-3">
+                      <Avatar name={getOtherUserName(selectedConversation || 0)} size="sm" />
                       <div>
-                        <CardTitle className="text-base">{otherUserName}</CardTitle>
+                        <CardTitle className="text-sm sm:text-base">{otherUserName}</CardTitle>
                         {typingStatus?.isTyping && (
                           <p className="text-xs text-muted-foreground">입력 중...</p>
                         )}
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1 sm:gap-2">
                       <Button
                         variant="ghost"
                         size="sm"
                         onClick={() => setShowMessageSearch(!showMessageSearch)}
-                        className={showMessageSearch ? "bg-muted" : ""}
+                        className={`h-8 w-8 p-0 ${showMessageSearch ? "bg-muted" : ""}`}
                       >
                         <Search className="h-4 w-4" />
                       </Button>
-                      <Link href="/mentors">
-                        <Button variant="outline" size="sm">멘토 목록</Button>
+                      <Link href="/mentors" className="hidden sm:block">
+                        <Button variant="outline" size="sm" className="text-xs sm:text-sm h-8 sm:h-9">멘토 목록</Button>
                       </Link>
                     </div>
                   </div>
@@ -1047,7 +1044,7 @@ export function Messages() {
                 </CardHeader>
 
                 {/* 메시지 목록 */}
-                <div className="flex-1 overflow-y-auto p-4" style={{ minHeight: 0 }}>
+                <div className="flex-1 overflow-y-auto p-2 sm:p-4" style={{ minHeight: 0 }}>
                   {groupedMessages.length > 0 ? (
                     <div className="space-y-1">
                       {groupedMessages.map((group, gIdx) => (
@@ -1081,22 +1078,20 @@ export function Messages() {
                 </div>
 
                 {/* 입력 영역 */}
-                <CardContent className="border-t pt-3 pb-3 shrink-0 space-y-2">
-                  <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="gap-1.5 text-primary border-primary/30 hover:bg-primary/5"
-                      onClick={() => setShowProposalForm(true)}
-                    >
-                      <Calendar className="h-4 w-4" />
-                      상담 일정 제안
-                    </Button>
-                  </div>
-                  <div className="flex gap-2 items-end">
-                    <Textarea
+                <CardContent className="border-t pt-2 sm:pt-3 pb-2 sm:pb-3 shrink-0 space-y-2 px-2 sm:px-4">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full gap-1.5 text-primary border-primary/30 hover:bg-primary/5 text-xs sm:text-sm h-8 sm:h-9"
+                    onClick={() => setShowProposalForm(true)}
+                  >
+                    <Calendar className="h-3 w-3 sm:h-4 sm:w-4" />
+                    상담 일정 제안
+                  </Button>
+                  <div className="flex gap-1 sm:gap-2 items-end">
+                    <textarea
                       ref={textareaRef}
-                      placeholder="메시지를 입력하세요... (Ctrl+Enter로 전송)"
+                      placeholder="메시지 입력..."
                       value={messageContent}
                       onChange={e => {
                         setMessageContent(e.target.value);
@@ -1104,14 +1099,14 @@ export function Messages() {
                         handleTyping();
                       }}
                       onKeyDown={e => { if (e.key === "Enter" && e.ctrlKey) handleSendMessage(); }}
-                      className="resize-none flex-1"
-                      style={{ minHeight: "48px", maxHeight: "120px" }}
+                      className="resize-none flex-1 px-2 sm:px-3 py-2 rounded-lg border text-xs sm:text-sm bg-background"
+                      style={{ minHeight: "36px", maxHeight: "120px" }}
                     />
                     <Button
                       onClick={handleSendMessage}
-                      disabled={!messageContent.trim() || sendMessageMutation.isPending}
+                      disabled={messageContent.trim() === "" || sendMessageMutation.isPending}
                       size="sm"
-                      className="shrink-0 h-10"
+                      className="h-9 w-9 sm:h-10 sm:w-10 p-0 flex-shrink-0"
                     >
                       <Send className="h-4 w-4" />
                     </Button>
