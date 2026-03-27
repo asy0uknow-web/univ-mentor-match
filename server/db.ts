@@ -120,6 +120,25 @@ export async function getUserByOpenId(openId: string) {
   return result.length > 0 ? result[0] : undefined;
 }
 
+export async function getUserByEmail(email: string) {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot get user: database not available");
+    return undefined;
+  }
+
+  const result = await db.select().from(users).where(eq(users.email, email)).limit(1);
+
+  return result.length > 0 ? result[0] : undefined;
+}
+
+export async function updateUserOAuthInfo(userId: number, openId: string, loginMethod: string | null) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  await db.update(users).set({ openId, loginMethod }).where(eq(users.id, userId));
+}
+
 export async function updateUserType(userId: number, userType: "high_school_student" | "university_student") {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
