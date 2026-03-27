@@ -99,10 +99,10 @@ export const IntegratedFAQSection = () => {
 
         {/* Category Filter */}
         <div className="max-w-3xl mx-auto mb-12 sm:mb-16">
-          <div className="flex flex-wrap justify-center gap-3">
+          <div className="flex flex-wrap justify-center gap-2 sm:gap-3">
             <button
               onClick={() => setSelectedCategory(null)}
-              className={`px-4 py-2 rounded-full font-semibold transition-all ${
+              className={`px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm rounded-full font-semibold transition-all ${
                 selectedCategory === null
                   ? "bg-blue-600 text-white shadow-lg"
                   : "bg-white text-foreground border border-gray-300 hover:border-blue-600"
@@ -114,7 +114,7 @@ export const IntegratedFAQSection = () => {
               <button
                 key={category}
                 onClick={() => setSelectedCategory(category)}
-                className={`px-4 py-2 rounded-full font-semibold transition-all ${
+                className={`px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm rounded-full font-semibold transition-all ${
                   selectedCategory === category
                     ? "bg-blue-600 text-white shadow-lg"
                     : "bg-white text-foreground border border-gray-300 hover:border-blue-600"
@@ -137,13 +137,13 @@ export const IntegratedFAQSection = () => {
                 {/* Question */}
                 <button
                   onClick={() => setExpandedIndex(expandedIndex === idx ? null : idx)}
-                  className="w-full px-6 sm:px-8 py-4 sm:py-5 text-left flex items-center justify-between hover:bg-gray-50 transition-colors"
+                  className="w-full px-4 sm:px-6 md:px-8 py-3 sm:py-4 md:py-5 text-left flex items-center justify-between hover:bg-gray-50 transition-colors"
                   aria-expanded={expandedIndex === idx}
                   aria-controls={`faq-answer-${idx}`}
                 >
-                  <div className="flex items-center gap-3 flex-1">
-                    <span className="text-xl">{CATEGORY_LABELS[faq.category].split(" ")[0]}</span>
-                    <h3 className="text-base sm:text-lg font-semibold text-foreground">
+                  <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
+                    <span className="text-lg sm:text-xl flex-shrink-0">{CATEGORY_LABELS[faq.category].split(" ")[0]}</span>
+                    <h3 className="text-sm sm:text-base md:text-lg font-semibold text-foreground line-clamp-2">
                       {faq.question}
                     </h3>
                   </div>
@@ -170,9 +170,9 @@ export const IntegratedFAQSection = () => {
                 {expandedIndex === idx && (
                   <div
                     id={`faq-answer-${idx}`}
-                    className="px-6 sm:px-8 py-4 sm:py-5 bg-gray-50 border-t border-gray-200"
+                    className="px-4 sm:px-6 md:px-8 py-3 sm:py-4 md:py-5 bg-gray-50 border-t border-gray-200"
                   >
-                    <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
+                    <p className="text-xs sm:text-sm md:text-base text-muted-foreground leading-relaxed">
                       {faq.answer}
                     </p>
                   </div>

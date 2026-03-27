@@ -20,14 +20,12 @@ export default function Login() {
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
 
-    // 이메일 검증
     if (!email) {
       newErrors.email = "이메일을 입력해주세요";
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       newErrors.email = "올바른 이메일 형식이 아닙니다";
     }
 
-    // 비밀번호 검증
     if (!password) {
       newErrors.password = "비밀번호를 입력해주세요";
     }
@@ -52,7 +50,6 @@ export default function Login() {
         password,
       });
 
-      // 서버에서 받은 사용자 정보를 캐시에 직접 설정하여 즉시 업데이트
       if (response.user) {
         queryClient.setQueryData(["auth", "me"], response.user);
       }
@@ -68,15 +65,15 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-cream-50 to-cream-100 flex items-center justify-center p-4">
-      <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-8">
-        <h1 className="text-3xl font-bold text-navy-900 mb-2">로그인</h1>
-        <p className="text-gray-600 mb-6">UnivMatch에 로그인하세요</p>
+    <div className="min-h-screen bg-gradient-to-br from-cream-50 to-cream-100 flex items-center justify-center p-3 sm:p-4">
+      <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-4 sm:p-8">
+        <h1 className="text-2xl sm:text-3xl font-bold text-navy-900 mb-1 sm:mb-2">로그인</h1>
+        <p className="text-xs sm:text-sm text-gray-600 mb-4 sm:mb-6">UnivMatch에 로그인하세요</p>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
           {/* 이메일 */}
-          <div className="space-y-2">
-            <Label htmlFor="email" className="text-navy-900 font-semibold">
+          <div className="space-y-1.5 sm:space-y-2">
+            <Label htmlFor="email" className="text-xs sm:text-sm text-navy-900 font-semibold">
               이메일
             </Label>
             <Input
@@ -90,14 +87,14 @@ export default function Login() {
                   setErrors({ ...errors, email: "" });
                 }
               }}
-              className={`border-2 ${errors.email ? "border-red-500" : "border-gray-300"} focus:border-gold-500`}
+              className={`text-xs sm:text-sm border-2 ${errors.email ? "border-red-500" : "border-gray-300"} focus:border-gold-500 px-3 py-2`}
             />
-            {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
+            {errors.email && <p className="text-red-500 text-xs">{errors.email}</p>}
           </div>
 
           {/* 비밀번호 */}
-          <div className="space-y-2">
-            <Label htmlFor="password" className="text-navy-900 font-semibold">
+          <div className="space-y-1.5 sm:space-y-2">
+            <Label htmlFor="password" className="text-xs sm:text-sm text-navy-900 font-semibold">
               비밀번호
             </Label>
             <Input
@@ -111,23 +108,23 @@ export default function Login() {
                   setErrors({ ...errors, password: "" });
                 }
               }}
-              className={`border-2 ${errors.password ? "border-red-500" : "border-gray-300"} focus:border-gold-500`}
+              className={`text-xs sm:text-sm border-2 ${errors.password ? "border-red-500" : "border-gray-300"} focus:border-gold-500 px-3 py-2`}
             />
-            {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
+            {errors.password && <p className="text-red-500 text-xs">{errors.password}</p>}
           </div>
 
           {/* 제출 버튼 */}
           <Button
             type="submit"
             disabled={isLoading || loginMutation.isPending}
-            className="w-full bg-primary hover:bg-primary/90 text-white font-semibold py-3 rounded-lg transition-colors mt-2"
+            className="w-full bg-primary hover:bg-primary/90 text-white text-sm sm:text-base font-semibold py-2 sm:py-3 rounded-lg transition-colors mt-2"
           >
             {isLoading || loginMutation.isPending ? "로그인 중..." : "로그인"}
           </Button>
         </form>
 
         {/* 회원가입 링크 */}
-        <p className="text-center text-gray-600 mt-6">
+        <p className="text-center text-xs sm:text-sm text-gray-600 mt-4 sm:mt-6">
           계정이 없으신가요?{" "}
           <button
             onClick={() => navigate("/signup")}

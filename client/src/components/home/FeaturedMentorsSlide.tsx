@@ -75,16 +75,9 @@ export const FeaturedMentorsSlide = () => {
 
   // 카드 높이를 고정값으로 설정 (모든 슬라이드에서 일관된 높이)
   useEffect(() => {
-    // 고정 높이: 이미지(h-48 = 192px) + 정보 영역(약 280px) = 약 472px
-    // 이미지: 192px (h-48)
-    // 이름: 32px
-    // 대학/전공: 32px
-    // 필드 배지: 40px (선택사항)
-    // 소개글: 64px (min-height: 4rem)
-    // 배지/별점: 40px
-    // 버튼: 48px
-    // 여백: 24px
-    const FIXED_CARD_HEIGHT = 560;
+    // 모바일에서는 더 작은 높이 사용
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
+    const FIXED_CARD_HEIGHT = isMobile ? 480 : 560;
     setMaxCardHeight(FIXED_CARD_HEIGHT);
   }, []);
 
@@ -234,10 +227,10 @@ export const FeaturedMentorsSlide = () => {
                 </div>
 
                 {/* Mentor Info */}
-                <div className="p-6 sm:p-8 flex flex-col flex-grow">
+                <div className="p-4 sm:p-6 md:p-8 flex flex-col flex-grow">
                   {/* Name and Rating Row */}
-                  <div className="flex items-start justify-between gap-3 mb-4">
-                    <h3 className="text-xl sm:text-2xl font-bold text-foreground flex-1">
+                  <div className="flex items-start justify-between gap-2 sm:gap-3 mb-3 sm:mb-4">
+                    <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-foreground flex-1 line-clamp-1">
                       {mentor.name}
                     </h3>
                     {/* Rating or New Badge */}
@@ -268,27 +261,27 @@ export const FeaturedMentorsSlide = () => {
                     )}
                   </div>
                   
-                  <p className="text-sm text-muted-foreground mb-1">
+                  <p className="text-xs sm:text-sm text-muted-foreground mb-1 line-clamp-1">
                     {mentor.university}
                   </p>
-                  <p className="text-sm font-semibold text-blue-600 mb-4">
+                  <p className="text-xs sm:text-sm font-semibold text-blue-600 mb-3 sm:mb-4 line-clamp-1">
                     {mentor.major}
                   </p>
 
                   {/* Professional Field Badge */}
                   {mentor.field && (
-                    <div className="flex items-center gap-2 mb-4 px-3 py-2 bg-blue-50 rounded-lg w-fit">
-                      <span className="text-blue-600">{getFieldIcon(mentor.field)}</span>
-                      <span className="text-xs sm:text-sm font-medium text-blue-700">
+                    <div className="flex items-center gap-2 mb-3 sm:mb-4 px-2 sm:px-3 py-1.5 sm:py-2 bg-blue-50 rounded-lg w-fit">
+                      <span className="text-blue-600 w-4 h-4 flex-shrink-0">{getFieldIcon(mentor.field)}</span>
+                      <span className="text-xs font-medium text-blue-700">
                         {getFieldLabel(mentor.field)}
                       </span>
                     </div>
                   )}
 
                   {/* Bio Section with Dynamic Spacing */}
-                  <div className="flex-grow mb-4">
+                  <div className="flex-grow mb-3 sm:mb-4">
                     {mentor.bio && mentor.bio !== "자기소개 미등록" ? (
-                      <p className="text-sm sm:text-base text-muted-foreground line-clamp-3">
+                      <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2 sm:line-clamp-3">
                         {mentor.bio}
                       </p>
                     ) : null}
@@ -297,7 +290,7 @@ export const FeaturedMentorsSlide = () => {
                   {/* CTA Button */}
                   <button
                     onClick={() => setLocation(`/mentor/${mentor.id}`)}
-                    className="w-full py-3 px-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors mt-auto"
+                    className="w-full py-2 sm:py-3 px-3 sm:px-4 bg-blue-600 text-white text-sm sm:text-base font-semibold rounded-lg hover:bg-blue-700 transition-colors mt-auto"
                   >
                     프로필 보기
                   </button>
