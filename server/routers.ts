@@ -215,6 +215,28 @@ export const appRouter = router({
         
         return { success: true, message: "비밀번호 변경 기능은 OAuth 제공자를 통해 관리됩니다" };
       }),
+    getById: publicProcedure
+      .input(z.object({
+        userId: z.number(),
+      }))
+      .query(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+        
+        const result = await db.select().from(users).where(eq(users.id, input.userId)).limit(1);
+        if (result.length === 0) throw new Error("User not found");
+        
+        const user = result[0];
+        return {
+          user: {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            userType: user.userType,
+            phoneNumber: user.phoneNumber,
+          },
+        };
+      }),
   }),
 
   mentor: router({
