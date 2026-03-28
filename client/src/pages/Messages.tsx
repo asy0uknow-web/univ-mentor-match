@@ -996,10 +996,17 @@ export function Messages() {
         </div>
 
         {/* 우츧0 채팅 영역 */}
-        <div className="flex gap-2 sm:gap-4 overflow-hidden h-full" style={{ minHeight: 0 }}>
+        <div className="flex flex-col overflow-hidden h-full" style={{ minHeight: 0 }}>
+          {/* 모바일 토글 버튼 */}
+          <div className="mb-2 sm:mb-3 flex items-center gap-2 md:hidden">
+            <Button variant="outline" size="sm" onClick={() => setSidebarOpen(!sidebarOpen)} className="h-8 w-8 p-0">
+              {sidebarOpen ? <XIcon className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+            </Button>
+          </div>
+
           {/* 모바일 사이드바 */}
-          <div className={`${sidebarOpen ? "w-full sm:w-80" : "w-0"} transition-all duration-300 overflow-hidden flex flex-col shrink-0`}>
-            <Card className="h-full flex flex-col">
+          <div className={`${sidebarOpen ? "w-full" : "w-0"} md:hidden transition-all duration-300 overflow-hidden flex flex-col shrink-0 mb-2 sm:mb-3`}>
+            <Card className="h-80 flex flex-col">
               <CardHeader className="pb-2 sm:pb-3">
                 <CardTitle className="flex items-center gap-2 text-sm sm:text-base">
                   <MessageSquare className="h-4 w-4" /> 대화 목록
@@ -1070,14 +1077,8 @@ export function Messages() {
             </Card>
           </div>
 
-          {/* 메인 채팅 영역 */}
-          <div className="flex-1 flex flex-col overflow-hidden h-[calc(100vh-160px)]" style={{ minHeight: 0 }}>
-            <div className="mb-2 sm:mb-3 flex items-center gap-2">
-              <Button variant="outline" size="sm" onClick={() => setSidebarOpen(!sidebarOpen)} className="sm:hidden h-8 w-8 p-0">
-                {sidebarOpen ? <XIcon className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
-              </Button>
-            </div>
-
+          {/* 데스크톱 채팅 영역 */}
+          <div className="hidden md:flex flex-col flex-1 overflow-hidden">
             {selectedConversation ? (
               <Card className="flex flex-col overflow-hidden flex-1 h-full" style={{ minHeight: 0 }}>
                 {/* 채팅 헤더 */}
