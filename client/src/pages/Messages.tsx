@@ -912,7 +912,7 @@ export function Messages() {
 
   return (
     <PageLayout>
-      <div className="grid grid-cols-1 md:grid-cols-[320px_1fr] gap-4 sm:gap-6 h-[calc(100vh-100px)] md:h-[calc(100vh-120px)] items-start">
+      <div className="grid grid-cols-1 md:grid-cols-[320px_1fr] gap-4 sm:gap-6 h-[calc(100vh-140px)] md:h-[calc(100vh-160px)] items-start pt-4 sm:pt-6 md:pt-8">
         {/* 좌측 컬럼: 제목 + 대화 목록 */}
         <div className="hidden md:flex flex-col h-full overflow-hidden gap-4">
           {/* 제목 영역 */}
