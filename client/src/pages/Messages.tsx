@@ -455,7 +455,7 @@ export function Messages() {
 
   useEffect(() => {
     // URL 쿼리 파라미터에서 mentorId 추출
-    const params = new URLSearchParams(location.split('?')[1]);
+    const params = new URLSearchParams(window.location.search);
     const mentorId = params.get('mentorId');
     
     if (mentorId) {
@@ -469,7 +469,8 @@ export function Messages() {
         sessionStorage.removeItem("openConversationId");
       }
     }
-  }, [location]);
+  }, []);
+
 
   const { data: inbox } = trpc.message.getInbox.useQuery(undefined, {
     enabled: isAuthenticated,
