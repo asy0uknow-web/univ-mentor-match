@@ -432,6 +432,7 @@ export function Messages() {
   const [location] = useLocation();
   const [messageContent, setMessageContent] = useState("");
   const [selectedConversation, setSelectedConversation] = useState<number | null>(null);
+  const [mentorProfileId, setMentorProfileId] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [showProposalForm, setShowProposalForm] = useState(false);
@@ -459,8 +460,8 @@ export function Messages() {
     const mentorId = params.get('mentorId');
     
     if (mentorId) {
-      // 쿼리 파라미터가 있으면 해당 멘토 ID로 자동 선택
-      setSelectedConversation(parseInt(mentorId));
+      // 쿼리 파라미터가 있으면 멘토 프로필 ID로 저장
+      setMentorProfileId(parseInt(mentorId));
     } else {
       // 없으면 기존 로직 (sessionStorage 확인)
       const storedId = sessionStorage.getItem("openConversationId");
@@ -470,6 +471,19 @@ export function Messages() {
       }
     }
   }, []);
+  
+  // 멘토 프로필 ID가 있으면 해당 멘토의 사용자 ID 조회
+  const { data: mentorData } = trpc.mentor.getById.useQuery(
+    { mentorId: mentorProfileId || 0 },
+    { enabled: mentorProfileId !== null && mentorProfileId > 0 }
+  );
+  
+  // 멘토 데이터를 받으면 사용자 ID로 selectedConversation 설정
+  useEffect(() => {
+    if (mentorData?.user?.id) {
+      setSelectedConversation(mentorData.user.id);
+    }
+  }, [mentorData]);
 
 
   const { data: inbox } = trpc.message.getInbox.useQuery(undefined, {
