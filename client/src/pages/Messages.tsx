@@ -429,6 +429,7 @@ function StatusBanner({ statusData }: { statusData: any }) {
 // ===== 메인 Messages 컴포넌트 =====
 export function Messages() {
   const { user, isAuthenticated } = useAuth();
+  const [location] = useLocation();
   const [messageContent, setMessageContent] = useState("");
   const [selectedConversation, setSelectedConversation] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -453,12 +454,20 @@ export function Messages() {
   }, []);
 
   useEffect(() => {
-    const storedId = sessionStorage.getItem("openConversationId");
-    if (storedId) {
-      setSelectedConversation(parseInt(storedId));
-      sessionStorage.removeItem("openConversationId");
+    // URL 쿼리 파라미터에서 mentorId 추출
+    const params = new URLSearchParams(location.split('?')[1]);
+    const mentorId = params.get('mentorId');
+    
+    if (mentorId) {
+      setSelectedConversation(parseInt(mentorId));
+    } else {
+      const storedId = sessionStorage.getItem("openConversationId");
+      if (storedId) {
+        setSelectedConversation(parseInt(storedId));
+        sessionStorage.removeItem("openConversationId");
+      }
     }
-  }, []);
+  }, [location]);
 
   const { data: inbox } = trpc.message.getInbox.useQuery(undefined, {
     enabled: isAuthenticated,
