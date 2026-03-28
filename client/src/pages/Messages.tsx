@@ -912,9 +912,9 @@ export function Messages() {
 
   return (
     <PageLayout>
-      <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-8 flex flex-row h-[calc(100vh-100px)] md:h-[calc(100vh-120px)] gap-4 sm:gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-[280px_1fr] gap-4 sm:gap-6 h-[calc(100vh-100px)] md:h-[calc(100vh-120px)] items-start">
         {/* 좌측 제목 영역 */}
-        <div className="hidden sm:flex flex-col justify-start w-48 md:w-56 shrink-0">
+        <div className="hidden md:flex flex-col justify-start">
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold">상담 신청</h1>
             <p className="text-xs sm:text-sm text-muted-foreground mt-1">메시지로 상담을 신청하고 상담을 확정하세요</p>
@@ -922,7 +922,7 @@ export function Messages() {
         </div>
 
         {/* 우측 채팅 영역 */}
-        <div className="flex-1 flex gap-2 sm:gap-4 overflow-hidden" style={{ minHeight: 0 }}>
+        <div className="flex gap-2 sm:gap-4 overflow-hidden h-full" style={{ minHeight: 0 }}>
           {/* 사이드바 */}
           <div className={`${sidebarOpen ? "w-full sm:w-80" : "w-0"} transition-all duration-300 overflow-hidden flex flex-col shrink-0`}>
             <Card className="h-full flex flex-col">
@@ -997,7 +997,7 @@ export function Messages() {
           </div>
 
           {/* 메인 채팅 영역 */}
-          <div className="flex-1 flex flex-col overflow-hidden" style={{ minHeight: 0 }}>
+          <div className="flex-1 flex flex-col overflow-hidden h-[calc(100vh-160px)]" style={{ minHeight: 0 }}>
             <div className="mb-2 sm:mb-3 flex items-center gap-2">
               <Button variant="outline" size="sm" onClick={() => setSidebarOpen(!sidebarOpen)} className="sm:hidden h-8 w-8 p-0">
                 {sidebarOpen ? <XIcon className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
@@ -1005,7 +1005,7 @@ export function Messages() {
             </div>
 
             {selectedConversation ? (
-              <Card className="flex flex-col overflow-hidden flex-1" style={{ minHeight: 0 }}>
+              <Card className="flex flex-col overflow-hidden flex-1 h-full" style={{ minHeight: 0 }}>
                 {/* 채팅 헤더 */}
                 <CardHeader className="border-b shrink-0 py-2 sm:py-3">
                   <div className="flex items-center justify-between gap-2">
@@ -1048,7 +1048,7 @@ export function Messages() {
                 </CardHeader>
 
                 {/* 메시지 목록 */}
-                <div className="flex-1 overflow-y-auto p-2 sm:p-4" style={{ minHeight: 0 }}>
+                <div className="flex-1 overflow-y-auto p-2 sm:p-4 min-h-0" style={{ minHeight: 0 }}>
                   {groupedMessages.length > 0 ? (
                     <div className="space-y-1">
                       {groupedMessages.map((group, gIdx) => (
