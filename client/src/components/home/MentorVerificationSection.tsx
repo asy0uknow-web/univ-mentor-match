@@ -4,20 +4,20 @@ export const MentorVerificationSection = () => {
     {
       step: 1,
       title: "학생증 인증",
-      description: "모든 멘토는 유효한 학생증을 제출하여 대학생임을 증명합니다.",
+      description: "모든 멘토는 유효한 학생증을 제출하여 현재 대학생임을 증명합니다. 만료된 학생증은 인정되지 않습니다.",
       icon: "🎓"
     },
     {
       step: 2,
-      title: "신원 확인",
-      description: "제출된 학생증을 통해 신원을 확인하고 검증합니다.",
-      icon: "✅"
+      title: "이메일 인증",
+      description: "대학 공식 이메일 주소로 인증을 완료합니다. 이를 통해 실제 재학생임을 한 번 더 확인합니다.",
+      icon: "✉️"
     },
     {
       step: 3,
-      title: "검증 완료",
-      description: "검증된 멘토만 플랫폼에서 활동할 수 있습니다.",
-      icon: "🛡️"
+      title: "프로필 심사",
+      description: "멘토의 경력, 자격, 상담 분야를 검토하여 플랫폼 기준을 충족하는지 확인합니다.",
+      icon: "📋"
     }
   ];
 
@@ -30,7 +30,7 @@ export const MentorVerificationSection = () => {
             검증된 멘토, 신뢰할 수 있습니다
           </h2>
           <p className="text-base sm:text-lg md:text-xl text-muted-foreground">
-            모든 멘토는 엄격한 검증 프로세스를 거쳐 플랫폼에서 활동합니다.
+            3단계 검증 프로세스를 통해 정말 믿을 수 있는 멘토만 활동합니다.
           </p>
         </div>
 
@@ -66,9 +66,9 @@ export const MentorVerificationSection = () => {
           </div>
 
           {/* Additional Info */}
-          <div className="mt-12 sm:mt-16 bg-blue-50 rounded-2xl p-6 sm:p-8 border border-blue-100">
+            <div className="mt-12 sm:mt-16 bg-blue-50 rounded-2xl p-6 sm:p-8 border border-blue-100">
             <p className="text-base sm:text-lg text-foreground">
-              <span className="font-bold">💡 팁:</span> 모든 멘토 프로필에는 검증 배지가 표시됩니다. 검증된 멘토와만 상담을 진행하세요.
+              <span className="font-bold">✓ 안심하세요:</span> 3단계 검증을 모두 통과한 멘토만 플랫폼에서 활동합니다. 모든 멘토 프로필에는 검증 배지가 표시되므로 안전하게 상담을 진행할 수 있습니다.
             </p>
           </div>
         </div>
