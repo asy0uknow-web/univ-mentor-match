@@ -478,6 +478,12 @@ export function Messages() {
     { enabled: mentorProfileId !== null && mentorProfileId > 0 }
   );
   
+  // 새로운 대화 시작 시 상대방 사용자 정보 조회
+  const { data: otherUserInfo } = trpc.user.getById.useQuery(
+    { userId: selectedConversation || 0 },
+    { enabled: selectedConversation !== null && selectedConversation > 0 }
+  );
+  
   // 멘토 데이터를 받으면 사용자 ID로 selectedConversation 설정
   useEffect(() => {
     if (mentorData?.user?.id) {
@@ -702,6 +708,17 @@ export function Messages() {
         if (relevantMsg.recipientId === userId && relevantMsg.recipientName) {
           return relevantMsg.recipientName;
         }
+      }
+    }
+    
+    // 4. 새로운 대화 시작 시 otherUserInfo에서 사용자 정보 조회
+    if (userId === selectedConversation && otherUserInfo?.user) {
+      const userType = otherUserInfo.user.userType;
+      const name = otherUserInfo.user.name || `User ${userId}`;
+      if (userType === 'university_student') {
+        return `멘토 ${name}`;
+      } else if (userType === 'high_school_student') {
+        return `멘티 ${name}`;
       }
     }
     
