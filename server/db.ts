@@ -158,6 +158,9 @@ export async function createMentorProfile(profile: InsertMentorProfile) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
   
+  // UUID 생성 (제공되지 않은 경우)
+  const uuid = profile.uuid || generateUUID();
+  
   // 기존 활성 프로필이 있는지 확인 (isDeleted=false)
   const existingProfile = await getMentorProfileByUserId(profile.userId);
   
@@ -165,6 +168,7 @@ export async function createMentorProfile(profile: InsertMentorProfile) {
     // 기존 활성 프로필이 있으면 업데이트
     await db.update(mentorProfiles).set({
       ...profile,
+      uuid,
       verificationStatus: "pending",
       isDeleted: false,
     }).where(
@@ -186,6 +190,7 @@ export async function createMentorProfile(profile: InsertMentorProfile) {
       // 삭제된 프로필이 있으면 복원 (재등록)
       await db.update(mentorProfiles).set({
         ...profile,
+        uuid,
         verificationStatus: "pending",
         isDeleted: false,
       }).where(eq(mentorProfiles.id, deletedProfile[0].id));
@@ -193,11 +198,21 @@ export async function createMentorProfile(profile: InsertMentorProfile) {
       // 완전히 새로운 프로필 생성
       await db.insert(mentorProfiles).values({
         ...profile,
+        uuid,
         verificationStatus: "pending",
         isDeleted: false,
       });
     }
   }
+}
+
+// UUID 생성 함수
+function generateUUID(): string {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    const r = Math.random() * 16 | 0;
+    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
 }
 
 export async function getMentorProfileByUserId(userId: number) {
@@ -265,26 +280,62 @@ export async function getAllActiveMentors() {
   return mentorsWithConsultationTypes;
 }
 
-export async function getMentorById(mentorId: number) {
+export async function getMentorById(mentorId: number | string) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
   
-  const result = await db
-    .select({
-      profile: mentorProfiles,
-      user: users,
-    })
-    .from(mentorProfiles)
-    .innerJoin(users, eq(mentorProfiles.userId, users.id))
-    .where(
-      and(
-        eq(mentorProfiles.id, mentorId),
-        eq(mentorProfiles.isDeleted, false)
-      )
-    )
-    .limit(1);
+  console.log('[getMentorById] Input:', { mentorId, type: typeof mentorId });
   
-  return result.length > 0 ? result[0] : null;
+  // UUID 정규식 패턴 - 더 유연한 패턴
+  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  const isUUID = typeof mentorId === 'string' && uuidRegex.test(mentorId);
+  console.log('[getMentorById] isUUID:', isUUID, 'UUID:', mentorId);
+  
+  if (isUUID) {
+    // UUID로 조회
+    const result = await db
+      .select({
+        profile: mentorProfiles,
+        user: users,
+      })
+      .from(mentorProfiles)
+      .innerJoin(users, eq(mentorProfiles.userId, users.id))
+      .where(
+        and(
+          eq(mentorProfiles.uuid, mentorId as string),
+          eq(mentorProfiles.isDeleted, false)
+        )
+      )
+      .limit(1);
+    
+    console.log('[getMentorById] UUID query result:', result.length, 'mentorId:', mentorId);
+    if (result.length > 0) return result[0];
+  }
+  
+  // 숫자 ID로 조회 (fallback)
+  const numericId = typeof mentorId === 'string' ? parseInt(mentorId, 10) : mentorId;
+  if (!isNaN(numericId)) {
+    const result = await db
+      .select({
+        profile: mentorProfiles,
+        user: users,
+      })
+      .from(mentorProfiles)
+      .innerJoin(users, eq(mentorProfiles.userId, users.id))
+      .where(
+        and(
+          eq(mentorProfiles.id, numericId),
+          eq(mentorProfiles.isDeleted, false)
+        )
+      )
+      .limit(1);
+    
+    console.log('[getMentorById] Numeric ID query result:', result.length, 'numericId:', numericId);
+    if (result.length > 0) return result[0];
+  }
+  
+  console.log('[getMentorById] No mentor found - tried UUID:', isUUID, 'and numeric ID:', numericId);
+  return null;
 }
 
 // Booking queries

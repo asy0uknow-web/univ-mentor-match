@@ -5,6 +5,7 @@ import { trpc } from "@/lib/trpc";
 
 interface FeaturedMentor {
   id: number;
+  uuid?: string;
   name: string;
   university: string;
   major: string;
@@ -62,8 +63,9 @@ export const FeaturedMentorsSlide = () => {
     { staleTime: 1000 * 60 * 5 } // 5분 캐시
   );
 
-   const mentors: FeaturedMentor[] = (mentorsData || []).map((mentor: any) => ({
+  const mentors: FeaturedMentor[] = (mentorsData || []).map((mentor: any) => ({
     id: mentor.id,
+    uuid: mentor.uuid,
     name: mentor.name || "멘토",
     university: mentor.university || "대학명 미등록",
     major: mentor.major || "전공 미등록",

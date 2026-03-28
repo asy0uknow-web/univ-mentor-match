@@ -1,9 +1,20 @@
 # 대학 멘토 매칭 플랫폼 TODO
 ## Version History
+- pt 1.7: 멘토 프로필 UUID 기반 변경 (URL에 노출되는 데이터베이스 ID 숨김)
 - pt 1.6: 모바일 환경 검색 필터 최적화 완료 (필터 폭 최소화, 패딩/마진 축소, 반응형 텍스트)
 - pt 1.5: 사용자 개인정보 관리 + 멘토 찾기 페이지 UI 개선 (내 정보 페이지, 별점 제거)
 - pt 1.4: PageSpeed Insights 성능 최적화 (번들 크기 38.6% 감소, 이미지 최적화)
 - pt 0.6: 상담 예약 UI 개선 완료 (가격 정책 변경, 시간 선택 드롭다운, 가격 가이드라인 Info Box)
+
+## 버그 수정 - 멘토 카드 클릭 시 멘토를 찾을 수 없는 문제
+- [x] 버그 원인 파악 (MentorDetail.tsx UUID 파라미터 처리)
+- [x] MentorDetail.tsx 수정 (UUID 기반 조회)
+- [x] MentorCard.tsx 링크 확인 (UUID 기반 URL)
+- [x] getMentorById 함수 수정 (UUID 또는 숫자 ID 모두 지원)
+- [x] FeaturedMentorsSlide.tsx uuid 필드 추가
+- [x] mentor.getTopMentors 라우터 uuid 필드 추가
+- [x] createMentorProfile 함수에 UUID 자동 생성 로직 추가
+- [x] 멘토 찾기 → 멘토 프로필 → 메시지 전체 플로우 테스트
 
 ## 인증 및 사용자 관리
 - [x] 고등학생/대학생 역할 구분 회원가입 시스템

@@ -295,20 +295,8 @@ export const appRouter = router({
         mentorId: z.string().or(z.number()),
       }))
       .query(async ({ input }) => {
-        const db = await getDb();
-        if (!db) throw new Error("Database not available");
-        
-        // UUID 또는 숫자 ID로 조회
-        let mentorId: number;
-        if (typeof input.mentorId === 'string') {
-          const result = await db.select().from(mentorProfiles).where(eq(mentorProfiles.uuid, input.mentorId)).limit(1);
-          if (result.length === 0) throw new Error("Mentor not found");
-          mentorId = result[0].id;
-        } else {
-          mentorId = input.mentorId;
-        }
-        
-        return await getMentorById(mentorId);
+        // getMentorById 함수가 UUID와 숫자 ID 모두 지원
+        return await getMentorById(input.mentorId);
       }),
 
     getTopMentors: publicProcedure
@@ -322,6 +310,7 @@ export const appRouter = router({
         const topMentors = await db
           .select({
             id: mentorProfiles.id,
+            uuid: mentorProfiles.uuid,
             userId: mentorProfiles.userId,
             name: users.name,
             university: mentorProfiles.university,

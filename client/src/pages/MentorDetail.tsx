@@ -21,7 +21,7 @@ export default function MentorDetail() {
   const isValidMentorId = id && id.length > 0;
   
   const { data: mentor, isLoading, isError, error } = trpc.mentor.getById.useQuery(
-    { mentorId: isNaN(parseInt(id || '', 10)) ? id : parseInt(id || '', 10) },
+    { mentorId: id || '' },
     { enabled: isValidMentorId, retry: 2 }
   );
 
@@ -103,7 +103,7 @@ export default function MentorDetail() {
       window.location.href = getLoginUrl();
       return;
     }
-    // id는 UUID 또는 멘토 프로필 ID, mentor.profile.id는 내부 ID
+    // UUID를 사용하여 메시지 페이지로 이동
     const profileId = mentor?.profile?.uuid || id;
     setLocation(`/messages?mentorId=${profileId}`);
   };
@@ -113,6 +113,7 @@ export default function MentorDetail() {
       window.location.href = getLoginUrl();
       return;
     }
+    // UUID를 사용하여 예약 페이지로 이동
     const profileId = mentor?.profile?.uuid || id;
     setLocation(`/bookings?mentorId=${profileId}`);
   };
