@@ -429,6 +429,7 @@ function StatusBanner({ statusData }: { statusData: any }) {
 // ===== 메인 Messages 컴포넌트 =====
 export function Messages() {
   const { user, isAuthenticated } = useAuth();
+  const [, setLocation] = useLocation();
   const [messageContent, setMessageContent] = useState("");
   const [selectedConversation, setSelectedConversation] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -1193,11 +1194,66 @@ export function Messages() {
                 </CardContent>
               </Card>
             ) : (
-              <Card className="flex-1 flex items-center justify-center">
-                <div className="text-center">
-                  <MessageSquare className="h-12 w-12 mx-auto text-muted-foreground/40 mb-4" />
-                  <p className="text-muted-foreground">대화를 선택해주세요.</p>
-                </div>
+              <Card className="flex-1 flex flex-col">
+                <CardHeader className="shrink-0 border-b">
+                  <CardTitle className="text-lg">새로운 대화 시작</CardTitle>
+                </CardHeader>
+                <CardContent className="flex-1 overflow-y-auto p-4 space-y-3">
+                  {inbox && inbox.length > 0 ? (
+                    <>
+                      <p className="text-sm text-muted-foreground mb-4">이전 대화 상대를 선택하거나 아래에서 메시지를 입력하세요.</p>
+                      <div className="space-y-2">
+                        {inbox.map((msg: any) => {
+                          const otherUserId = msg.senderId === user?.id ? msg.recipientId : msg.senderId;
+                          const otherUserName = msg.senderId === user?.id ? msg.recipientName : msg.senderName;
+                          return (
+                            <button
+                              key={otherUserId}
+                              onClick={() => setSelectedConversation(otherUserId)}
+                              className="w-full text-left p-3 rounded-lg border hover:bg-muted transition-colors"
+                            >
+                              <p className="font-medium text-sm">{otherUserName}</p>
+                              <p className="text-xs text-muted-foreground truncate">{msg.content}</p>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </>
+                  ) : (
+                    <p className="text-sm text-muted-foreground">멘토를 선택하여 대화를 시작하세요.</p>
+                  )}
+                </CardContent>
+                <CardContent className="shrink-0 border-t p-4">
+                  <div className="space-y-2">
+                    <label className="text-xs font-medium">직접 메시지 입력</label>
+                    <div className="flex gap-2">
+                      <Textarea
+                        placeholder="멘토에게 메시지를 입력해주세요..."
+                        value={messageContent}
+                        onChange={(e) => {
+                          setMessageContent(e.target.value);
+                          adjustTextareaHeight();
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" && !e.shiftKey) {
+                            e.preventDefault();
+                            // 멘토 목록 페이지로 이동하여 멘토 선택 유도
+                            setLocation("/mentors");
+                          }
+                        }}
+                        ref={textareaRef}
+                        className="resize-none flex-1 px-2 sm:px-3 py-2 rounded-lg border text-xs sm:text-sm bg-background"
+                        style={{ minHeight: "36px", maxHeight: "120px" }}
+                      />
+                    </div>
+                    <p className="text-xs text-muted-foreground">먼저 멘토를 선택한 후 메시지를 보낼 수 있습니다.</p>
+                    <Link href="/mentors">
+                      <Button className="w-full text-xs sm:text-sm h-9">
+                        멘토 찾아보기
+                      </Button>
+                    </Link>
+                  </div>
+                </CardContent>
               </Card>
             )}
           </div>
