@@ -103,8 +103,8 @@ export default function MentorDetail() {
       window.location.href = getLoginUrl();
       return;
     }
-    // mentor.user.id는 사용자 ID (메시지 시스템에서 사용)
-    setLocation(`/messages?mentorId=${mentor?.user.id}`);
+    // mentorId는 멘토 프로필 ID (Messages.tsx에서 사용자 ID로 변환)
+    setLocation(`/messages?mentorId=${mentorId}`);
   };
 
   const handleBookingClick = () => {
