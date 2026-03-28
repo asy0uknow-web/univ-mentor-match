@@ -912,12 +912,16 @@ export function Messages() {
 
   return (
     <PageLayout>
-      <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-8 flex flex-col h-[calc(100vh-100px)] md:h-[calc(100vh-120px)]">
-        <div className="mb-4 sm:mb-6">
-          <h1 className="text-2xl sm:text-3xl font-bold">상담 신청</h1>
-          <p className="text-xs sm:text-sm text-muted-foreground mt-1">메시지로 상담을 신청하고 상담을 확정하세요</p>
+      <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-8 flex flex-row h-[calc(100vh-100px)] md:h-[calc(100vh-120px)] gap-4 sm:gap-6">
+        {/* 좌측 제목 영역 */}
+        <div className="hidden sm:flex flex-col justify-start w-48 md:w-56 shrink-0">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-bold">상담 신청</h1>
+            <p className="text-xs sm:text-sm text-muted-foreground mt-1">메시지로 상담을 신청하고 상담을 확정하세요</p>
+          </div>
         </div>
 
+        {/* 우측 채팅 영역 */}
         <div className="flex-1 flex gap-2 sm:gap-4 overflow-hidden" style={{ minHeight: 0 }}>
           {/* 사이드바 */}
           <div className={`${sidebarOpen ? "w-full sm:w-80" : "w-0"} transition-all duration-300 overflow-hidden flex flex-col shrink-0`}>
