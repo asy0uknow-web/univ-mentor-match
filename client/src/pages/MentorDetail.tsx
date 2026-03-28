@@ -103,7 +103,7 @@ export default function MentorDetail() {
       window.location.href = getLoginUrl();
       return;
     }
-    setLocation(`/messages?mentorId=${mentor.user.id}`);
+    setLocation(`/messages?mentorId=${mentorId}`);
   };
 
   const handleBookingClick = () => {

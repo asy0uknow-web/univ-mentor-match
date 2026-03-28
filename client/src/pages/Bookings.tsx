@@ -15,7 +15,11 @@ import { useAuth } from "@/_core/hooks/useAuth";
 
 export default function Bookings() {
   const { user, isAuthenticated } = useAuth();
-  const [, setLocation] = useLocation();
+  const [location, setLocation] = useLocation();
+
+  // URL 쿼리 파라미터에서 mentorId 추출
+  const params = new URLSearchParams(window.location.search);
+  const mentorIdParam = params.get('mentorId');
 
   useEffect(() => {
     setPageMeta(PAGE_META.bookings);
@@ -79,8 +83,8 @@ export default function Bookings() {
     }
   };
 
-  const handleStartConversation = (studentId: number) => {
-    setLocation("/messages");
+  const handleStartConversation = (mentorId: number) => {
+    setLocation(`/messages?mentorId=${mentorId}`);
   };
 
   // 학생 역할: 예약 내역 표시
@@ -147,12 +151,14 @@ export default function Bookings() {
                   <Link href="/mentors">
                     <Button className="text-xs sm:text-sm h-8 sm:h-10">멘토 찾아보기</Button>
                   </Link>
-                  <Link href="/messages">
-                    <Button variant="outline" className="text-xs sm:text-sm h-8 sm:h-10">
-                      <MessageCircle className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-                      메시지 보내기
-                    </Button>
-                  </Link>
+                  <Button 
+                    variant="outline" 
+                    className="text-xs sm:text-sm h-8 sm:h-10"
+                    onClick={() => mentorIdParam && setLocation(`/messages?mentorId=${mentorIdParam}`)}
+                  >
+                    <MessageCircle className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                    메시지 보내기
+                  </Button>
                 </div>
               </CardContent>
             </Card>
