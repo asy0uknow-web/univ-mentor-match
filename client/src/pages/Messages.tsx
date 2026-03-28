@@ -912,18 +912,92 @@ export function Messages() {
 
   return (
     <PageLayout>
-      <div className="grid grid-cols-1 md:grid-cols-[280px_1fr] gap-4 sm:gap-6 h-[calc(100vh-100px)] md:h-[calc(100vh-120px)] items-start">
-        {/* 좌측 제목 영역 */}
-        <div className="hidden md:flex flex-col justify-start">
-          <div>
+      <div className="grid grid-cols-1 md:grid-cols-[320px_1fr] gap-4 sm:gap-6 h-[calc(100vh-100px)] md:h-[calc(100vh-120px)] items-start">
+        {/* 좌측 컬럼: 제목 + 대화 목록 */}
+        <div className="hidden md:flex flex-col h-full overflow-hidden gap-4">
+          {/* 제목 영역 */}
+          <div className="shrink-0">
             <h1 className="text-2xl sm:text-3xl font-bold">상담 신청</h1>
             <p className="text-xs sm:text-sm text-muted-foreground mt-1">메시지로 상담을 신청하고 상담을 확정하세요</p>
           </div>
+
+          {/* 대화 목록 */}
+          <div className="flex-1 overflow-hidden">
+            <Card className="h-full flex flex-col">
+              <CardHeader className="pb-2 sm:pb-3">
+                <CardTitle className="flex items-center gap-2 text-sm sm:text-base">
+                  <MessageSquare className="h-4 w-4" /> 대화 목록
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="pb-2 sm:pb-3 px-3 sm:px-4">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder="대화 검색..."
+                    value={searchQuery}
+                    onChange={e => setSearchQuery(e.target.value)}
+                    className="pl-9 text-xs sm:text-sm h-8 sm:h-9"
+                  />
+                </div>
+              </CardContent>
+              <CardContent className="flex-1 overflow-y-auto p-2 sm:p-3">
+                {filteredConversations.length > 0 ? (
+                  <div className="space-y-1">
+                    {filteredConversations.map(([userId, msgs]: [string, any]) => {
+                      const lastMsg = msgs[0];
+                      const isSelected = parseInt(userId) === selectedConversation;
+                      const unreadCount = getUnreadCount(parseInt(userId));
+                      let preview = lastMsg.content;
+                      if (lastMsg.isDeleted) preview = "삭제된 메시지";
+                      else if (lastMsg.messageType === "proposal") {
+                        try {
+                          const p = JSON.parse(lastMsg.content);
+                          if (p.type === "proposal") preview = "📅 상담 일정 제안";
+                          else if (p.type === "proposal_status") preview = p.message;
+                        } catch {}
+                      }
+                      const name = getOtherUserName(parseInt(userId));
+                      return (
+                        <button
+                          key={userId}
+                          onClick={() => {
+                            setSelectedConversation(parseInt(userId));
+                            if (window.innerWidth < 1024) setSidebarOpen(false);
+                          }}
+                          className={`w-full text-left p-2 sm:p-3 rounded-lg sm:rounded-xl transition-all text-xs sm:text-sm ${isSelected ? "bg-primary/10 border-2 border-primary" : "hover:bg-muted/60 border-2 border-transparent"}`}
+                        >
+                          <div className="flex items-center gap-2 sm:gap-3">
+                            <Avatar name={name} size="sm" />
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center justify-between gap-1">
+                                <p className={`font-semibold truncate ${unreadCount > 0 ? "text-foreground" : "text-foreground/80"}`}>{name}</p>
+                                <span className="text-[10px] text-muted-foreground shrink-0">{getRelativeTime(lastMsg.createdAt)}</span>
+                              </div>
+                              <div className="flex items-center justify-between gap-1 mt-0.5">
+                                <p className={`text-xs truncate ${unreadCount > 0 ? "text-foreground font-medium" : "text-muted-foreground"}`}>{preview}</p>
+                                {unreadCount > 0 && (
+                                  <span className="shrink-0 bg-primary text-primary-foreground text-[10px] font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1">
+                                    {unreadCount > 99 ? "99+" : unreadCount}
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <p className="text-sm text-muted-foreground text-center py-8">아직 대화가 없습니다.</p>
+                )}
+              </CardContent>
+            </Card>
+          </div>
         </div>
 
-        {/* 우측 채팅 영역 */}
+        {/* 우츧0 채팅 영역 */}
         <div className="flex gap-2 sm:gap-4 overflow-hidden h-full" style={{ minHeight: 0 }}>
-          {/* 사이드바 */}
+          {/* 모바일 사이드바 */}
           <div className={`${sidebarOpen ? "w-full sm:w-80" : "w-0"} transition-all duration-300 overflow-hidden flex flex-col shrink-0`}>
             <Card className="h-full flex flex-col">
               <CardHeader className="pb-2 sm:pb-3">
