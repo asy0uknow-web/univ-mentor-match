@@ -141,10 +141,19 @@ export default function Bookings() {
           ) : (
             <Card>
               <CardContent className="py-8 sm:py-12 text-center px-4">
-                <p className="text-xs sm:text-sm text-muted-foreground mb-4">예약 내역이 존재하지 않습니다.</p>
-                <Link href="/mentors">
-                  <Button className="text-xs sm:text-sm h-8 sm:h-10">멘토 찾아보기</Button>
-                </Link>
+                <p className="text-xs sm:text-sm text-muted-foreground mb-6">예약 내역이 존재하지 않습니다.</p>
+                <p className="text-xs sm:text-sm text-muted-foreground mb-6">멘토를 찾아 상담을 시작해보세요!</p>
+                <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                  <Link href="/mentors">
+                    <Button className="text-xs sm:text-sm h-8 sm:h-10">멘토 찾아보기</Button>
+                  </Link>
+                  <Link href="/messages">
+                    <Button variant="outline" className="text-xs sm:text-sm h-8 sm:h-10">
+                      <MessageCircle className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                      메시지 보내기
+                    </Button>
+                  </Link>
+                </div>
               </CardContent>
             </Card>
           )}
