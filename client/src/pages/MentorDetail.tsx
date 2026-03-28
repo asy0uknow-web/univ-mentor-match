@@ -17,11 +17,11 @@ const DRAFT_MESSAGE_KEY = "univmatch:draftMessage";
 export default function MentorDetail() {
   const { id } = useParams();
   const { user, isAuthenticated } = useAuth();
-  const mentorId = id ? parseInt(id, 10) : 0;
-  const isValidMentorId = !isNaN(mentorId) && mentorId > 0;
+  // id는 UUID 또는 숫자 ID
+  const isValidMentorId = id && id.length > 0;
   
   const { data: mentor, isLoading, isError, error } = trpc.mentor.getById.useQuery(
-    { mentorId },
+    { mentorId: isNaN(parseInt(id || '', 10)) ? id : parseInt(id || '', 10) },
     { enabled: isValidMentorId, retry: 2 }
   );
 
@@ -34,12 +34,12 @@ export default function MentorDetail() {
   }, [mentor]);
 
   const { data: reviews } = trpc.review.getByMentor.useQuery(
-    { mentorId },
-    { enabled: isValidMentorId }
+    { mentorId: mentor?.profile?.id || 0 },
+    { enabled: !!mentor?.profile?.id }
   );
   const { data: gallery } = trpc.gallery.getByMentorId.useQuery(
-    { mentorId },
-    { enabled: isValidMentorId }
+    { mentorId: mentor?.profile?.id || 0 },
+    { enabled: !!mentor?.profile?.id }
   );
 
   const [, setLocation] = useLocation();
@@ -103,8 +103,9 @@ export default function MentorDetail() {
       window.location.href = getLoginUrl();
       return;
     }
-    // mentorId는 멘토 프로필 ID (Messages.tsx에서 사용자 ID로 변환)
-    setLocation(`/messages?mentorId=${mentorId}`);
+    // id는 UUID 또는 멘토 프로필 ID, mentor.profile.id는 내부 ID
+    const profileId = mentor?.profile?.uuid || id;
+    setLocation(`/messages?mentorId=${profileId}`);
   };
 
   const handleBookingClick = () => {
@@ -112,7 +113,8 @@ export default function MentorDetail() {
       window.location.href = getLoginUrl();
       return;
     }
-    setLocation(`/bookings?mentorId=${mentorId}`);
+    const profileId = mentor?.profile?.uuid || id;
+    setLocation(`/bookings?mentorId=${profileId}`);
   };
 
   return (

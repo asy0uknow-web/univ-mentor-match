@@ -289,7 +289,7 @@ export const FeaturedMentorsSlide = () => {
 
                   {/* CTA Button */}
                   <button
-                    onClick={() => setLocation(`/mentor/${mentor.id}`)}
+                    onClick={() => setLocation(`/mentor/${mentor.uuid || mentor.id}`)}
                     className="w-full py-2 sm:py-3 px-3 sm:px-4 bg-blue-600 text-white text-sm sm:text-base font-semibold rounded-lg hover:bg-blue-700 transition-colors mt-auto"
                   >
                     프로필 보기

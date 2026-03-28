@@ -292,10 +292,23 @@ export const appRouter = router({
 
     getById: publicProcedure
       .input(z.object({
-        mentorId: z.number(),
+        mentorId: z.string().or(z.number()),
       }))
       .query(async ({ input }) => {
-        return await getMentorById(input.mentorId);
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+        
+        // UUID 또는 숫자 ID로 조회
+        let mentorId: number;
+        if (typeof input.mentorId === 'string') {
+          const result = await db.select().from(mentorProfiles).where(eq(mentorProfiles.uuid, input.mentorId)).limit(1);
+          if (result.length === 0) throw new Error("Mentor not found");
+          mentorId = result[0].id;
+        } else {
+          mentorId = input.mentorId;
+        }
+        
+        return await getMentorById(mentorId);
       }),
 
     getTopMentors: publicProcedure

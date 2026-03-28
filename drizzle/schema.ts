@@ -68,6 +68,7 @@ export type InsertUserProfile = typeof userProfiles.$inferInsert;
 // - Deleted profiles kept for history (isDeleted = true)
 export const mentorProfiles = mysqlTable("mentor_profiles", {
   id: int("id").autoincrement().primaryKey(),
+  uuid: varchar("uuid", { length: 36 }).notNull().unique(), // UUID for public URL exposure
   userId: int("userId").notNull().unique(), // References users.id - UNIQUE constraint to ensure one active profile per user
   university: varchar("university", { length: 255 }).notNull(),
   major: varchar("major", { length: 255 }).notNull(),
