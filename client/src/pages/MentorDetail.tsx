@@ -103,8 +103,7 @@ export default function MentorDetail() {
       window.location.href = getLoginUrl();
       return;
     }
-    sessionStorage.setItem(OPEN_CONVERSATION_KEY, mentor.user.id.toString());
-    setLocation("/messages");
+    setLocation(`/messages?mentorId=${mentor.user.id}`);
   };
 
   const handleBookingClick = () => {
