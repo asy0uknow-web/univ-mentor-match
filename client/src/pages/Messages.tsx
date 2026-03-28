@@ -912,7 +912,7 @@ export function Messages() {
 
   return (
     <PageLayout>
-      <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-8 flex flex-col h-[calc(100vh-160px)] md:h-[calc(100vh-180px)]">
+      <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-8 flex flex-col h-[calc(100vh-100px)] md:h-[calc(100vh-120px)]">
         <div className="mb-4 sm:mb-6">
           <h1 className="text-2xl sm:text-3xl font-bold">상담 신청</h1>
           <p className="text-xs sm:text-sm text-muted-foreground mt-1">메시지로 상담을 신청하고 상담을 확정하세요</p>
