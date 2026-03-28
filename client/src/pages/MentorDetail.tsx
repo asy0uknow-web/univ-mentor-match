@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { trpc } from "@/lib/trpc";
 import { Link, useParams, useLocation } from "wouter";
 import { GraduationCap, Star, ArrowLeft, MessageCircle } from "lucide-react";
-import BugReportModal from "@/components/BugReportModal";
+
 import { useState, useEffect } from "react";
 import { getLoginUrl } from "@/const";
 import { toast } from "sonner";
@@ -261,7 +261,7 @@ export default function MentorDetail() {
         </div>
       </div>
 
-      <BugReportModal isOpen={false} onClose={() => {}} />
+
     </PageLayout>
   );
 }
