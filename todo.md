@@ -1677,3 +1677,11 @@
 - [x] 상담 예약 수락 후 멘토에게도 예약 내역이 표시되도록 수정
   - 원인: bookings.mentorId가 users.id를 저장하는데, getBookingsByMentor에서 mentor_profiles.id로 조회
   - 수정: getBookingsByMentor 함수를 bookings.mentorId = users.id 기준으로 변경
+
+
+## 기능 추가 - 멘티 프로필 테이블 생성 (pt 1.9)
+- [x] studentProfiles 테이블 생성 (uuid, userId, school, grade 등)
+- [x] 마이그레이션 실패 및 기존 멘티 데이터 마이그레이션
+- [x] student.getById 라우터 추가 (UUID 기반 조회)
+- [x] Messages.tsx에서 studentUUID를 userId로 변환하는 로직 추가
+- [ ] Bookings.tsx에서 studentProfiles.uuid 사용하도록 업데이트

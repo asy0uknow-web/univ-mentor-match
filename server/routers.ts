@@ -11,6 +11,7 @@ import {
   updateMentorProfile,
   getAllActiveMentors,
   getMentorById,
+  getStudentById,
   createBooking,
   getBookingById,
   updateBookingStatus,
@@ -381,6 +382,17 @@ export const appRouter = router({
         }
 
         return { success: true };
+      }),
+  }),
+
+  student: router({
+    getById: publicProcedure
+      .input(z.object({
+        studentId: z.string().or(z.number()),
+      }))
+      .query(async ({ input }) => {
+        // getStudentById 함수가 UUID와 숫자 ID 모두 지원
+        return await getStudentById(input.studentId);
       }),
   }),
 

@@ -101,6 +101,26 @@ export type MentorProfile = typeof mentorProfiles.$inferSelect;
 export type InsertMentorProfile = typeof mentorProfiles.$inferInsert;
 
 /**
+ * High school student profiles
+ */
+export const studentProfiles = mysqlTable("student_profiles", {
+  id: int("id").autoincrement().primaryKey(),
+  uuid: varchar("uuid", { length: 36 }).notNull().unique(), // UUID for public URL exposure
+  userId: int("userId").notNull().unique(), // References users.id - UNIQUE constraint to ensure one active profile per user
+  school: varchar("school", { length: 255 }).notNull(), // High school name
+  grade: mysqlEnum("grade", ["1", "2", "3"]).notNull(), // High school grade (1-3)
+  region: mysqlEnum("region", ["seoul", "gyeonggi", "incheon", "gangwon", "chungcheong", "jeolla", "gyeongsang", "jeju"]),
+  bio: text("bio"), // Student bio/introduction
+  // Profile image URL
+  profileImageUrl: varchar("profileImageUrl", { length: 500 }),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type StudentProfile = typeof studentProfiles.$inferSelect;
+export type InsertStudentProfile = typeof studentProfiles.$inferInsert;
+
+/**
  * Consultation booking requests
  */
 export const bookings = mysqlTable("bookings", {

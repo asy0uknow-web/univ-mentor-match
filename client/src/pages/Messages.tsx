@@ -465,7 +465,7 @@ export function Messages() {
       setMentorProfileId(mentorUuid);
     } else if (studentUuid) {
       // 학생 UUID: 멘토가 학생과 대화
-      setMentorProfileId(studentUuid);
+      setStudentProfileId(studentUuid);
     } else if (mentorUuidParam) {
       // 멘토 UUID: 멘티가 멘토와 대화
       setMentorProfileId(mentorUuidParam);
@@ -479,10 +479,19 @@ export function Messages() {
     }
   }, []);
   
+  // 상태 변수 추가
+  const [studentProfileId, setStudentProfileId] = useState<string | null>(null);
+  
   // 멘토 프로필 UUID가 있으면 해당 멘토의 사용자 ID 조회
   const { data: mentorData } = trpc.mentor.getById.useQuery(
     { mentorId: mentorProfileId || '' },
     { enabled: mentorProfileId !== null && mentorProfileId !== '' }
+  );
+  
+  // 학생 프로필 UUID가 있으면 해당 학생의 사용자 ID 조회
+  const { data: studentData } = trpc.student.getById.useQuery(
+    { studentId: studentProfileId || '' },
+    { enabled: studentProfileId !== null && studentProfileId !== '' }
   );
   
   // 새로운 대화 시작 시 상대방 사용자 정보 조회
@@ -499,6 +508,15 @@ export function Messages() {
       setMentorProfileId(null);
     }
   }, [mentorData]);
+  
+  // 학생 데이터를 받으면 사용자 ID로 selectedConversation 설정
+  useEffect(() => {
+    if (studentData?.user?.id) {
+      setSelectedConversation(studentData.user.id);
+      // studentProfileId 초기화 (UUID 더 이상 사용 않음)
+      setStudentProfileId(null);
+    }
+  }, [studentData]);
 
 
   const { data: inbox } = trpc.message.getInbox.useQuery(undefined, {

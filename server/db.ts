@@ -4,7 +4,9 @@ import {
   InsertUser, 
   users, 
   mentorProfiles, 
-  InsertMentorProfile, 
+  InsertMentorProfile,
+  studentProfiles,
+  InsertStudentProfile,
   bookings, 
   InsertBooking,
   reviews,
@@ -206,6 +208,33 @@ export async function createMentorProfile(profile: InsertMentorProfile) {
   }
 }
 
+export async function createStudentProfile(profile: InsertStudentProfile) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  // UUID 생성 (제공되지 않은 경우)
+  const uuid = profile.uuid || generateUUID();
+  
+  // 기존 활성 프로필이 있는지 확인
+  const existingProfile = await db.select().from(studentProfiles).where(
+    eq(studentProfiles.userId, profile.userId)
+  ).limit(1);
+  
+  if (existingProfile.length > 0) {
+    // 기존 프로필이 있으면 업데이트
+    await db.update(studentProfiles).set({
+      ...profile,
+      uuid,
+    }).where(eq(studentProfiles.userId, profile.userId));
+  } else {
+    // 새로운 프로필 생성
+    await db.insert(studentProfiles).values({
+      ...profile,
+      uuid,
+    });
+  }
+}
+
 // UUID 생성 함수
 function generateUUID(): string {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
@@ -278,6 +307,48 @@ export async function getAllActiveMentors() {
   );
   
   return mentorsWithConsultationTypes;
+}
+
+export async function getStudentById(studentId: number | string) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  // UUID 정규식 패턴
+  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  const isUUID = typeof studentId === 'string' && uuidRegex.test(studentId);
+  
+  if (isUUID) {
+    // UUID로 조회
+    const result = await db
+      .select({
+        profile: studentProfiles,
+        user: users,
+      })
+      .from(studentProfiles)
+      .innerJoin(users, eq(studentProfiles.userId, users.id))
+      .where(eq(studentProfiles.uuid, studentId as string))
+      .limit(1);
+    
+    if (result.length > 0) return result[0];
+  }
+  
+  // 숫자 ID로 조회 (fallback)
+  const numericId = typeof studentId === 'string' ? parseInt(studentId, 10) : studentId;
+  if (!isNaN(numericId)) {
+    const result = await db
+      .select({
+        profile: studentProfiles,
+        user: users,
+      })
+      .from(studentProfiles)
+      .innerJoin(users, eq(studentProfiles.userId, users.id))
+      .where(eq(studentProfiles.userId, numericId))
+      .limit(1);
+    
+    if (result.length > 0) return result[0];
+  }
+  
+  return null;
 }
 
 export async function getMentorById(mentorId: number | string) {
