@@ -348,21 +348,29 @@ export default function CompleteProfile() {
                       </div>
 
                       <div>
-                        <Label htmlFor="grade" className="text-xs sm:text-sm">학년 *</Label>
-                        <select
-                          id="grade"
-                          value={grade}
-                          onChange={(e) => {
-                            setGrade(e.target.value as any);
-                            if (errors.grade) setErrors((prev) => ({ ...prev, grade: "" }));
-                          }}
-                          className="mt-1 w-full px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm border border-gray-300 rounded-md"
-                        >
-                          <option value="">학년을 선택해주세요</option>
-                          {grades.map((g) => (
-                            <option key={g.value} value={g.value}>{g.label}</option>
-                          ))}
-                        </select>
+                        <Label className="text-xs sm:text-sm">학년 *</Label>
+                        <Select.Root value={grade} onValueChange={(value) => {
+                          setGrade(value as any);
+                          if (errors.grade) setErrors((prev) => ({ ...prev, grade: "" }));
+                        }}>
+                          <Select.Trigger className="mt-1 w-full px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm border border-gray-300 rounded-md inline-flex items-center justify-between bg-white">
+                            <Select.Value placeholder="학년을 선택해주세요" />
+                            <Select.Icon className="ml-2">
+                              <ChevronDown size={16} />
+                            </Select.Icon>
+                          </Select.Trigger>
+                          <Select.Portal>
+                            <Select.Content className="bg-white border border-gray-300 rounded-md shadow-lg z-50">
+                              <Select.Viewport className="p-1">
+                                {grades.map((g) => (
+                                  <Select.Item key={g.value} value={g.value} className="px-3 py-2 text-xs sm:text-sm cursor-pointer hover:bg-gray-100 rounded-md">
+                                    <Select.ItemText>{g.label}</Select.ItemText>
+                                  </Select.Item>
+                                ))}
+                              </Select.Viewport>
+                            </Select.Content>
+                          </Select.Portal>
+                        </Select.Root>
                         {errors.grade && <p className="text-xs text-red-600 mt-1">{errors.grade}</p>}
                       </div>
 

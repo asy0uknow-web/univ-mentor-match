@@ -1725,9 +1725,19 @@
 - [ ] 메시지 기능 테스트 미완료
 - [ ] 예약 수락/거절 기능 테스트 미완료
 
+## 멘티/멘티 학년 드롭다운 디자인 일관성 통일 (pt 2.3)
+- [x] CompleteProfile.tsx 멘토 학년 드롭다운 Radix UI Select로 변경
+  - 드롭다운: Radix UI Select 컴포넌트 사용
+  - 아이콘: ChevronDown 아이콘 추가
+  - 호버 효과: `hover:bg-gray-100` 추가
+  - 테스트 결과: 드롭다운 선택 ✅ 데이터 저장 ✅
+- [x] 멘티/멘티 디자인 일관성 확보
+  - 멘토 학년: Radix UI Select ✅
+  - 멘티 학년: Radix UI Select ✅
+  - 디자인 동일: ChevronDown 아이콘, 호버 효과, pportal z-50 모두 동일 ✅
 
-## 멘티 학년 선택 필드 추가 (pt 2.2)
-- [x] CompleteProfile.tsx 멘티 섹션에 학년 선택 드롭다운 추가
+## 멘티 학년 선택 아이콘 추가 (pt 2.2)
+- [x] CompleteProfile.tsx 멘티 섹션에 학년 선택 드롭다운 추가 (Radix UI Select)
   - 드롭다운: Radix UI Select 컴포넌트 사용
   - 옵션: 1학년, 2학년, 3학년
   - 데이터베이스: studentProfiles.grade 에 저장
