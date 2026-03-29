@@ -1665,3 +1665,9 @@
 - [x] Messages.tsx에서 UUID를 userId로 변환하여 채팅 연결
 - [x] 상담 예약 후 메시지 보내기 경로 테스트
 - [x] 멘토 프로필에서 메시지 보내기 직접 클릭 경로 테스트
+
+
+## 버그 수정 - Bookings.tsx 메시지 보내기 버튼
+- [x] Bookings.tsx 메시지 보내기 버튼을 상담 신청 페이지(/consultations)로 연결
+  - mentorIdParam이 있으면 해당 멘토와의 메시지 페이지로
+  - mentorIdParam이 없으면 상담 신청 페이지로
