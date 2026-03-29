@@ -100,7 +100,7 @@ export default function MentorDetail() {
 
   const handleMessageClick = () => {
     if (!isAuthenticated) {
-      window.location.href = getLoginUrl();
+      setLocation('/login');
       return;
     }
     // UUID를 사용하여 메시지 페이지로 이동
@@ -110,7 +110,7 @@ export default function MentorDetail() {
 
   const handleBookingClick = () => {
     if (!isAuthenticated) {
-      window.location.href = getLoginUrl();
+      setLocation('/login');
       return;
     }
     // UUID를 사용하여 예약 페이지로 이동
