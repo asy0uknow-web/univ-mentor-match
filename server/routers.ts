@@ -1,4 +1,5 @@
 import { COOKIE_NAME } from "@shared/const";
+import { randomUUID } from "crypto";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
@@ -62,7 +63,7 @@ import { signupProcedure, loginProcedure } from "./auth-procedures";
 import { createVerificationToken, verifyEmailToken, getPendingVerificationToken } from "./email-verification";
 import { emailVerificationTokens } from "../drizzle/schema";
 import { eq } from "drizzle-orm";
-import { mentorGallery, messages, notifications, bookings, reviews, mentorProfiles, mentorVerifications, users, bugReports, mentorConsultationTypes, consultationProposals } from "../drizzle/schema";
+import { mentorGallery, messages, notifications, bookings, reviews, mentorProfiles, mentorVerifications, users, bugReports, mentorConsultationTypes, consultationProposals, studentProfiles } from "../drizzle/schema";
 import { and, eq as drizzleEq, or as drizzleOr, desc as drizzleDesc } from "drizzle-orm";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
@@ -913,6 +914,7 @@ export const appRouter = router({
         consultationTypes: z.array(z.enum(["career_counseling", "university_tour", "resume_consulting", "academic_management"])).optional(),
         mentorRegion: z.string().optional(),
         school: z.string().optional(),
+        menteeGrade: z.enum(["1", "2", "3"]).optional(),
         careerGoal: z.string().optional(),
         menteeRegion: z.string().optional(),
       }))
@@ -960,7 +962,7 @@ export const appRouter = router({
               major: input.major,
               grade: gradeValue,
               region: regionValue,
-              uuid: require('crypto').randomUUID(),
+              uuid: randomUUID(),
               isDeleted: false,
               verificationStatus: "pending",
               createdAt: new Date(),
@@ -994,6 +996,39 @@ export const appRouter = router({
                 pricePerHour: "40000.00",
               });
             }
+          }
+        }
+
+        // 멘티인 경우 학생프로필도 자동으로 생성
+        if (input.userRole === "mentee" && input.school && input.menteeGrade && input.menteeRegion) {
+          const gradeValue = input.menteeGrade as "1" | "2" | "3";
+          const regionValue = input.menteeRegion as "seoul" | "gyeonggi" | "incheon" | "gangwon" | "chungcheong" | "jeolla" | "gyeongsang" | "jeju";
+          const existingProfile = await db
+            .select()
+            .from(studentProfiles)
+            .where(eq(studentProfiles.userId, user.id))
+            .limit(1);
+          
+          if (existingProfile.length === 0) {
+            await db.insert(studentProfiles).values({
+              userId: user.id,
+              school: input.school,
+              grade: gradeValue,
+              region: regionValue,
+              uuid: randomUUID(),
+              createdAt: new Date(),
+              updatedAt: new Date(),
+            });
+          } else {
+            await db
+              .update(studentProfiles)
+              .set({
+                school: input.school,
+                grade: gradeValue,
+                region: regionValue,
+                updatedAt: new Date(),
+              })
+              .where(eq(studentProfiles.userId, user.id));
           }
         }
 

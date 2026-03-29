@@ -71,7 +71,14 @@ export default function CompleteProfile() {
   };
 
   const [school, setSchool] = useState("");
+  const [menteeGrade, setMenteeGrade] = useState<"1" | "2" | "3" | "">("");
   const [menteeRegion, setMenteeRegion] = useState("");
+
+  const menteeGrades = [
+    { value: "1", label: "1학년" },
+    { value: "2", label: "2학년" },
+    { value: "3", label: "3학년" },
+  ] as const;
 
   const { data: user } = trpc.auth.me.useQuery(undefined, {
     refetchOnWindowFocus: false,
@@ -164,6 +171,10 @@ export default function CompleteProfile() {
         setErrors((prev) => ({ ...prev, school: "학교명을 입력해주세요" }));
         return;
       }
+      if (!menteeGrade) {
+        setErrors((prev) => ({ ...prev, menteeGrade: "학년을 선택해주세요" }));
+        return;
+      }
       if (!menteeRegion) {
         setErrors((prev) => ({ ...prev, menteeRegion: "상담 희망 지역을 선택해주세요" }));
         return;
@@ -188,6 +199,7 @@ export default function CompleteProfile() {
         mentorRegion: userRole === "mentor" ? mentorRegions[0] : undefined,
         consultationTypes: userRole === "mentor" ? (consultationTypes as ("career_counseling" | "university_tour" | "resume_consulting" | "academic_management")[]) : undefined,
         school: userRole === "mentee" ? school.trim() : undefined,
+        menteeGrade: userRole === "mentee" ? (menteeGrade as "1" | "2" | "3") : undefined,
         menteeRegion: userRole === "mentee" ? menteeRegion : undefined,
       });
 
@@ -415,6 +427,33 @@ export default function CompleteProfile() {
                           className="mt-1 text-xs sm:text-sm h-8 sm:h-10"
                         />
                         {errors.school && <p className="text-xs text-red-600 mt-1">{errors.school}</p>}
+                      </div>
+
+                      <div>
+                        <Label className="text-xs sm:text-sm">학년 *</Label>
+                        <Select.Root value={menteeGrade} onValueChange={(value) => {
+                          setMenteeGrade(value as "1" | "2" | "3");
+                          if (errors.menteeGrade) setErrors((prev) => ({ ...prev, menteeGrade: "" }));
+                        }}>
+                          <Select.Trigger className="mt-1 w-full px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm border border-gray-300 rounded-md inline-flex items-center justify-between bg-white">
+                            <Select.Value placeholder="학년을 선택해주세요" />
+                            <Select.Icon className="ml-2">
+                              <ChevronDown size={16} />
+                            </Select.Icon>
+                          </Select.Trigger>
+                          <Select.Portal>
+                            <Select.Content className="bg-white border border-gray-300 rounded-md shadow-lg z-50">
+                              <Select.Viewport className="p-1">
+                                {menteeGrades.map((g) => (
+                                  <Select.Item key={g.value} value={g.value} className="px-3 py-2 text-xs sm:text-sm cursor-pointer hover:bg-gray-100 rounded-md">
+                                    <Select.ItemText>{g.label}</Select.ItemText>
+                                  </Select.Item>
+                                ))}
+                              </Select.Viewport>
+                            </Select.Content>
+                          </Select.Portal>
+                        </Select.Root>
+                        {errors.menteeGrade && <p className="text-xs text-red-600 mt-1">{errors.menteeGrade}</p>}
                       </div>
 
                       <div>

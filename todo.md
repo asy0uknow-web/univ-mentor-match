@@ -1724,3 +1724,21 @@
 - [ ] 멘토 프로필 설정 테스트 미완료
 - [ ] 메시지 기능 테스트 미완료
 - [ ] 예약 수락/거절 기능 테스트 미완료
+
+
+## 멘티 학년 선택 필드 추가 (pt 2.2)
+- [x] CompleteProfile.tsx 멘티 섹션에 학년 선택 드롭다운 추가
+  - 드롭다운: Radix UI Select 컴포넌트 사용
+  - 옵션: 1학년, 2학년, 3학년
+  - 데이터베이스: studentProfiles.grade 에 저장
+  - 테스트 결과: 드롭다운 선택 ✅ 데이터 저장 ✅
+- [x] server/routers.ts 마이그레이션 완료
+  - completeProfile input 스키마에 menteeGrade 필드 추가
+  - 멘티 프로필 생성 로직 업데이트
+- [x] crypto import 오류 수정
+  - require('crypto').randomUUID() 대신 import { randomUUID } from "crypto" 사용
+  - 서버 환경에서만 실행되도록 수정
+- [x] 전체 기능 테스트 완료
+  - 멘티 프로필 설정 시 학년 선택 정상 작동 ✅
+  - 프로필 저장 성공 ✅
+  - 데이터베이스에 정상 저장 ✅
