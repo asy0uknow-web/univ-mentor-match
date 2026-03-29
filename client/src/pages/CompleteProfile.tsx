@@ -9,6 +9,8 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle, CheckCircle2, Loader2, X } from "lucide-react";
 import { PageLayout } from "@/components/layout";
 import { useAuth } from "@/_core/hooks/useAuth";
+import * as Select from "@radix-ui/react-select";
+import { ChevronDown } from "lucide-react";
 
 type UserRole = "mentor" | "mentee" | null;
 
@@ -416,24 +418,29 @@ export default function CompleteProfile() {
                       </div>
 
                       <div>
-                        <Label htmlFor="menteeRegion" className="text-xs sm:text-sm">상담 희망 지역 *</Label>
-                        <select
-                          id="menteeRegion"
-                          value={menteeRegion}
-                          onChange={(e) => {
-                            setMenteeRegion(e.target.value);
-                            if (errors.menteeRegion) setErrors((prev) => ({ ...prev, menteeRegion: "" }));
-                          }}
-                          onBlur={(e) => {
-                            setMenteeRegion(e.target.value);
-                          }}
-                          className="mt-1 w-full px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm border border-gray-300 rounded-md"
-                        >
-                          <option value="">지역을 선택해주세요</option>
-                          {regions.map((region) => (
-                            <option key={region.value} value={region.value}>{region.label}</option>
-                          ))}
-                        </select>
+                        <Label className="text-xs sm:text-sm">상담 희망 지역 *</Label>
+                        <Select.Root value={menteeRegion} onValueChange={(value) => {
+                          setMenteeRegion(value);
+                          if (errors.menteeRegion) setErrors((prev) => ({ ...prev, menteeRegion: "" }));
+                        }}>
+                          <Select.Trigger className="mt-1 w-full px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm border border-gray-300 rounded-md inline-flex items-center justify-between bg-white">
+                            <Select.Value placeholder="지역을 선택해주세요" />
+                            <Select.Icon className="ml-2">
+                              <ChevronDown size={16} />
+                            </Select.Icon>
+                          </Select.Trigger>
+                          <Select.Portal>
+                            <Select.Content className="bg-white border border-gray-300 rounded-md shadow-lg z-50">
+                              <Select.Viewport className="p-1">
+                                {regions.map((region) => (
+                                  <Select.Item key={region.value} value={region.value} className="px-3 py-2 text-xs sm:text-sm cursor-pointer hover:bg-gray-100 rounded-md">
+                                    <Select.ItemText>{region.label}</Select.ItemText>
+                                  </Select.Item>
+                                ))}
+                              </Select.Viewport>
+                            </Select.Content>
+                          </Select.Portal>
+                        </Select.Root>
                         {errors.menteeRegion && <p className="text-xs text-red-600 mt-1">{errors.menteeRegion}</p>}
                       </div>
                     </>
