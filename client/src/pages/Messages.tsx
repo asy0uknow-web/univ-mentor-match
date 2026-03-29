@@ -432,7 +432,7 @@ export function Messages() {
   const [location] = useLocation();
   const [messageContent, setMessageContent] = useState("");
   const [selectedConversation, setSelectedConversation] = useState<number | null>(null);
-  const [mentorProfileId, setMentorProfileId] = useState<number | null>(null);
+  const [mentorProfileId, setMentorProfileId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [showProposalForm, setShowProposalForm] = useState(false);
@@ -455,13 +455,13 @@ export function Messages() {
   }, []);
 
   useEffect(() => {
-    // URL 쿼리 파라미터에서 mentorId 추출
+    // URL 쿼리 파라미터에서 mentorId (UUID) 추출
     const params = new URLSearchParams(window.location.search);
-    const mentorId = params.get('mentorId');
+    const mentorUuid = params.get('mentorId');
     
-    if (mentorId) {
-      // 쿼리 파라미터가 있으면 멘토 프로필 ID로 저장
-      setMentorProfileId(parseInt(mentorId));
+    if (mentorUuid) {
+      // 쿼리 파라미터가 있으면 멘토 프로필 UUID로 저장
+      setMentorProfileId(mentorUuid);
     } else {
       // 없으면 기존 로직 (sessionStorage 확인)
       const storedId = sessionStorage.getItem("openConversationId");
@@ -472,10 +472,10 @@ export function Messages() {
     }
   }, []);
   
-  // 멘토 프로필 ID가 있으면 해당 멘토의 사용자 ID 조회
+  // 멘토 프로필 UUID가 있으면 해당 멘토의 사용자 ID 조회
   const { data: mentorData } = trpc.mentor.getById.useQuery(
-    { mentorId: mentorProfileId || 0 },
-    { enabled: mentorProfileId !== null && mentorProfileId > 0 }
+    { mentorId: mentorProfileId || '' },
+    { enabled: mentorProfileId !== null && mentorProfileId !== '' }
   );
   
   // 새로운 대화 시작 시 상대방 사용자 정보 조회
@@ -488,6 +488,8 @@ export function Messages() {
   useEffect(() => {
     if (mentorData?.user?.id) {
       setSelectedConversation(mentorData.user.id);
+      // mentorProfileId 초기화 (UUID 더 이상 사용 않음)
+      setMentorProfileId(null);
     }
   }, [mentorData]);
 
