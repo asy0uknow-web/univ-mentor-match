@@ -275,7 +275,25 @@ export async function getAllActiveMentors() {
   
   const mentors = await db
     .select({
-      profile: mentorProfiles,
+      profile: {
+        id: mentorProfiles.id,
+        uuid: mentorProfiles.uuid,
+        userId: mentorProfiles.userId,
+        university: mentorProfiles.university,
+        major: mentorProfiles.major,
+        grade: mentorProfiles.grade,
+        region: mentorProfiles.region,
+        bio: mentorProfiles.bio,
+        hourlyRate: mentorProfiles.hourlyRate,
+        availableSlots: mentorProfiles.availableSlots,
+        verificationStatus: mentorProfiles.verificationStatus,
+        isDeleted: mentorProfiles.isDeleted,
+        createdAt: mentorProfiles.createdAt,
+        updatedAt: mentorProfiles.updatedAt,
+        averageRating: mentorProfiles.averageRating,
+        reviewCount: mentorProfiles.reviewCount,
+        field: mentorProfiles.field,
+      },
       user: users,
     })
     .from(mentorProfiles)
@@ -465,10 +483,12 @@ export async function getBookingsByMentor(mentorUserId: number) {
     .select({
       booking: bookings,
       student: users,
+      studentProfile: studentProfiles,
       mentorProfile: mentorProfiles,
     })
     .from(bookings)
     .innerJoin(users, eq(bookings.studentId, users.id))
+    .leftJoin(studentProfiles, eq(bookings.studentId, studentProfiles.userId))
     .leftJoin(mentorProfiles, eq(bookings.mentorId, mentorProfiles.userId))
     .where(eq(bookings.mentorId, mentorUserId))
     .orderBy(desc(bookings.createdAt));

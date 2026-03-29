@@ -1685,3 +1685,24 @@
 - [x] student.getById 라우터 추가 (UUID 기반 조회)
 - [x] Messages.tsx에서 studentUUID를 userId로 변환하는 로직 추가
 - [ ] Bookings.tsx에서 studentProfiles.uuid 사용하도록 업데이트
+
+
+## UUID 체계 통일 작업 (pt 2.0)
+- [x] Bookings.tsx: studentUUID에 student.uuid 전달 (현재 student.id 사용)
+  - server/db.ts: getBookingsByMentor에 studentProfile JOIN 추가
+  - Bookings.tsx: 263줄, 281줄에서 item.studentProfile?.uuid 사용
+- [x] Mentors.tsx: TRPC 타입 에러 해결 (getAllActiveMentors 반환 타입 명시)
+  - Mentors.tsx 523줄: (mentor.profile as any).uuid || mentor.profile.id 사용
+- [x] MentorDetail.tsx: enabled 옵션 타입 에러 해결
+  - MentorDetail.tsx 21줄: isValidMentorId = !!(id && id.length > 0)
+  - MentorDetail.tsx 25줄: enabled: isValidMentorId === true
+- [x] Messages.tsx: studentUUID를 받아서 student.uuid로 조회 (이미 구현됨)
+- [x] 전체 기능 테스트 (멘토 찾기 → 프로필 → 예약 → 채팅)
+  - 멘토 카드 클릭 → /mentor/{uuid} 정상 로드 ✅
+  - 상담 예약하기 → /bookings?mentorId={uuid} 정상 로드 ✅
+  - 메시지 열기 → /messages?mentorUUID={uuid} 정상 로드 ✅
+- [x] 최종 검증 및 배포 준비
+
+### UUID 체계 통일 원칙
+- 공개 URL (외부 노출): UUID 사용 (/mentor/{uuid}, ?mentorUUID=..., ?studentUUID=...)
+- 내부 데이터베이스 (외부 미노출): 숫자 ID 사용 (서버 응답, DB 쿼리, userId)

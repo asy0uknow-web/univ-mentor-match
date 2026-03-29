@@ -520,7 +520,7 @@ function MentorCard({
 
   return (
     <Link
-      href={`/mentor/${mentor.profile.uuid}`}
+      href={`/mentor/${(mentor.profile as any).uuid || mentor.profile.id}`}
       className="block rounded-lg border border-border hover:border-primary hover:shadow-md transition-all cursor-pointer bg-card overflow-hidden"
     >
       <div className="flex gap-2 sm:gap-4 p-3 sm:p-4">

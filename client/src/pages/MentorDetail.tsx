@@ -18,11 +18,11 @@ export default function MentorDetail() {
   const { id } = useParams();
   const { user, isAuthenticated } = useAuth();
   // id는 UUID 또는 숫자 ID
-  const isValidMentorId = id && id.length > 0;
+  const isValidMentorId = !!(id && id.length > 0);
   
   const { data: mentor, isLoading, isError, error } = trpc.mentor.getById.useQuery(
     { mentorId: id || '' },
-    { enabled: isValidMentorId, retry: 2 }
+    { enabled: isValidMentorId === true, retry: 2 }
   );
 
   useEffect(() => {

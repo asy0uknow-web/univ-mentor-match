@@ -257,6 +257,7 @@ export const appRouter = router({
         await createMentorProfile({
           userId: ctx.user.id,
           ...input,
+          uuid: require('crypto').randomUUID(),
         });
         // Always create a new verification request for (re-)registration
         await createMentorVerification({
@@ -959,6 +960,7 @@ export const appRouter = router({
               major: input.major,
               grade: gradeValue,
               region: regionValue,
+              uuid: require('crypto').randomUUID(),
               isDeleted: false,
               verificationStatus: "pending",
               createdAt: new Date(),
