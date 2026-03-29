@@ -1,4 +1,3 @@
-import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { trpc } from "@/lib/trpc";
@@ -10,6 +9,7 @@ import { getLoginUrl } from "@/const";
 import { toast } from "sonner";
 import { PageLayout } from "@/components/layout";
 import { setPageMeta, PAGE_META } from "@/lib/seo";
+import { useAuth } from "@/_core/hooks/useAuth";
 
 const OPEN_CONVERSATION_KEY = "univmatch:openConversationUserId";
 const DRAFT_MESSAGE_KEY = "univmatch:draftMessage";
