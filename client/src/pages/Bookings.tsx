@@ -148,7 +148,7 @@ export default function Bookings() {
                     {/* 액션 버튼 */}
                     <div className="flex flex-col sm:flex-row gap-2 pt-3 sm:pt-4">
                       <Button 
-                        onClick={() => handleStartConversation(item.mentor?.id || 0, false)}
+                        onClick={() => setLocation(`/messages?mentorUUID=${item.mentorProfile?.uuid || 0}`)}
                         className="flex-1 text-xs sm:text-sm h-8 sm:h-9"
                       >
                         <MessageCircle className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
@@ -157,7 +157,7 @@ export default function Bookings() {
                       {item.booking.status === "confirmed" && (
                         <Button 
                           variant="outline"
-                          onClick={() => handleStartConversation(item.mentor?.id || 0, false)}
+                          onClick={() => setLocation(`/messages?mentorUUID=${item.mentorProfile?.uuid || 0}`)}
                           className="flex-1 text-xs sm:text-sm h-8 sm:h-9"
                         >
                           <RefreshCw className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
@@ -260,7 +260,7 @@ export default function Bookings() {
                     {/* 액션 버튼 */}
                     <div className="flex flex-col sm:flex-row gap-2 pt-2">
                       <Button 
-                        onClick={() => handleStartConversation(item.student?.id || 0, true)}
+                        onClick={() => setLocation(`/messages?studentUUID=${item.student?.id || 0}`)}
                         className="flex-1 text-xs sm:text-sm h-8 sm:h-9"
                       >
                         <MessageCircle className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
@@ -278,7 +278,7 @@ export default function Bookings() {
                       {item.booking.status === "confirmed" && (
                         <Button 
                           variant="outline"
-                          onClick={() => handleStartConversation(item.student?.id || 0, true)}
+                          onClick={() => setLocation(`/messages?studentUUID=${item.student?.id || 0}`)}
                           className="flex-1 text-xs sm:text-sm h-8 sm:h-9"
                         >
                           <RefreshCw className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />

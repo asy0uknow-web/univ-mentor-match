@@ -455,13 +455,20 @@ export function Messages() {
   }, []);
 
   useEffect(() => {
-    // URL 쿼리 파라미터에서 mentorId (UUID) 추출
+    // URL 쿼리 파라미터에서 mentorId, studentUUID, mentorUUID 추출
     const params = new URLSearchParams(window.location.search);
     const mentorUuid = params.get('mentorId');
+    const studentUuid = params.get('studentUUID');
+    const mentorUuidParam = params.get('mentorUUID');
     
     if (mentorUuid) {
-      // 쿼리 파라미터가 있으면 멘토 프로필 UUID로 저장
       setMentorProfileId(mentorUuid);
+    } else if (studentUuid) {
+      // 학생 UUID: 멘토가 학생과 대화
+      setMentorProfileId(studentUuid);
+    } else if (mentorUuidParam) {
+      // 멘토 UUID: 멘티가 멘토와 대화
+      setMentorProfileId(mentorUuidParam);
     } else {
       // 없으면 기존 로직 (sessionStorage 확인)
       const storedId = sessionStorage.getItem("openConversationId");
