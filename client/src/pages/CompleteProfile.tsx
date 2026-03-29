@@ -424,6 +424,9 @@ export default function CompleteProfile() {
                             setMenteeRegion(e.target.value);
                             if (errors.menteeRegion) setErrors((prev) => ({ ...prev, menteeRegion: "" }));
                           }}
+                          onBlur={(e) => {
+                            setMenteeRegion(e.target.value);
+                          }}
                           className="mt-1 w-full px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm border border-gray-300 rounded-md"
                         >
                           <option value="">지역을 선택해주세요</option>
