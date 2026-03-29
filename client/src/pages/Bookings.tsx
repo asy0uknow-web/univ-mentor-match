@@ -83,8 +83,14 @@ export default function Bookings() {
     }
   };
 
-  const handleStartConversation = (mentorId: number) => {
-    setLocation(`/messages?mentorId=${mentorId}`);
+  const handleStartConversation = (userId: number, isStudent: boolean = false) => {
+    if (isStudent) {
+      // 멘토가 학생과 대화할 때
+      setLocation(`/messages?studentId=${userId}`);
+    } else {
+      // 학생이 멘토와 대화할 때
+      setLocation(`/messages?mentorId=${userId}`);
+    }
   };
 
   // 학생 역할: 예약 내역 표시
@@ -138,6 +144,27 @@ export default function Bookings() {
                         <p className="text-xs sm:text-sm whitespace-pre-wrap line-clamp-3">{item.booking.studentMessage}</p>
                       </div>
                     )}
+
+                    {/* 액션 버튼 */}
+                    <div className="flex flex-col sm:flex-row gap-2 pt-3 sm:pt-4">
+                      <Button 
+                        onClick={() => handleStartConversation(item.mentor?.id || 0, false)}
+                        className="flex-1 text-xs sm:text-sm h-8 sm:h-9"
+                      >
+                        <MessageCircle className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                        메시지 열기
+                      </Button>
+                      {item.booking.status === "confirmed" && (
+                        <Button 
+                          variant="outline"
+                          onClick={() => handleStartConversation(item.mentor?.id || 0, false)}
+                          className="flex-1 text-xs sm:text-sm h-8 sm:h-9"
+                        >
+                          <RefreshCw className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                          수정 요청
+                        </Button>
+                      )}
+                    </div>
                   </CardContent>
                 </Card>
               ))}
@@ -233,7 +260,7 @@ export default function Bookings() {
                     {/* 액션 버튼 */}
                     <div className="flex flex-col sm:flex-row gap-2 pt-2">
                       <Button 
-                        onClick={() => handleStartConversation(item.student?.id || 0)}
+                        onClick={() => handleStartConversation(item.student?.id || 0, true)}
                         className="flex-1 text-xs sm:text-sm h-8 sm:h-9"
                       >
                         <MessageCircle className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
@@ -251,7 +278,7 @@ export default function Bookings() {
                       {item.booking.status === "confirmed" && (
                         <Button 
                           variant="outline"
-                          onClick={() => handleStartConversation(item.student?.id || 0)}
+                          onClick={() => handleStartConversation(item.student?.id || 0, true)}
                           className="flex-1 text-xs sm:text-sm h-8 sm:h-9"
                         >
                           <RefreshCw className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
