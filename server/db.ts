@@ -355,12 +355,9 @@ export async function getMentorById(mentorId: number | string) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
   
-  console.log('[getMentorById] Input:', { mentorId, type: typeof mentorId });
-  
   // UUID 정규식 패턴 - 더 유연한 패턴
   const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
   const isUUID = typeof mentorId === 'string' && uuidRegex.test(mentorId);
-  console.log('[getMentorById] isUUID:', isUUID, 'UUID:', mentorId);
   
   if (isUUID) {
     // UUID로 조회
@@ -379,7 +376,7 @@ export async function getMentorById(mentorId: number | string) {
       )
       .limit(1);
     
-    console.log('[getMentorById] UUID query result:', result.length, 'mentorId:', mentorId);
+
     if (result.length > 0) return result[0];
   }
   
@@ -401,11 +398,11 @@ export async function getMentorById(mentorId: number | string) {
       )
       .limit(1);
     
-    console.log('[getMentorById] Numeric ID query result:', result.length, 'numericId:', numericId);
+
     if (result.length > 0) return result[0];
   }
   
-  console.log('[getMentorById] No mentor found - tried UUID:', isUUID, 'and numeric ID:', numericId);
+
   return null;
 }
 
