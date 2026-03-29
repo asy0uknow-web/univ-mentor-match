@@ -1671,3 +1671,9 @@
 - [x] Bookings.tsx 메시지 보내기 버튼을 /messages 페이지로 연결
   - mentorIdParam이 있으면 해당 멘토와의 메시지 페이지로
   - mentorIdParam이 없으면 메시지 메인 페이지로
+
+
+## 버그 수정 - 멘토 예약 내역 표시 안 됨
+- [x] 상담 예약 수락 후 멘토에게도 예약 내역이 표시되도록 수정
+  - 원인: bookings.mentorId가 users.id를 저장하는데, getBookingsByMentor에서 mentor_profiles.id로 조회
+  - 수정: getBookingsByMentor 함수를 bookings.mentorId = users.id 기준으로 변경

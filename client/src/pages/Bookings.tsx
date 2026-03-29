@@ -179,7 +179,9 @@ export default function Bookings() {
           <p className="text-xs sm:text-sm text-muted-foreground">로딩 중...</p>
         ) : mentorBookings && mentorBookings.length > 0 ? (
           <div className="space-y-3 sm:space-y-4">
-            {mentorBookings.map((item: any) => (
+            {mentorBookings.map((item: any) => {
+              // item 구조: { booking, student, mentorProfile }
+              return (
               <Card key={item.booking.id} className={`overflow-hidden ${item.booking.status === "pending" ? "border-amber-200 bg-amber-50/30" : ""}`}>
                 <CardHeader className="pb-2 sm:pb-4 px-3 sm:px-6">
                   <div className="flex items-start justify-between gap-2">
@@ -260,7 +262,8 @@ export default function Bookings() {
                   </div>
                 </CardContent>
               </Card>
-            ))}
+              );
+            })}
           </div>
         ) : (
           <Card>
