@@ -154,7 +154,7 @@ export default function Bookings() {
                   <Button 
                     variant="outline" 
                     className="text-xs sm:text-sm h-8 sm:h-10"
-                    onClick={() => mentorIdParam ? setLocation(`/messages?mentorId=${mentorIdParam}`) : setLocation('/consultations')}
+                    onClick={() => mentorIdParam ? setLocation(`/messages?mentorId=${mentorIdParam}`) : setLocation('/messages')}
                   >
                     <MessageCircle className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                     메시지 보내기

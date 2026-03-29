@@ -1668,6 +1668,6 @@
 
 
 ## 버그 수정 - Bookings.tsx 메시지 보내기 버튼
-- [x] Bookings.tsx 메시지 보내기 버튼을 상담 신청 페이지(/consultations)로 연결
+- [x] Bookings.tsx 메시지 보내기 버튼을 /messages 페이지로 연결
   - mentorIdParam이 있으면 해당 멘토와의 메시지 페이지로
-  - mentorIdParam이 없으면 상담 신청 페이지로
+  - mentorIdParam이 없으면 메시지 메인 페이지로
