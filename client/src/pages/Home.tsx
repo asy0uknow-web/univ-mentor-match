@@ -7,8 +7,8 @@ import { setPageMeta, PAGE_META } from "@/lib/seo";
 import { trpc } from "@/lib/trpc";
 import { getLoginUrl } from "@/const";
 import { MentorVerificationSection } from "@/components/home/MentorVerificationSection";
-
-
+import { MentorVerificationUSPSection } from "@/components/home/MentorVerificationUSPSection";
+import { ZeroCommissionUSPSection } from "@/components/home/ZeroCommissionUSPSection";
 
 import { FeaturedMentorsSlide } from "@/components/home/FeaturedMentorsSlide";
 import { TestimonialsSection } from "@/components/home/TestimonialsSection";
@@ -335,6 +335,12 @@ export default function Home() {
           <TestimonialsSection />
         </div>
       </section>
+
+      {/* Zig-Zag USP Section #1: Mentor Verification */}
+      <MentorVerificationUSPSection />
+
+      {/* Zig-Zag USP Section #2: Zero Commission */}
+      <ZeroCommissionUSPSection />
 
       {/* Mentor Verification Section */}
       <section id="mentor-verification" role="region" className="py-16 sm:py-24 md:py-32 bg-white" aria-label="멘토 검증">
