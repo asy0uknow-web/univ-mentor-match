@@ -52,8 +52,8 @@ function Router() {
         <Route path={"/privacy-policy"} component={PrivacyPolicy} />
         <Route path={"/reviews/new"} component={ReviewCreate} />
         <Route path={"/qna"} component={QnAList} />
-        <Route path={"/qna/:id"} component={QnADetail} />
         <Route path={"/qna/new"} component={QnACreate} />
+        <Route path={"/qna/:id"} component={QnADetail} />
         <Route path={"/404"} component={NotFound} />
         <Route component={NotFound} />
       </Switch>

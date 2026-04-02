@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { trpc } from "@/lib/trpc";
-import { useLocation } from "wouter";
+import { useLocation, useParams } from "wouter";
 import { ArrowLeft, MessageCircle, User } from "lucide-react";
 import { useState, useEffect } from "react";
 import { PageLayout } from "@/components/layout";
@@ -17,9 +17,9 @@ export default function QnADetail() {
   const [replyContent, setReplyContent] = useState("");
   const [expandedAnswerId, setExpandedAnswerId] = useState<number | null>(null);
 
-  // URL에서 questionId 추출
-  const params = new URLSearchParams(window.location.search);
-  const questionId = parseInt(params.get('id') || '0');
+  // URL에서 questionId 추출 (wouter의 useParams 사용)
+  const params = useParams();
+  const questionId = parseInt(params.id || '0');
 
   useEffect(() => {
     setPageMeta({ title: "Q&A 상세", description: "Q&A 상세 페이지" });

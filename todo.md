@@ -1775,17 +1775,17 @@
 - [ ] 후기 작성 권한 검증 (멘티만 가능)
 
 ## QnA 공간 구현 (pt 2.0 → pt 2.1)
-- [ ] DB 스키마: questions, answers, answer_replies 테이블 생성
-- [ ] 백엔드 API: qna.getQuestions (질문 목록)
-- [ ] 백엔드 API: qna.getQuestionById (질문 상세)
-- [ ] 백엔드 API: qna.createQuestion (질문 작성)
-- [ ] 백엔드 API: qnaAnswer.create (답변 작성)
-- [ ] 백엔드 API: qnaAnswer.getByQuestionId (답변 조회)
-- [ ] 백엔드 API: qnaReply.create (답글 작성)
-- [ ] 백엔드 API: qnaReply.getByAnswerId (답글 조회)
-- [ ] 프론트엔드: QnA 목록 페이지 (/qna)
-- [ ] 프론트엔드: QnA 상세 페이지 (/qna/:id)
-- [ ] 프론트엔드: QnA 작성 페이지 (/qna/new)
+- [x] DB 스키마: questions, answers, answer_replies 테이블 생성
+- [x] 백엔드 API: qna.getQuestions (질문 목록)
+- [x] 백엔드 API: qna.getQuestionById (질문 상세)
+- [x] 백엔드 API: qna.createQuestion (질문 작성)
+- [x] 백엔드 API: qnaAnswer.create (답변 작성)
+- [x] 백엔드 API: qnaAnswer.getByQuestionId (답변 조회)
+- [x] 백엔드 API: qnaReply.create (답글 작성)
+- [x] 백엔드 API: qnaReply.getByAnswerId (답글 조회)
+- [x] 프론트엔드: QnA 목록 페이지 (/qna)
+- [x] 프론트엔드: QnA 상세 페이지 (/qna/:id)
+- [x] 프론트엔드: QnA 작성 페이지 (/qna/new)
 - [ ] 프론트엔드: 네비게이션에 QnA 메뉴 추가
-- [ ] 멘토 답변 카드 - 멘토 프로필 정보 + 상담 문의 버튼
-- [ ] 상담 문의 연동 (기존 메시지/상담 조율 흐름 연결)
+- [x] 멘토 답변 카드 - 멘토 프로필 정보 + 상담 문의 버튼
+- [x] 상담 문의 연동 (기존 메시지/상담 조율 흐름 연결)
