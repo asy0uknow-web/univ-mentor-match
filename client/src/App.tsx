@@ -24,6 +24,10 @@ const StudentProfile = lazy(() => import("./pages/StudentProfile"));
 const SignUp = lazy(() => import("./pages/SignUp"));
 const Login = lazy(() => import("./pages/Login"));
 const VerifyEmail = lazy(() => import("./pages/VerifyEmail"));
+const ReviewCreate = lazy(() => import("./pages/ReviewCreate"));
+const QnAList = lazy(() => import("./pages/QnAList"));
+const QnADetail = lazy(() => import("./pages/QnADetail"));
+const QnACreate = lazy(() => import("./pages/QnACreate"));
 
 function Router() {
   return (
@@ -46,6 +50,10 @@ function Router() {
         <Route path={"/admin/bug-reports"} component={AdminBugReports} />
         <Route path={"/complete-profile"} component={CompleteProfile} />
         <Route path={"/privacy-policy"} component={PrivacyPolicy} />
+        <Route path={"/reviews/new"} component={ReviewCreate} />
+        <Route path={"/qna"} component={QnAList} />
+        <Route path={"/qna/:id"} component={QnADetail} />
+        <Route path={"/qna/new"} component={QnACreate} />
         <Route path={"/404"} component={NotFound} />
         <Route component={NotFound} />
       </Switch>
