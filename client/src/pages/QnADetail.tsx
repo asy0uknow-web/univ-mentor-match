@@ -23,14 +23,18 @@ export default function QnADetail() {
   useEffect(() => {
     setPageMeta({ title: "Q&A 상세", description: "Q&A 상세 페이지" });
   }, []);
-
-  // 질문 상세 조회
-  const { data: question, isLoading } = trpc.qna.getQuestionById.useQuery(
+  // 질문 상세 jogay
+  const { data: question, isLoading, isError, error } = trpc.qna.getQuestionById.useQuery(
     { questionId },
-    { enabled: questionId > 0 }
+    { enabled: questionId > 0, retry: 1 }
   );
 
-  // 답변 작성 뮤테이션
+  // 디버깅: 데이터 구조 확인
+  useEffect(() => {
+    if (question) {
+      console.log("Question data:", question);
+    }
+  }, [question]);  // 답변 작성 뮤테이션
   const createAnswerMutation = trpc.qnaAnswer.create.useMutation({
     onSuccess: () => {
       alert("답변이 작성되었습니다");
@@ -55,11 +59,56 @@ export default function QnADetail() {
     });
   };
 
-  if (!questionId || isLoading) {
+  if (!questionId) {
+    return (
+      <PageLayout>
+        <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-12">
+          <Button
+            variant="ghost"
+            onClick={() => setLocation('/qna')}
+            className="mb-4 text-xs sm:text-sm"
+          >
+            <ArrowLeft className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+            돌아가기
+          </Button>
+          <Card>
+            <CardContent className="py-8 sm:py-12 text-center">
+              <p className="text-xs sm:text-sm text-muted-foreground">잘못된 질문 ID입니다</p>
+            </CardContent>
+          </Card>
+        </div>
+      </PageLayout>
+    );
+  }
+
+  if (isLoading) {
     return (
       <PageLayout>
         <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-12">
           <p className="text-xs sm:text-sm text-muted-foreground">로딩 중...</p>
+        </div>
+      </PageLayout>
+    );
+  }
+
+  if (isError) {
+    return (
+      <PageLayout>
+        <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-12">
+          <Button
+            variant="ghost"
+            onClick={() => setLocation('/qna')}
+            className="mb-4 text-xs sm:text-sm"
+          >
+            <ArrowLeft className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+            돌아가기
+          </Button>
+          <Card>
+            <CardContent className="py-8 sm:py-12 text-center">
+              <p className="text-xs sm:text-sm text-muted-foreground">오류가 발생했습니다</p>
+              {error && <p className="text-xs text-red-500 mt-2">{error.message}</p>}
+            </CardContent>
+          </Card>
         </div>
       </PageLayout>
     );

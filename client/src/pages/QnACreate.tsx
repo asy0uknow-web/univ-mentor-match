@@ -25,7 +25,14 @@ export default function QnACreate() {
   const createQuestionMutation = trpc.qna.createQuestion.useMutation({
     onSuccess: (data: any) => {
       alert("질문이 작성되었습니다");
-      setLocation(`/qna/${data.questionId}`);
+      // insertId 또는 id 중 하나 사용
+      const questionId = data.questionId || data.insertId || data.id;
+      if (questionId) {
+        setLocation(`/qna/${questionId}`);
+      } else {
+        console.error("질문 ID를 받지 못했습니다", data);
+        setLocation('/qna');
+      }
     },
     onError: (error: any) => {
       alert("오류: " + error.message);
