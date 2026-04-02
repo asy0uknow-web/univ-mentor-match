@@ -87,7 +87,7 @@ export default function QnACreate() {
           <CardHeader>
             <CardTitle className="text-2xl sm:text-3xl">질문 작성</CardTitle>
             <CardDescription className="text-xs sm:text-sm">
-              멘토들에게 도움이 될 만한 질문을 작성해주세요
+              어디서도 얻을 수 없는 재학생의 솔직한 경험, 정보, 고민들을 질문하세요.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4 sm:space-y-6">
