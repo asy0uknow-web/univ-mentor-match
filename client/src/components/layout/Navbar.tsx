@@ -21,11 +21,13 @@ const AUTHENTICATED_MENU = [
   { href: "/mentors", label: "멘토 찾기" },
   { href: "/messages", label: "상담 신청" },
   { href: "/bookings", label: "예약 내역" },
+  { href: "/qna", label: "Q&A" },
 ] as const;
 
 const DROPDOWN_MENU = [
   { href: "/my-profile", label: "내 프로필" },
   { href: "/notifications", label: "알림" },
+  { href: "/qna", label: "Q&A" },
 ] as const;
 
 // 뙈페이지 메뉴 (스크롤 이동)
