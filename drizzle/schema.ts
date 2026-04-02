@@ -137,12 +137,22 @@ export const bookings = mysqlTable("bookings", {
   totalAmount: decimal("totalAmount", { precision: 10, scale: 2 }).notNull(),
   // Consultation type: resume_consulting, career_counseling, academic_management, university_tour
   consultationType: mysqlEnum("consultationType", ["resume_consulting", "career_counseling", "academic_management", "university_tour"]).default("career_counseling").notNull(),
-  // Booking status
-  status: mysqlEnum("status", ["pending", "confirmed", "completed", "cancelled"]).default("pending").notNull(),
+  // Booking status: pending, confirmed, in_progress, completed, cancelled, reschedule_requested
+  status: mysqlEnum("status", ["pending", "confirmed", "in_progress", "completed", "cancelled", "reschedule_requested"]).default("pending").notNull(),
   // Stripe Payment Intent ID
   stripePaymentIntentId: varchar("stripePaymentIntentId", { length: 255 }),
   // Student's message or questions
   studentMessage: text("studentMessage"),
+  // Actual consultation started time
+  consultationStartedAt: timestamp("consultationStartedAt"),
+  // Actual consultation completed time
+  consultationCompletedAt: timestamp("consultationCompletedAt"),
+  // Reschedule request time
+  rescheduleRequestedAt: timestamp("rescheduleRequestedAt"),
+  // User ID who requested reschedule
+  rescheduleRequestedBy: int("rescheduleRequestedBy"),
+  // Reschedule reason/notice
+  rescheduleNotice: text("rescheduleNotice"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });
@@ -374,3 +384,58 @@ export const emailVerificationTokens = mysqlTable("email_verification_tokens", {
 
 export type EmailVerificationToken = typeof emailVerificationTokens.$inferSelect;
 export type InsertEmailVerificationToken = typeof emailVerificationTokens.$inferInsert;
+
+/**
+ * QnA Questions - 멘티가 올리는 질문
+ */
+export const questions = mysqlTable("questions", {
+  id: int("id").autoincrement().primaryKey(),
+  authorId: int("authorId").notNull(), // References users.id (멘티)
+  title: varchar("title", { length: 255 }).notNull(),
+  content: text("content").notNull(),
+  // Category (optional)
+  category: varchar("category", { length: 100 }),
+  // Whether the question is anonymous
+  isAnonymous: boolean("isAnonymous").default(false).notNull(),
+  // Soft delete
+  deletedAt: timestamp("deletedAt"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type Question = typeof questions.$inferSelect;
+export type InsertQuestion = typeof questions.$inferInsert;
+
+/**
+ * QnA Answers - 멘토가 질문에 다는 답변
+ */
+export const answers = mysqlTable("answers", {
+  id: int("id").autoincrement().primaryKey(),
+  questionId: int("questionId").notNull(), // References questions.id
+  authorId: int("authorId").notNull(), // References users.id (멘토만)
+  content: text("content").notNull(),
+  // Soft delete
+  deletedAt: timestamp("deletedAt"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type Answer = typeof answers.$inferSelect;
+export type InsertAnswer = typeof answers.$inferInsert;
+
+/**
+ * QnA Answer Replies - 답변에 다는 댓글 (멘토/멘티 모두 가능)
+ */
+export const answerReplies = mysqlTable("answer_replies", {
+  id: int("id").autoincrement().primaryKey(),
+  answerId: int("answerId").notNull(), // References answers.id
+  authorId: int("authorId").notNull(), // References users.id
+  content: text("content").notNull(),
+  // Soft delete
+  deletedAt: timestamp("deletedAt"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type AnswerReply = typeof answerReplies.$inferSelect;
+export type InsertAnswerReply = typeof answerReplies.$inferInsert;

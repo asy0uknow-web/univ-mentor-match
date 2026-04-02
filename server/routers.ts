@@ -61,6 +61,8 @@ import { storagePut } from "./storage";
 import { hashPassword, verifyPassword, validateEmail, validatePasswordStrength } from "./auth-utils";
 import { signupProcedure, loginProcedure } from "./auth-procedures";
 import { createVerificationToken, verifyEmailToken, getPendingVerificationToken } from "./email-verification";
+import { startConsultation, completeConsultation, requestReschedule, acceptReschedule, rejectReschedule, isWithinStartWindow, isWithinCompleteWindow, calculateConsultationDuration } from "./booking-consultation";
+import { createQuestion, getQuestionById, getQuestions, updateQuestion, deleteQuestion, createAnswer, getAnswersByQuestionId, getAnswerById, updateAnswer, deleteAnswer, createAnswerReply, getRepliesByAnswerId, getReplyById, updateReply, deleteReply, getQuestionDetail } from "./qna";
 import { emailVerificationTokens } from "../drizzle/schema";
 import { eq } from "drizzle-orm";
 import { mentorGallery, messages, notifications, bookings, reviews, mentorProfiles, mentorVerifications, users, bugReports, mentorConsultationTypes, consultationProposals, studentProfiles } from "../drizzle/schema";
@@ -587,6 +589,181 @@ export const appRouter = router({
 
         await updateBookingStatus(input.bookingId, "cancelled");
         return { success: true };
+      }),
+
+    startConsultation: protectedProcedure
+      .input(z.object({ bookingId: z.number() }))
+      .mutation(async ({ ctx, input }) => {
+        const booking = await getBookingById(input.bookingId);
+        if (!booking) throw new Error("Booking not found");
+        
+        // 권한 검증 (학생 또는 멘토)
+        if (booking.studentId !== ctx.user.id && booking.mentorId !== ctx.user.id) {
+          throw new Error("Unauthorized");
+        }
+
+        // 시간 검증
+        if (!isWithinStartWindow(booking.scheduledAt)) {
+          throw new Error("Consultation can only be started 5 minutes before/after scheduled time");
+        }
+
+        try {
+          await startConsultation(input.bookingId);
+          
+          // 시스템 메시지 생성
+          await createMessage({
+            senderId: 0, // System message
+            recipientId: booking.studentId === ctx.user.id ? booking.mentorId : booking.studentId,
+            content: "[상담 시작]\n상담이 시작되었습니다.",
+            bookingId: input.bookingId,
+            messageType: "text",
+          });
+
+          return { success: true };
+        } catch (error: any) {
+          throw new Error(error.message || "Failed to start consultation");
+        }
+      }),
+
+    completeConsultation: protectedProcedure
+      .input(z.object({ bookingId: z.number() }))
+      .mutation(async ({ ctx, input }) => {
+        const booking = await getBookingById(input.bookingId);
+        if (!booking) throw new Error("Booking not found");
+        
+        // 권한 검증
+        if (booking.studentId !== ctx.user.id && booking.mentorId !== ctx.user.id) {
+          throw new Error("Unauthorized");
+        }
+
+        // 시간 검증
+        const durationHours = parseFloat(booking.duration.toString());
+        if (!isWithinCompleteWindow(booking.scheduledAt, durationHours)) {
+          throw new Error("Consultation can only be completed 5 minutes before/after scheduled end time");
+        }
+
+        try {
+          await completeConsultation(input.bookingId);
+          
+          // 시스템 메시지 생성
+          await createMessage({
+            senderId: 0, // System message
+            recipientId: booking.studentId === ctx.user.id ? booking.mentorId : booking.studentId,
+            content: "[상담 완료]\n상담이 완료되었습니다.",
+            bookingId: input.bookingId,
+            messageType: "text",
+          });
+
+          return { success: true };
+        } catch (error: any) {
+          throw new Error(error.message || "Failed to complete consultation");
+        }
+      }),
+
+    requestReschedule: protectedProcedure
+      .input(z.object({
+        bookingId: z.number(),
+        newScheduledAt: z.string(),
+        reason: z.string(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const booking = await getBookingById(input.bookingId);
+        if (!booking) throw new Error("Booking not found");
+        
+        // 권한 검증
+        if (booking.studentId !== ctx.user.id && booking.mentorId !== ctx.user.id) {
+          throw new Error("Unauthorized");
+        }
+
+        try {
+          await requestReschedule(
+            input.bookingId,
+            ctx.user.id,
+            new Date(input.newScheduledAt),
+            input.reason
+          );
+          
+          // 상대방에게 메시지 생성
+          const recipientId = booking.studentId === ctx.user.id ? booking.mentorId : booking.studentId;
+          await createMessage({
+            senderId: ctx.user.id,
+            recipientId: recipientId,
+            content: `[상담 일정 변경 요청]\n기존 예정 시간을 벗어나 상담 시작 요청이 들어왔습니다.\n새로운 일정 확인이 필요합니다.\n\n사유: ${input.reason}`,
+            bookingId: input.bookingId,
+            messageType: "text",
+          });
+
+          return { success: true };
+        } catch (error: any) {
+          throw new Error(error.message || "Failed to request reschedule");
+        }
+      }),
+
+    acceptReschedule: protectedProcedure
+      .input(z.object({
+        bookingId: z.number(),
+        newScheduledAt: z.string(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const booking = await getBookingById(input.bookingId);
+        if (!booking) throw new Error("Booking not found");
+        
+        // 권한 검증
+        if (booking.studentId !== ctx.user.id && booking.mentorId !== ctx.user.id) {
+          throw new Error("Unauthorized");
+        }
+
+        try {
+          await acceptReschedule(
+            input.bookingId,
+            ctx.user.id,
+            new Date(input.newScheduledAt)
+          );
+          
+          // 상대방에게 메시지 생성
+          const recipientId = booking.studentId === ctx.user.id ? booking.mentorId : booking.studentId;
+          await createMessage({
+            senderId: ctx.user.id,
+            recipientId: recipientId,
+            content: "[일정 변경 확정]\n새로운 상담 일정이 확정되었습니다.",
+            bookingId: input.bookingId,
+            messageType: "text",
+          });
+
+          return { success: true };
+        } catch (error: any) {
+          throw new Error(error.message || "Failed to accept reschedule");
+        }
+      }),
+
+    rejectReschedule: protectedProcedure
+      .input(z.object({ bookingId: z.number() }))
+      .mutation(async ({ ctx, input }) => {
+        const booking = await getBookingById(input.bookingId);
+        if (!booking) throw new Error("Booking not found");
+        
+        // 권한 검증
+        if (booking.studentId !== ctx.user.id && booking.mentorId !== ctx.user.id) {
+          throw new Error("Unauthorized");
+        }
+
+        try {
+          await rejectReschedule(input.bookingId, ctx.user.id);
+          
+          // 상대방에게 메시지 생성
+          const recipientId = booking.studentId === ctx.user.id ? booking.mentorId : booking.studentId;
+          await createMessage({
+            senderId: ctx.user.id,
+            recipientId: recipientId,
+            content: "[일정 변경 거절]\n기존 일정이 유지됩니다.",
+            bookingId: input.bookingId,
+            messageType: "text",
+          });
+
+          return { success: true };
+        } catch (error: any) {
+          throw new Error(error.message || "Failed to reject reschedule");
+        }
       }),
 
     createCheckoutSession: protectedProcedure
@@ -1252,7 +1429,7 @@ export const appRouter = router({
         await updateGalleryImageOrder(input.imageId, input.displayOrder);
         return { success: true };
       }),
-   }),
+  }),
   bugReport: router({
     create: protectedProcedure
       .input(z.object({
@@ -1746,5 +1923,172 @@ export const appRouter = router({
         );
       }),
   }),
+
+  qna: router({
+    getQuestions: publicProcedure
+      .input(z.object({
+        limit: z.number().default(20),
+        offset: z.number().default(0),
+        searchQuery: z.string().optional(),
+      }))
+      .query(async ({ input }) => {
+        return await getQuestions(input.limit, input.offset, input.searchQuery);
+      }),
+
+    getQuestionById: publicProcedure
+      .input(z.object({ questionId: z.number() }))
+      .query(async ({ input }) => {
+        return await getQuestionDetail(input.questionId);
+      }),
+
+    createQuestion: protectedProcedure
+      .input(z.object({
+        title: z.string().min(1, "제목을 입력해주세요"),
+        content: z.string().min(1, "내용을 입력해주세요"),
+        category: z.string().optional(),
+        isAnonymous: z.boolean().default(false),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const result = await createQuestion(
+          ctx.user.id,
+          input.title,
+          input.content,
+          input.category,
+          input.isAnonymous
+        );
+        return { success: true, questionId: (result as any).insertId };
+      }),
+
+    updateQuestion: protectedProcedure
+      .input(z.object({
+        questionId: z.number(),
+        title: z.string().optional(),
+        content: z.string().optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const question = await getQuestionById(input.questionId);
+        if (!question) throw new Error("Question not found");
+        if (question.authorId !== ctx.user.id) throw new Error("Unauthorized");
+
+        await updateQuestion(input.questionId, input.title, input.content);
+        return { success: true };
+      }),
+
+    deleteQuestion: protectedProcedure
+      .input(z.object({ questionId: z.number() }))
+      .mutation(async ({ ctx, input }) => {
+        const question = await getQuestionById(input.questionId);
+        if (!question) throw new Error("Question not found");
+        if (question.authorId !== ctx.user.id) throw new Error("Unauthorized");
+
+        await deleteQuestion(input.questionId);
+        return { success: true };
+      }),
+  }),
+
+  qnaAnswer: router({
+    create: protectedProcedure
+      .input(z.object({
+        questionId: z.number(),
+        content: z.string().min(1, "답변을 입력해주세요"),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        // 멘토 검증
+        const mentorProfile = await getMentorProfileByUserId(ctx.user.id);
+        if (!mentorProfile) throw new Error("Only mentors can write answers");
+
+        const question = await getQuestionById(input.questionId);
+        if (!question) throw new Error("Question not found");
+
+        const result = await createAnswer(
+          input.questionId,
+          ctx.user.id,
+          input.content
+        );
+        return { success: true, answerId: (result as any).insertId };
+      }),
+
+    update: protectedProcedure
+      .input(z.object({
+        answerId: z.number(),
+        content: z.string().min(1),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const answer = await getAnswerById(input.answerId);
+        if (!answer) throw new Error("Answer not found");
+        if (answer.authorId !== ctx.user.id) throw new Error("Unauthorized");
+
+        await updateAnswer(input.answerId, input.content);
+        return { success: true };
+      }),
+
+    delete: protectedProcedure
+      .input(z.object({ answerId: z.number() }))
+      .mutation(async ({ ctx, input }) => {
+        const answer = await getAnswerById(input.answerId);
+        if (!answer) throw new Error("Answer not found");
+        if (answer.authorId !== ctx.user.id) throw new Error("Unauthorized");
+
+        await deleteAnswer(input.answerId);
+        return { success: true };
+      }),
+
+    getByQuestionId: publicProcedure
+      .input(z.object({ questionId: z.number() }))
+      .query(async ({ input }) => {
+        return await getAnswersByQuestionId(input.questionId);
+      }),
+  }),
+
+  qnaReply: router({
+    create: protectedProcedure
+      .input(z.object({
+        answerId: z.number(),
+        content: z.string().min(1, "답글을 입력해주세요"),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const answer = await getAnswerById(input.answerId);
+        if (!answer) throw new Error("Answer not found");
+
+        const result = await createAnswerReply(
+          input.answerId,
+          ctx.user.id,
+          input.content
+        );
+        return { success: true, replyId: (result as any).insertId };
+      }),
+
+    update: protectedProcedure
+      .input(z.object({
+        replyId: z.number(),
+        content: z.string().min(1),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const reply = await getReplyById(input.replyId);
+        if (!reply) throw new Error("Reply not found");
+        if (reply.authorId !== ctx.user.id) throw new Error("Unauthorized");
+
+        await updateReply(input.replyId, input.content);
+        return { success: true };
+      }),
+
+    delete: protectedProcedure
+      .input(z.object({ replyId: z.number() }))
+      .mutation(async ({ ctx, input }) => {
+        const reply = await getReplyById(input.replyId);
+        if (!reply) throw new Error("Reply not found");
+        if (reply.authorId !== ctx.user.id) throw new Error("Unauthorized");
+
+        await deleteReply(input.replyId);
+        return { success: true };
+      }),
+
+    getByAnswerId: publicProcedure
+      .input(z.object({ answerId: z.number() }))
+      .query(async ({ input }) => {
+        return await getRepliesByAnswerId(input.answerId);
+      }),
+  }),
 });
+
 export type AppRouter = typeof appRouter;
