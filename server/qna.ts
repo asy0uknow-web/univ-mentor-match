@@ -49,7 +49,9 @@ export async function getQuestionById(id: number): Promise<any> {
 export async function getQuestions(
   limit: number = 20,
   offset: number = 0,
-  searchQuery?: string
+  searchQuery?: string,
+  category?: string,
+  sortBy: string = "recent"
 ): Promise<any[]> {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
@@ -65,6 +67,11 @@ export async function getQuestions(
         eq(questions.content, searchQuery)
       )
     );
+  }
+
+  // 카테고리 필터
+  if (category) {
+    whereCondition = and(whereCondition, eq(questions.category, category));
   }
 
   const result = await db

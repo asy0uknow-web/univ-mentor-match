@@ -3,19 +3,18 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { trpc } from "@/lib/trpc";
 import { useLocation, useParams } from "wouter";
-import { ArrowLeft, MessageCircle, User } from "lucide-react";
+import { ArrowLeft, MessageCircle, User, MessageSquare, Star } from "lucide-react";
 import { useState, useEffect } from "react";
 import { PageLayout } from "@/components/layout";
-import { setPageMeta, PAGE_META } from "@/lib/seo";
+import { setPageMeta } from "@/lib/seo";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
 
 export default function QnADetail() {
   const { user, isAuthenticated } = useAuth();
-  const [location, setLocation] = useLocation();
+  const [, setLocation] = useLocation();
   const [replyContent, setReplyContent] = useState("");
-  const [expandedAnswerId, setExpandedAnswerId] = useState<number | null>(null);
 
   // URL에서 questionId 추출 (wouter의 useParams 사용)
   const params = useParams();
@@ -131,24 +130,60 @@ export default function QnADetail() {
                 답변 {question.answers.length}개
               </h2>
               {question.answers.map((answer: any) => (
-                <Card key={answer.id}>
+                <Card key={answer.id} className={answer.mentorProfile ? "border-l-4 border-l-blue-500" : ""}>
                   <CardHeader className="pb-2 sm:pb-3">
                     <div className="flex items-start justify-between gap-2">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
+                      <div className="flex-1 min-w-0">
+                        {/* 작성자 정보 */}
+                        <div className="flex items-center gap-2 mb-2">
                           {answer.mentorProfile && (
-                            <Badge className="text-xs bg-blue-500">멘토</Badge>
+                            <Badge className="text-xs bg-blue-500 flex-shrink-0">멘토</Badge>
                           )}
-                          <span className="text-xs sm:text-sm font-semibold">
+                          <span className="text-xs sm:text-sm font-semibold truncate">
                             {answer.author?.name || "사용자"}
                           </span>
                         </div>
+
+                        {/* 멘토 프로필 정보 */}
+                        {answer.mentorProfile && (
+                          <div className="text-xs text-muted-foreground mb-2 space-y-1">
+                            <p className="truncate">
+                              {answer.mentorProfile.university} {answer.mentorProfile.major}
+                            </p>
+                            {answer.mentorProfile.averageRating && (
+                              <div className="flex items-center gap-1">
+                                <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                                <span>
+                                  {answer.mentorProfile.averageRating.toFixed(1)} 
+                                  ({answer.mentorProfile.reviewCount || 0}개 후기)
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                        )}
+
+                        {/* 작성 시간 */}
                         <p className="text-xs text-muted-foreground">
                           {format(new Date(answer.createdAt), "MMM dd HH:mm", { locale: ko })}
                         </p>
                       </div>
+
+                      {/* 상담 신청 버튼 */}
+                      {answer.mentorProfile && isAuthenticated && user?.userType === "high_school_student" && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setLocation(`/messages?mentorUUID=${answer.mentorProfile.uuid}`)}
+                          className="text-xs h-8 flex-shrink-0 whitespace-nowrap"
+                        >
+                          <MessageSquare className="h-3 w-3 mr-1" />
+                          상담 신청
+                        </Button>
+                      )}
                     </div>
                   </CardHeader>
+
+                  {/* 답변 내용 */}
                   <CardContent className="space-y-3">
                     <p className="text-xs sm:text-sm whitespace-pre-wrap">{answer.content}</p>
 

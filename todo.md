@@ -1789,3 +1789,20 @@
 - [ ] 프론트엔드: 네비게이션에 QnA 메뉴 추가
 - [x] 멘토 답변 카드 - 멘토 프로필 정보 + 상담 문의 버튼
 - [x] 상담 문의 연동 (기존 메시지/상담 조율 흐름 연결)
+
+
+## Q&A 검색 및 필터 기능 추가 (pt 2.1 → pt 2.2)
+- [x] QnAList.tsx: 검색창 추가 (제목/내용 검색)
+- [x] QnAList.tsx: 카테고리 필터 드롭다운 추가
+- [x] QnAList.tsx: 정렬 기능 추가 (최신순, 인기순, 답변 많은순)
+- [x] 백엔드 API: qna.getQuestions에 검색/필터 파라미터 추가 (searchQuery, category, sortBy)
+- [x] 프론트엔드: 필터 상태 관리 (useState로 검색어, 카테고리, 정렬 관리)
+- [x] 프론트엔드: 필터 적용 시 API 호출 (useEffect로 자동 재조회)
+
+## 멘토 답변 카드 개선 (pt 2.1 → pt 2.2)
+- [x] QnADetail.tsx: 답변 카드에 작성자 프로필 정보 추가 (이름, 대학, 전공)
+- [x] QnADetail.tsx: 답변 카드에 멘토 프로필 이미지 추가
+- [x] QnADetail.tsx: 답변 카드에 "상담 신청" 버튼 추가
+- [x] QnADetail.tsx: 상담 신청 버튼 클릭 시 메시지 페이지로 이동
+- [x] 백엔드 API: 답변 조회 시 작성자 정보 포함 (mentor_profiles JOIN)
+- [x] 프론트엔드: 답변 카드 레이아웃 개선 (작성자 정보 상단 배치)

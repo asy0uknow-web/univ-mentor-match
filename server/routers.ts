@@ -1930,9 +1930,11 @@ export const appRouter = router({
         limit: z.number().default(20),
         offset: z.number().default(0),
         searchQuery: z.string().optional(),
+        category: z.string().optional(),
+        sortBy: z.string().default("recent"),
       }))
       .query(async ({ input }) => {
-        return await getQuestions(input.limit, input.offset, input.searchQuery);
+        return await getQuestions(input.limit, input.offset, input.searchQuery, input.category, input.sortBy);
       }),
 
     getQuestionById: publicProcedure
