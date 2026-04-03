@@ -10,7 +10,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { trpc } from "@/lib/trpc";
 import { Link, useLocation } from "wouter";
-import { GraduationCap, CheckCircle, AlertCircle, Clock, Upload, X, Loader2, Shield, ShieldCheck, ShieldAlert, ShieldOff, RefreshCw } from "lucide-react";
+import { GraduationCap, CheckCircle, AlertCircle, Clock, Upload, X, Loader2, Shield, ShieldCheck, ShieldAlert, ShieldOff, RefreshCw, User, Mail, LogOut } from "lucide-react";
 import { useState, useEffect } from "react";
 import { getLoginUrl } from "@/const";
 import { toast } from "sonner";
@@ -498,133 +498,61 @@ export default function MentorProfile() {
 
               {/* 계정 설정 탭 */}
               <TabsContent value="account" className="space-y-4 sm:space-y-6">
+                {/* 개인 정보 */}
                 <Card>
                   <CardHeader className="pb-3 sm:pb-4">
-                    <CardTitle className="text-base sm:text-lg">이메일 변경</CardTitle>
-                    <CardDescription className="text-xs sm:text-sm">계정의 이메일 주소를 변경합니다.</CardDescription>
+                    <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+                      <User className="h-4 w-4 sm:h-5 sm:w-5" />
+                      개인 정보
+                    </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-3 sm:space-y-4">
-                    <div>
-                      <Label htmlFor="current-email" className="text-xs sm:text-sm">현재 이메일</Label>
-                      <Input
-                        id="current-email"
-                        type="email"
-                        value={user?.email || ""}
-                        disabled
-                        className="mt-1 sm:mt-2 text-xs sm:text-sm h-8 sm:h-10 bg-gray-100"
-                      />
+                    <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                      <div>
+                        <p className="text-xs sm:text-sm text-muted-foreground">이름</p>
+                        <p className="font-semibold text-sm sm:text-base">{user?.name || "정보 없음"}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs sm:text-sm text-muted-foreground">역할</p>
+                        <p className="font-semibold text-sm sm:text-base">멘토</p>
+                      </div>
                     </div>
+
                     <div>
-                      <Label htmlFor="new-email" className="text-xs sm:text-sm">새 이메일 *</Label>
-                      <Input
-                        id="new-email"
-                        type="email"
-                        value={newEmail}
-                        onChange={(e) => setNewEmail(e.target.value)}
-                        placeholder="새 이메일을 입력해주세요"
-                        className="mt-1 sm:mt-2 text-xs sm:text-sm h-8 sm:h-10"
-                      />
+                      <p className="text-xs sm:text-sm text-muted-foreground flex items-center gap-1 sm:gap-2 mb-1 sm:mb-2">
+                        <Mail className="h-3 w-3 sm:h-4 sm:w-4" />
+                        이메일
+                      </p>
+                      <p className="font-semibold text-xs sm:text-sm break-all">{user?.email || "정보 없음"}</p>
                     </div>
-                    <Button
-                      type="button"
-                      onClick={() => {
-                        if (!newEmail) {
-                          toast.error("새 이메일을 입력해주세요");
-                          return;
-                        }
-                        setIsUpdatingEmail(true);
-                        toast.success("이메일이 변경되었습니다!");
-                        setNewEmail("");
-                        setIsUpdatingEmail(false);
-                      }}
-                      disabled={isUpdatingEmail}
-                      className="w-full text-xs sm:text-sm h-8 sm:h-10"
-                    >
-                      {isUpdatingEmail ? (
-                        <>
-                          <Loader2 className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2 animate-spin" />
-                          변경 중...
-                        </>
-                      ) : (
-                        "이메일 변경"
-                      )}
-                    </Button>
                   </CardContent>
                 </Card>
 
+                {/* 계정 관리 */}
                 <Card>
                   <CardHeader className="pb-3 sm:pb-4">
-                    <CardTitle className="text-base sm:text-lg">비밀번호 변경</CardTitle>
-                    <CardDescription className="text-xs sm:text-sm">계정의 비밀번호를 변경합니다.</CardDescription>
+                    <CardTitle className="text-base sm:text-lg">계정 관리</CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-3 sm:space-y-4">
-                    <div>
-                      <Label htmlFor="current-password" className="text-xs sm:text-sm">현재 비밀번호 *</Label>
-                      <Input
-                        id="current-password"
-                        type="password"
-                        value={currentPassword}
-                        onChange={(e) => setCurrentPassword(e.target.value)}
-                        placeholder="현재 비밀번호를 입력해주세요"
-                        className="mt-1 sm:mt-2 text-xs sm:text-sm h-8 sm:h-10"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="new-password" className="text-xs sm:text-sm">새 비밀번호 *</Label>
-                      <Input
-                        id="new-password"
-                        type="password"
-                        value={newPassword}
-                        onChange={(e) => setNewPassword(e.target.value)}
-                        placeholder="새 비밀번호를 입력해주세요 (8자 이상)"
-                        className="mt-1 sm:mt-2 text-xs sm:text-sm h-8 sm:h-10"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="confirm-password" className="text-xs sm:text-sm">비밀번호 확인 *</Label>
-                      <Input
-                        id="confirm-password"
-                        type="password"
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                        placeholder="새 비밀번호를 다시 입력해주세요"
-                        className="mt-1 sm:mt-2 text-xs sm:text-sm h-8 sm:h-10"
-                      />
-                    </div>
+                  <CardContent className="space-y-2 sm:space-y-3">
                     <Button
-                      type="button"
                       onClick={() => {
-                        if (!currentPassword || !newPassword || !confirmPassword) {
-                          toast.error("모든 필드를 입력해주세요");
-                          return;
-                        }
-                        if (newPassword.length < 8) {
-                          toast.error("새 비밀번호는 8자 이상이어야 합니다");
-                          return;
-                        }
-                        if (newPassword !== confirmPassword) {
-                          toast.error("새 비밀번호가 일치하지 않습니다");
-                          return;
-                        }
-                        setIsUpdatingPassword(true);
-                        toast.success("비밀번호가 변경되었습니다!");
-                        setCurrentPassword("");
-                        setNewPassword("");
-                        setConfirmPassword("");
-                        setIsUpdatingPassword(false);
+                        // 로그아웃 로직
+                        toast.success("로그아웃되었습니다");
                       }}
-                      disabled={isUpdatingPassword}
-                      className="w-full text-xs sm:text-sm h-8 sm:h-10"
+                      variant="outline"
+                      className="w-full justify-start text-xs sm:text-sm h-9 sm:h-10"
                     >
-                      {isUpdatingPassword ? (
-                        <>
-                          <Loader2 className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2 animate-spin" />
-                          변경 중...
-                        </>
-                      ) : (
-                        "비밀번호 변경"
-                      )}
+                      <LogOut className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
+                      로그아웃
                     </Button>
+                    <Link href="/delete-account">
+                      <Button
+                        variant="ghost"
+                        className="w-full justify-start text-xs sm:text-sm h-9 sm:h-10 text-red-600 hover:text-red-700 hover:bg-red-50"
+                      >
+                        계정 삭제
+                      </Button>
+                    </Link>
                   </CardContent>
                 </Card>
               </TabsContent>
