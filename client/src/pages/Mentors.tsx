@@ -1,8 +1,7 @@
-import { Card } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { trpc } from "@/lib/trpc";
 import { Link } from "wouter";
-import { Search, X, ChevronRight, Star, MapPin, BadgeCheck, Sparkles } from "lucide-react";
+import { Search, X, ChevronRight, Star, MapPin, BadgeCheck, Sparkles, TrendingUp, AlertCircle } from "lucide-react";
 import { useState, useEffect, useMemo } from "react";
 import { PageLayout } from "@/components/layout";
 import { setPageMeta, PAGE_META } from "@/lib/seo";
@@ -29,6 +28,13 @@ const GRADES = [
   { value: "graduate", label: "대학원" },
 ] as const;
 
+const SORT_OPTIONS = [
+  { value: "rating", label: "평점 높은순" },
+  { value: "recent", label: "최신 가입순" },
+  { value: "reviews", label: "리뷰 많은순" },
+  { value: "consultations", label: "상담 많은순" },
+] as const;
+
 export default function Mentors() {
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
@@ -40,6 +46,7 @@ export default function Mentors() {
   const [showRegionPanel, setShowRegionPanel] = useState(false);
   const [tempSelectedRegions, setTempSelectedRegions] = useState<string[]>([]);
   const [regionSearchTerm, setRegionSearchTerm] = useState("");
+  const [sortBy, setSortBy] = useState("rating");
 
   useEffect(() => {
     setPageMeta(PAGE_META.mentors);
@@ -110,164 +117,165 @@ export default function Mentors() {
     );
   };
 
-  const { data: mentorsData, isLoading } = trpc.mentor.listAll.useQuery();
-
-  const filteredMentors = useMemo(() => {
-    if (!mentorsData) return [];
-
-    return mentorsData.filter((mentor) => {
-      if (debouncedSearch.trim()) {
-        const searchLower = debouncedSearch.toLowerCase();
-        const mentorName = mentor.user.name?.toLowerCase() || "";
-        const university = mentor.profile.university?.toLowerCase() || "";
-        const major = mentor.profile.major?.toLowerCase() || "";
-        const bio = mentor.profile.bio?.toLowerCase() || "";
-
-        if (
-          !mentorName.includes(searchLower) &&
-          !university.includes(searchLower) &&
-          !major.includes(searchLower) &&
-          !bio.includes(searchLower)
-        ) {
-          return false;
-        }
-      }
-
-      if (selectedRegions.length > 0) {
-        if (!mentor.profile.region || !selectedRegions.includes(mentor.profile.region)) {
-          return false;
-        }
-      }
-
-      if (selectedMajors.length > 0) {
-        const selectedMajorNames = selectedMajors.map((majorId) => {
-          const majorName = getMajorNames([majorId])[0];
-          return majorName?.toLowerCase() || "";
-        }).filter(name => name !== "");
-
-        const mentorMajor = mentor.profile.major?.toLowerCase() || "";
-        const mentorMajorMatch = selectedMajorNames.some((majorName) => 
-          mentorMajor === majorName
-        );
-
-        if (!mentorMajorMatch) {
-          return false;
-        }
-      }
-
-      return true;
-    });
-  }, [mentorsData, debouncedSearch, selectedRegions, selectedMajors]);
-
   const filteredMajorsBySearch = useMemo(() => {
-    if (!majorSearchTerm.trim()) {
-      return COLLEGES.flatMap((college) => college.majors);
-    }
-
-    const lowerSearchTerm = majorSearchTerm.toLowerCase();
     return COLLEGES.flatMap((college) =>
       college.majors.filter((major) =>
-        major.name.toLowerCase().includes(lowerSearchTerm)
+        major.name.toLowerCase().includes(majorSearchTerm.toLowerCase())
       )
     );
   }, [majorSearchTerm]);
 
   const filteredRegionsBySearch = useMemo(() => {
-    if (!regionSearchTerm.trim()) {
-      return REGIONS;
-    }
-
-    const lowerSearchTerm = regionSearchTerm.toLowerCase();
     return REGIONS.filter((region) =>
-      region.label.toLowerCase().includes(lowerSearchTerm)
+      region.label.toLowerCase().includes(regionSearchTerm.toLowerCase())
     );
   }, [regionSearchTerm]);
 
+  const { data: mentors = [], isLoading } = trpc.mentor.getTopMentors.useQuery({
+    limit: 50,
+  });
+
+  // 클라이언트 측 필터링
+  const filteredMentors = useMemo(() => {
+    let result = mentors;
+
+    // 검색어 필터링
+    if (debouncedSearch) {
+      const term = debouncedSearch.toLowerCase();
+      result = result.filter((m: any) =>
+        m.user?.name?.toLowerCase().includes(term) ||
+        m.university?.toLowerCase().includes(term) ||
+        m.major?.toLowerCase().includes(term)
+      );
+    }
+
+    // 전공 필터링
+    if (selectedMajors.length > 0) {
+      result = result.filter((m: any) => selectedMajors.includes(m.major));
+    }
+
+    // 지역 필터링
+    if (selectedRegions.length > 0) {
+      result = result.filter((m: any) => selectedRegions.includes(m.region));
+    }
+
+    // 정렬
+    const sorted = [...result];
+    if (sortBy === "rating") {
+      sorted.sort((a: any, b: any) => (b.averageRating || 0) - (a.averageRating || 0));
+    } else if (sortBy === "reviews") {
+      sorted.sort((a: any, b: any) => (b.reviewCount || 0) - (a.reviewCount || 0));
+    } else if (sortBy === "recent") {
+      sorted.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    }
+
+    return sorted;
+  }, [mentors, debouncedSearch, selectedMajors, selectedRegions, sortBy]);
+
   return (
     <PageLayout>
-      <div className="space-y-4 sm:space-y-6">
-        {/* 헤더 */}
-        <div className="pt-2 sm:pt-4 pl-2">
-          <h1 className="text-xl sm:text-3xl font-bold">멘토 찾기</h1>
-          <p className="text-xs sm:text-sm text-muted-foreground mt-1">
-            당신의 진로를 함께 고민해줄 멘토를 찾아보세요
-          </p>
-        </div>
-
-        {/* 통합 검색 카드 - 모바일 최적화 */}
-        <div className="mt-4 sm:mt-10">
-          {/* 모바일: 스택 레이아웃, 데스크톱: 가로 레이아웃 */}
-          <div className="flex flex-col sm:flex-row gap-2 sm:gap-0">
-            {/* 검색 바 */}
-            <div className="bg-white border border-gray-200 rounded-full shadow-md hover:shadow-lg transition-shadow duration-300 p-2 flex items-center gap-0 flex-1">
-              <Search className="h-4 sm:h-5 w-4 sm:w-5 text-gray-400 flex-shrink-0 ml-3 sm:ml-6" />
-              <input
-                type="text"
-                placeholder="대학, 전공, 이름"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                onKeyDown={handleKeyDown}
-                className="flex-1 bg-transparent text-xs sm:text-sm placeholder-gray-400 focus:outline-none px-3 py-2 sm:px-6 sm:py-3"
-              />
+      <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
+        {/* 헤더 섹션 */}
+        <div className="bg-white border-b border-gray-200 sticky top-16 z-40">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+            <div className="mb-6">
+              <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-2">
+                멘토 찾기
+              </h1>
+              <p className="text-gray-600 text-sm sm:text-base">
+                당신의 목표를 함께 이루어줄 멘토를 찾아보세요
+              </p>
             </div>
 
-            {/* 필터 버튼 그룹 */}
-            <div className="flex items-center gap-2 sm:gap-0">
-              {/* 학과 필터 */}
-              <button
-                onClick={openMajorPanel}
-                className="flex-1 sm:flex-none flex items-center justify-center gap-1 sm:gap-2 px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors duration-200 whitespace-nowrap border border-gray-200 sm:border-0 sm:border-l sm:border-gray-300 sm:rounded-none"
-              >
-                <span>학과</span>
-                {selectedMajors.length > 0 && (
-                  <span className="bg-green-100 text-green-700 rounded-full px-1.5 py-0.5 text-xs font-semibold">
-                    {selectedMajors.length}
-                  </span>
-                )}
-              </button>
+            {/* 검색 및 필터 바 */}
+            <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
+              {/* 검색 바 */}
+              <div className="bg-white border border-gray-200 rounded-full shadow-sm hover:shadow-md transition-shadow duration-300 p-2 flex items-center gap-0 flex-1">
+                <Search className="h-4 sm:h-5 w-4 sm:w-5 text-gray-400 flex-shrink-0 ml-3 sm:ml-6" />
+                <input
+                  type="text"
+                  placeholder="대학, 전공, 이름"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  className="flex-1 bg-transparent text-xs sm:text-sm placeholder-gray-400 focus:outline-none px-3 py-2 sm:px-6 sm:py-3"
+                />
+              </div>
 
-              {/* 지역 필터 */}
-              <button
-                onClick={openRegionPanel}
-                className="flex-1 sm:flex-none flex items-center justify-center gap-1 sm:gap-2 px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors duration-200 whitespace-nowrap border border-gray-200 sm:border-0 sm:border-l sm:border-gray-300 sm:rounded-none"
-              >
-                <span>지역</span>
-                {selectedRegions.length > 0 && (
-                  <span className="bg-green-100 text-green-700 rounded-full px-1.5 py-0.5 text-xs font-semibold">
-                    {selectedRegions.length}
-                  </span>
-                )}
-              </button>
+              {/* 필터 및 정렬 버튼 그룹 */}
+              <div className="flex items-center gap-2">
+                {/* 학과 필터 */}
+                <button
+                  onClick={openMajorPanel}
+                  className="flex items-center justify-center gap-1 px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors border border-gray-200"
+                >
+                  <span>학과</span>
+                  {selectedMajors.length > 0 && (
+                    <span className="bg-green-100 text-green-700 rounded-full px-1.5 py-0.5 text-xs font-semibold">
+                      {selectedMajors.length}
+                    </span>
+                  )}
+                </button>
 
-              {/* 검색 버튼 */}
-              <button
-                onClick={handleSearch}
-                className="flex items-center justify-center w-10 h-10 rounded-full bg-green-500 hover:bg-green-600 transition-colors duration-200 text-white flex-shrink-0 sm:rounded-l-none"
-              >
-                <Search className="h-4 sm:h-5 w-4 sm:w-5" />
-              </button>
+                {/* 지역 필터 */}
+                <button
+                  onClick={openRegionPanel}
+                  className="flex items-center justify-center gap-1 px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors border border-gray-200"
+                >
+                  <span>지역</span>
+                  {selectedRegions.length > 0 && (
+                    <span className="bg-green-100 text-green-700 rounded-full px-1.5 py-0.5 text-xs font-semibold">
+                      {selectedRegions.length}
+                    </span>
+                  )}
+                </button>
+
+                {/* 정렬 옵션 */}
+                <Select value={sortBy} onValueChange={setSortBy}>
+                  <SelectTrigger className="w-auto border-gray-200 text-xs sm:text-sm">
+                    <TrendingUp className="h-4 w-4 mr-1" />
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {SORT_OPTIONS.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+
+                {/* 검색 버튼 */}
+                <button
+                  onClick={handleSearch}
+                  className="flex items-center justify-center px-3 sm:px-4 py-2 rounded-lg bg-green-600 hover:bg-green-700 transition-colors text-white text-xs sm:text-sm font-medium"
+                >
+                  <Search className="h-4 w-4" />
+                </button>
+              </div>
             </div>
+
+            {/* 초기화 버튼 */}
+            {(selectedMajors.length > 0 || selectedRegions.length > 0 || debouncedSearch) && (
+              <div className="flex justify-center mt-4">
+                <Button
+                  onClick={() => {
+                    setSearchTerm("");
+                    setDebouncedSearch("");
+                    setSelectedMajors([]);
+                    setSelectedRegions([]);
+                    setSortBy("rating");
+                  }}
+                  variant="ghost"
+                  size="sm"
+                  className="text-xs text-gray-500 hover:text-gray-700"
+                >
+                  <X className="h-3 w-3 mr-1" />
+                  필터 초기화
+                </Button>
+              </div>
+            )}
           </div>
-
-          {/* 초기화 버튼 */}
-          {(selectedMajors.length > 0 || selectedRegions.length > 0 || debouncedSearch) && (
-            <div className="flex justify-center mt-3 sm:mt-4">
-              <Button
-                onClick={() => {
-                  setSearchTerm("");
-                  setDebouncedSearch("");
-                  setSelectedMajors([]);
-                  setSelectedRegions([]);
-                }}
-                variant="ghost"
-                size="sm"
-                className="text-xs text-gray-500 hover:text-gray-700"
-              >
-                <X className="h-3 w-3 mr-1" />
-                필터 초기화
-              </Button>
-            </div>
-          )}
         </div>
 
         {/* 학과 선택 사이드 패널 */}
@@ -349,7 +357,7 @@ export default function Mentors() {
                   variant="default"
                   className="flex-1 h-8 text-xs"
                 >
-                  선택
+                  적용
                 </Button>
               </div>
             </div>
@@ -402,7 +410,7 @@ export default function Mentors() {
                   <p className="text-xs font-medium text-muted-foreground mb-2">선택된 지역 ({tempSelectedRegions.length})</p>
                   <div className="flex flex-wrap gap-2">
                     {tempSelectedRegions.map((regionValue) => {
-                      const regionName = REGIONS.find((r) => r.value === regionValue)?.label || regionValue;
+                      const regionName = REGIONS.find(r => r.value === regionValue)?.label || regionValue;
                       return (
                         <div
                           key={regionValue}
@@ -435,176 +443,92 @@ export default function Mentors() {
                   variant="default"
                   className="flex-1 h-8 text-xs"
                 >
-                  선택
+                  적용
                 </Button>
               </div>
             </div>
           </div>
         )}
 
-        {/* Mentors Grid - 모바일 최적화 */}
-        {isLoading ? (
-          <div className="flex flex-col items-center justify-center py-12">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4" />
-            <p className="text-xs sm:text-sm text-muted-foreground">멘토 목록을 불러오는 중...</p>
-          </div>
-        ) : filteredMentors.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6 mt-6 sm:mt-8">
-            {filteredMentors.map((mentor) => (
-              <MentorCard key={mentor.profile.id} mentor={mentor} />
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-12">
-            <p className="text-xs sm:text-sm text-muted-foreground">검색 결과가 없습니다</p>
-          </div>
-        )}
-      </div>
-    </PageLayout>
-  );
-}
+        {/* 멘토 목록 */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+          {isLoading ? (
+            <div className="flex justify-center items-center py-12">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600"></div>
+            </div>
+          ) : filteredMentors.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-gray-600 text-sm sm:text-base">검색 결과가 없습니다</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredMentors.map((mentor: any) => (
+                <Link key={mentor.id} href={`/mentor/${mentor.uuid}`}>
+                  <a className="group">
+                    <div className="bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-lg hover:border-gray-300 transition-all duration-300 h-full flex flex-col">
+                      {/* 멘토 정보 헤더 */}
+                      <div className="p-4 sm:p-6 border-b border-gray-100">
+                        <div className="flex items-start justify-between mb-3">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-1">
+                              <h3 className="text-base sm:text-lg font-bold text-gray-900 group-hover:text-green-600 transition-colors">
+                                {mentor.user?.name}
+                              </h3>
+                              {mentor.verificationStatus === "approved" && (
+                                <BadgeCheck className="h-4 w-4 text-green-600 flex-shrink-0" />
+                              )}
+                            </div>
+                            <div className="flex items-center gap-1 text-xs sm:text-sm text-gray-600 mb-2">
+                              {getUniversityLogo(mentor.university) && (
+                                <img
+                                  src={getUniversityLogo(mentor.university)}
+                                  alt={mentor.university}
+                                  className="h-4 w-4 rounded-full"
+                                />
+                              )}
+                              <span>{mentor.university}</span>
+                            </div>
+                            <p className="text-xs sm:text-sm text-gray-600">{mentor.major}</p>
+                          </div>
+                          {mentor.averageRating && mentor.averageRating > 0 && (
+                            <div className="flex items-center gap-1 bg-yellow-50 px-2 py-1 rounded-lg">
+                              <Star className="h-4 w-4 text-yellow-400 fill-yellow-400" />
+                              <span className="text-sm font-semibold text-gray-900">
+                                {mentor.averageRating.toFixed(1)}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
 
-function MentorCard({
-  mentor,
-}: {
-  mentor: {
-    user: { id: number; name: string | null };
-    profile: {
-      id: number;
-      userId: number;
-      university: string;
-      major: string;
-      grade: string;
-      region: string | null;
-      bio: string | null;
-      hourlyRate: string | null;
-      availableSlots: string | null;
-      verificationStatus: string;
-      isDeleted: boolean;
-      averageRating: string | null;
-      reviewCount: number;
-      createdAt: Date;
-      updatedAt: Date;
-      consultationTypes?: string[] | null;
-    };
-  };
-}) {
-  const universityLogo = getUniversityLogo(mentor.profile.university);
+                      {/* 상담 정보 */}
+                      <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-100">
+                        <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-600 mb-2">
+                          <Sparkles className="h-4 w-4 text-green-600" />
+                          <span className="font-medium">{mentor.field || "상담 분야 미설정"}</span>
+                        </div>
+                        {mentor.reviewCount > 0 && (
+                          <div className="text-xs text-gray-500">
+                            리뷰 {mentor.reviewCount}개
+                          </div>
+                        )}
+                      </div>
 
-  const regionLabel =
-    REGIONS.find((r) => r.value === mentor.profile.region)?.label ??
-    mentor.profile.region ??
-    "";
-
-  const gradeLabel = (() => {
-    const g = mentor.profile.grade;
-    if (!g) return "";
-    if (/^[1-4]$/.test(g)) return `${g}학년`;
-    if (g === "graduate") return "대학원";
-    return g;
-  })();
-
-  const consultationTypeLabels: { [key: string]: { label: string; color: string } } = {
-    "career_counseling": { label: "진로상담", color: "bg-blue-100 text-blue-700" },
-    "university_tour": { label: "대학탐방", color: "bg-green-100 text-green-700" },
-    "resume_consulting": { label: "생기부컨설팅", color: "bg-purple-100 text-purple-700" },
-    "academic_management": { label: "학업관리", color: "bg-orange-100 text-orange-700" },
-  };
-
-  const consultationTypes = mentor.profile.consultationTypes || [];
-
-  const ratingValue =
-    mentor.profile.averageRating && mentor.profile.averageRating !== "0"
-      ? Number(mentor.profile.averageRating).toFixed(1)
-      : null;
-
-  return (
-    <Link
-      href={`/mentor/${(mentor.profile as any).uuid || mentor.profile.id}`}
-      className="block rounded-lg border border-border hover:border-primary hover:shadow-md transition-all cursor-pointer bg-card overflow-hidden"
-    >
-      <div className="flex gap-2 sm:gap-4 p-3 sm:p-4">
-        {/* 좌측: 멘토 프로필 이미지 */}
-        <div className="w-20 sm:w-28 h-20 sm:h-28 rounded-xl sm:rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center overflow-hidden flex-shrink-0">
-          <img
-            src="https://d2xsxph8kpxj0f.cloudfront.net/310519663280786037/Gy6RaYwMhnXP5TJQbTpkxJ/mentor-default-avatar-XSMy7BuwnsbcDukFiGhL9q.webp"
-            alt={mentor.user.name || "멘토 프로필"}
-            className="w-full h-full object-cover"
-          />
-        </div>
-        {/* 우측: 텍스트 영역 */}
-        <div className="flex-1 min-w-0 flex flex-col gap-1 sm:gap-2">
-          {/* 첫째 줄: 멘토 이름 */}
-          <div className="flex items-center gap-1 sm:gap-2">
-            <h3 className="text-sm sm:text-lg font-bold leading-tight line-clamp-1">
-              {mentor.user.name || "멘토"}
-            </h3>
-            {mentor.profile.verificationStatus === "approved" && (
-              <BadgeCheck className="h-3 sm:h-4 w-3 sm:w-4 text-green-600 flex-shrink-0" />
-            )}
-          </div>
-
-          {/* 둘째 줄: 대학교 이름 · 학년 */}
-          <p className="text-xs text-muted-foreground line-clamp-1">
-            {mentor.profile.university} · {gradeLabel}
-          </p>
-
-          {/* 셋째 줄: 학과 배지 */}
-          <div className="flex flex-wrap gap-1">
-            <span className="inline-block bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full font-medium line-clamp-1">
-              {mentor.profile.major}
-            </span>
-          </div>
-
-          {/* 넷째 줄: 자기소개글 */}
-          <p className="text-xs text-muted-foreground line-clamp-1 sm:line-clamp-2 leading-4">
-            {mentor.profile.bio || "소개가 아직 없어요."}
-          </p>
-
-          {/* 다섯째 줄: 상담 유형 배지 */}
-          {consultationTypes.length > 0 && (
-            <div className="flex flex-wrap gap-0.5 mt-1 sm:mt-2">
-              {consultationTypes.slice(0, 2).map((type) => {
-                const typeInfo = consultationTypeLabels[type];
-                return (
-                  <span
-                    key={type}
-                    className={`text-xs px-1.5 py-0.5 rounded-full font-medium ${typeInfo?.color || "bg-gray-100 text-gray-700"}`}
-                  >
-                    {typeInfo?.label || type}
-                  </span>
-                );
-              })}
+                      {/* CTA 버튼 */}
+                      <div className="px-4 sm:px-6 py-3 sm:py-4 mt-auto">
+                        <Button className="w-full bg-green-600 hover:bg-green-700 text-white text-xs sm:text-sm font-medium py-2 rounded-lg transition-colors">
+                          상담 신청
+                          <ChevronRight className="h-4 w-4 ml-1" />
+                        </Button>
+                      </div>
+                    </div>
+                  </a>
+                </Link>
+              ))}
             </div>
           )}
-
-          {/* 하단 푸터: border-t로 분리 */}
-          <div className="mt-auto pt-2 sm:pt-3 border-t border-border flex items-center gap-1 sm:gap-2 text-xs">
-            {/* 좌측: MapPin 아이콘 + 지역명 */}
-            {regionLabel && (
-              <div className="flex items-center gap-0.5 text-muted-foreground min-w-0">
-                <MapPin className="h-3 w-3 flex-shrink-0" />
-                <span className="truncate">{regionLabel}</span>
-              </div>
-            )}
-
-            {/* 우측: Star 아이콘 + 평점 또는 신규 배지 */}
-            <div className="ml-auto flex items-center gap-1 text-muted-foreground flex-shrink-0">
-              {ratingValue ? (
-                <>
-                  <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                  <span className="font-semibold">{ratingValue}</span>
-                  <span className="text-xs">({mentor.profile.reviewCount})</span>
-                </>
-              ) : (
-                <span className="text-xs px-2 py-0.5 bg-emerald-100 text-emerald-700 rounded-full font-semibold">
-                  신규
-                </span>
-              )}
-            </div>
-          </div>
         </div>
       </div>
-    </Link>
+    </PageLayout>
   );
 }

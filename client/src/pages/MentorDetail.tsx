@@ -1,9 +1,8 @@
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { trpc } from "@/lib/trpc";
 import { Link, useParams, useLocation } from "wouter";
-import { GraduationCap, Star, ArrowLeft, MessageCircle } from "lucide-react";
-
+import { GraduationCap, Star, ArrowLeft, MessageCircle, CheckCircle, Sparkles, Users, Clock, Award } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { getLoginUrl } from "@/const";
 import { toast } from "sonner";
@@ -17,7 +16,6 @@ const DRAFT_MESSAGE_KEY = "univmatch:draftMessage";
 export default function MentorDetail() {
   const { id } = useParams();
   const { user, isAuthenticated } = useAuth();
-  // id는 UUID 또는 숫자 ID
   const isValidMentorId = !!(id && id.length > 0);
   
   const { data: mentor, isLoading, isError, error } = trpc.mentor.getById.useQuery(
@@ -103,7 +101,6 @@ export default function MentorDetail() {
       setLocation('/login');
       return;
     }
-    // UUID를 사용하여 메시지 페이지로 이동
     const profileId = mentor?.profile?.uuid || id;
     setLocation(`/messages?mentorId=${profileId}`);
   };
@@ -113,158 +110,228 @@ export default function MentorDetail() {
       setLocation('/login');
       return;
     }
-    // UUID를 사용하여 예약 페이지로 이동
     const profileId = mentor?.profile?.uuid || id;
     setLocation(`/bookings?mentorId=${profileId}`);
   };
 
+  const avgRating = reviews && reviews.length > 0
+    ? (reviews.reduce((sum, r) => sum + (r.review.rating || 0), 0) / reviews.length).toFixed(1)
+    : null;
+
   return (
     <PageLayout>
-      <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-8">
-        <Link href="/mentors">
-          <Button variant="ghost" className="mb-3 sm:mb-4 px-2 sm:px-4 h-8 sm:h-10 text-xs sm:text-sm">
-            <ArrowLeft className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-            돌아가기
-          </Button>
-        </Link>
+      <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
+        {/* 헤더 */}
+        <div className="bg-white border-b border-gray-200">
+          <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6">
+            <Link href="/mentors">
+              <Button variant="ghost" className="mb-3 sm:mb-4 px-2 sm:px-4 h-8 sm:h-10 text-xs sm:text-sm">
+                <ArrowLeft className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                돌아가기
+              </Button>
+            </Link>
+          </div>
+        </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
-          <div className="lg:col-span-2 space-y-4 sm:space-y-6">
-            <Card className="overflow-hidden">
-              <CardContent className="p-3 sm:p-6">
-                <div className="flex flex-col sm:flex-row gap-3 sm:gap-6">
-                  <div className="flex-shrink-0">
-                    <img
-                      src="https://d2xsxph8kpxj0f.cloudfront.net/310519663280786037/Gy6RaYwMhnXP5TJQbTpkxJ/mentor-default-avatar-XSMy7BuwnsbcDukFiGhL9q.webp"
-                      alt={mentor.user.name || "멘토 프로필"}
-                      className="w-20 h-20 sm:w-32 sm:h-32 rounded-lg object-cover"
-                    />
-                  </div>
-
-                  <div className="flex-1 min-w-0">
-                    <h1 className="text-lg sm:text-2xl font-bold mb-1 sm:mb-2 truncate">{mentor.user.name}</h1>
-                    <div className="space-y-1 sm:space-y-2 text-xs sm:text-sm text-muted-foreground">
-                      <p className="flex items-center gap-1 sm:gap-2">
-                        <GraduationCap className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
-                        <span className="truncate">{mentor.profile?.university}</span>
-                      </p>
-                      <p className="truncate">{mentor.profile?.major}</p>
-                      {mentor.profile?.grade && <p>{mentor.profile.grade}</p>}
+        <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-12">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
+            {/* 메인 콘텐츠 */}
+            <div className="lg:col-span-2 space-y-6 sm:space-y-8">
+              {/* 멘토 프로필 카드 */}
+              <Card className="overflow-hidden border-0 shadow-md">
+                <CardContent className="p-4 sm:p-8">
+                  <div className="flex flex-col sm:flex-row gap-4 sm:gap-8">
+                    <div className="flex-shrink-0">
+                      <img
+                        src="https://d2xsxph8kpxj0f.cloudfront.net/310519663280786037/Gy6RaYwMhnXP5TJQbTpkxJ/mentor-default-avatar-XSMy7BuwnsbcDukFiGhL9q.webp"
+                        alt={mentor.user.name || "멘토 프로필"}
+                        className="w-24 h-24 sm:w-40 sm:h-40 rounded-xl object-cover"
+                      />
                     </div>
 
-                    {reviews && reviews.length > 0 && (
-                      <div className="flex items-center gap-1 sm:gap-2 mt-2 sm:mt-3">
-                        <div className="flex">
-                          {Array.from({ length: 5 }).map((_, i) => {
-                            const avgRating = Math.round(
-                              reviews.reduce((sum, r) => sum + (r.review.rating || 0), 0) / reviews.length
-                            );
-                            return (
+                    <div className="flex-1">
+                      <div className="flex items-start justify-between mb-3 sm:mb-4">
+                        <div>
+                          <h1 className="text-2xl sm:text-3xl font-bold mb-1">{mentor.user.name}</h1>
+                          <div className="flex items-center gap-2 text-sm text-gray-600 mb-3">
+                            <GraduationCap className="w-4 h-4" />
+                            <span>{mentor.profile?.university}</span>
+                            <span className="text-gray-400">•</span>
+                            <span>{mentor.profile?.major}</span>
+                          </div>
+                        </div>
+                        {mentor.profile?.verificationStatus === "approved" && (
+                          <div className="flex items-center gap-1 px-3 py-1 bg-green-50 text-green-700 rounded-full text-xs font-medium">
+                            <CheckCircle className="w-4 h-4" />
+                            검증완료
+                          </div>
+                        )}
+                      </div>
+
+                      {/* 신뢰도 지표 */}
+                      <div className="grid grid-cols-3 gap-3 sm:gap-4">
+                        {avgRating && (
+                          <div className="bg-yellow-50 p-3 rounded-lg">
+                            <div className="flex items-center gap-1 mb-1">
+                              <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                              <span className="text-lg font-bold">{avgRating}</span>
+                            </div>
+                            <p className="text-xs text-gray-600">{reviews?.length || 0}개 리뷰</p>
+                          </div>
+                        )}
+                        <div className="bg-blue-50 p-3 rounded-lg">
+                          <div className="flex items-center gap-1 mb-1">
+                            <Users className="w-4 h-4 text-blue-600" />
+                            <span className="text-lg font-bold">5+</span>
+                          </div>
+                          <p className="text-xs text-gray-600">상담 경험</p>
+                        </div>
+                        <div className="bg-green-50 p-3 rounded-lg">
+                          <div className="flex items-center gap-1 mb-1">
+                            <Award className="w-4 h-4 text-green-600" />
+                            <span className="text-lg font-bold">100%</span>
+                          </div>
+                          <p className="text-xs text-gray-600">완료율</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* 소개 */}
+              {mentor.profile?.bio && (
+                <Card className="border-0 shadow-sm">
+                  <CardHeader className="pb-3 sm:pb-4">
+                    <CardTitle className="text-lg sm:text-xl">소개</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm sm:text-base leading-relaxed text-gray-700 whitespace-pre-wrap break-words">
+                      {mentor.profile.bio}
+                    </p>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* 상담 분야 */}
+              {mentor.profile?.field && (
+                <Card className="border-0 shadow-sm">
+                  <CardHeader className="pb-3 sm:pb-4">
+                    <CardTitle className="text-lg sm:text-xl flex items-center gap-2">
+                      <Sparkles className="w-5 h-5 text-green-600" />
+                      상담 분야
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex flex-wrap gap-2">
+                      <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium">
+                        {mentor.profile.field}
+                      </span>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* 갤러리 */}
+              {gallery && gallery.length > 0 && (
+                <Card className="border-0 shadow-sm">
+                  <CardHeader className="pb-3 sm:pb-4">
+                    <CardTitle className="text-lg sm:text-xl">갤러리</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                      {gallery.map((image) => (
+                        <img
+                          key={image.id}
+                          src={image.imageUrl}
+                          alt="갤러리"
+                          className="w-full aspect-square object-cover rounded-lg"
+                        />
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* 후기 */}
+              {reviews && reviews.length > 0 && (
+                <Card className="border-0 shadow-sm">
+                  <CardHeader className="pb-3 sm:pb-4">
+                    <CardTitle className="text-lg sm:text-xl">상담 후기</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    {reviews.slice(0, 3).map((review) => (
+                      <div key={review.review.id} className="pb-4 border-b last:border-b-0">
+                        <div className="flex items-start justify-between gap-2 mb-2">
+                          <p className="font-medium text-sm">{review.student.name || "익명"}</p>
+                          <div className="flex">
+                            {Array.from({ length: review.review.rating }).map((_, i) => (
                               <Star
                                 key={i}
-                                className={`w-3 h-3 sm:w-4 sm:h-4 ${
-                                  i < avgRating
-                                    ? "fill-yellow-400 text-yellow-400"
-                                    : "text-gray-300"
-                                }`}
+                                className="w-3 h-3 fill-yellow-400 text-yellow-400"
                               />
-                            );
-                          })}
+                            ))}
+                          </div>
                         </div>
-                        <span className="text-xs sm:text-sm">({reviews.length})</span>
+                        <p className="text-sm text-gray-700 leading-relaxed break-words">
+                          {review.review.comment || "리뷰 내용이 없습니다."}
+                        </p>
                       </div>
-                    )}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {mentor.profile?.bio && (
-              <Card>
-                <CardHeader className="pb-2 sm:pb-3">
-                  <CardTitle className="text-base sm:text-lg">소개</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-xs sm:text-sm leading-relaxed text-muted-foreground whitespace-pre-wrap break-words">
-                    {mentor.profile.bio}
-                  </p>
-                </CardContent>
-              </Card>
-            )}
-
-
-
-            {gallery && gallery.length > 0 && (
-              <Card>
-                <CardHeader className="pb-2 sm:pb-3">
-                  <CardTitle className="text-base sm:text-lg">갤러리</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3">
-                    {gallery.map((image) => (
-                      <img
-                        key={image.id}
-                        src={image.imageUrl}
-                        alt="갤러리"
-                        className="w-full aspect-square object-cover rounded-lg"
-                      />
                     ))}
-                  </div>
-                </CardContent>
-              </Card>
-            )}
+                  </CardContent>
+                </Card>
+              )}
+            </div>
 
-            {reviews && reviews.length > 0 && (
-              <Card>
-                <CardHeader className="pb-2 sm:pb-3">
-                  <CardTitle className="text-base sm:text-lg">후기</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3 sm:space-y-4">
-                  {reviews.map((review) => (
-                    <div key={review.review.id} className="pb-3 sm:pb-4 border-b last:border-b-0">
-                      <div className="flex items-start justify-between gap-2 mb-1 sm:mb-2">
-                        <p className="font-medium text-xs sm:text-sm">{review.student.name || "익명"}</p>
-                        <div className="flex">
-                          {Array.from({ length: review.review.rating }).map((_, i) => (
-                            <Star
-                              key={i}
-                              className="w-3 h-3 sm:w-4 sm:h-4 fill-yellow-400 text-yellow-400"
-                            />
-                          ))}
-                        </div>
-                      </div>
-                      <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed break-words">
-                        {review.review.comment || "리뷰 내용이 없습니다."}
-                      </p>
+            {/* 사이드바 - 상담 신청 */}
+            <div className="lg:col-span-1">
+              <div className="sticky top-20 space-y-3">
+                <Button
+                  onClick={handleBookingClick}
+                  className="w-full h-12 text-base font-semibold bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors"
+                >
+                  상담 신청하기
+                </Button>
+                <Button
+                  onClick={handleMessageClick}
+                  variant="outline"
+                  className="w-full h-12 text-base font-semibold border-gray-300 rounded-lg hover:bg-gray-50"
+                >
+                  <MessageCircle className="w-4 h-4 mr-2" />
+                  메시지 보내기
+                </Button>
+
+                {/* 상담 정보 카드 */}
+                <Card className="border-0 shadow-sm mt-6">
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-base">상담 정보</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3 text-sm">
+                    <div className="flex items-center gap-2">
+                      <Clock className="w-4 h-4 text-gray-500" />
+                      <span className="text-gray-700">회당 60분</span>
                     </div>
-                  ))}
-                </CardContent>
-              </Card>
-            )}
-          </div>
+                    <div className="flex items-center gap-2">
+                      <Users className="w-4 h-4 text-gray-500" />
+                      <span className="text-gray-700">1:1 대면 상담</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Award className="w-4 h-4 text-gray-500" />
+                      <span className="text-gray-700">응답률 높음</span>
+                    </div>
+                  </CardContent>
+                </Card>
 
-          <div className="lg:col-span-1">
-            <div className="sticky top-4 space-y-2 sm:space-y-3">
-              <Button
-                onClick={handleBookingClick}
-                className="w-full h-9 sm:h-10 text-xs sm:text-sm"
-              >
-                상담 예약하기
-              </Button>
-              <Button
-                onClick={handleMessageClick}
-                variant="outline"
-                className="w-full h-9 sm:h-10 text-xs sm:text-sm"
-              >
-                <MessageCircle className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-                메시지 보내기
-              </Button>
+                {/* 안내 메시지 */}
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-xs text-blue-700">
+                  <p className="font-medium mb-1">💡 팁</p>
+                  <p>메시지를 먼저 보내 멘토와 상담 시간을 조율한 후 예약하세요.</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-
-
     </PageLayout>
   );
 }
