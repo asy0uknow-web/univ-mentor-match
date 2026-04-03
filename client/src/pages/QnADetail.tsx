@@ -199,11 +199,11 @@ export default function QnADetail() {
                             <p className="truncate">
                               {answer.mentorProfile.university} {answer.mentorProfile.major}
                             </p>
-                            {answer.mentorProfile.averageRating && (
+                            {answer.mentorProfile.averageRating !== null && answer.mentorProfile.averageRating !== undefined && (
                               <div className="flex items-center gap-1">
                                 <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
                                 <span>
-                                  {answer.mentorProfile.averageRating.toFixed(1)} 
+                                  {typeof answer.mentorProfile.averageRating === 'number' ? answer.mentorProfile.averageRating.toFixed(1) : '0.0'} 
                                   ({answer.mentorProfile.reviewCount || 0}개 후기)
                                 </span>
                               </div>
