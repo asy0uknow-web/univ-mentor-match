@@ -13,7 +13,7 @@ import { ZeroCommissionUSPSection } from "@/components/home/ZeroCommissionUSPSec
 import { FeaturedMentorsSlide } from "@/components/home/FeaturedMentorsSlide";
 import { TestimonialsSection } from "@/components/home/TestimonialsSection";
 import { IntegratedFAQSection } from "@/components/home/IntegratedFAQSection";
-import { NoCommissionSection } from "@/components/NoCommissionSection";
+
 
 // Line Art Icons Component - How It Works Section
 const SearchIcon = () => (
@@ -316,8 +316,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* No Commission Section */}
-      <NoCommissionSection />
+
 
       {/* Featured Mentors Section */}
       <section id="featured-mentors" role="region" className="py-16 sm:py-24 md:py-32 bg-white" aria-label="추천 멘토">
