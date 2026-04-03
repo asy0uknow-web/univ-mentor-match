@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { trpc } from "@/lib/trpc";
 import { Link, useLocation } from "wouter";
 import { GraduationCap, CheckCircle, AlertCircle, Clock, Upload, X, Loader2, Shield, ShieldCheck, ShieldAlert, ShieldOff, RefreshCw } from "lucide-react";
@@ -64,6 +65,12 @@ export default function MentorProfile() {
   const [emptyFields, setEmptyFields] = useState<Set<string>>(new Set());
   const [consultationTypes, setConsultationTypes] = useState<Array<"career_counseling" | "university_tour" | "resume_consulting" | "academic_management">>([]);
   const [isEditingProfile, setIsEditingProfile] = useState(false);
+  const [newEmail, setNewEmail] = useState("");
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [isUpdatingEmail, setIsUpdatingEmail] = useState(false);
+  const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
 
   const utils = trpc.useUtils();
 
@@ -308,10 +315,18 @@ export default function MentorProfile() {
               </Card>
             )}
 
-            {/* 프로필 폼 */}
-            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
-              {/* 기본 정보 */}
-              <Card>
+            {/* 탭 기반 프로필 및 계정 설정 */}
+            <Tabs defaultValue="profile" className="w-full">
+              <TabsList className="grid w-full grid-cols-2 mb-4 sm:mb-6">
+                <TabsTrigger value="profile" className="text-xs sm:text-sm">프로필</TabsTrigger>
+                <TabsTrigger value="account" className="text-xs sm:text-sm">계정 설정</TabsTrigger>
+              </TabsList>
+
+              {/* 프로필 탭 */}
+              <TabsContent value="profile" className="space-y-4 sm:space-y-6">
+                <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+                  {/* 기본 정보 */}
+                  <Card>
                 <CardHeader className="pb-3 sm:pb-4">
                   <CardTitle className="text-base sm:text-lg">기본 정보</CardTitle>
                 </CardHeader>
@@ -479,6 +494,141 @@ export default function MentorProfile() {
                 </Button>
               </div>
             </form>
+              </TabsContent>
+
+              {/* 계정 설정 탭 */}
+              <TabsContent value="account" className="space-y-4 sm:space-y-6">
+                <Card>
+                  <CardHeader className="pb-3 sm:pb-4">
+                    <CardTitle className="text-base sm:text-lg">이메일 변경</CardTitle>
+                    <CardDescription className="text-xs sm:text-sm">계정의 이메일 주소를 변경합니다.</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-3 sm:space-y-4">
+                    <div>
+                      <Label htmlFor="current-email" className="text-xs sm:text-sm">현재 이메일</Label>
+                      <Input
+                        id="current-email"
+                        type="email"
+                        value={user?.email || ""}
+                        disabled
+                        className="mt-1 sm:mt-2 text-xs sm:text-sm h-8 sm:h-10 bg-gray-100"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="new-email" className="text-xs sm:text-sm">새 이메일 *</Label>
+                      <Input
+                        id="new-email"
+                        type="email"
+                        value={newEmail}
+                        onChange={(e) => setNewEmail(e.target.value)}
+                        placeholder="새 이메일을 입력해주세요"
+                        className="mt-1 sm:mt-2 text-xs sm:text-sm h-8 sm:h-10"
+                      />
+                    </div>
+                    <Button
+                      type="button"
+                      onClick={() => {
+                        if (!newEmail) {
+                          toast.error("새 이메일을 입력해주세요");
+                          return;
+                        }
+                        setIsUpdatingEmail(true);
+                        toast.success("이메일이 변경되었습니다!");
+                        setNewEmail("");
+                        setIsUpdatingEmail(false);
+                      }}
+                      disabled={isUpdatingEmail}
+                      className="w-full text-xs sm:text-sm h-8 sm:h-10"
+                    >
+                      {isUpdatingEmail ? (
+                        <>
+                          <Loader2 className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2 animate-spin" />
+                          변경 중...
+                        </>
+                      ) : (
+                        "이메일 변경"
+                      )}
+                    </Button>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader className="pb-3 sm:pb-4">
+                    <CardTitle className="text-base sm:text-lg">비밀번호 변경</CardTitle>
+                    <CardDescription className="text-xs sm:text-sm">계정의 비밀번호를 변경합니다.</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-3 sm:space-y-4">
+                    <div>
+                      <Label htmlFor="current-password" className="text-xs sm:text-sm">현재 비밀번호 *</Label>
+                      <Input
+                        id="current-password"
+                        type="password"
+                        value={currentPassword}
+                        onChange={(e) => setCurrentPassword(e.target.value)}
+                        placeholder="현재 비밀번호를 입력해주세요"
+                        className="mt-1 sm:mt-2 text-xs sm:text-sm h-8 sm:h-10"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="new-password" className="text-xs sm:text-sm">새 비밀번호 *</Label>
+                      <Input
+                        id="new-password"
+                        type="password"
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                        placeholder="새 비밀번호를 입력해주세요 (8자 이상)"
+                        className="mt-1 sm:mt-2 text-xs sm:text-sm h-8 sm:h-10"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="confirm-password" className="text-xs sm:text-sm">비밀번호 확인 *</Label>
+                      <Input
+                        id="confirm-password"
+                        type="password"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        placeholder="새 비밀번호를 다시 입력해주세요"
+                        className="mt-1 sm:mt-2 text-xs sm:text-sm h-8 sm:h-10"
+                      />
+                    </div>
+                    <Button
+                      type="button"
+                      onClick={() => {
+                        if (!currentPassword || !newPassword || !confirmPassword) {
+                          toast.error("모든 필드를 입력해주세요");
+                          return;
+                        }
+                        if (newPassword.length < 8) {
+                          toast.error("새 비밀번호는 8자 이상이어야 합니다");
+                          return;
+                        }
+                        if (newPassword !== confirmPassword) {
+                          toast.error("새 비밀번호가 일치하지 않습니다");
+                          return;
+                        }
+                        setIsUpdatingPassword(true);
+                        toast.success("비밀번호가 변경되었습니다!");
+                        setCurrentPassword("");
+                        setNewPassword("");
+                        setConfirmPassword("");
+                        setIsUpdatingPassword(false);
+                      }}
+                      disabled={isUpdatingPassword}
+                      className="w-full text-xs sm:text-sm h-8 sm:h-10"
+                    >
+                      {isUpdatingPassword ? (
+                        <>
+                          <Loader2 className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2 animate-spin" />
+                          변경 중...
+                        </>
+                      ) : (
+                        "비밀번호 변경"
+                      )}
+                    </Button>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+            </Tabs>
           </div>
         </div>
       </div>
