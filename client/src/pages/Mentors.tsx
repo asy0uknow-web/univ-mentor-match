@@ -464,9 +464,8 @@ export default function Mentors() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredMentors.map((mentor: any) => (
-                <Link key={mentor.id} href={`/mentor/${mentor.uuid}`}>
-                  <a className="group">
-                    <div className="bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-lg hover:border-gray-300 transition-all duration-300 h-full flex flex-col">
+                <Link key={mentor.uuid || mentor.id} href={`/mentor/${mentor.uuid}`} className="group">
+                  <div className="bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-lg hover:border-gray-300 transition-all duration-300 h-full flex flex-col cursor-pointer">
                       {/* 멘토 정보 헤더 */}
                       <div className="p-4 sm:p-6 border-b border-gray-100">
                         <div className="flex items-start justify-between mb-3">
@@ -522,8 +521,7 @@ export default function Mentors() {
                           <ChevronRight className="h-4 w-4 ml-1" />
                         </Button>
                       </div>
-                    </div>
-                  </a>
+                  </div>
                 </Link>
               ))}
             </div>
