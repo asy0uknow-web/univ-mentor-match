@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
 import { useQueryClient } from "@tanstack/react-query";
 
+
 export default function Login() {
   const [, navigate] = useLocation();
   const [email, setEmail] = useState("");

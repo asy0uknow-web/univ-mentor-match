@@ -253,8 +253,8 @@ export default function VerifyMentor() {
                       <div>
                         <p className="text-sm font-semibold text-blue-900 mb-1">개인정보 보호 안내</p>
                         <ul className="text-xs text-blue-800 space-y-1">
-                          <li>• 학번, 이름, 주민등록번호 등 개인정보는 검은색으로 가려주세요</li>
-                          <li>• 학적상태(재학), 학년, 전공 정보만 보이도록 캡처해주세요</li>
+                          <li>• <strong>가려야 할 정보</strong>: 주민등록번호, 계좌번호, 주소</li>
+                          <li>• <strong>보이는 정보</strong>: 이름, 학번, 학적상태, 학년, 전공</li>
                           <li>• 인증 후 제출된 이미지는 안전하게 보관되며, 인증 목적으로만 사용됩니다</li>
                         </ul>
                       </div>
@@ -337,7 +337,7 @@ export default function VerifyMentor() {
                       <div>
                         <p className="text-sm font-medium text-amber-800 mb-1">개인정보 안내</p>
                         <p className="text-xs text-amber-700">
-                          학생증 이미지는 암호화된 클라우드 저장소에 안전하게 보관되며, 인증 목적으로만 사용됩니다. 관리자 외에는 접근할 수 없습니다.
+                          학적내역 이미지는 암호화된 클라우드 저장소에 안전하게 보관되며, 인증 목적으로만 사용됩니다. 관리자 외에는 접근할 수 없습니다.
                         </p>
                       </div>
                     </div>
