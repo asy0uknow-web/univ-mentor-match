@@ -83,7 +83,7 @@ export default function VerifyMentor() {
 
   const handleSubmit = async () => {
     if (!selectedFile) {
-      toast.error("학생증 이미지를 선택해주세요.");
+      toast.error("학적내역 캡처 이미지를 선택해주세요.");
       return;
     }
     const reader = new FileReader();
@@ -144,7 +144,7 @@ export default function VerifyMentor() {
                 <h1 className="text-3xl font-bold text-gray-900">멘토 인증</h1>
               </div>
               <p className="text-gray-500 text-sm">
-                학생증을 업로드하여 재학 중인 대학생임을 인증하세요.
+                대학 포털 사이트의 학적내역을 캡처하여 업로드해주세요.
               </p>
             </div>
 
@@ -163,7 +163,7 @@ export default function VerifyMentor() {
                         <Badge className="bg-green-100 text-green-700 border-green-200 hover:bg-green-100">승인됨</Badge>
                       </div>
                       <p className="text-sm text-green-700 mb-3">
-                        학생증 인증이 완료되었습니다. 이제 멘토로 활동할 수 있습니다.
+                        학적내역 인증이 완료되었습니다. 이제 메늤로 활동할 수 있습니다.
                       </p>
                       <p className="text-xs text-green-600">
                         승인일: {new Date(verification.updatedAt || verification.createdAt).toLocaleDateString("ko-KR")}
@@ -240,16 +240,31 @@ export default function VerifyMentor() {
             {(!verification || verification.status === "rejected") && (
               <Card className="shadow-sm border-0 bg-white">
                 <CardHeader className="pb-4">
-                  <CardTitle className="text-lg">학생증 업로드</CardTitle>
+                  <CardTitle className="text-lg">학적내역 캡처 업로드</CardTitle>
                   <CardDescription>
-                    현재 재학 중인 대학교의 학생증 이미지를 업로드해주세요.
+                    대학 포털 사이트에서 학적내역을 캡처하여 업로드해주세요. (개인정보는 가려주세요)
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-5">
+                  {/* 개인정보 보호 안내 */}
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                    <div className="flex gap-3">
+                      <AlertTriangle className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                      <div>
+                        <p className="text-sm font-semibold text-blue-900 mb-1">개인정보 보호 안내</p>
+                        <ul className="text-xs text-blue-800 space-y-1">
+                          <li>• 학번, 이름, 주민등록번호 등 개인정보는 검은색으로 가려주세요</li>
+                          <li>• 학적상태(재학), 학년, 전공 정보만 보이도록 캡처해주세요</li>
+                          <li>• 인증 후 제출된 이미지는 안전하게 보관되며, 인증 목적으로만 사용됩니다</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+
                   {/* 업로드 영역 */}
                   <div>
                     <Label className="text-sm font-medium mb-2 block">
-                      학생증 이미지 <span className="text-red-500">*</span>
+                      학적내역 캡처 이미지 <span className="text-red-500">*</span>
                     </Label>
                     <div
                       onDragEnter={handleDrag}
@@ -275,6 +290,7 @@ export default function VerifyMentor() {
                           클릭하거나 드래그하여 업로드
                         </p>
                         <p className="text-xs text-gray-400 mt-1">JPG, PNG, GIF, WebP · 최대 5MB</p>
+                        <p className="text-xs text-gray-500 mt-2 font-medium">💡 팁: 대학 포털에서 학적내역 페이지를 스크린샷하면 됩니다</p>
                       </label>
                     </div>
                   </div>

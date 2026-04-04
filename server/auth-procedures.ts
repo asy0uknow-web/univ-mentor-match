@@ -107,7 +107,7 @@ export const signupProcedure = publicProcedure
 
 export const loginProcedure = publicProcedure
   .input(z.object({
-    email: z.string().email(),
+    email: z.string().min(1),
     password: z.string().min(1),
   }))
   .mutation(async ({ ctx, input }) => {

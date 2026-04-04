@@ -312,36 +312,34 @@ getTopMentors: publicProcedure
         const db = await getDb();
         if (!db) throw new Error("Database not available");
 
-        // getAllActiveMentors와 동일한 구조로 반환
+        // 평탄한 구조로 반환
         const mentorsWithTypes = await db
           .select({
-            profile: {
-              id: mentorProfiles.id,
-              uuid: mentorProfiles.uuid,
-              userId: mentorProfiles.userId,
-              university: mentorProfiles.university,
-              major: mentorProfiles.major,
-              grade: mentorProfiles.grade,
-              region: mentorProfiles.region,
-              bio: mentorProfiles.bio,
-              hourlyRate: mentorProfiles.hourlyRate,
-              availableSlots: mentorProfiles.availableSlots,
-              verificationStatus: mentorProfiles.verificationStatus,
-              isDeleted: mentorProfiles.isDeleted,
-              createdAt: mentorProfiles.createdAt,
-              updatedAt: mentorProfiles.updatedAt,
-              averageRating: mentorProfiles.averageRating,
-              reviewCount: mentorProfiles.reviewCount,
-              field: mentorProfiles.field,
-            },
-            user: users,
+            id: mentorProfiles.id,
+            uuid: mentorProfiles.uuid,
+            userId: mentorProfiles.userId,
+            name: users.name,
+            university: mentorProfiles.university,
+            major: mentorProfiles.major,
+            grade: mentorProfiles.grade,
+            region: mentorProfiles.region,
+            bio: mentorProfiles.bio,
+            hourlyRate: mentorProfiles.hourlyRate,
+            availableSlots: mentorProfiles.availableSlots,
+            verificationStatus: mentorProfiles.verificationStatus,
+            isDeleted: mentorProfiles.isDeleted,
+            createdAt: mentorProfiles.createdAt,
+            updatedAt: mentorProfiles.updatedAt,
+            averageRating: mentorProfiles.averageRating,
+            reviewCount: mentorProfiles.reviewCount,
+            field: mentorProfiles.field,
             consultationType: mentorConsultationTypes.consultationType,
           })
           .from(mentorProfiles)
           .innerJoin(users, drizzleEq(mentorProfiles.userId, users.id))
           .leftJoin(
             mentorConsultationTypes,
-            drizzleEq(mentorProfiles.userId, mentorConsultationTypes.mentorId)
+            drizzleEq(users.id, mentorConsultationTypes.mentorId)
           )
           .where(
             and(
@@ -356,22 +354,19 @@ getTopMentors: publicProcedure
         const mentorMap = new Map<number, any>();
         
         for (const row of mentorsWithTypes) {
-          const mentorId = row.profile.userId;
+          const mentorId = row.userId;
           
           if (!mentorMap.has(mentorId)) {
             mentorMap.set(mentorId, {
               ...row,
-              profile: {
-                ...row.profile,
-                consultationTypes: [],
-              },
+              consultationTypes: [],
             });
           }
           
           if (row.consultationType) {
             const mentor = mentorMap.get(mentorId);
-            if (!mentor.profile.consultationTypes.includes(row.consultationType)) {
-              mentor.profile.consultationTypes.push(row.consultationType);
+            if (!mentor.consultationTypes.includes(row.consultationType)) {
+              mentor.consultationTypes.push(row.consultationType);
             }
           }
         }

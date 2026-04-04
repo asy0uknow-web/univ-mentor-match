@@ -22,9 +22,8 @@ export default function Login() {
 
     if (!email) {
       newErrors.email = "이메일을 입력해주세요";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      newErrors.email = "올바른 이메일 형식이 아닙니다";
     }
+    // 이메일 형식 검증 완화 - 관리자 계정(univadmin) 등을 위해
 
     if (!password) {
       newErrors.password = "비밀번호를 입력해주세요";
@@ -55,7 +54,13 @@ export default function Login() {
       }
 
       toast.success("로그인이 완료되었습니다!");
-      navigate("/");
+      
+      // Admin 계정이면 /admin으로 이동
+      if (response.user?.role === "admin") {
+        navigate("/admin");
+      } else {
+        navigate("/");
+      }
     } catch (error: any) {
       const errorMessage = error.message || "로그인에 실패했습니다";
       toast.error(errorMessage);
@@ -78,7 +83,7 @@ export default function Login() {
             </Label>
             <Input
               id="email"
-              type="email"
+              type="text"
               placeholder="example@email.com"
               value={email}
               onChange={(e) => {
