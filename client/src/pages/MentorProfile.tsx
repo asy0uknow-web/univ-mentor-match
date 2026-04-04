@@ -528,6 +528,65 @@ export default function MentorProfile() {
                   </CardContent>
                 </Card>
 
+                {/* 학적인증 */}
+                <Card>
+                  <CardHeader className="pb-3 sm:pb-4">
+                    <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+                      <GraduationCap className="h-4 w-4 sm:h-5 sm:w-5" />
+                      학적인증
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3 sm:space-y-4">
+                    {verification && (
+                      <div className="space-y-3 sm:space-y-4">
+                        <div className="flex items-center gap-2 sm:gap-3">
+                          {verification.status === 'approved' && (
+                            <>
+                              <ShieldCheck className="h-5 w-5 sm:h-6 sm:w-6 text-green-600" />
+                              <div>
+                                <p className="font-semibold text-sm sm:text-base text-green-700">인증 완료</p>
+                                <p className="text-xs sm:text-sm text-green-600">멘토로 활동할 수 있습니다</p>
+                              </div>
+                            </>
+                          )}
+                          {verification.status === 'pending' && (
+                            <>
+                              <Clock className="h-5 w-5 sm:h-6 sm:w-6 text-amber-600" />
+                              <div>
+                                <p className="font-semibold text-sm sm:text-base text-amber-700">검토 중</p>
+                                <p className="text-xs sm:text-sm text-amber-600">관리자 검토 후 승인됩니다 (1~2 영업일)</p>
+                              </div>
+                            </>
+                          )}
+                          {verification.status === 'rejected' && (
+                            <>
+                              <ShieldAlert className="h-5 w-5 sm:h-6 sm:w-6 text-red-600" />
+                              <div>
+                                <p className="font-semibold text-sm sm:text-base text-red-700">인증 거부</p>
+                                <p className="text-xs sm:text-sm text-red-600">사유를 확인하고 다시 신청해주세요</p>
+                              </div>
+                            </>
+                          )}
+                        </div>
+                        <Button
+                          onClick={() => setLocation("/verify-mentor")}
+                          className="w-full text-xs sm:text-sm h-9 sm:h-10"
+                        >
+                          {verification.status === 'approved' ? '인증서 보기' : verification.status === 'pending' ? '제출 내역 확인' : '재신청하기'}
+                        </Button>
+                      </div>
+                    )}
+                    {!verification && (
+                      <Button
+                        onClick={() => setLocation("/verify-mentor")}
+                        className="w-full text-xs sm:text-sm h-9 sm:h-10"
+                      >
+                        학적인증 신청하기
+                      </Button>
+                    )}
+                  </CardContent>
+                </Card>
+
                 {/* 계정 관리 */}
                 <Card>
                   <CardHeader className="pb-3 sm:pb-4">

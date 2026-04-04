@@ -132,7 +132,7 @@ export default function Mentors() {
   }, [regionSearchTerm]);
 
   const { data: mentors = [], isLoading } = trpc.mentor.getTopMentors.useQuery({
-    limit: 50,
+    limit: 20,
   });
 
   // 클라이언트 측 필터링
@@ -143,7 +143,7 @@ export default function Mentors() {
     if (debouncedSearch) {
       const term = debouncedSearch.toLowerCase();
       result = result.filter((m: any) =>
-        m.user?.name?.toLowerCase().includes(term) ||
+        m.name?.toLowerCase().includes(term) ||
         m.university?.toLowerCase().includes(term) ||
         m.major?.toLowerCase().includes(term)
       );
@@ -171,6 +171,7 @@ export default function Mentors() {
 
     return sorted;
   }, [mentors, debouncedSearch, selectedMajors, selectedRegions, sortBy]);
+
 
   return (
     <PageLayout>

@@ -20,7 +20,7 @@ export const users = mysqlTable("users", {
   passwordHash: varchar("passwordHash", { length: 255 }),
   // Email verification status
   emailVerified: boolean("emailVerified").default(false).notNull(),
-  role: mysqlEnum("role", ["user", "admin"]).default("user").notNull(),
+  role: mysqlEnum("role", ["user", "admin", "mentor"]).default("user").notNull(),
   // User type: high_school_student or university_student
   userType: mysqlEnum("userType", ["high_school_student", "university_student"]),
   // Stripe customer ID for payment processing

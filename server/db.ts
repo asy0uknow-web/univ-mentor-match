@@ -273,7 +273,8 @@ export async function getAllActiveMentors() {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
   
-  const mentors = await db
+  // 최적화: 한 번의 쿼리로 멘토와 상담 유형을 모두 조회 (N+1 쿼리 문제 해결)
+  const mentorsWithTypes = await db
     .select({
       profile: {
         id: mentorProfiles.id,
@@ -295,9 +296,14 @@ export async function getAllActiveMentors() {
         field: mentorProfiles.field,
       },
       user: users,
+      consultationType: mentorConsultationTypes.consultationType,
     })
     .from(mentorProfiles)
     .innerJoin(users, eq(mentorProfiles.userId, users.id))
+    .leftJoin(
+      mentorConsultationTypes,
+      eq(mentorProfiles.userId, mentorConsultationTypes.mentorId)
+    )
     .where(
       and(
         eq(mentorProfiles.verificationStatus, "approved"),
@@ -306,25 +312,31 @@ export async function getAllActiveMentors() {
     )
     .orderBy(desc(mentorProfiles.averageRating));
   
-  // 각 멘토의 상담 유형 조회
-  const mentorsWithConsultationTypes = await Promise.all(
-    mentors.map(async (mentor) => {
-      const consultationTypes = await db
-        .select({ consultationType: mentorConsultationTypes.consultationType })
-        .from(mentorConsultationTypes)
-        .where(eq(mentorConsultationTypes.mentorId, mentor.profile.userId));
-      
-      return {
-        ...mentor,
-        profile: {
-          ...mentor.profile,
-          consultationTypes: consultationTypes.map(ct => ct.consultationType),
-        },
-      };
-    })
-  );
+  // 결과를 멘토별로 그룹화
+  const mentorMap = new Map<number, any>();
   
-  return mentorsWithConsultationTypes;
+  for (const row of mentorsWithTypes) {
+    const mentorId = row.profile.userId;
+    
+    if (!mentorMap.has(mentorId)) {
+      mentorMap.set(mentorId, {
+        ...row,
+        profile: {
+          ...row.profile,
+          consultationTypes: [],
+        },
+      });
+    }
+    
+    if (row.consultationType) {
+      const mentor = mentorMap.get(mentorId);
+      if (!mentor.profile.consultationTypes.includes(row.consultationType)) {
+        mentor.profile.consultationTypes.push(row.consultationType);
+      }
+    }
+  }
+  
+  return Array.from(mentorMap.values());
 }
 
 export async function getStudentById(studentId: number | string) {

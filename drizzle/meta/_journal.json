@@ -50,6 +50,13 @@
       "when": 1775106403257,
       "tag": "0006_old_mantis",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "5",
+      "when": 1775287550192,
+      "tag": "0007_blue_unicorn",
+      "breakpoints": true
     }
   ]
 }
