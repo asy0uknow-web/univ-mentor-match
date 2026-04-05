@@ -167,6 +167,9 @@ export const bookings = mysqlTable("bookings", {
   endReason: varchar("endReason", { length: 255 }),
   // End reason details
   endReasonDetails: text("endReasonDetails"),
+  // Notification sent flags
+  notified30MinBefore: boolean("notified30MinBefore").default(false),
+  notified10MinBefore: boolean("notified10MinBefore").default(false),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });
@@ -197,7 +200,7 @@ export type InsertReview = typeof reviews.$inferInsert;
 export const notifications = mysqlTable("notifications", {
   id: int("id").autoincrement().primaryKey(),
   userId: int("userId").notNull(), // References users.id
-  type: mysqlEnum("type", ["booking_request", "booking_confirmed", "booking_cancelled", "schedule_changed", "review_received", "message"]).notNull(),
+  type: mysqlEnum("type", ["booking_request", "booking_confirmed", "booking_cancelled", "schedule_changed", "review_received", "message", "consultation_reminder", "consultation_urgent_reminder"]).notNull(),
   title: varchar("title", { length: 255 }).notNull(),
   message: text("message").notNull(),
   isRead: boolean("isRead").default(false).notNull(),

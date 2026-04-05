@@ -11,7 +11,7 @@ import { Link } from "wouter";
 import {
   ShieldCheck, ShieldAlert, Search, CheckCircle, XCircle, Clock,
   Edit, Trash2, Bug, Users, AlertTriangle, Loader2, GraduationCap,
-  ChevronDown, ChevronUp, ExternalLink, Calendar, Play, Square, Info
+  ChevronDown, ChevronUp, ExternalLink, Calendar, Play, Square, Info, BarChart3
 } from "lucide-react";
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
@@ -220,6 +220,13 @@ export default function AdminDashboard() {
                     {allBookings.filter((b: any) => b.booking.status === "in_progress").length}
                   </Badge>
                 )}
+              </TabsTrigger>
+              <TabsTrigger
+                value="statistics"
+                className="rounded-lg data-[state=active]:bg-green-600 data-[state=active]:text-white flex items-center gap-2"
+              >
+                <BarChart3 className="h-4 w-4" />
+                상담 통계
               </TabsTrigger>
             </TabsList>
 
@@ -628,6 +635,93 @@ export default function AdminDashboard() {
                   })}
                 </div>
               )}
+            </TabsContent>
+
+            {/* 상담 통계 탭 */}
+            <TabsContent value="statistics" className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm font-medium text-gray-600">전체 상담</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-2xl font-bold text-gray-900">{allBookings.length}</p>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm font-medium text-gray-600">완료된 상담</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-2xl font-bold text-green-600">{allBookings.filter((b: any) => b.booking.status === "completed").length}</p>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm font-medium text-gray-600">완료율</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-2xl font-bold text-blue-600">
+                      {allBookings.length > 0
+                        ? Math.round((allBookings.filter((b: any) => b.booking.status === "completed").length / allBookings.length) * 100)
+                        : 0}%
+                    </p>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm font-medium text-gray-600">조기 종료</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-2xl font-bold text-amber-600">
+                      {allBookings.filter((b: any) => {
+                        if (b.booking.status !== "completed" || !b.booking.consultationCompletedAt) return false;
+                        const scheduledEnd = new Date(new Date(b.booking.scheduledAt).getTime() + parseInt(b.booking.duration) * 60 * 60 * 1000);
+                        return new Date(b.booking.consultationCompletedAt) < scheduledEnd;
+                      }).length}
+                    </p>
+                  </CardContent>
+                </Card>
+              </div>
+              <Card>
+                <CardHeader>
+                  <CardTitle>상담 통계 요약</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3 text-sm">
+                    <div className="flex justify-between items-center pb-2 border-b">
+                      <span className="text-gray-600">전체 상담 건수</span>
+                      <span className="font-semibold">{allBookings.length}건</span>
+                    </div>
+                    <div className="flex justify-between items-center pb-2 border-b">
+                      <span className="text-gray-600">완료된 상담</span>
+                      <span className="font-semibold text-green-600">{allBookings.filter((b: any) => b.booking.status === "completed").length}건</span>
+                    </div>
+                    <div className="flex justify-between items-center pb-2 border-b">
+                      <span className="text-gray-600">진행 중인 상담</span>
+                      <span className="font-semibold text-blue-600">{allBookings.filter((b: any) => b.booking.status === "in_progress").length}건</span>
+                    </div>
+                    <div className="flex justify-between items-center pb-2 border-b">
+                      <span className="text-gray-600">취소된 상담</span>
+                      <span className="font-semibold text-red-600">{allBookings.filter((b: any) => b.booking.status === "cancelled").length}건</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600">조기 종료 비율</span>
+                      <span className="font-semibold text-amber-600">
+                        {allBookings.filter((b: any) => b.booking.status === "completed").length > 0
+                          ? Math.round(
+                              (allBookings.filter((b: any) => {
+                                if (b.booking.status !== "completed" || !b.booking.consultationCompletedAt) return false;
+                                const scheduledEnd = new Date(new Date(b.booking.scheduledAt).getTime() + parseInt(b.booking.duration) * 60 * 60 * 1000);
+                                return new Date(b.booking.consultationCompletedAt) < scheduledEnd;
+                              }).length / allBookings.filter((b: any) => b.booking.status === "completed").length) * 100
+                            )
+                          : 0}%
+                      </span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             </TabsContent>
           </Tabs>
         </div>

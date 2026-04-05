@@ -78,6 +78,20 @@
       "when": 1775376074450,
       "tag": "0010_goofy_talon",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "5",
+      "when": 1775377430041,
+      "tag": "0011_left_outlaw_kid",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "5",
+      "when": 1775377476713,
+      "tag": "0012_first_wallop",
+      "breakpoints": true
     }
   ]
 }

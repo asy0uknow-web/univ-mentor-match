@@ -62,6 +62,8 @@ import { hashPassword, verifyPassword, validateEmail, validatePasswordStrength }
 import { signupProcedure, loginProcedure } from "./auth-procedures";
 import { createVerificationToken, verifyEmailToken, getPendingVerificationToken } from "./email-verification";
 import { startConsultation, completeConsultation, requestReschedule, acceptReschedule, rejectReschedule, isWithinStartWindow, isWithinCompleteWindow, calculateConsultationDuration, recordUserStart, recordUserEnd } from "./booking-consultation";
+import { sendConsultationReminders } from "./booking-notifications";
+import { getMonthlyConsultationStats, getOverallConsultationStats, getLast12MonthsStats } from "./booking-statistics";
 import { createQuestion, getQuestionById, getQuestions, updateQuestion, deleteQuestion, createAnswer, getAnswersByQuestionId, getAnswerById, updateAnswer, deleteAnswer, createAnswerReply, getRepliesByAnswerId, getReplyById, updateReply, deleteReply, getQuestionDetail } from "./qna";
 import { emailVerificationTokens } from "../drizzle/schema";
 import { mentorGallery, messages, notifications, bookings, reviews, mentorProfiles, mentorVerifications, users, bugReports, mentorConsultationTypes, consultationProposals, studentProfiles } from "../drizzle/schema";
@@ -763,6 +765,94 @@ getTopMentors: publicProcedure
         } catch (error: any) {
           throw new Error(error.message || "Failed to record user end");
         }
+      }),
+
+    sendReminders: protectedProcedure
+      .query(async ({ ctx }) => {
+        if (ctx.user?.role !== "admin") {
+          throw new Error("Only admins can send reminders");
+        }
+        
+        try {
+          await sendConsultationReminders();
+          return { success: true, message: "Reminders sent successfully" };
+        } catch (error: any) {
+          throw new Error(error.message || "Failed to send reminders");
+        }
+      }),
+
+    forceUpdateStatus: protectedProcedure
+      .input(z.object({
+        bookingId: z.number(),
+        newStatus: z.enum(["pending", "confirmed", "in_progress", "completed", "cancelled"]),
+        reason: z.string().optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user?.role !== "admin") {
+          throw new Error("Only admins can force update booking status");
+        }
+
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+
+        const booking = await getBookingById(input.bookingId);
+        if (!booking) throw new Error("Booking not found");
+
+        const now = new Date();
+        if (input.newStatus === "in_progress") {
+          await db
+            .update(bookings)
+            .set({
+              status: "in_progress",
+              consultationStartedAt: now,
+              studentStartedAt: now,
+              mentorStartedAt: now,
+            })
+            .where(eq(bookings.id, input.bookingId));
+        } else if (input.newStatus === "completed") {
+          await db
+            .update(bookings)
+            .set({
+              status: "completed",
+              consultationCompletedAt: now,
+              studentEndedAt: now,
+              mentorEndedAt: now,
+              endReason: "admin_forced",
+              endReasonDetails: input.reason || "관리자가 강제 완료 처리",
+            })
+            .where(eq(bookings.id, input.bookingId));
+        } else {
+          await db
+            .update(bookings)
+            .set({ status: input.newStatus })
+            .where(eq(bookings.id, input.bookingId));
+        }
+
+        const statusLabels: Record<string, string> = {
+          pending: "대기중",
+          confirmed: "확정",
+          in_progress: "진행중",
+          completed: "완료",
+          cancelled: "취소됨",
+        };
+
+        await db.insert(notifications).values({
+          userId: booking.studentId,
+          type: "booking_confirmed",
+          title: "상담 상태가 변경되었습니다",
+          message: `관리자가 상담 상태를 ${statusLabels[input.newStatus]}로 변경했습니다.${input.reason ? ` (사유: ${input.reason})` : ""}`,
+          relatedId: input.bookingId,
+        });
+
+        await db.insert(notifications).values({
+          userId: booking.mentorId,
+          type: "booking_confirmed",
+          title: "상담 상태가 변경되었습니다",
+          message: `관리자가 상담 상태를 ${statusLabels[input.newStatus]}로 변경했습니다.${input.reason ? ` (사유: ${input.reason})` : ""}`,
+          relatedId: input.bookingId,
+        });
+
+        return { success: true, message: "Booking status updated successfully" };
       }),
 
     requestReschedule: protectedProcedure
@@ -1479,6 +1569,33 @@ getTopMentors: publicProcedure
           page,
           limit,
         };
+      }),
+
+    getConsultationStats: protectedProcedure
+      .input(z.object({
+        year: z.number().optional(),
+        month: z.number().optional(),
+      }).optional())
+      .query(async ({ ctx, input }) => {
+        if (ctx.user?.role !== "admin") {
+          throw new Error("Only admins can access this");
+        }
+
+        if (input?.year && input?.month) {
+          const stats = await getMonthlyConsultationStats(input.year, input.month);
+          return { stats, type: "monthly" };
+        } else {
+          const stats = await getOverallConsultationStats();
+          return { stats, type: "overall" };
+        }
+      }),
+
+    getLast12MonthsStats: protectedProcedure
+      .query(async ({ ctx }) => {
+        if (ctx.user?.role !== "admin") {
+          throw new Error("Only admins can access this");
+        }
+        return await getLast12MonthsStats();
       }),
   }),
   mentorSearch: router({
