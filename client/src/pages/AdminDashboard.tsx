@@ -11,8 +11,10 @@ import { Link } from "wouter";
 import {
   ShieldCheck, ShieldAlert, Search, CheckCircle, XCircle, Clock,
   Edit, Trash2, Bug, Users, AlertTriangle, Loader2, GraduationCap,
-  ChevronDown, ChevronUp, ExternalLink
+  ChevronDown, ChevronUp, ExternalLink, Calendar, Play, Square, Info
 } from "lucide-react";
+import { format } from "date-fns";
+import { ko } from "date-fns/locale";
 import { useState } from "react";
 import { getLoginUrl } from "@/const";
 import { toast } from "sonner";
@@ -43,6 +45,12 @@ export default function AdminDashboard() {
   );
 
   const newBugCount = bugReports?.filter((r: any) => r.status === "new").length || 0;
+
+  const { data: allBookingsData, refetch: refetchBookings } = trpc.admin.getAllBookings.useQuery(
+    { page: 1, limit: 50 },
+    { enabled: isAuthenticated && user?.role === "admin" }
+  );
+  const allBookings = allBookingsData?.bookings ?? [];
 
   const approveMutation = trpc.admin.approveVerification.useMutation({
     onSuccess: () => {
@@ -200,6 +208,18 @@ export default function AdminDashboard() {
               >
                 <GraduationCap className="h-4 w-4" />
                 멘토 프로필 관리
+              </TabsTrigger>
+              <TabsTrigger
+                value="bookings"
+                className="rounded-lg data-[state=active]:bg-green-600 data-[state=active]:text-white flex items-center gap-2"
+              >
+                <Calendar className="h-4 w-4" />
+                상담 예약 관리
+                {allBookings.filter((b: any) => b.booking.status === "in_progress").length > 0 && (
+                  <Badge className="bg-blue-500 text-white text-xs px-1.5 py-0 h-5">
+                    {allBookings.filter((b: any) => b.booking.status === "in_progress").length}
+                  </Badge>
+                )}
               </TabsTrigger>
             </TabsList>
 
@@ -462,6 +482,150 @@ export default function AdminDashboard() {
                       </CardContent>
                     </Card>
                   ))}
+                </div>
+              )}
+            </TabsContent>
+
+            {/* 상담 예약 관리 탭 */}
+            <TabsContent value="bookings" className="space-y-4">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-lg font-semibold text-gray-900">상담 예약 관리</h2>
+                <div className="flex gap-2">
+                  <Badge variant="outline" className="text-gray-600">
+                    전체 {allBookings.length}건
+                  </Badge>
+                  <Badge variant="outline" className="text-blue-600 border-blue-300">
+                    진행중 {allBookings.filter((b: any) => b.booking.status === "in_progress").length}건
+                  </Badge>
+                  <Badge variant="outline" className="text-amber-600 border-amber-300">
+                    대기중 {allBookings.filter((b: any) => b.booking.status === "confirmed").length}건
+                  </Badge>
+                </div>
+              </div>
+
+              {allBookings.length === 0 ? (
+                <Card>
+                  <CardContent className="py-12 text-center">
+                    <Calendar className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+                    <p className="text-gray-500">예약 내역이 없습니다.</p>
+                  </CardContent>
+                </Card>
+              ) : (
+                <div className="space-y-3">
+                  {allBookings.map((item: any) => {
+                    const booking = item.booking;
+                    const scheduledAt = new Date(booking.scheduledAt);
+                    const statusColors: Record<string, string> = {
+                      pending: "border-amber-200 bg-amber-50/30",
+                      confirmed: "border-blue-200 bg-blue-50/30",
+                      in_progress: "border-green-200 bg-green-50/30",
+                      completed: "border-gray-200",
+                      cancelled: "border-red-200 bg-red-50/30",
+                    };
+                    const statusLabels: Record<string, string> = {
+                      pending: "대기중",
+                      confirmed: "확정",
+                      in_progress: "진행중",
+                      completed: "완료",
+                      cancelled: "취소됨",
+                      reschedule_requested: "일정변경요청",
+                    };
+
+                    return (
+                      <Card key={booking.id} className={`overflow-hidden ${statusColors[booking.status] || ""}`}>
+                        <CardContent className="px-4 py-3">
+                          <div className="flex items-start justify-between gap-3 mb-3">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-1">
+                                <span className="font-semibold text-sm">
+                                  {item.student?.name || "학생"}
+                                </span>
+                                <span className="text-gray-400 text-xs">→</span>
+                                <span className="font-semibold text-sm text-primary">
+                                  {item.mentorProfile?.university || "멘토"} {item.mentorProfile?.major || ""}
+                                </span>
+                              </div>
+                              <div className="flex items-center gap-3 text-xs text-gray-500">
+                                <span className="flex items-center gap-1">
+                                  <Calendar className="h-3 w-3" />
+                                  {format(scheduledAt, "M월 d일 HH:mm", { locale: ko })}
+                                </span>
+                                <span className="flex items-center gap-1">
+                                  <Clock className="h-3 w-3" />
+                                  {booking.duration}시간
+                                </span>
+                                <span>₩{parseInt(booking.totalAmount).toLocaleString()}</span>
+                              </div>
+                            </div>
+                            <Badge
+                              variant={booking.status === "completed" ? "outline" : booking.status === "cancelled" ? "destructive" : "default"}
+                              className="shrink-0"
+                            >
+                              {statusLabels[booking.status] || booking.status}
+                            </Badge>
+                          </div>
+
+                          {/* 시작/종료 이행 현황 */}
+                          {(booking.status === "confirmed" || booking.status === "in_progress" || booking.status === "completed") && (
+                            <div className="grid grid-cols-2 gap-2 p-3 bg-white/80 rounded-lg border border-gray-100">
+                              <div>
+                                <p className="text-xs font-medium text-gray-600 mb-1">멘티 확인</p>
+                                <div className="space-y-1">
+                                  <div className="flex items-center gap-1 text-xs">
+                                    <span className={booking.studentStartedAt ? "text-green-600" : "text-gray-300"}>●</span>
+                                    <span className={booking.studentStartedAt ? "text-green-700" : "text-gray-400"}>
+                                      시작: {booking.studentStartedAt ? format(new Date(booking.studentStartedAt), "HH:mm", { locale: ko }) : "미확인"}
+                                    </span>
+                                  </div>
+                                  <div className="flex items-center gap-1 text-xs">
+                                    <span className={booking.studentEndedAt ? "text-green-600" : "text-gray-300"}>●</span>
+                                    <span className={booking.studentEndedAt ? "text-green-700" : "text-gray-400"}>
+                                      종료: {booking.studentEndedAt ? format(new Date(booking.studentEndedAt), "HH:mm", { locale: ko }) : "미확인"}
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+                              <div>
+                                <p className="text-xs font-medium text-gray-600 mb-1">멘토 확인</p>
+                                <div className="space-y-1">
+                                  <div className="flex items-center gap-1 text-xs">
+                                    <span className={booking.mentorStartedAt ? "text-green-600" : "text-gray-300"}>●</span>
+                                    <span className={booking.mentorStartedAt ? "text-green-700" : "text-gray-400"}>
+                                      시작: {booking.mentorStartedAt ? format(new Date(booking.mentorStartedAt), "HH:mm", { locale: ko }) : "미확인"}
+                                    </span>
+                                  </div>
+                                  <div className="flex items-center gap-1 text-xs">
+                                    <span className={booking.mentorEndedAt ? "text-green-600" : "text-gray-300"}>●</span>
+                                    <span className={booking.mentorEndedAt ? "text-green-700" : "text-gray-400"}>
+                                      종료: {booking.mentorEndedAt ? format(new Date(booking.mentorEndedAt), "HH:mm", { locale: ko }) : "미확인"}
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+                              {booking.consultationStartedAt && (
+                                <div className="col-span-2 pt-2 border-t border-gray-100">
+                                  <p className="text-xs text-gray-500">
+                                    실제 시작: <span className="font-medium text-gray-700">{format(new Date(booking.consultationStartedAt), "M월 d일 HH:mm", { locale: ko })}</span>
+                                    {booking.consultationCompletedAt && (
+                                      <> · 완료: <span className="font-medium text-gray-700">{format(new Date(booking.consultationCompletedAt), "HH:mm", { locale: ko })}</span></>
+                                    )}
+                                  </p>
+                                </div>
+                              )}
+                              {booking.endReason && (
+                                <div className="col-span-2">
+                                  <p className="text-xs text-amber-600">
+                                    종료 사유: {booking.endReason}
+                                    {booking.endReasonDetails && ` - ${booking.endReasonDetails}`}
+                                  </p>
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
                 </div>
               )}
             </TabsContent>

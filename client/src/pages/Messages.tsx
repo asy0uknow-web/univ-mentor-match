@@ -407,7 +407,17 @@ function ProposalCard({ proposalData, isMyMessage, currentUserId, onAccept, onRe
         </div>
       )}
       {canComplete && (
-        <div className="px-4 py-3 border-t bg-white/60">
+        <div className="px-4 py-3 border-t bg-white/60 space-y-3">
+          <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-lg">
+            <p className="text-xs font-semibold text-emerald-700 mb-1">🎉 상담이 확정되었습니다!</p>
+            <p className="text-xs text-emerald-600 leading-relaxed">
+              예약 내역 페이지에서 상담 시간 <strong>5분 전후</strong>에 시작 버튼을 눌러주세요.
+              멘토와 멘티 <strong>모두</strong> 시작 버튼을 눌러야 상담이 시작됩니다.
+            </p>
+            <p className="text-xs text-emerald-600 mt-1 leading-relaxed">
+              상담 종료 시에도 양쪽 모두 종료 버튼을 눌러야 상담이 완료 처리됩니다.
+            </p>
+          </div>
           <Button size="sm" className="w-full bg-purple-600 hover:bg-purple-700 text-white" onClick={() => onComplete(proposalData.proposalId)}>
             <Star className="h-3 w-3 mr-1" /> 상담 완료 처리
           </Button>

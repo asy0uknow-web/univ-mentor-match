@@ -1,10 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { trpc } from "@/lib/trpc";
 import { Link, useLocation } from "wouter";
-import { GraduationCap, Calendar, Clock, MessageCircle, User, BookOpen, Trash2, ChevronDown, RefreshCw, Play, CheckCircle, Star } from "lucide-react";
-import BugReportModal from "@/components/BugReportModal";
+import { GraduationCap, Calendar, Clock, MessageCircle, User, BookOpen, CheckCircle, Star, Play, Square, AlertCircle, Info } from "lucide-react";
 import { useState, useEffect } from "react";
 import { getLoginUrl } from "@/const";
 import { format } from "date-fns";
@@ -13,12 +16,98 @@ import { PageLayout } from "@/components/layout";
 import { setPageMeta, PAGE_META } from "@/lib/seo";
 import { useAuth } from "@/_core/hooks/useAuth";
 
+// 종료 사유 입력 모달
+function EndReasonModal({
+  open,
+  onClose,
+  onConfirm,
+  isEarly,
+}: {
+  open: boolean;
+  onClose: () => void;
+  onConfirm: (reason: string, details: string) => void;
+  isEarly: boolean;
+}) {
+  const [reason, setReason] = useState("");
+  const [details, setDetails] = useState("");
+
+  const earlyReasons = [
+    { value: "mutual_agreement", label: "상호 합의로 조기 종료" },
+    { value: "technical_issue", label: "기술적 문제 발생" },
+    { value: "emergency", label: "긴급 상황 발생" },
+    { value: "content_completed", label: "상담 내용 조기 완료" },
+    { value: "other", label: "기타" },
+  ];
+
+  const additionalReasons = [
+    { value: "content_not_finished", label: "상담 내용 미완료로 추가 진행" },
+    { value: "mutual_agreement", label: "상호 합의로 추가 진행" },
+    { value: "other", label: "기타" },
+  ];
+
+  const reasons = isEarly ? earlyReasons : additionalReasons;
+
+  return (
+    <Dialog open={open} onOpenChange={onClose}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>
+            {isEarly ? "⚠️ 조기 종료 사유 입력" : "상담 종료 사유 입력"}
+          </DialogTitle>
+        </DialogHeader>
+        <div className="space-y-4 py-2">
+          {isEarly && (
+            <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg text-sm text-amber-700">
+              예정된 상담 시간보다 일찍 종료하려 합니다. 사유를 입력해주세요.
+            </div>
+          )}
+          <div className="space-y-2">
+            <Label>종료 사유</Label>
+            <Select value={reason} onValueChange={setReason}>
+              <SelectTrigger>
+                <SelectValue placeholder="사유를 선택해주세요" />
+              </SelectTrigger>
+              <SelectContent>
+                {reasons.map((r) => (
+                  <SelectItem key={r.value} value={r.value}>{r.label}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-2">
+            <Label>상세 설명 (선택)</Label>
+            <Textarea
+              placeholder="추가 설명이 있으면 입력해주세요..."
+              value={details}
+              onChange={(e) => setDetails(e.target.value)}
+              rows={3}
+            />
+          </div>
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={onClose}>취소</Button>
+          <Button
+            onClick={() => {
+              if (!reason) { alert("종료 사유를 선택해주세요."); return; }
+              onConfirm(reason, details);
+            }}
+            className={isEarly ? "bg-amber-500 hover:bg-amber-600" : "bg-green-500 hover:bg-green-600"}
+          >
+            {isEarly ? "조기 종료 확인" : "종료 확인"}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
 
 export default function Bookings() {
   const { user, isAuthenticated } = useAuth();
   const [location, setLocation] = useLocation();
+  const [endModalOpen, setEndModalOpen] = useState(false);
+  const [selectedBookingId, setSelectedBookingId] = useState<number | null>(null);
+  const [isEarlyEnd, setIsEarlyEnd] = useState(false);
 
-  // URL 쿼리 파라미터에서 mentorId 추출
   const params = new URLSearchParams(window.location.search);
   const mentorIdParam = params.get('mentorId');
 
@@ -26,20 +115,19 @@ export default function Bookings() {
     setPageMeta(PAGE_META.bookings);
   }, []);
 
-  // 학생 역할: 예약 조회
   const { data: bookings, isLoading: bookingsLoading, refetch: refetchBookings } = trpc.booking.getMyBookings.useQuery(undefined, {
     enabled: isAuthenticated && user?.userType === "high_school_student",
+    refetchInterval: 10000, // 10초마다 자동 갱신
   });
 
-  // 멘토 역할: 받은 상담 신청 조회
   const { data: mentorBookings, isLoading: mentorBookingsLoading, refetch: refetchMentorBookings } = trpc.mentor.getMyBookings.useQuery(undefined, {
     enabled: isAuthenticated && user?.userType === "university_student",
+    refetchInterval: 10000,
   });
 
-  // 상담 시작 뮤테이션
-  const startConsultationMutation = trpc.booking.startConsultation.useMutation({
+  // 새로운 recordUserStart 뮤테이션
+  const recordUserStartMutation = trpc.booking.recordUserStart.useMutation({
     onSuccess: () => {
-      alert("상담이 시작되었습니다");
       refetchBookings();
       refetchMentorBookings();
     },
@@ -48,10 +136,11 @@ export default function Bookings() {
     },
   });
 
-  // 상담 완료 뮤테이션
-  const completeConsultationMutation = trpc.booking.completeConsultation.useMutation({
+  // 새로운 recordUserEnd 뮤테이션
+  const recordUserEndMutation = trpc.booking.recordUserEnd.useMutation({
     onSuccess: () => {
-      alert("상담이 완료되었습니다");
+      setEndModalOpen(false);
+      setSelectedBookingId(null);
       refetchBookings();
       refetchMentorBookings();
     },
@@ -59,6 +148,51 @@ export default function Bookings() {
       alert("오류: " + error.message);
     },
   });
+
+  const handleStartClick = (bookingId: number) => {
+    if (confirm("상담을 시작하시겠습니까? 상대방도 시작 버튼을 눌러야 상담이 시작됩니다.")) {
+      recordUserStartMutation.mutate({ bookingId });
+    }
+  };
+
+  const handleEndClick = (bookingId: number, isEarly: boolean) => {
+    setSelectedBookingId(bookingId);
+    setIsEarlyEnd(isEarly);
+    setEndModalOpen(true);
+  };
+
+  const handleEndConfirm = (reason: string, details: string) => {
+    if (selectedBookingId !== null) {
+      recordUserEndMutation.mutate({
+        bookingId: selectedBookingId,
+        endReason: reason,
+        endReasonDetails: details,
+      });
+    }
+  };
+
+  const getStatusBadge = (status: string) => {
+    const statusMap: Record<string, { label: string; variant: "default" | "secondary" | "destructive" | "outline" }> = {
+      pending: { label: "대기중", variant: "secondary" },
+      confirmed: { label: "확정", variant: "default" },
+      in_progress: { label: "진행중", variant: "default" },
+      completed: { label: "완료", variant: "outline" },
+      cancelled: { label: "취소됨", variant: "destructive" },
+      reschedule_requested: { label: "일정변경요청", variant: "secondary" },
+    };
+    const s = statusMap[status] || { label: status, variant: "secondary" as const };
+    return <Badge variant={s.variant}>{s.label}</Badge>;
+  };
+
+  const getConsultationTypeName = (type: string) => {
+    const typeMap: Record<string, string> = {
+      resume_consulting: "생기부 컨설팅",
+      career_counseling: "진로상담",
+      academic_management: "학업관리",
+      university_tour: "대학탐방",
+    };
+    return typeMap[type] || type;
+  };
 
   if (!isAuthenticated) {
     return (
@@ -78,47 +212,74 @@ export default function Bookings() {
     );
   }
 
-  // 상담 신청 상태 배지
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case "pending":
-        return <Badge variant="secondary" className="text-xs">대기 중</Badge>;
-      case "confirmed":
-        return <Badge className="bg-green-500 text-xs">확정됨</Badge>;
-      case "in_progress":
-        return <Badge className="bg-blue-500 text-xs">진행 중</Badge>;
-      case "completed":
-        return <Badge className="bg-purple-500 text-xs">완료됨</Badge>;
-      case "cancelled":
-        return <Badge variant="destructive" className="text-xs">취소됨</Badge>;
-      case "reschedule_requested":
-        return <Badge className="bg-orange-500 text-xs">일정 변경 요청</Badge>;
-      default:
-        return <Badge className="text-xs">{status}</Badge>;
-    }
+  // 상담 시작/종료 상태 표시 컴포넌트
+  const ConsultationStatusInfo = ({ booking, isStudent }: { booking: any; isStudent: boolean }) => {
+    const isMentor = !isStudent;
+    const myStarted = isStudent ? booking.studentStartedAt : booking.mentorStartedAt;
+    const otherStarted = isStudent ? booking.mentorStartedAt : booking.studentStartedAt;
+    const myEnded = isStudent ? booking.studentEndedAt : booking.mentorEndedAt;
+    const otherEnded = isStudent ? booking.mentorEndedAt : booking.studentEndedAt;
+
+    if (booking.status !== "confirmed" && booking.status !== "in_progress") return null;
+
+    return (
+      <div className="mt-3 p-3 bg-blue-50 border border-blue-100 rounded-lg space-y-2">
+        <p className="text-xs font-semibold text-blue-700 flex items-center gap-1">
+          <Info className="h-3 w-3" />
+          상담 진행 상태
+        </p>
+        {booking.status === "confirmed" && (
+          <div className="space-y-1 text-xs text-blue-600">
+            <div className="flex items-center gap-2">
+              <span className={myStarted ? "text-green-600 font-medium" : "text-gray-400"}>
+                {myStarted ? "✓" : "○"} 나의 시작 확인
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className={otherStarted ? "text-green-600 font-medium" : "text-gray-400"}>
+                {otherStarted ? "✓" : "○"} {isStudent ? "멘토" : "멘티"}의 시작 확인
+              </span>
+            </div>
+            {myStarted && !otherStarted && (
+              <p className="text-amber-600 text-xs mt-1">
+                ⏳ {isStudent ? "멘토" : "멘티"}가 시작 버튼을 누르면 상담이 시작됩니다.
+              </p>
+            )}
+          </div>
+        )}
+        {booking.status === "in_progress" && (
+          <div className="space-y-1 text-xs text-blue-600">
+            <p className="text-green-600 font-medium">✓ 상담 진행 중</p>
+            <div className="flex items-center gap-2">
+              <span className={myEnded ? "text-green-600 font-medium" : "text-gray-400"}>
+                {myEnded ? "✓" : "○"} 나의 종료 확인
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className={otherEnded ? "text-green-600 font-medium" : "text-gray-400"}>
+                {otherEnded ? "✓" : "○"} {isStudent ? "멘토" : "멘티"}의 종료 확인
+              </span>
+            </div>
+            {myEnded && !otherEnded && (
+              <p className="text-amber-600 text-xs mt-1">
+                ⏳ {isStudent ? "멘토" : "멘티"}가 종료 버튼을 누르면 상담이 완료됩니다.
+              </p>
+            )}
+          </div>
+        )}
+      </div>
+    );
   };
 
-  const getConsultationTypeName = (type: string) => {
-    switch (type) {
-      case "resume_consulting":
-        return "생기부 컨설팅";
-      case "career_counseling":
-        return "진로상담";
-      case "academic_management":
-        return "학업관리";
-      case "university_tour":
-        return "대학탐방";
-      default:
-        return type;
-    }
-  };
-
-  // 학생 역할: 예약 내역 표시
+  // 학생(멘티) 역할
   if (user?.userType === "high_school_student") {
     return (
       <PageLayout>
         <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-12">
-          <h1 className="text-2xl sm:text-4xl font-bold mb-4 sm:mb-8">예약 내역</h1>
+          <h1 className="text-2xl sm:text-4xl font-bold mb-2 sm:mb-4">예약 내역</h1>
+          <p className="text-sm text-muted-foreground mb-6 sm:mb-8">
+            상담이 확정되면 예정 시간 5분 전후에 시작 버튼을 눌러주세요. 멘토와 멘티 모두 시작 버튼을 눌러야 상담이 시작됩니다.
+          </p>
 
           {bookingsLoading ? (
             <p className="text-xs sm:text-sm text-muted-foreground">로딩 중...</p>
@@ -130,12 +291,18 @@ export default function Bookings() {
                 const durationMs = parseFloat(item.booking.duration.toString()) * 60 * 60 * 1000;
                 const scheduledEnd = new Date(scheduledAt.getTime() + durationMs);
                 const fiveMinutesMs = 5 * 60 * 1000;
-                const canStart = item.booking.status === "confirmed" && 
-                  now >= new Date(scheduledAt.getTime() - fiveMinutesMs) && 
-                  now <= new Date(scheduledAt.getTime() + fiveMinutesMs);
-                const canComplete = item.booking.status === "in_progress" && 
-                  now >= new Date(scheduledEnd.getTime() - fiveMinutesMs) && 
-                  now <= new Date(scheduledEnd.getTime() + fiveMinutesMs);
+
+                const canStart = item.booking.status === "confirmed" &&
+                  now >= new Date(scheduledAt.getTime() - fiveMinutesMs) &&
+                  now <= new Date(scheduledAt.getTime() + fiveMinutesMs) &&
+                  !item.booking.studentStartedAt; // 아직 시작 안 한 경우만
+
+                const alreadyStarted = item.booking.status === "confirmed" && !!item.booking.studentStartedAt;
+
+                const canEnd = item.booking.status === "in_progress" && !item.booking.studentEndedAt;
+                const alreadyEnded = item.booking.status === "in_progress" && !!item.booking.studentEndedAt;
+
+                const isEarlyEnd = item.booking.status === "in_progress" && now < new Date(scheduledEnd.getTime() - fiveMinutesMs);
                 const canReview = item.booking.status === "completed";
 
                 return (
@@ -158,7 +325,7 @@ export default function Bookings() {
                         <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground">
                           <Calendar className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
                           <span className="truncate">
-                            {format(scheduledAt, "MMM dd HH:mm", { locale: ko })}
+                            {format(scheduledAt, "M월 d일 HH:mm", { locale: ko })}
                           </span>
                         </div>
                         <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground">
@@ -178,17 +345,23 @@ export default function Bookings() {
                         </div>
                       )}
 
+                      {/* 상담 진행 상태 표시 */}
+                      <ConsultationStatusInfo booking={item.booking} isStudent={true} />
+
                       {/* 상담 완료 정보 */}
                       {item.booking.status === "completed" && (
                         <div className="mt-3 p-2 sm:p-3 bg-purple-50 rounded-lg mb-3">
                           <p className="text-xs font-semibold text-purple-700 mb-2">상담 완료 정보</p>
                           <div className="space-y-1 text-xs text-purple-600">
-                            <p>예정: {format(scheduledAt, "MMM dd HH:mm", { locale: ko })}</p>
+                            <p>예정: {format(scheduledAt, "M월 d일 HH:mm", { locale: ko })}</p>
                             {item.booking.consultationStartedAt && (
-                              <p>시작: {format(new Date(item.booking.consultationStartedAt), "HH:mm", { locale: ko })}</p>
+                              <p>실제 시작: {format(new Date(item.booking.consultationStartedAt), "HH:mm", { locale: ko })}</p>
                             )}
                             {item.booking.consultationCompletedAt && (
-                              <p>완료: {format(new Date(item.booking.consultationCompletedAt), "HH:mm", { locale: ko })}</p>
+                              <p>실제 완료: {format(new Date(item.booking.consultationCompletedAt), "HH:mm", { locale: ko })}</p>
+                            )}
+                            {item.booking.endReason && (
+                              <p>종료 사유: {item.booking.endReason}</p>
                             )}
                           </div>
                         </div>
@@ -196,35 +369,50 @@ export default function Bookings() {
 
                       {/* 액션 버튼 */}
                       <div className="flex flex-col sm:flex-row gap-2 pt-3 sm:pt-4">
-                        <Button 
+                        <Button
                           onClick={() => setLocation(`/messages?mentorUUID=${item.mentorProfile?.uuid || 0}`)}
                           className="flex-1 text-xs sm:text-sm h-8 sm:h-9"
                         >
                           <MessageCircle className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                           메시지
                         </Button>
+
                         {canStart && (
-                          <Button 
-                            onClick={() => startConsultationMutation.mutate({ bookingId: item.booking.id })}
-                            disabled={startConsultationMutation.isPending}
+                          <Button
+                            onClick={() => handleStartClick(item.booking.id)}
+                            disabled={recordUserStartMutation.isPending}
                             className="flex-1 text-xs sm:text-sm h-8 sm:h-9 bg-blue-500 hover:bg-blue-600"
                           >
                             <Play className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                             상담 시작
                           </Button>
                         )}
-                        {canComplete && (
-                          <Button 
-                            onClick={() => completeConsultationMutation.mutate({ bookingId: item.booking.id })}
-                            disabled={completeConsultationMutation.isPending}
-                            className="flex-1 text-xs sm:text-sm h-8 sm:h-9 bg-green-500 hover:bg-green-600"
+
+                        {alreadyStarted && (
+                          <div className="flex-1 flex items-center justify-center text-xs text-green-600 font-medium bg-green-50 rounded-md px-3 h-8 sm:h-9">
+                            ✓ 시작 확인 완료 (멘토 대기중)
+                          </div>
+                        )}
+
+                        {canEnd && (
+                          <Button
+                            onClick={() => handleEndClick(item.booking.id, isEarlyEnd)}
+                            disabled={recordUserEndMutation.isPending}
+                            className={`flex-1 text-xs sm:text-sm h-8 sm:h-9 ${isEarlyEnd ? "bg-amber-500 hover:bg-amber-600" : "bg-green-500 hover:bg-green-600"}`}
                           >
-                            <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-                            상담 완료
+                            <Square className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                            {isEarlyEnd ? "조기 종료" : "상담 종료"}
                           </Button>
                         )}
+
+                        {alreadyEnded && (
+                          <div className="flex-1 flex items-center justify-center text-xs text-green-600 font-medium bg-green-50 rounded-md px-3 h-8 sm:h-9">
+                            ✓ 종료 확인 완료 (멘토 대기중)
+                          </div>
+                        )}
+
                         {canReview && (
-                          <Button 
+                          <Button
                             onClick={() => setLocation(`/reviews/new?bookingId=${item.booking.id}`)}
                             className="flex-1 text-xs sm:text-sm h-8 sm:h-9 bg-yellow-500 hover:bg-yellow-600"
                           >
@@ -247,8 +435,8 @@ export default function Bookings() {
                   <Link href="/mentors">
                     <Button className="text-xs sm:text-sm h-8 sm:h-10">멘토 찾아보기</Button>
                   </Link>
-                  <Button 
-                    variant="outline" 
+                  <Button
+                    variant="outline"
                     className="text-xs sm:text-sm h-8 sm:h-10"
                     onClick={() => mentorIdParam ? setLocation(`/messages?mentorId=${mentorIdParam}`) : setLocation('/messages')}
                   >
@@ -260,15 +448,25 @@ export default function Bookings() {
             </Card>
           )}
         </div>
+
+        <EndReasonModal
+          open={endModalOpen}
+          onClose={() => setEndModalOpen(false)}
+          onConfirm={handleEndConfirm}
+          isEarly={isEarlyEnd}
+        />
       </PageLayout>
     );
   }
 
-  // 멘토 역할: 상담 문의 목록 표시
+  // 멘토 역할
   return (
     <PageLayout>
       <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-12">
-        <h1 className="text-2xl sm:text-4xl font-bold mb-4 sm:mb-8">상담 예약 내역</h1>
+        <h1 className="text-2xl sm:text-4xl font-bold mb-2 sm:mb-4">상담 예약 내역</h1>
+        <p className="text-sm text-muted-foreground mb-6 sm:mb-8">
+          상담 시간이 되면 시작 버튼을 눌러주세요. 멘티와 멘토 모두 시작 버튼을 눌러야 상담이 시작됩니다.
+        </p>
 
         {mentorBookingsLoading ? (
           <p className="text-xs sm:text-sm text-muted-foreground">로딩 중...</p>
@@ -280,12 +478,18 @@ export default function Bookings() {
               const durationMs = parseFloat(item.booking.duration.toString()) * 60 * 60 * 1000;
               const scheduledEnd = new Date(scheduledAt.getTime() + durationMs);
               const fiveMinutesMs = 5 * 60 * 1000;
-              const canStart = item.booking.status === "confirmed" && 
-                now >= new Date(scheduledAt.getTime() - fiveMinutesMs) && 
-                now <= new Date(scheduledAt.getTime() + fiveMinutesMs);
-              const canComplete = item.booking.status === "in_progress" && 
-                now >= new Date(scheduledEnd.getTime() - fiveMinutesMs) && 
-                now <= new Date(scheduledEnd.getTime() + fiveMinutesMs);
+
+              const canStart = item.booking.status === "confirmed" &&
+                now >= new Date(scheduledAt.getTime() - fiveMinutesMs) &&
+                now <= new Date(scheduledAt.getTime() + fiveMinutesMs) &&
+                !item.booking.mentorStartedAt;
+
+              const alreadyStarted = item.booking.status === "confirmed" && !!item.booking.mentorStartedAt;
+
+              const canEnd = item.booking.status === "in_progress" && !item.booking.mentorEndedAt;
+              const alreadyEnded = item.booking.status === "in_progress" && !!item.booking.mentorEndedAt;
+
+              const isEarlyEnd = item.booking.status === "in_progress" && now < new Date(scheduledEnd.getTime() - fiveMinutesMs);
 
               return (
                 <Card key={item.booking.id} className={`overflow-hidden ${item.booking.status === "pending" ? "border-amber-200 bg-amber-50/30" : ""}`}>
@@ -307,12 +511,11 @@ export default function Bookings() {
                   </CardHeader>
                   <CardContent className="px-3 sm:px-6 pb-3 sm:pb-4">
                     <div className="space-y-3 sm:space-y-4">
-                      {/* 상담 정보 */}
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4">
                         <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground">
                           <Calendar className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
                           <span className="truncate">
-                            {format(scheduledAt, "MMM dd HH:mm", { locale: ko })}
+                            {format(scheduledAt, "M월 d일 HH:mm", { locale: ko })}
                           </span>
                         </div>
                         <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground">
@@ -330,22 +533,28 @@ export default function Bookings() {
 
                       {item.booking.studentMessage && (
                         <div className="p-2 sm:p-3 bg-muted rounded-lg">
-                          <p className="text-xs text-muted-foreground mb-1">학생 메시지</p>
+                          <p className="text-xs text-muted-foreground mb-1">멘티 메시지</p>
                           <p className="text-xs sm:text-sm whitespace-pre-wrap line-clamp-3">{item.booking.studentMessage}</p>
                         </div>
                       )}
+
+                      {/* 상담 진행 상태 표시 */}
+                      <ConsultationStatusInfo booking={item.booking} isStudent={false} />
 
                       {/* 상담 완료 정보 */}
                       {item.booking.status === "completed" && (
                         <div className="p-2 sm:p-3 bg-purple-50 rounded-lg">
                           <p className="text-xs font-semibold text-purple-700 mb-2">상담 완료 정보</p>
                           <div className="space-y-1 text-xs text-purple-600">
-                            <p>예정: {format(scheduledAt, "MMM dd HH:mm", { locale: ko })}</p>
+                            <p>예정: {format(scheduledAt, "M월 d일 HH:mm", { locale: ko })}</p>
                             {item.booking.consultationStartedAt && (
-                              <p>시작: {format(new Date(item.booking.consultationStartedAt), "HH:mm", { locale: ko })}</p>
+                              <p>실제 시작: {format(new Date(item.booking.consultationStartedAt), "HH:mm", { locale: ko })}</p>
                             )}
                             {item.booking.consultationCompletedAt && (
-                              <p>완료: {format(new Date(item.booking.consultationCompletedAt), "HH:mm", { locale: ko })}</p>
+                              <p>실제 완료: {format(new Date(item.booking.consultationCompletedAt), "HH:mm", { locale: ko })}</p>
+                            )}
+                            {item.booking.endReason && (
+                              <p>종료 사유: {item.booking.endReason}</p>
                             )}
                           </div>
                         </div>
@@ -353,23 +562,24 @@ export default function Bookings() {
 
                       {/* 액션 버튼 */}
                       <div className="flex flex-col sm:flex-row gap-2 pt-2 sm:pt-3">
-                        <Button 
+                        <Button
                           onClick={() => setLocation(`/messages?studentId=${item.student?.id}`)}
                           className="flex-1 text-xs sm:text-sm h-8 sm:h-9"
                         >
                           <MessageCircle className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                           메시지
                         </Button>
+
                         {item.booking.status === "pending" && (
                           <>
-                            <Button 
+                            <Button
                               onClick={() => setLocation(`/messages?studentId=${item.student?.id}`)}
                               className="flex-1 text-xs sm:text-sm h-8 sm:h-9 bg-green-500 hover:bg-green-600"
                             >
                               <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                               수락
                             </Button>
-                            <Button 
+                            <Button
                               onClick={() => setLocation(`/messages?studentId=${item.student?.id}`)}
                               variant="outline"
                               className="flex-1 text-xs sm:text-sm h-8 sm:h-9"
@@ -378,25 +588,39 @@ export default function Bookings() {
                             </Button>
                           </>
                         )}
+
                         {canStart && (
-                          <Button 
-                            onClick={() => startConsultationMutation.mutate({ bookingId: item.booking.id })}
-                            disabled={startConsultationMutation.isPending}
+                          <Button
+                            onClick={() => handleStartClick(item.booking.id)}
+                            disabled={recordUserStartMutation.isPending}
                             className="flex-1 text-xs sm:text-sm h-8 sm:h-9 bg-blue-500 hover:bg-blue-600"
                           >
                             <Play className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                             상담 시작
                           </Button>
                         )}
-                        {canComplete && (
-                          <Button 
-                            onClick={() => completeConsultationMutation.mutate({ bookingId: item.booking.id })}
-                            disabled={completeConsultationMutation.isPending}
-                            className="flex-1 text-xs sm:text-sm h-8 sm:h-9 bg-green-500 hover:bg-green-600"
+
+                        {alreadyStarted && (
+                          <div className="flex-1 flex items-center justify-center text-xs text-green-600 font-medium bg-green-50 rounded-md px-3 h-8 sm:h-9">
+                            ✓ 시작 확인 완료 (멘티 대기중)
+                          </div>
+                        )}
+
+                        {canEnd && (
+                          <Button
+                            onClick={() => handleEndClick(item.booking.id, isEarlyEnd)}
+                            disabled={recordUserEndMutation.isPending}
+                            className={`flex-1 text-xs sm:text-sm h-8 sm:h-9 ${isEarlyEnd ? "bg-amber-500 hover:bg-amber-600" : "bg-green-500 hover:bg-green-600"}`}
                           >
-                            <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-                            상담 완료
+                            <Square className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                            {isEarlyEnd ? "조기 종료" : "상담 종료"}
                           </Button>
+                        )}
+
+                        {alreadyEnded && (
+                          <div className="flex-1 flex items-center justify-center text-xs text-green-600 font-medium bg-green-50 rounded-md px-3 h-8 sm:h-9">
+                            ✓ 종료 확인 완료 (멘티 대기중)
+                          </div>
                         )}
                       </div>
                     </div>
@@ -413,6 +637,13 @@ export default function Bookings() {
           </Card>
         )}
       </div>
+
+      <EndReasonModal
+        open={endModalOpen}
+        onClose={() => setEndModalOpen(false)}
+        onConfirm={handleEndConfirm}
+        isEarly={isEarlyEnd}
+      />
     </PageLayout>
   );
 }

@@ -1431,6 +1431,55 @@ getTopMentors: publicProcedure
         await rejectMentorVerification(input.verificationId, input.adminNotes);
         return { success: true };
       }),
+
+    getAllBookings: protectedProcedure
+      .input(z.object({
+        status: z.string().optional(),
+        page: z.number().default(1),
+        limit: z.number().default(20),
+      }).optional())
+      .query(async ({ ctx, input }) => {
+        if (ctx.user?.role !== "admin") {
+          throw new Error("Only admins can access this");
+        }
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+        const page = input?.page ?? 1;
+        const limit = input?.limit ?? 20;
+        const offset = (page - 1) * limit;
+
+        // studentId(멘티) 기준으로 users 조인
+        const studentAlias = users;
+        const results = await db
+          .select({
+            booking: bookings,
+            student: {
+              id: users.id,
+              name: users.name,
+              email: users.email,
+            },
+            mentorProfile: {
+              id: mentorProfiles.id,
+              university: mentorProfiles.university,
+              major: mentorProfiles.major,
+              userId: mentorProfiles.userId,
+            },
+          })
+          .from(bookings)
+          .leftJoin(users, eq(bookings.studentId, users.id))
+          .leftJoin(mentorProfiles, eq(bookings.mentorId, mentorProfiles.id))
+          .orderBy(drizzleDesc(bookings.createdAt))
+          .limit(limit)
+          .offset(offset);
+
+        const countResult = await db.select({ count: drizzleDesc(bookings.id) }).from(bookings);
+        return {
+          bookings: results,
+          total: results.length,
+          page,
+          limit,
+        };
+      }),
   }),
   mentorSearch: router({
     getByRegion: publicProcedure
