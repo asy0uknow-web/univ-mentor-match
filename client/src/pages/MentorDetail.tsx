@@ -111,7 +111,7 @@ export default function MentorDetail() {
       return;
     }
     const profileId = mentor?.profile?.uuid || id;
-    setLocation(`/bookings?mentorId=${profileId}`);
+    setLocation(`/messages?mentorId=${profileId}`);
   };
 
   const avgRating = reviews && reviews.length > 0
@@ -291,14 +291,6 @@ export default function MentorDetail() {
                   className="w-full h-12 text-base font-semibold bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors"
                 >
                   상담 신청하기
-                </Button>
-                <Button
-                  onClick={handleMessageClick}
-                  variant="outline"
-                  className="w-full h-12 text-base font-semibold border-gray-300 rounded-lg hover:bg-gray-50"
-                >
-                  <MessageCircle className="w-4 h-4 mr-2" />
-                  메시지 보내기
                 </Button>
 
                 {/* 상담 정보 카드 */}
