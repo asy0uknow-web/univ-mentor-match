@@ -277,7 +277,7 @@ export default function MentorProfile() {
       icon: <Clock className="h-4 w-4 sm:h-5 sm:w-5 text-amber-500" />,
       badge: <Badge className="bg-amber-100 text-amber-700 border-amber-200 hover:bg-amber-100 text-xs sm:text-sm">검토 중</Badge>,
       cardClass: "border-amber-200 bg-amber-50",
-      message: "인증 서류가 제출되었습니다. 관리자 검토 후 승인됩니다. (보통 1~2 영업일 소요)",
+      message: "인증 서류가 제출되었습니다. 관리자 검토 후 승인됩니다. (보통 1~2일 소요)",
       buttonLabel: "제출 내역 확인",
       buttonVariant: "outline" as const,
     },
@@ -367,7 +367,7 @@ export default function MentorProfile() {
                                   <Clock className="h-5 w-5 sm:h-6 sm:w-6 text-amber-600 flex-shrink-0" />
                                   <div>
                                     <p className="font-semibold text-sm sm:text-base text-amber-700">검토 중</p>
-                                    <p className="text-xs sm:text-sm text-amber-600">관리자 검토 후 승인됩니다 (1~2 영업일)</p>
+                                    <p className="text-xs sm:text-sm text-amber-600">관리자 검토 후 승인됩니다 (1~2일)</p>
                                   </div>
                                 </>
                               )}
