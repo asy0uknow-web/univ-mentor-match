@@ -2154,3 +2154,15 @@
 - [ ] 상담 문의 전환 흐름 테스트
 - [ ] 모바일 반응형 테스트
 - [ ] 최종 체크포인트 저장
+
+
+## 멘토 칼럼 기능 (완료)
+- [x] DB 스키마 설계 및 마이그레이션 (mentor_columns, mentor_column_likes, mentor_column_comments)
+- [x] 백엔드 API 구현 (server/columns.ts)
+- [x] tRPC 라우터 추가 (mentorColumns 라우터)
+- [x] 목록 페이지 구현 (MentorColumns.tsx - 검색, 필터링, 정렬)
+- [x] 상세 페이지 구현 (MentorColumnDetail.tsx - 좋아요, 댓글)
+- [x] 작성 페이지 구현 (MentorColumnCreate.tsx - 미리보기, 임시저장)
+- [x] App.tsx 라우트 추가 (/columns, /columns/:id, /columns/new)
+- [x] Navbar 메뉴 추가 (멘토 칼럼 메뉴)
+- [x] 단위 테스트 작성 및 실행 (11개 테스트 모두 통과)

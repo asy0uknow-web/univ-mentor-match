@@ -18,16 +18,18 @@ interface NavbarProps {
 
 // 로그인 상태별 메뉴
 const AUTHENTICATED_MENU = [
-  { href: "/mentors", label: "멘토 찾기" },
+  { href: "/mentors", label: "멘른토 cha3기" },
   { href: "/messages", label: "상담 신청" },
   { href: "/bookings", label: "예약 내역" },
   { href: "/qna", label: "Q&A" },
+  { href: "/columns", label: "멘른토 칼럼" },
 ] as const;
 
 const DROPDOWN_MENU = [
   { href: "/my-profile", label: "내 프로필" },
   { href: "/notifications", label: "알림" },
   { href: "/qna", label: "Q&A" },
+  { href: "/columns", label:"멘른토 칼럼" },
 ] as const;
 
 // 뙈페이지 메뉴 (스크롤 이동)

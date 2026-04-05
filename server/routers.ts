@@ -65,6 +65,7 @@ import { startConsultation, completeConsultation, requestReschedule, acceptResch
 import { sendConsultationReminders } from "./booking-notifications";
 import { getMonthlyConsultationStats, getOverallConsultationStats, getLast12MonthsStats } from "./booking-statistics";
 import { createQuestion, getQuestionById, getQuestions, updateQuestion, deleteQuestion, createAnswer, getAnswersByQuestionId, getAnswerById, updateAnswer, deleteAnswer, createAnswerReply, getRepliesByAnswerId, getReplyById, updateReply, deleteReply, getQuestionDetail, acceptAnswer, toggleAnswerLike, getUserAnswerLikes, notifyQuestionAuthorOnAnswer, getMyQuestions, getMyAnswers } from "./qna";
+import { getColumnsList, getColumnById, createColumn, updateColumn, deleteColumn, toggleColumnLike, getColumnComments, createComment, updateComment, deleteComment, getMyColumns } from "./columns";
 import { emailVerificationTokens } from "../drizzle/schema";
 import { mentorGallery, messages, notifications, bookings, reviews, mentorProfiles, mentorVerifications, users, bugReports, mentorConsultationTypes, consultationProposals, studentProfiles } from "../drizzle/schema";
 import { and, eq, eq as drizzleEq, or as drizzleOr, desc as drizzleDesc } from "drizzle-orm";
@@ -2435,6 +2436,107 @@ getTopMentors: publicProcedure
       .input(z.object({ answerId: z.number() }))
       .query(async ({ input }) => {
         return await getRepliesByAnswerId(input.answerId);
+      }),
+  }),
+
+  mentorColumns: router({
+    getList: publicProcedure
+      .input(z.object({
+        limit: z.number().optional(),
+        offset: z.number().optional(),
+        sortBy: z.enum(["latest", "likes", "comments"]).optional(),
+        category: z.string().optional(),
+        searchQuery: z.string().optional(),
+      }))
+      .query(async ({ input }) => {
+        return await getColumnsList(input);
+      }),
+
+    getById: publicProcedure
+      .input(z.object({ columnId: z.number() }))
+      .query(async ({ ctx, input }) => {
+        return await getColumnById(input.columnId, ctx.user?.id);
+      }),
+
+    create: protectedProcedure
+      .input(z.object({
+        title: z.string().min(5).max(255),
+        content: z.string().min(50),
+        category: z.string().min(1).max(100),
+        excerpt: z.string().optional(),
+        coverImageUrl: z.string().optional(),
+        status: z.enum(["draft", "published"]),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        return await createColumn(ctx.user.id, input);
+      }),
+
+    update: protectedProcedure
+      .input(z.object({
+        columnId: z.number(),
+        title: z.string().min(5).max(255).optional(),
+        content: z.string().min(50).optional(),
+        category: z.string().min(1).max(100).optional(),
+        excerpt: z.string().optional(),
+        coverImageUrl: z.string().optional(),
+        status: z.enum(["draft", "published"]).optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const { columnId, ...data } = input;
+        return await updateColumn(columnId, ctx.user.id, data);
+      }),
+
+    delete: protectedProcedure
+      .input(z.object({ columnId: z.number() }))
+      .mutation(async ({ ctx, input }) => {
+        return await deleteColumn(input.columnId, ctx.user.id);
+      }),
+
+    toggleLike: protectedProcedure
+      .input(z.object({ columnId: z.number() }))
+      .mutation(async ({ ctx, input }) => {
+        return await toggleColumnLike(input.columnId, ctx.user.id);
+      }),
+
+    getComments: publicProcedure
+      .input(z.object({ columnId: z.number() }))
+      .query(async ({ input }) => {
+        return await getColumnComments(input.columnId);
+      }),
+
+    createComment: protectedProcedure
+      .input(z.object({
+        columnId: z.number(),
+        content: z.string().min(1).max(1000),
+        parentCommentId: z.number().optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        return await createComment(
+          input.columnId,
+          ctx.user.id,
+          input.content,
+          input.parentCommentId
+        );
+      }),
+
+    updateComment: protectedProcedure
+      .input(z.object({
+        commentId: z.number(),
+        content: z.string().min(1).max(1000),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        return await updateComment(input.commentId, ctx.user.id, input.content);
+      }),
+
+    deleteComment: protectedProcedure
+      .input(z.object({ commentId: z.number() }))
+      .mutation(async ({ ctx, input }) => {
+        return await deleteComment(input.commentId, ctx.user.id);
+      }),
+
+    getMyColumns: protectedProcedure
+      .query(async ({ ctx }) => {
+        return await getMyColumns(ctx.user.id);
       }),
   }),
 });

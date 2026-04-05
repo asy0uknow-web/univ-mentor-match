@@ -30,6 +30,9 @@ const QnADetail = lazy(() => import("./pages/QnADetail"));
 const QnACreate = lazy(() => import("./pages/QnACreate"));
 const QnAGuide = lazy(() => import("./pages/QnAGuide"));
 const QnADashboard = lazy(() => import("./pages/QnADashboard"));
+const MentorColumns = lazy(() => import("./pages/MentorColumns"));
+const MentorColumnDetail = lazy(() => import("./pages/MentorColumnDetail"));
+const MentorColumnCreate = lazy(() => import("./pages/MentorColumnCreate"));
 const Terms = lazy(() => import("./pages/Terms"));
 const RefundPolicy = lazy(() => import("./pages/RefundPolicy"));
 
@@ -62,6 +65,9 @@ function Router() {
         <Route path={"/qna/dashboard"} component={QnADashboard} />
         <Route path={"/qna/new"} component={QnACreate} />
         <Route path={"/qna/:id"} component={QnADetail} />
+        <Route path={"/columns"} component={MentorColumns} />
+        <Route path={"/columns/new"} component={MentorColumnCreate} />
+        <Route path={"/columns/:id"} component={MentorColumnDetail} />
         <Route path={"/404"} component={NotFound} />
         <Route component={NotFound} />
       </Switch>
