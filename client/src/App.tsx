@@ -28,12 +28,15 @@ const ReviewCreate = lazy(() => import("./pages/ReviewCreate"));
 const QnAList = lazy(() => import("./pages/QnAList"));
 const QnADetail = lazy(() => import("./pages/QnADetail"));
 const QnACreate = lazy(() => import("./pages/QnACreate"));
+const QnAGuide = lazy(() => import("./pages/QnAGuide"));
+const Terms = lazy(() => import("./pages/Terms"));
+const RefundPolicy = lazy(() => import("./pages/RefundPolicy"));
 
 function Router() {
   return (
     <Suspense fallback={<div className="flex items-center justify-center min-h-screen">로딩 중...</div>}>
       <Switch>
-        <Route path={"\\"} component={Home} />
+        <Route path={"/"} component={Home} />
         <Route path={"/signup"} component={SignUp} />
         <Route path={"/login"} component={Login} />
         <Route path={"/verify-email"} component={VerifyEmail} />
@@ -50,8 +53,11 @@ function Router() {
         <Route path={"/admin/bug-reports"} component={AdminBugReports} />
         <Route path={"/complete-profile"} component={CompleteProfile} />
         <Route path={"/privacy-policy"} component={PrivacyPolicy} />
+        <Route path={"/terms"} component={Terms} />
+        <Route path={"/refund-policy"} component={RefundPolicy} />
         <Route path={"/reviews/new"} component={ReviewCreate} />
         <Route path={"/qna"} component={QnAList} />
+        <Route path={"/qna/guide"} component={QnAGuide} />
         <Route path={"/qna/new"} component={QnACreate} />
         <Route path={"/qna/:id"} component={QnADetail} />
         <Route path={"/404"} component={NotFound} />

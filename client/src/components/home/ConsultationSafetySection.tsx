@@ -71,7 +71,7 @@ export const ConsultationSafetySection = () => {
               부적절한 상담이나 문제 상황이 발생하면 언제든 고객센터에 연락주세요. 우리는 24시간 대응 가능합니다.
             </p>
             <p className="text-sm sm:text-base text-amber-700">
-              <span className="font-bold">이메일:</span> support@univmatch.com | <span className="font-bold">전화:</span> 1234-5678
+              <span className="font-bold">이메일:</span> support@univmatch.com
             </p>
           </div>
         </div>

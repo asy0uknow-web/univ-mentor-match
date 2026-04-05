@@ -36,7 +36,6 @@ export const ImprovedFooter = () => {
             <ul className="space-y-2 text-sm">
               <li><a href="mailto:support@univmatch.com" className="hover:text-white transition-colors">이메일 문의</a></li>
               <li><a href="https://open.kakao.com/o/univmatch" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">카카오톡 채팅</a></li>
-              <li><a href="tel:1234-5678" className="hover:text-white transition-colors">전화: 1234-5678</a></li>
               <li><a href="#parent-faq" className="hover:text-white transition-colors">FAQ</a></li>
             </ul>
           </div>
@@ -46,8 +45,8 @@ export const ImprovedFooter = () => {
             <h3 className="text-white font-bold text-lg mb-4">약관</h3>
             <ul className="space-y-2 text-sm">
               <li><a href="/terms" className="hover:text-white transition-colors">이용약관</a></li>
-              <li><a href="/privacy" className="hover:text-white transition-colors">개인정보처리방침</a></li>
-              <li><a href="/refund" className="hover:text-white transition-colors">환불 정책</a></li>
+              <li><a href="/privacy-policy" className="hover:text-white transition-colors">개인정보처리방침</a></li>
+              <li><a href="/refund-policy" className="hover:text-white transition-colors">환불 정책</a></li>
               <li><a href="/contact" className="hover:text-white transition-colors">문의하기</a></li>
             </ul>
           </div>

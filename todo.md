@@ -2084,3 +2084,15 @@
 - [x] 상담 시작 알림 기능 (30분/10분 전 알림)
 - [x] 관리자 상담 강제 처리 (상담 상태 직접 변경)
 - [x] 상담 이행 통계 대시보드 (완료률, 조기 종료 비율 등)
+
+## 런칭 전 품질 점검 (P0 이슈 수정)
+- [x] 더미 전화번호(1234-5678) 제거
+- [x] 더미 후기(이지은, 박준호, 최수현) → 익명 처리
+- [x] 더미 가격(50,000원/30,000원/40,000원) → 실제 안내로 교체
+- [x] "30분 무료 상담" 문구 제거
+- [x] 이용약관 페이지(/terms) 생성
+- [x] 환불정책 페이지(/refund-policy) 생성
+- [x] App.tsx 라우트 추가 (Terms, RefundPolicy, QnAGuide)
+- [x] index.html lang="ko" 수정
+- [x] OG URL, canonical URL을 univmatch.com으로 수정
+- [x] Footer 링크 경로 수정 (/privacy-policy, /refund-policy)

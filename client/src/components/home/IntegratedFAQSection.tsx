@@ -12,7 +12,7 @@ const FAQ_ITEMS: FAQItem[] = [
   {
     question: "상담료는 얼마인가요?",
     answer:
-      "상담 종류와 시간에 따라 다릅니다. 생기부 컨설팅은 시간당 50,000원, 진로상담은 30,000원, 학업관리는 40,000원, 대학탐방은 50,000원입니다. 첫 상담은 30분 무료 상담으로 시작할 수 있습니다.",
+      "상담료는 멘토마다 다르며, 각 멘토의 프로필 페이지에서 확인할 수 있습니다. 멘토가 직접 상담 유형별 가격을 설정하며, 유니브매치는 별도의 중개 수수료를 받지 않습니다.",
     category: "cost",
   },
   {
@@ -195,10 +195,6 @@ export const IntegratedFAQSection = () => {
                 <div className="flex flex-col sm:flex-row gap-4 text-sm sm:text-base text-red-700">
                   <span>
                     <span className="font-bold">이메일:</span> support@univmatch.com
-                  </span>
-                  <span className="hidden sm:inline">|</span>
-                  <span>
-                    <span className="font-bold">전화:</span> 1234-5678
                   </span>
                 </div>
               </div>

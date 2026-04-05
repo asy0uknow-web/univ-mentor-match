@@ -16,11 +16,11 @@ export const ContactSection = () => {
       link: "https://open.kakao.com/o/univmatch"
     },
     {
-      title: "전화",
-      description: "1234-5678",
-      details: "평일 10:00 - 18:00",
-      icon: "☎️",
-      link: "tel:1234-5678"
+      title: "Q&A 커뮤니티",
+      description: "질문 등록하기",
+      details: "멘토들이 직접 답변해드립니다",
+      icon: "💡",
+      link: "/qna"
     }
   ];
 
