@@ -10,7 +10,8 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { trpc } from "@/lib/trpc";
 import { Link, useLocation } from "wouter";
-import { GraduationCap, CheckCircle, AlertCircle, Clock, Upload, X, Loader2, Shield, ShieldCheck, ShieldAlert, ShieldOff, RefreshCw, User, Mail, LogOut } from "lucide-react";
+import { GraduationCap, CheckCircle, AlertCircle, Clock, Upload, X, Loader2, Shield, ShieldCheck, ShieldAlert, ShieldOff, RefreshCw, User, Mail, LogOut, Lock } from "lucide-react";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useState, useEffect } from "react";
 import { getLoginUrl } from "@/const";
 import { toast } from "sonner";
@@ -42,6 +43,25 @@ export default function MentorProfile() {
 
   const { user, isAuthenticated } = useAuth();
   const [, setLocation] = useLocation();
+  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
+  const [passwordForm, setPasswordForm] = useState({
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
+  const [passwordErrors, setPasswordErrors] = useState<Record<string, string>>({});
+  
+  const changePasswordMutation = trpc.user.changePassword.useMutation({
+    onSuccess: () => {
+      toast.success("비밀번호가 변경되었습니다");
+      setIsPasswordModalOpen(false);
+      setPasswordForm({ currentPassword: "", newPassword: "", confirmPassword: "" });
+      setPasswordErrors({});
+    },
+    onError: (error: any) => {
+      toast.error(error.message || "비밀번호 변경에 실패했습니다");
+    },
+  });
 
   const { data: profile, isLoading } = trpc.mentor.getMyProfile.useQuery(undefined, {
     enabled: isAuthenticated,
@@ -607,12 +627,24 @@ export default function MentorProfile() {
                       </div>
                     </div>
 
-                    <div>
-                      <p className="text-xs sm:text-sm text-muted-foreground flex items-center gap-1 sm:gap-2 mb-1 sm:mb-2">
-                        <Mail className="h-3 w-3 sm:h-4 sm:w-4" />
-                        이메일
-                      </p>
-                      <p className="font-semibold text-xs sm:text-sm break-all">{user?.email || "정보 없음"}</p>
+                    <div className="flex items-end justify-between gap-2 sm:gap-3">
+                      <div className="flex-1">
+                        <p className="text-xs sm:text-sm text-muted-foreground flex items-center gap-1 sm:gap-2 mb-1 sm:mb-2">
+                          <Mail className="h-3 w-3 sm:h-4 sm:w-4" />
+                          이메일
+                        </p>
+                        <p className="font-semibold text-xs sm:text-sm break-all">{user?.email || "정보 없음"}</p>
+                      </div>
+                      <Button
+                        type="button"
+                        onClick={() => setIsPasswordModalOpen(true)}
+                        variant="outline"
+                        size="sm"
+                        className="text-xs sm:text-sm h-8 sm:h-9 whitespace-nowrap"
+                      >
+                        <Lock className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
+                        비밀번호 변경
+                      </Button>
                     </div>
                   </CardContent>
                 </Card>
@@ -648,6 +680,139 @@ export default function MentorProfile() {
                 </Card>
               </TabsContent>
             </Tabs>
+
+            {/* 비밀번호 변경 모달 */}
+            <Dialog open={isPasswordModalOpen} onOpenChange={setIsPasswordModalOpen}>
+              <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                  <DialogTitle className="flex items-center gap-2">
+                    <Lock className="h-5 w-5" />
+                    비밀번호 변경
+                  </DialogTitle>
+                  <DialogDescription>
+                    현재 비밀번호를 입력한 후 새로운 비밀번호를 설정해주세요.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="space-y-4">
+                  <div>
+                    <Label htmlFor="current-password" className="text-xs sm:text-sm">현재 비밀번호</Label>
+                    <Input
+                      id="current-password"
+                      type="password"
+                      placeholder="현재 비밀번호를 입력하세요"
+                      value={passwordForm.currentPassword}
+                      onChange={(e) => {
+                        setPasswordForm({ ...passwordForm, currentPassword: e.target.value });
+                        if (passwordErrors.currentPassword) {
+                          setPasswordErrors({ ...passwordErrors, currentPassword: "" });
+                        }
+                      }}
+                      className="text-xs sm:text-sm h-9 sm:h-10"
+                    />
+                    {passwordErrors.currentPassword && (
+                      <p className="text-xs text-red-600 mt-1">{passwordErrors.currentPassword}</p>
+                    )}
+                  </div>
+                  <div>
+                    <Label htmlFor="new-password" className="text-xs sm:text-sm">변경할 비밀번호</Label>
+                    <Input
+                      id="new-password"
+                      type="password"
+                      placeholder="새로운 비밀번호를 입력하세요"
+                      value={passwordForm.newPassword}
+                      onChange={(e) => {
+                        setPasswordForm({ ...passwordForm, newPassword: e.target.value });
+                        if (passwordErrors.newPassword) {
+                          setPasswordErrors({ ...passwordErrors, newPassword: "" });
+                        }
+                      }}
+                      className="text-xs sm:text-sm h-9 sm:h-10"
+                    />
+                    {passwordErrors.newPassword && (
+                      <p className="text-xs text-red-600 mt-1">{passwordErrors.newPassword}</p>
+                    )}
+                  </div>
+                  <div>
+                    <Label htmlFor="confirm-password" className="text-xs sm:text-sm">변경할 비밀번호 확인</Label>
+                    <Input
+                      id="confirm-password"
+                      type="password"
+                      placeholder="비밀번호를 다시 입력하세요"
+                      value={passwordForm.confirmPassword}
+                      onChange={(e) => {
+                        setPasswordForm({ ...passwordForm, confirmPassword: e.target.value });
+                        if (passwordErrors.confirmPassword) {
+                          setPasswordErrors({ ...passwordErrors, confirmPassword: "" });
+                        }
+                      }}
+                      className="text-xs sm:text-sm h-9 sm:h-10"
+                    />
+                    {passwordErrors.confirmPassword && (
+                      <p className="text-xs text-red-600 mt-1">{passwordErrors.confirmPassword}</p>
+                    )}
+                  </div>
+                  <div className="flex gap-2 sm:gap-3 pt-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => {
+                        setIsPasswordModalOpen(false);
+                        setPasswordForm({ currentPassword: "", newPassword: "", confirmPassword: "" });
+                        setPasswordErrors({});
+                      }}
+                      className="flex-1 text-xs sm:text-sm h-9 sm:h-10"
+                    >
+                      취소
+                    </Button>
+                    <Button
+                      type="button"
+                      disabled={changePasswordMutation.isPending}
+                      onClick={() => {
+                        // 입력값 검증
+                        const errors: Record<string, string> = {};
+                        
+                        if (!passwordForm.currentPassword.trim()) {
+                          errors.currentPassword = "현재 비밀번호를 입력해주세요";
+                        }
+                        
+                        if (!passwordForm.newPassword.trim()) {
+                          errors.newPassword = "새 비밀번호를 입력해주세요";
+                        } else if (passwordForm.newPassword.length < 8) {
+                          errors.newPassword = "비밀번호는 8자 이상이어야 합니다";
+                        }
+                        
+                        if (!passwordForm.confirmPassword.trim()) {
+                          errors.confirmPassword = "비밀번호 확인을 입력해주세요";
+                        } else if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+                          errors.confirmPassword = "비밀번호가 일치하지 않습니다";
+                        }
+                        
+                        if (Object.keys(errors).length > 0) {
+                          setPasswordErrors(errors);
+                          return;
+                        }
+                        
+                        changePasswordMutation.mutate({
+                          currentPassword: passwordForm.currentPassword,
+                          newPassword: passwordForm.newPassword,
+                          confirmPassword: passwordForm.confirmPassword,
+                        });
+                      }}
+                      className="flex-1 text-xs sm:text-sm h-9 sm:h-10"
+                    >
+                      {changePasswordMutation.isPending ? (
+                        <>
+                          <Loader2 className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2 animate-spin" />
+                          변경 중...
+                        </>
+                      ) : (
+                        "변경하기"
+                      )}
+                    </Button>
+                  </div>
+                </div>
+              </DialogContent>
+            </Dialog>
           </div>
         </div>
       </div>
