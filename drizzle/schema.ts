@@ -155,6 +155,18 @@ export const bookings = mysqlTable("bookings", {
   rescheduleRequestedBy: int("rescheduleRequestedBy"),
   // Reschedule reason/notice
   rescheduleNotice: text("rescheduleNotice"),
+  // Student clicked start button
+  studentStartedAt: timestamp("studentStartedAt"),
+  // Mentor clicked start button
+  mentorStartedAt: timestamp("mentorStartedAt"),
+  // Student clicked end button
+  studentEndedAt: timestamp("studentEndedAt"),
+  // Mentor clicked end button
+  mentorEndedAt: timestamp("mentorEndedAt"),
+  // End reason (early_end, additional_time, etc.)
+  endReason: varchar("endReason", { length: 255 }),
+  // End reason details
+  endReasonDetails: text("endReasonDetails"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });

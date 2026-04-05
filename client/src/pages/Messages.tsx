@@ -12,7 +12,7 @@ import {
   Send, MessageSquare, Clock, CheckCircle2, XCircle, AlertCircle,
   Menu, X as XIcon, Calendar, MapPin, Video, Users, ChevronRight,
   ThumbsUp, ThumbsDown, RefreshCw, Star, Pencil, Trash2, Search,
-  Check, CheckCheck, MoreHorizontal, Smile
+  Check, CheckCheck, MoreHorizontal, Smile, Plus
 } from "lucide-react";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
@@ -223,10 +223,10 @@ function MessageActions({ isMe, onEdit, onDelete, onReact, isDeleted }: {
 
 // ===== 상담 제안 폼 컴포넌트 =====
 function ProposalFormDialog({
-  open, onClose, onSubmit, receiverId, initialData, isCounter = false,
+  open, onClose, onSubmit, receiverId, initialData, isCounter = false, userRole = "user",
 }: {
   open: boolean; onClose: () => void; onSubmit: (data: any) => void;
-  receiverId: number; initialData?: any; isCounter?: boolean;
+  receiverId: number; initialData?: any; isCounter?: boolean; userRole?: string;
 }) {
   const [scheduledDate, setScheduledDate] = useState(initialData?.scheduledAt ? format(new Date(initialData.scheduledAt), "yyyy-MM-dd") : "");
   const [scheduledTime, setScheduledTime] = useState(initialData?.scheduledAt ? format(new Date(initialData.scheduledAt), "HH:mm") : "");
@@ -249,7 +249,11 @@ function ProposalFormDialog({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Calendar className="h-5 w-5 text-primary" />
-            {isCounter ? "상담 일정 수정 제안" : "상담 일정 제안"}
+            {isCounter 
+              ? "상담 일정 수정 제안"
+              : userRole === "mentor"
+              ? "상담 일정 제안"
+              : "상담 일정 신청"}
           </DialogTitle>
         </DialogHeader>
         <div className="space-y-4 py-2">
@@ -825,6 +829,27 @@ export function Messages() {
 
   const otherUserName = selectedConversation ? getOtherUserDisplayName(selectedConversation) : "";
 
+  // 최신 상담 제안 상태 조회
+  const getLatestProposalStatus = useMemo(() => {
+    if (!conversation) return null;
+    const msgs = conversation as any[];
+    for (let i = msgs.length - 1; i >= 0; i--) {
+      const msg = msgs[i];
+      if (msg.messageType === "proposal") {
+        try {
+          const parsed = JSON.parse(msg.content);
+          if (parsed?.type === "proposal" && parsed?.status) {
+            return parsed.status;
+          }
+        } catch {}
+      }
+    }
+    return null;
+  }, [conversation]);
+
+  // 상담 제안 버튼 표시 여부 (상담 확정되지 않았을 때만)
+  const shouldShowProposalButton = getLatestProposalStatus !== "accepted";
+
   // ===== 메시지 렌더링 =====
   const renderMessage = (msg: any) => {
     const isMe = msg.senderId === user?.id;
@@ -987,8 +1012,14 @@ export function Messages() {
         <div className="hidden md:flex flex-col h-full overflow-hidden gap-4">
           {/* 제목 영역 */}
           <div className="shrink-0">
-            <h1 className="text-2xl sm:text-3xl font-bold">상담 신청</h1>
-            <p className="text-xs sm:text-sm text-muted-foreground mt-1">메시지로 상담을 신청하고 상담을 확정하세요</p>
+            <h1 className="text-2xl sm:text-3xl font-bold">
+              {user?.role === "mentor" ? "상담 요청" : "상담 신청"}
+            </h1>
+            <p className="text-xs sm:text-sm text-muted-foreground mt-1">
+              {user?.role === "mentor" 
+                ? "멘티로부터 받은 상담 요청을 확인하고 상담을 확정하세요"
+                : "메시지로 멘토에게 상담을 신청하고 상담을 확정하세요"}
+            </p>
           </div>
 
           {/* 대화 목록 */}
@@ -1228,15 +1259,38 @@ export function Messages() {
 
                 {/* 입력 영역 */}
                 <CardContent className="border-t pt-2 sm:pt-3 pb-2 sm:pb-3 shrink-0 space-y-2 px-2 sm:px-4">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="w-full gap-1.5 text-primary border-primary/30 hover:bg-primary/5 text-xs sm:text-sm h-8 sm:h-9"
-                    onClick={() => setShowProposalForm(true)}
-                  >
-                    <Calendar className="h-3 w-3 sm:h-4 sm:w-4" />
-                    상담 일정 제안
-                  </Button>
+                  {shouldShowProposalButton ? (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full gap-1.5 text-primary border-primary/30 hover:bg-primary/5 text-xs sm:text-sm h-8 sm:h-9"
+                      onClick={() => setShowProposalForm(true)}
+                    >
+                      <Calendar className="h-3 w-3 sm:h-4 sm:w-4" />
+                      상담 일정 제안
+                    </Button>
+                  ) : (
+                    <div className="flex gap-1 sm:gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="flex-1 gap-1.5 text-blue-600 border-blue-300 hover:bg-blue-50 text-xs sm:text-sm h-8 sm:h-9"
+                        onClick={() => setShowProposalForm(true)}
+                      >
+                        <RefreshCw className="h-3 w-3 sm:h-4 sm:w-4" />
+                        상담 수정
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="flex-1 gap-1.5 text-emerald-600 border-emerald-300 hover:bg-emerald-50 text-xs sm:text-sm h-8 sm:h-9"
+                        onClick={() => setShowProposalForm(true)}
+                      >
+                        <Plus className="h-3 w-3 sm:h-4 sm:w-4" />
+                        추가 상담
+                      </Button>
+                    </div>
+                  )}
                   <div className="flex gap-1 sm:gap-2 items-end">
                     <textarea
                       ref={textareaRef}
@@ -1280,6 +1334,7 @@ export function Messages() {
           onClose={() => setShowProposalForm(false)}
           onSubmit={handleProposalSubmit}
           receiverId={selectedConversation}
+          userRole={user?.role}
         />
       )}
 
@@ -1291,6 +1346,7 @@ export function Messages() {
           receiverId={selectedConversation}
           initialData={counterProposalData}
           isCounter
+          userRole={user?.role}
         />
       )}
     </PageLayout>

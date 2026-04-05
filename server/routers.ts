@@ -61,7 +61,7 @@ import { storagePut } from "./storage";
 import { hashPassword, verifyPassword, validateEmail, validatePasswordStrength } from "./auth-utils";
 import { signupProcedure, loginProcedure } from "./auth-procedures";
 import { createVerificationToken, verifyEmailToken, getPendingVerificationToken } from "./email-verification";
-import { startConsultation, completeConsultation, requestReschedule, acceptReschedule, rejectReschedule, isWithinStartWindow, isWithinCompleteWindow, calculateConsultationDuration } from "./booking-consultation";
+import { startConsultation, completeConsultation, requestReschedule, acceptReschedule, rejectReschedule, isWithinStartWindow, isWithinCompleteWindow, calculateConsultationDuration, recordUserStart, recordUserEnd } from "./booking-consultation";
 import { createQuestion, getQuestionById, getQuestions, updateQuestion, deleteQuestion, createAnswer, getAnswersByQuestionId, getAnswerById, updateAnswer, deleteAnswer, createAnswerReply, getRepliesByAnswerId, getReplyById, updateReply, deleteReply, getQuestionDetail } from "./qna";
 import { emailVerificationTokens } from "../drizzle/schema";
 import { mentorGallery, messages, notifications, bookings, reviews, mentorProfiles, mentorVerifications, users, bugReports, mentorConsultationTypes, consultationProposals, studentProfiles } from "../drizzle/schema";
@@ -720,6 +720,48 @@ getTopMentors: publicProcedure
           return { success: true };
         } catch (error: any) {
           throw new Error(error.message || "Failed to complete consultation");
+        }
+      }),
+
+    recordUserStart: protectedProcedure
+      .input(z.object({ bookingId: z.number() }))
+      .mutation(async ({ ctx, input }) => {
+        const booking = await getBookingById(input.bookingId);
+        if (!booking) throw new Error("Booking not found");
+        
+        // 권한 검증
+        if (booking.studentId !== ctx.user.id && booking.mentorId !== ctx.user.id) {
+          throw new Error("Unauthorized");
+        }
+
+        try {
+          await recordUserStart(input.bookingId, ctx.user.id);
+          return { success: true };
+        } catch (error: any) {
+          throw new Error(error.message || "Failed to record user start");
+        }
+      }),
+
+    recordUserEnd: protectedProcedure
+      .input(z.object({
+        bookingId: z.number(),
+        endReason: z.string().optional(),
+        endReasonDetails: z.string().optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const booking = await getBookingById(input.bookingId);
+        if (!booking) throw new Error("Booking not found");
+        
+        // 권한 검증
+        if (booking.studentId !== ctx.user.id && booking.mentorId !== ctx.user.id) {
+          throw new Error("Unauthorized");
+        }
+
+        try {
+          await recordUserEnd(input.bookingId, ctx.user.id, input.endReason, input.endReasonDetails);
+          return { success: true };
+        } catch (error: any) {
+          throw new Error(error.message || "Failed to record user end");
         }
       }),
 
