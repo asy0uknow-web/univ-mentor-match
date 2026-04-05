@@ -119,6 +119,30 @@ export default function QnACreate() {
     );
   }
 
+  // 멘토는 질문 작성 불가
+  if (user?.role === 'mentor') {
+    return (
+      <PageLayout>
+        <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-12 flex items-center justify-center min-h-[60vh]">
+          <Card className="w-full max-w-md">
+            <CardHeader>
+              <CardTitle className="text-lg sm:text-xl">멘토는 질문을 작성할 수 없습니다</CardTitle>
+              <CardDescription className="text-sm">멘토는 멘티의 질문에 답변하는 역할입니다. Q&A 목록에서 답변을 기다리는 질문을 찾아보세요.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button 
+                onClick={() => setLocation('/qna')}
+                className="w-full text-xs sm:text-sm h-9 sm:h-10 bg-green-600 hover:bg-green-700"
+              >
+                Q&A 목록으로 돌아가기
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      </PageLayout>
+    );
+  }
+
   return (
     <PageLayout>
       <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-12 max-w-2xl">

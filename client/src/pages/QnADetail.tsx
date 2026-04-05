@@ -479,29 +479,43 @@ export default function QnADetail() {
             </Card>
           )}
 
-          {/* 답변 작성 */}
-          {isAuthenticated && user?.userType === "university_student" && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-base sm:text-lg">답변 작성</CardTitle>
+          {/* 답변 작성 - 멘토만 가능 */}
+          {isAuthenticated && user?.role === "mentor" && (
+            <Card className="border-green-200">
+              <CardHeader className="pb-3">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                  <CardTitle className="text-base sm:text-lg text-green-800">답변 작성</CardTitle>
+                </div>
                 <CardDescription className="text-xs sm:text-sm">
-                  도움이 될 만한 성실한 답변을 작성해주세요. 좋은 답변은 멘토 프로필에 표시됩니다.
+                  멘티의 고민에 성실하게 답변해주세요. 좋은 답변은 멘토 프로필에 표시되며 상담 연결로 이어질 수 있습니다.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-3">
                 <Textarea
                   value={answerContent}
                   onChange={(e) => setAnswerContent(e.target.value)}
-                  placeholder="도움이 될 만한 답변을 작성해주세요"
-                  className="text-xs sm:text-sm min-h-24 sm:min-h-32 resize-none"
+                  placeholder="멘티의 실제 경험을 바탕으로 성실한 답변을 작성해주세요"
+                  className="text-xs sm:text-sm min-h-24 sm:min-h-32 resize-none border-green-200 focus:border-green-400"
                 />
                 <Button
                   onClick={handleCreateAnswer}
                   disabled={createAnswerMutation.isPending}
-                  className="w-full text-xs sm:text-sm h-9 sm:h-10"
+                  className="w-full text-xs sm:text-sm h-9 sm:h-10 bg-green-600 hover:bg-green-700"
                 >
-                  {createAnswerMutation.isPending ? "작성 중..." : "답변 작성"}
+                  {createAnswerMutation.isPending ? "작성 중..." : "답변 등록하기"}
                 </Button>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* 멘티에게 답변 작성 안내 (멘토가 아닌 경우) */}
+          {isAuthenticated && user?.role !== "mentor" && (
+            <Card className="bg-gray-50 border-dashed">
+              <CardContent className="py-4 text-center">
+                <p className="text-xs sm:text-sm text-muted-foreground">
+                  답변은 인증된 멘토만 작성할 수 있습니다.
+                </p>
               </CardContent>
             </Card>
           )}

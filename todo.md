@@ -2096,3 +2096,8 @@
 - [x] index.html lang="ko" 수정
 - [x] OG URL, canonical URL을 univmatch.com으로 수정
 - [x] Footer 링크 경로 수정 (/privacy-policy, /refund-policy)
+
+## QnA 역할 분리
+- [x] QnA 목록 페이지: 멘토는 "답변하기" 버튼, 멘티는 "질문하기" 버튼
+- [x] 멘토는 질문 작성 페이지(/qna/create) 접근 불가 처리
+- [x] QnA 상세 페이지: 멘토는 답변 작성 폼만 표시

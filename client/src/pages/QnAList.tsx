@@ -55,7 +55,8 @@ const getStatusBadge = (status: string) => {
 };
 
 export default function QnAList() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
+  const isMentor = user?.role === 'mentor';
   const [, setLocation] = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
@@ -102,14 +103,29 @@ export default function QnAList() {
               </p>
             </div>
             {isAuthenticated && (
-              <Button
-                onClick={() => setLocation('/qna/new')}
-                className="text-xs sm:text-sm h-8 sm:h-10 flex-shrink-0"
-              >
-                <Plus className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-                <span className="hidden sm:inline">질문하기</span>
-                <span className="sm:hidden">질문</span>
-              </Button>
+              isMentor ? (
+                <Button
+                  onClick={() => {
+                    // 멘토는 답변 대기 중인 첫 번째 질문으로 이동
+                    setSelectedStatus('awaiting_answer');
+                    window.scrollTo({ top: 400, behavior: 'smooth' });
+                  }}
+                  className="text-xs sm:text-sm h-8 sm:h-10 flex-shrink-0 bg-green-600 hover:bg-green-700"
+                >
+                  <MessageCircle className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                  <span className="hidden sm:inline">답변하기</span>
+                  <span className="sm:hidden">답변</span>
+                </Button>
+              ) : (
+                <Button
+                  onClick={() => setLocation('/qna/new')}
+                  className="text-xs sm:text-sm h-8 sm:h-10 flex-shrink-0"
+                >
+                  <Plus className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                  <span className="hidden sm:inline">질문하기</span>
+                  <span className="sm:hidden">질문</span>
+                </Button>
+              )
             )}
           </div>
 
@@ -278,13 +294,17 @@ export default function QnAList() {
                 {searchQuery ? "검색 결과가 없습니다" : "질문이 없습니다"}
               </p>
               {!searchQuery && isAuthenticated && (
-                <Button
-                  onClick={() => setLocation('/qna/new')}
-                  className="text-xs sm:text-sm h-8 sm:h-10"
-                >
-                  <Plus className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-                  첫 번째 질문 작성하기
-                </Button>
+                isMentor ? (
+                  <p className="text-xs text-muted-foreground">아직 답변을 기다리는 질문이 없습니다.</p>
+                ) : (
+                  <Button
+                    onClick={() => setLocation('/qna/new')}
+                    className="text-xs sm:text-sm h-8 sm:h-10"
+                  >
+                    <Plus className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                    첫 번째 질문 작성하기
+                  </Button>
+                )
               )}
             </CardContent>
           </Card>
