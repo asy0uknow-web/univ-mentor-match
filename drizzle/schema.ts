@@ -92,6 +92,8 @@ export const mentorProfiles = mysqlTable("mentor_profiles", {
   averageRating: decimal("averageRating", { precision: 3, scale: 2 }).default("0.00"),
   // Total number of reviews
   reviewCount: int("reviewCount").default(0).notNull(),
+  // Total number of Q&A answers
+  answerCount: int("answerCount").default(0).notNull(),
 
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),

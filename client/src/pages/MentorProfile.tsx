@@ -513,8 +513,10 @@ export default function MentorProfile() {
                     onDragLeave={handleDrag}
                     onDragOver={handleDrag}
                     onDrop={handleDrop}
-                    className={`border-2 border-dashed rounded-lg p-4 sm:p-8 text-center cursor-pointer transition-colors ${
-                      dragActive ? "border-primary bg-primary/5" : "border-gray-300"
+                    className={`border-2 border-dashed rounded-lg p-8 sm:p-12 text-center cursor-pointer transition-all duration-200 ${
+                      dragActive
+                        ? "border-blue-500 bg-blue-50 shadow-md"
+                        : "border-gray-300 hover:border-blue-400 hover:bg-gray-50"
                     }`}
                   >
                     <input
@@ -523,32 +525,55 @@ export default function MentorProfile() {
                       multiple
                       accept="image/*"
                       onChange={handleFileChange}
+                      disabled={isUploading}
                       className="hidden"
                     />
                     <label htmlFor="file-input" className="cursor-pointer block">
                       {isUploading ? (
-                        <Loader2 className="h-6 w-6 sm:h-8 sm:w-8 animate-spin mx-auto mb-2" />
+                        <div className="space-y-2">
+                          <Loader2 className="h-8 w-8 sm:h-10 sm:w-10 mx-auto text-blue-500 animate-spin" />
+                          <p className="text-xs sm:text-sm font-medium text-blue-600">업로드 중...</p>
+                        </div>
                       ) : (
-                        <Upload className="h-6 w-6 sm:h-8 sm:w-8 mx-auto mb-2 text-gray-400" />
+                        <div className="space-y-2">
+                          <Upload className="h-8 w-8 sm:h-10 sm:w-10 mx-auto text-gray-400" />
+                          <div>
+                            <p className="text-sm sm:text-base font-semibold text-gray-700">이미지를 여기에 드래그하세요</p>
+                            <p className="text-xs sm:text-sm text-gray-500 mt-1">또는 클릭하여 파일 선택 (JPG, PNG, WebP)</p>
+                          </div>
+                        </div>
                       )}
-                      <p className="text-xs sm:text-sm font-medium">이미지를 드래그하거나 클릭하여 업로드</p>
                     </label>
                   </div>
 
                   {uploadedImages.length > 0 && (
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3">
-                      {uploadedImages.map((image, idx) => (
-                        <div key={idx} className="relative group">
-                          <img src={image.url} alt={`갤러리 ${idx}`} className="w-full aspect-square object-cover rounded-lg" />
-                          <button
-                            type="button"
-                            onClick={() => setUploadedImages(uploadedImages.filter((_, i) => i !== idx))}
-                            className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                          >
-                            <X className="h-3 w-3 sm:h-4 sm:w-4" />
-                          </button>
-                        </div>
-                      ))}
+                    <div className="space-y-3 sm:space-y-4">
+                      <div className="flex items-center justify-between">
+                        <h4 className="text-sm sm:text-base font-semibold text-gray-700">업로드된 이미지 ({uploadedImages.length})</h4>
+                        {uploadedImages.length > 0 && (
+                          <span className="text-xs sm:text-sm text-gray-500">최대 10개까지 업로드 가능</span>
+                        )}
+                      </div>
+                      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+                        {uploadedImages.map((image, idx) => (
+                          <div key={idx} className="relative group">
+                            <div className="relative w-full aspect-square rounded-lg overflow-hidden bg-gray-100 border border-gray-200">
+                              <img src={image.url} alt={`갤러리 ${idx + 1}`} className="w-full h-full object-cover" />
+                              <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-200 flex items-center justify-center">
+                                <button
+                                  type="button"
+                                  onClick={() => setUploadedImages(uploadedImages.filter((_, i) => i !== idx))}
+                                  className="bg-red-500 hover:bg-red-600 text-white rounded-full p-2 opacity-0 group-hover:opacity-100 transition-all duration-200 transform group-hover:scale-110"
+                                  title="이미지 삭제"
+                                >
+                                  <X className="h-4 w-4 sm:h-5 sm:w-5" />
+                                </button>
+                              </div>
+                            </div>
+                            <p className="text-xs text-gray-500 mt-1 text-center">이미지 {idx + 1}</p>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   )}
                 </CardContent>

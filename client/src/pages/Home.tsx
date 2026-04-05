@@ -12,6 +12,7 @@ import { ZeroCommissionUSPSection } from "@/components/home/ZeroCommissionUSPSec
 import { FeaturedMentorsSlide } from "@/components/home/FeaturedMentorsSlide";
 import { TestimonialsSection } from "@/components/home/TestimonialsSection";
 import { IntegratedFAQSection } from "@/components/home/IntegratedFAQSection";
+import { PopularQnASection } from "@/components/home/PopularQnASection";
 
 // Quick Entry Icons
 const MajorIcon = () => (
@@ -256,6 +257,9 @@ export default function Home() {
           <TestimonialsSection />
         </div>
       </section>
+
+      {/* Popular Q&A Section */}
+      <PopularQnASection />
 
       {/* Zig-Zag USP Section #1: Mentor Verification */}
       <MentorVerificationUSPSection />

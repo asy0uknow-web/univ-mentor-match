@@ -186,12 +186,20 @@ export default function MentorDetail() {
                           </div>
                           <p className="text-xs text-gray-600">상담 경험</p>
                         </div>
-                        <div className="bg-green-50 p-3 rounded-lg">
+                        <div className={`p-3 rounded-lg ${
+                          (mentor.profile?.answerCount || 0) >= 10
+                            ? "bg-purple-50"
+                            : "bg-green-50"
+                        }`}>
                           <div className="flex items-center gap-1 mb-1">
-                            <Award className="w-4 h-4 text-green-600" />
-                            <span className="text-lg font-bold">100%</span>
+                            <MessageCircle className={`w-4 h-4 ${
+                              (mentor.profile?.answerCount || 0) >= 10
+                                ? "text-purple-600"
+                                : "text-green-600"
+                            }`} />
+                            <span className="text-lg font-bold">{mentor.profile?.answerCount || 0}</span>
                           </div>
-                          <p className="text-xs text-gray-600">완료율</p>
+                          <p className="text-xs text-gray-600">답변 수</p>
                         </div>
                       </div>
                     </div>

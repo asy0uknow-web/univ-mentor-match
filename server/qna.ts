@@ -196,6 +196,23 @@ export async function createAnswer(
       .where(eq(questions.id, questionId));
   }
 
+  // 멘토의 답변 수 증가
+  const { mentorProfiles } = await import("../drizzle/schema");
+  const mentor = await db
+    .select()
+    .from(mentorProfiles)
+    .where(eq(mentorProfiles.userId, authorId))
+    .limit(1);
+  
+  if (mentor && mentor.length > 0) {
+    await db
+      .update(mentorProfiles)
+      .set({
+        answerCount: (mentor[0].answerCount || 0) + 1,
+      })
+      .where(eq(mentorProfiles.userId, authorId));
+  }
+
   return result;
 }
 

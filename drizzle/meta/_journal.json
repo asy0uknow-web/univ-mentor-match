@@ -64,6 +64,13 @@
       "when": 1775372232269,
       "tag": "0008_chunky_abomination",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "5",
+      "when": 1775374419718,
+      "tag": "0009_certain_arachne",
+      "breakpoints": true
     }
   ]
 }

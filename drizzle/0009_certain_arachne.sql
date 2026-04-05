@@ -1,0 +1,1 @@
+ALTER TABLE `mentor_profiles` ADD `answerCount` int DEFAULT 0 NOT NULL;
