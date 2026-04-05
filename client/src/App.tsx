@@ -29,6 +29,7 @@ const QnAList = lazy(() => import("./pages/QnAList"));
 const QnADetail = lazy(() => import("./pages/QnADetail"));
 const QnACreate = lazy(() => import("./pages/QnACreate"));
 const QnAGuide = lazy(() => import("./pages/QnAGuide"));
+const QnADashboard = lazy(() => import("./pages/QnADashboard"));
 const Terms = lazy(() => import("./pages/Terms"));
 const RefundPolicy = lazy(() => import("./pages/RefundPolicy"));
 
@@ -58,6 +59,7 @@ function Router() {
         <Route path={"/reviews/new"} component={ReviewCreate} />
         <Route path={"/qna"} component={QnAList} />
         <Route path={"/qna/guide"} component={QnAGuide} />
+        <Route path={"/qna/dashboard"} component={QnADashboard} />
         <Route path={"/qna/new"} component={QnACreate} />
         <Route path={"/qna/:id"} component={QnADetail} />
         <Route path={"/404"} component={NotFound} />

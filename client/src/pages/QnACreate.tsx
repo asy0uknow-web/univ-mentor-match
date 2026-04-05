@@ -9,8 +9,13 @@ import { useState, useEffect } from "react";
 import { PageLayout } from "@/components/layout";
 import { setPageMeta } from "@/lib/seo";
 import { useAuth } from "@/_core/hooks/useAuth";
-import * as Select from "@radix-ui/react-select";
-import { ChevronDown } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const CATEGORIES = [
   { value: "입시 전략", label: "입시 전략" },
@@ -236,28 +241,23 @@ export default function QnACreate() {
               <label className="block text-xs sm:text-sm font-medium mb-2">
                 카테고리 *
               </label>
-              <Select.Root value={category} onValueChange={(val) => {
+              <Select value={category} onValueChange={(val) => {
                 setCategory(val);
                 if (errors.category) {
                   setErrors({ ...errors, category: "" });
                 }
               }}>
-                <Select.Trigger className={`w-full px-3 py-2 text-xs sm:text-sm border rounded-md bg-background hover:bg-accent h-9 sm:h-10 flex items-center justify-between ${errors.category ? "border-red-500" : ""}`}>
-                  <Select.Value placeholder="카테고리를 선택해주세요" />
-                  <Select.Icon className="ml-2">
-                    <ChevronDown className="h-4 w-4" />
-                  </Select.Icon>
-                </Select.Trigger>
-                <Select.Content className="bg-background border border-input rounded-md shadow-md z-50">
-                  <Select.Viewport className="p-1">
-                    {CATEGORIES.map((cat) => (
-                      <Select.Item key={cat.value} value={cat.value} className="px-3 py-2 text-xs sm:text-sm cursor-pointer hover:bg-accent rounded">
-                        {cat.label}
-                      </Select.Item>
-                    ))}
-                  </Select.Viewport>
-                </Select.Content>
-              </Select.Root>
+                <SelectTrigger className={`w-full text-xs sm:text-sm h-9 sm:h-10 ${errors.category ? "border-red-500" : ""}`}>
+                  <SelectValue placeholder="카테고리를 선택해주세요" />
+                </SelectTrigger>
+                <SelectContent>
+                  {CATEGORIES.map((cat) => (
+                    <SelectItem key={cat.value} value={cat.value} className="text-xs sm:text-sm">
+                      {cat.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               {errors.category && (
                 <p className="text-xs text-red-500 mt-1">{errors.category}</p>
               )}

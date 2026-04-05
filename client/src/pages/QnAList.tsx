@@ -156,6 +156,16 @@ export default function QnAList() {
             >
               멘토 찾기
             </Button>
+            {isAuthenticated && (
+              <Button 
+                variant="outline" 
+                size="sm"
+                className="text-xs sm:text-sm"
+                onClick={() => setLocation('/qna/dashboard')}
+              >
+                {isMentor ? '내 답변 관리' : '내 질문 관리'}
+              </Button>
+            )}
           </div>
         </div>
 

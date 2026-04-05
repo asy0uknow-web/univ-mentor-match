@@ -17,50 +17,78 @@ import { setPageMeta, PAGE_META } from "@/lib/seo";
 import { useAuth } from "@/_core/hooks/useAuth";
 
 // 종료 사유 입력 모달
+// endType: 'early' | 'late' | 'normal'
 function EndReasonModal({
   open,
   onClose,
   onConfirm,
-  isEarly,
+  endType,
 }: {
   open: boolean;
   onClose: () => void;
   onConfirm: (reason: string, details: string) => void;
-  isEarly: boolean;
+  endType: 'early' | 'late' | 'normal';
 }) {
   const [reason, setReason] = useState("");
   const [details, setDetails] = useState("");
 
   const earlyReasons = [
-    { value: "mutual_agreement", label: "상호 합의로 조기 종료" },
+    { value: "mutual_agreement", label: "상호 합의로 조기 완료" },
     { value: "technical_issue", label: "기술적 문제 발생" },
     { value: "emergency", label: "긴급 상황 발생" },
     { value: "content_completed", label: "상담 내용 조기 완료" },
     { value: "other", label: "기타" },
   ];
 
-  const additionalReasons = [
-    { value: "content_not_finished", label: "상담 내용 미완료로 추가 진행" },
-    { value: "mutual_agreement", label: "상호 합의로 추가 진행" },
+  const lateReasons = [
+    { value: "content_not_finished", label: "상담 내용 미완료로 지연 완료" },
+    { value: "mutual_agreement", label: "상호 합의로 지연 완료" },
     { value: "other", label: "기타" },
   ];
 
-  const reasons = isEarly ? earlyReasons : additionalReasons;
+  const normalReasons = [
+    { value: "content_completed", label: "정상 완료" },
+    { value: "other", label: "기타" },
+  ];
+
+  const reasons = endType === 'early' ? earlyReasons : endType === 'late' ? lateReasons : normalReasons;
+
+  const titleMap = {
+    early: "⚠️ 조기 완료 사유 입력",
+    late: "⏰ 지연 완료 사유 입력",
+    normal: "✅ 상담 종료 확인",
+  };
+
+  const descMap = {
+    early: { bg: "bg-amber-50", border: "border-amber-200", text: "text-amber-700", msg: "예정된 상담 시간보다 일직 종료하려 합니다. 조기 완료 사유를 입력해주세요." },
+    late: { bg: "bg-blue-50", border: "border-blue-200", text: "text-blue-700", msg: "예정된 상담 시간보다 늘게 종료하려 합니다. 지연 완료 사유를 입력해주세요." },
+    normal: { bg: "bg-green-50", border: "border-green-200", text: "text-green-700", msg: "상담이 정상적으로 완료되었습니다." },
+  };
+
+  const btnColorMap = {
+    early: "bg-amber-500 hover:bg-amber-600",
+    late: "bg-blue-500 hover:bg-blue-600",
+    normal: "bg-green-500 hover:bg-green-600",
+  };
+
+  const btnLabelMap = {
+    early: "조기 완료 확인",
+    late: "지연 완료 확인",
+    normal: "종료 확인",
+  };
+
+  const desc = descMap[endType];
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>
-            {isEarly ? "⚠️ 조기 종료 사유 입력" : "상담 종료 사유 입력"}
-          </DialogTitle>
+          <DialogTitle>{titleMap[endType]}</DialogTitle>
         </DialogHeader>
         <div className="space-y-4 py-2">
-          {isEarly && (
-            <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg text-sm text-amber-700">
-              예정된 상담 시간보다 일찍 종료하려 합니다. 사유를 입력해주세요.
-            </div>
-          )}
+          <div className={`p-3 ${desc.bg} border ${desc.border} rounded-lg text-sm ${desc.text}`}>
+            {desc.msg}
+          </div>
           <div className="space-y-2">
             <Label>종료 사유</Label>
             <Select value={reason} onValueChange={setReason}>
@@ -91,9 +119,9 @@ function EndReasonModal({
               if (!reason) { alert("종료 사유를 선택해주세요."); return; }
               onConfirm(reason, details);
             }}
-            className={isEarly ? "bg-amber-500 hover:bg-amber-600" : "bg-green-500 hover:bg-green-600"}
+            className={btnColorMap[endType]}
           >
-            {isEarly ? "조기 종료 확인" : "종료 확인"}
+            {btnLabelMap[endType]}
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -106,7 +134,7 @@ export default function Bookings() {
   const [location, setLocation] = useLocation();
   const [endModalOpen, setEndModalOpen] = useState(false);
   const [selectedBookingId, setSelectedBookingId] = useState<number | null>(null);
-  const [isEarlyEnd, setIsEarlyEnd] = useState(false);
+  const [endType, setEndType] = useState<'early' | 'late' | 'normal'>('normal');
 
   const params = new URLSearchParams(window.location.search);
   const mentorIdParam = params.get('mentorId');
@@ -155,9 +183,9 @@ export default function Bookings() {
     }
   };
 
-  const handleEndClick = (bookingId: number, isEarly: boolean) => {
+  const handleEndClick = (bookingId: number, type: 'early' | 'late' | 'normal') => {
     setSelectedBookingId(bookingId);
-    setIsEarlyEnd(isEarly);
+    setEndType(type);
     setEndModalOpen(true);
   };
 
@@ -186,12 +214,24 @@ export default function Bookings() {
 
   const getConsultationTypeName = (type: string) => {
     const typeMap: Record<string, string> = {
-      resume_consulting: "생기부 컨설팅",
+      resume_consulting: "생기부 콘설팅",
       career_counseling: "진로상담",
       academic_management: "학업관리",
       university_tour: "대학탐방",
     };
     return typeMap[type] || type;
+  };
+
+  const getEndReasonLabel = (reason: string) => {
+    const reasonMap: Record<string, string> = {
+      mutual_agreement: "상호 합의로 조기 종료",
+      technical_issue: "기술적 문제 발생",
+      emergency: "긴급 상황 발생",
+      content_completed: "상담 내용 조기 완료",
+      content_not_finished: "상담 내용 미완료로 추가 진행",
+      other: "기타",
+    };
+    return reasonMap[reason] || reason;
   };
 
   if (!isAuthenticated) {
@@ -302,7 +342,9 @@ export default function Bookings() {
                 const canEnd = item.booking.status === "in_progress" && !item.booking.studentEndedAt;
                 const alreadyEnded = item.booking.status === "in_progress" && !!item.booking.studentEndedAt;
 
-                const isEarlyEnd = item.booking.status === "in_progress" && now < new Date(scheduledEnd.getTime() - fiveMinutesMs);
+                const currentEndType: 'early' | 'late' | 'normal' = 
+                  item.booking.status === "in_progress" && now < new Date(scheduledEnd.getTime() - fiveMinutesMs) ? 'early' :
+                  item.booking.status === "in_progress" && now > new Date(scheduledEnd.getTime() + fiveMinutesMs) ? 'late' : 'normal';
                 const canReview = item.booking.status === "completed";
 
                 return (
@@ -361,7 +403,7 @@ export default function Bookings() {
                               <p>실제 완료: {format(new Date(item.booking.consultationCompletedAt), "HH:mm", { locale: ko })}</p>
                             )}
                             {item.booking.endReason && (
-                              <p>종료 사유: {item.booking.endReason}</p>
+                              <p>종료 사유: {getEndReasonLabel(item.booking.endReason)}</p>
                             )}
                           </div>
                         </div>
@@ -396,12 +438,12 @@ export default function Bookings() {
 
                         {canEnd && (
                           <Button
-                            onClick={() => handleEndClick(item.booking.id, isEarlyEnd)}
+                            onClick={() => handleEndClick(item.booking.id, currentEndType)}
                             disabled={recordUserEndMutation.isPending}
-                            className={`flex-1 text-xs sm:text-sm h-8 sm:h-9 ${isEarlyEnd ? "bg-amber-500 hover:bg-amber-600" : "bg-green-500 hover:bg-green-600"}`}
+                            className={`flex-1 text-xs sm:text-sm h-8 sm:h-9 ${currentEndType === 'early' ? "bg-amber-500 hover:bg-amber-600" : currentEndType === 'late' ? "bg-blue-500 hover:bg-blue-600" : "bg-green-500 hover:bg-green-600"}`}
                           >
                             <Square className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-                            {isEarlyEnd ? "조기 종료" : "상담 종료"}
+                            {currentEndType === 'early' ? "조기 완료" : currentEndType === 'late' ? "지연 완료" : "상담 종료"}
                           </Button>
                         )}
 
@@ -453,7 +495,7 @@ export default function Bookings() {
           open={endModalOpen}
           onClose={() => setEndModalOpen(false)}
           onConfirm={handleEndConfirm}
-          isEarly={isEarlyEnd}
+          endType={endType}
         />
       </PageLayout>
     );
@@ -489,7 +531,9 @@ export default function Bookings() {
               const canEnd = item.booking.status === "in_progress" && !item.booking.mentorEndedAt;
               const alreadyEnded = item.booking.status === "in_progress" && !!item.booking.mentorEndedAt;
 
-              const isEarlyEnd = item.booking.status === "in_progress" && now < new Date(scheduledEnd.getTime() - fiveMinutesMs);
+              const currentMentorEndType: 'early' | 'late' | 'normal' = 
+                item.booking.status === "in_progress" && now < new Date(scheduledEnd.getTime() - fiveMinutesMs) ? 'early' :
+                item.booking.status === "in_progress" && now > new Date(scheduledEnd.getTime() + fiveMinutesMs) ? 'late' : 'normal';
 
               return (
                 <Card key={item.booking.id} className={`overflow-hidden ${item.booking.status === "pending" ? "border-amber-200 bg-amber-50/30" : ""}`}>
@@ -554,7 +598,7 @@ export default function Bookings() {
                               <p>실제 완료: {format(new Date(item.booking.consultationCompletedAt), "HH:mm", { locale: ko })}</p>
                             )}
                             {item.booking.endReason && (
-                              <p>종료 사유: {item.booking.endReason}</p>
+                              <p>종료 사유: {getEndReasonLabel(item.booking.endReason)}</p>
                             )}
                           </div>
                         </div>
@@ -608,12 +652,12 @@ export default function Bookings() {
 
                         {canEnd && (
                           <Button
-                            onClick={() => handleEndClick(item.booking.id, isEarlyEnd)}
+                            onClick={() => handleEndClick(item.booking.id, currentMentorEndType)}
                             disabled={recordUserEndMutation.isPending}
-                            className={`flex-1 text-xs sm:text-sm h-8 sm:h-9 ${isEarlyEnd ? "bg-amber-500 hover:bg-amber-600" : "bg-green-500 hover:bg-green-600"}`}
+                            className={`flex-1 text-xs sm:text-sm h-8 sm:h-9 ${currentMentorEndType === 'early' ? "bg-amber-500 hover:bg-amber-600" : currentMentorEndType === 'late' ? "bg-blue-500 hover:bg-blue-600" : "bg-green-500 hover:bg-green-600"}`}
                           >
                             <Square className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-                            {isEarlyEnd ? "조기 종료" : "상담 종료"}
+                            {currentMentorEndType === 'early' ? "조기 완료" : currentMentorEndType === 'late' ? "지연 완료" : "상담 종료"}
                           </Button>
                         )}
 
@@ -642,7 +686,7 @@ export default function Bookings() {
         open={endModalOpen}
         onClose={() => setEndModalOpen(false)}
         onConfirm={handleEndConfirm}
-        isEarly={isEarlyEnd}
+        endType={endType}
       />
     </PageLayout>
   );

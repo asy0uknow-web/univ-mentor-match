@@ -200,7 +200,7 @@ export type InsertReview = typeof reviews.$inferInsert;
 export const notifications = mysqlTable("notifications", {
   id: int("id").autoincrement().primaryKey(),
   userId: int("userId").notNull(), // References users.id
-  type: mysqlEnum("type", ["booking_request", "booking_confirmed", "booking_cancelled", "schedule_changed", "review_received", "message", "consultation_reminder", "consultation_urgent_reminder"]).notNull(),
+  type: mysqlEnum("type", ["booking_request", "booking_confirmed", "booking_cancelled", "schedule_changed", "review_received", "message", "consultation_reminder", "consultation_urgent_reminder", "qna_answer"]).notNull(),
   title: varchar("title", { length: 255 }).notNull(),
   message: text("message").notNull(),
   isRead: boolean("isRead").default(false).notNull(),
@@ -442,6 +442,10 @@ export const answers = mysqlTable("answers", {
   questionId: int("questionId").notNull(), // References questions.id
   authorId: int("authorId").notNull(), // References users.id (멘토)
   content: text("content").notNull(),
+  // Acceptance status (질문 작성자가 채택)
+  isAccepted: boolean("isAccepted").default(false).notNull(),
+  // Like count
+  likeCount: int("likeCount").default(0).notNull(),
   // Report status
   isReported: boolean("isReported").default(false).notNull(),
   reportReason: varchar("reportReason", { length: 255 }),
@@ -454,6 +458,19 @@ export const answers = mysqlTable("answers", {
 
 export type Answer = typeof answers.$inferSelect;
 export type InsertAnswer = typeof answers.$inferInsert;
+
+/**
+ * Answer Likes - 답변 좋아요 (계정당 1회, 토글 가능)
+ */
+export const answerLikes = mysqlTable("answer_likes", {
+  id: int("id").autoincrement().primaryKey(),
+  answerId: int("answerId").notNull(), // References answers.id
+  userId: int("userId").notNull(), // References users.id
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type AnswerLike = typeof answerLikes.$inferSelect;
+export type InsertAnswerLike = typeof answerLikes.$inferInsert;
 
 /**
  * QnA Answer Replies - 답변에 다는 댓글 (멘토/멘티 모두 가능)

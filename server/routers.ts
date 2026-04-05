@@ -64,7 +64,7 @@ import { createVerificationToken, verifyEmailToken, getPendingVerificationToken 
 import { startConsultation, completeConsultation, requestReschedule, acceptReschedule, rejectReschedule, isWithinStartWindow, isWithinCompleteWindow, calculateConsultationDuration, recordUserStart, recordUserEnd } from "./booking-consultation";
 import { sendConsultationReminders } from "./booking-notifications";
 import { getMonthlyConsultationStats, getOverallConsultationStats, getLast12MonthsStats } from "./booking-statistics";
-import { createQuestion, getQuestionById, getQuestions, updateQuestion, deleteQuestion, createAnswer, getAnswersByQuestionId, getAnswerById, updateAnswer, deleteAnswer, createAnswerReply, getRepliesByAnswerId, getReplyById, updateReply, deleteReply, getQuestionDetail } from "./qna";
+import { createQuestion, getQuestionById, getQuestions, updateQuestion, deleteQuestion, createAnswer, getAnswersByQuestionId, getAnswerById, updateAnswer, deleteAnswer, createAnswerReply, getRepliesByAnswerId, getReplyById, updateReply, deleteReply, getQuestionDetail, acceptAnswer, toggleAnswerLike, getUserAnswerLikes, notifyQuestionAuthorOnAnswer, getMyQuestions, getMyAnswers } from "./qna";
 import { emailVerificationTokens } from "../drizzle/schema";
 import { mentorGallery, messages, notifications, bookings, reviews, mentorProfiles, mentorVerifications, users, bugReports, mentorConsultationTypes, consultationProposals, studentProfiles } from "../drizzle/schema";
 import { and, eq, eq as drizzleEq, or as drizzleOr, desc as drizzleDesc } from "drizzle-orm";
@@ -2299,6 +2299,11 @@ getTopMentors: publicProcedure
         await deleteQuestion(input.questionId);
         return { success: true };
       }),
+
+    getMyQuestions: protectedProcedure
+      .query(async ({ ctx }) => {
+        return await getMyQuestions(ctx.user.id);
+      }),
   }),
 
   qnaAnswer: router({
@@ -2320,6 +2325,8 @@ getTopMentors: publicProcedure
           ctx.user.id,
           input.content
         );
+        // 질문 작성자에게 알림 발송 (비동기, 실패해도 무시)
+        notifyQuestionAuthorOnAnswer(input.questionId, ctx.user.id).catch(() => {});
         return { success: true, answerId: (result as any).insertId };
       }),
 
@@ -2352,6 +2359,32 @@ getTopMentors: publicProcedure
       .input(z.object({ questionId: z.number() }))
       .query(async ({ input }) => {
         return await getAnswersByQuestionId(input.questionId);
+      }),
+
+    accept: protectedProcedure
+      .input(z.object({ answerId: z.number() }))
+      .mutation(async ({ ctx, input }) => {
+        const result = await acceptAnswer(input.answerId, ctx.user.id);
+        if (!result.success) throw new Error(result.message);
+        return { success: true, message: result.message };
+      }),
+
+    toggleLike: protectedProcedure
+      .input(z.object({ answerId: z.number() }))
+      .mutation(async ({ ctx, input }) => {
+        return await toggleAnswerLike(input.answerId, ctx.user.id);
+      }),
+
+    getUserLikes: protectedProcedure
+      .input(z.object({ answerIds: z.array(z.number()) }))
+      .query(async ({ ctx, input }) => {
+        const likedIds = await getUserAnswerLikes(ctx.user.id, input.answerIds);
+        return { likedAnswerIds: likedIds };
+      }),
+
+    getMyAnswers: protectedProcedure
+      .query(async ({ ctx }) => {
+        return await getMyAnswers(ctx.user.id);
       }),
   }),
 

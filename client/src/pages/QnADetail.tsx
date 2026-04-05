@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { trpc } from "@/lib/trpc";
 import { useLocation, useParams } from "wouter";
-import { ArrowLeft, MessageCircle, User, MessageSquare, Star, Flag, CheckCircle2, Clock, AlertCircle } from "lucide-react";
+import { ArrowLeft, MessageCircle, User, MessageSquare, Star, Flag, CheckCircle2, Clock, AlertCircle, ThumbsUp, Award } from "lucide-react";
 import { useState, useEffect } from "react";
 import { PageLayout } from "@/components/layout";
 import { setPageMeta } from "@/lib/seo";
@@ -34,6 +34,10 @@ export default function QnADetail() {
   const [reportReason, setReportReason] = useState("");
   const [reportDescription, setReportDescription] = useState("");
   const [reportTarget, setReportTarget] = useState<{ type: "question" | "answer" | "reply"; id: number } | null>(null);
+  // 좋아요 상태 (answerId -> liked)
+  const [likedAnswers, setLikedAnswers] = useState<Set<number>>(new Set());
+  // 좋아요 수 (answerId -> count)
+  const [likeCounts, setLikeCounts] = useState<Record<number, number>>({});
 
   // URL에서 questionId 추출
   const params = useParams();
@@ -48,6 +52,30 @@ export default function QnADetail() {
     { questionId },
     { enabled: questionId > 0, retry: 1 }
   );
+
+  // 질문 데이터 로드 후 좋아요 수 초기화
+  useEffect(() => {
+    if (question?.answers) {
+      const counts: Record<number, number> = {};
+      question.answers.forEach((a: any) => {
+        counts[a.id] = a.likeCount || 0;
+      });
+      setLikeCounts(counts);
+    }
+  }, [question]);
+
+  // 사용자 좋아요 상태 조회
+  const answerIds = question?.answers?.map((a: any) => a.id) || [];
+  const { data: userLikesData } = trpc.qnaAnswer.getUserLikes.useQuery(
+    { answerIds },
+    { enabled: isAuthenticated && answerIds.length > 0 }
+  );
+
+  useEffect(() => {
+    if (userLikesData?.likedAnswerIds) {
+      setLikedAnswers(new Set(userLikesData.likedAnswerIds));
+    }
+  }, [userLikesData]);
 
   // 답변 작성 뮤테이션
   const createAnswerMutation = trpc.qnaAnswer.create.useMutation({
@@ -80,6 +108,34 @@ export default function QnADetail() {
       setReportReason("");
       setReportDescription("");
       setReportTarget(null);
+    },
+    onError: (error: any) => {
+      alert("오류: " + error.message);
+    },
+  });
+
+  // 답변 채택 뮤테이션
+  const acceptAnswerMutation = trpc.qnaAnswer.accept.useMutation({
+    onSuccess: (data) => {
+      alert(data.message);
+      refetch();
+    },
+    onError: (error: any) => {
+      alert("오류: " + error.message);
+    },
+  });
+
+  // 좋아요 토글 뮤테이션
+  const toggleLikeMutation = trpc.qnaAnswer.toggleLike.useMutation({
+    onSuccess: (data, variables) => {
+      const answerId = variables.answerId;
+      setLikedAnswers(prev => {
+        const next = new Set(prev);
+        if (data.liked) next.add(answerId);
+        else next.delete(answerId);
+        return next;
+      });
+      setLikeCounts(prev => ({ ...prev, [answerId]: data.likeCount }));
     },
     onError: (error: any) => {
       alert("오류: " + error.message);
@@ -119,6 +175,20 @@ export default function QnADetail() {
       reason: reportReason,
       description: reportDescription,
     });
+  };
+
+  const handleAcceptAnswer = async (answerId: number) => {
+    if (confirm("이 답변을 채택하시겠습니까? (채택은 1개만 가능합니다)")) {
+      await acceptAnswerMutation.mutateAsync({ answerId });
+    }
+  };
+
+  const handleToggleLike = async (answerId: number) => {
+    if (!isAuthenticated) {
+      alert("로그인 후 좋아요를 누를 수 있습니다");
+      return;
+    }
+    await toggleLikeMutation.mutateAsync({ answerId });
   };
 
   if (!questionId) {
@@ -285,7 +355,7 @@ export default function QnADetail() {
                         <Button
                           onClick={handleReport}
                           disabled={createReportMutation.isPending || !reportReason}
-                          className="text-xs sm:text-sm h-9 sm:h-10 flex-1"
+                          className="text-xs sm:text-sm h-9 sm:h-10 flex-1 bg-red-500 hover:bg-red-600"
                         >
                           {createReportMutation.isPending ? "신고 중..." : "신고"}
                         </Button>
@@ -367,10 +437,20 @@ export default function QnADetail() {
                 답변 {question.answers.length}개
               </h2>
               {question.answers.map((answer: any) => (
-                <Card key={answer.id} className={answer.mentorProfile ? "border-l-4 border-l-blue-500" : ""}>
+                <Card
+                  key={answer.id}
+                  className={`${answer.mentorProfile ? "border-l-4 border-l-blue-500" : ""} ${answer.isAccepted ? "ring-2 ring-green-400 bg-green-50/30" : ""}`}
+                >
                   <CardHeader className="pb-2 sm:pb-3">
                     <div className="flex items-start justify-between gap-2">
                       <div className="flex-1 min-w-0">
+                        {/* 채택 배지 */}
+                        {answer.isAccepted && (
+                          <div className="flex items-center gap-1 mb-2">
+                            <Award className="h-4 w-4 text-green-600" />
+                            <span className="text-xs font-semibold text-green-700">채택된 답변</span>
+                          </div>
+                        )}
                         {/* 작성자 정보 */}
                         <div className="flex items-center gap-2 mb-2">
                           {answer.mentorProfile && (
@@ -406,7 +486,7 @@ export default function QnADetail() {
                         </p>
                       </div>
 
-                      <div className="flex gap-1 flex-shrink-0">
+                      <div className="flex gap-1 flex-shrink-0 flex-wrap justify-end">
                         {/* 상담 신청 버튼 */}
                         {answer.mentorProfile && isAuthenticated && user?.userType === "high_school_student" && (
                           <Button
@@ -417,6 +497,19 @@ export default function QnADetail() {
                           >
                             <MessageSquare className="h-3 w-3 mr-1" />
                             상담 신청
+                          </Button>
+                        )}
+                        {/* 채택 버튼 (질문 작성자만, 미해결 상태) */}
+                        {isQuestionAuthor && question.status !== "solved" && (
+                          <Button
+                            variant={answer.isAccepted ? "default" : "outline"}
+                            size="sm"
+                            onClick={() => handleAcceptAnswer(answer.id)}
+                            disabled={acceptAnswerMutation.isPending}
+                            className={`text-xs h-8 whitespace-nowrap ${answer.isAccepted ? "bg-green-600 hover:bg-green-700" : "border-green-400 text-green-700 hover:bg-green-50"}`}
+                          >
+                            <Award className="h-3 w-3 mr-1" />
+                            {answer.isAccepted ? "채택됨" : "채택"}
                           </Button>
                         )}
                         {/* 신고 버튼 */}
@@ -438,6 +531,20 @@ export default function QnADetail() {
                   {/* 답변 내용 */}
                   <CardContent className="space-y-3">
                     <p className="text-xs sm:text-sm whitespace-pre-wrap">{answer.content}</p>
+
+                    {/* 좋아요 버튼 */}
+                    <div className="flex items-center gap-2 pt-2 border-t">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleToggleLike(answer.id)}
+                        disabled={toggleLikeMutation.isPending}
+                        className={`text-xs h-7 px-2 gap-1 ${likedAnswers.has(answer.id) ? "text-blue-600 bg-blue-50 hover:bg-blue-100" : "text-muted-foreground hover:text-blue-600"}`}
+                      >
+                        <ThumbsUp className={`h-3 w-3 ${likedAnswers.has(answer.id) ? "fill-blue-600" : ""}`} />
+                        <span>도움이 됐어요 {(likeCounts[answer.id] || 0) > 0 ? `(${likeCounts[answer.id]})` : ""}</span>
+                      </Button>
+                    </div>
 
                     {/* 답글 목록 */}
                     {answer.replies && answer.replies.length > 0 && (
