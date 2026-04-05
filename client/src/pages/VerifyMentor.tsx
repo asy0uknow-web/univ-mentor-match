@@ -163,7 +163,7 @@ export default function VerifyMentor() {
                         <Badge className="bg-green-100 text-green-700 border-green-200 hover:bg-green-100">승인됨</Badge>
                       </div>
                       <p className="text-sm text-green-700 mb-3">
-                        학적내역 인증이 완료되었습니다. 이제 메늤로 활동할 수 있습니다.
+                        학적내역 인증이 완료되었습니다. 이제 멘토로 활동할 수 있습니다.
                       </p>
                       <p className="text-xs text-green-600">
                         승인일: {new Date(verification.updatedAt || verification.createdAt).toLocaleDateString("ko-KR")}
