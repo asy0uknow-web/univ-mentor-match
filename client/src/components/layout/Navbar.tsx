@@ -1,6 +1,6 @@
 import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
-
+import { Badge } from "@/components/ui/badge";
 import { Link } from "wouter";
 import { LogOut, Trash2, ChevronDown, Bug } from "lucide-react";
 import {
@@ -40,12 +40,16 @@ const HOME_MENU = [
 const LOGO_URL = "/logonew.png";
 
 export default function Navbar({ onBugReport }: NavbarProps) {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const logoutMutation = trpc.auth.logout.useMutation({
     onSuccess: () => {
       window.location.href = "/";
     },
   });
+  
+  // 멘티의 미확인 답변 알림 수 조회
+  // 차후 API 구현 예정
+  const unreadAnswerCount = 0; // 임시 값
 
   const isHomePage = typeof window !== "undefined" && window.location.pathname === "/";
 
@@ -115,9 +119,14 @@ export default function Navbar({ onBugReport }: NavbarProps) {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="text-sm font-medium hover:bg-blue-100 hover:text-primary"
+                        className="text-sm font-medium hover:bg-blue-100 hover:text-primary relative"
                       >
                         {item.label}
+                        {item.href === "/qna" && unreadAnswerCount > 0 && (
+                          <Badge className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 text-xs bg-red-500">
+                            {unreadAnswerCount > 9 ? "9+" : unreadAnswerCount}
+                          </Badge>
+                        )}
                       </Button>
                     </Link>
                   ))}

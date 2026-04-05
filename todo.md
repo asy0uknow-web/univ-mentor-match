@@ -2111,3 +2111,46 @@
 - [x] QnA 답변 알림 기능
 - [x] 멘토/멘티 전용 QnA 대시보드
 - [x] QnA 상세 페이지 좋아요/채택 UI
+
+
+## QnA 추가 개선 사항 (현재 진행 중)
+- [x] QnA 답글(Reply) 작성 UI 추가
+- [x] QnA 대시보드 알림 배지 연동
+- [x] QnA 상세 페이지 채택된 답변 상단 고정
+
+## 멘토 칼럼 게시판 기능 (신규)
+### Phase 1: DB 스키마 설계
+- [x] mentor_columns 테이블 추가 (id, authorId, title, content, category, excerpt, coverImageUrl, likesCount, commentsCount, status, createdAt, updatedAt, deletedAt)
+- [x] mentor_column_likes 테이블 추가 (id, columnId, userId, createdAt, UNIQUE(columnId, userId))
+- [x] mentor_column_comments 테이블 추가 (id, columnId, authorId, parentCommentId, content, createdAt, updatedAt, deletedAt)
+- [x] 데이터베이스 마이그레이션 실행 (pnpm db:push)
+
+### Phase 2: 백엔드 API 구현
+- [x] mentorColumn.getList (정렬, 필터링, 검색)
+- [x] mentorColumn.getById
+- [x] mentorColumn.create (멘토 인증 확인)
+- [x] mentorColumn.update (작성자만)
+- [x] mentorColumn.delete (작성자만)
+- [x] mentorColumn.toggleLike (1인 1회)
+- [x] mentorColumnComment.create
+- [x] mentorColumnComment.update (작성자만)
+- [x] mentorColumnComment.delete (작성자만)
+- [x] mentorColumnComment.getByColumnId
+
+### Phase 3: 프론트엔드 페이지 구현
+- [ ] /columns 칼럼 목록 페이지
+- [ ] /columns/:id 칼럼 상세 페이지
+- [ ] /columns/new 칼럼 작성 페이지
+- [ ] /columns/my 내 칼럼 관리 페이지 (선택)
+
+### Phase 4: 네비게이션 및 연동
+- [ ] Navbar에 "멘토 칼럼" 메뉴 추가
+- [ ] Footer에 "멘토 칼럼" 링크 추가
+- [ ] Home 페이지에 칼럼 진입 CTA 추가 (선택)
+- [ ] 칼럼에서 "이 멘토에게 상담 문의하기" 버튼 구현
+
+### Phase 5: 테스트 및 최적화
+- [ ] 멘토 칼럼 기능 단위 테스트
+- [ ] 상담 문의 전환 흐름 테스트
+- [ ] 모바일 반응형 테스트
+- [ ] 최종 체크포인트 저장

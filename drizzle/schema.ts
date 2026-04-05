@@ -1,4 +1,4 @@
-import { int, mysqlEnum, mysqlTable, text, timestamp, varchar, decimal, boolean } from "drizzle-orm/mysql-core";
+import { int, mysqlEnum, mysqlTable, text, timestamp, varchar, decimal, boolean, uniqueIndex } from "drizzle-orm/mysql-core";
 
 /**
  * Core user table backing auth flow.
@@ -517,3 +517,61 @@ export const qnaReports = mysqlTable("qna_reports", {
 
 export type QnaReport = typeof qnaReports.$inferSelect;
 export type InsertQnaReport = typeof qnaReports.$inferInsert;
+
+
+/**
+ * Mentor Columns - 멘토 칼럼 게시판
+ */
+export const mentorColumns = mysqlTable("mentor_columns", {
+  id: int("id").autoincrement().primaryKey(),
+  authorId: int("authorId").notNull(), // References users.id (must be verified mentor)
+  title: varchar("title", { length: 255 }).notNull(),
+  content: text("content").notNull(),
+  category: varchar("category", { length: 100 }).notNull(), // e.g., "전공 선택", "대학 생활", etc.
+  excerpt: text("excerpt"), // Optional preview text, can be auto-generated from content
+  coverImageUrl: varchar("coverImageUrl", { length: 500 }), // Optional cover image
+  likesCount: int("likesCount").default(0).notNull(),
+  commentsCount: int("commentsCount").default(0).notNull(),
+  status: mysqlEnum("status", ["draft", "published"]).default("draft").notNull(),
+  // Soft delete
+  deletedAt: timestamp("deletedAt"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+export type MentorColumn = typeof mentorColumns.$inferSelect;
+export type InsertMentorColumn = typeof mentorColumns.$inferInsert;
+
+/**
+ * Mentor Column Likes - 칼럼 좋아요 (1인 1회)
+ */
+export const mentorColumnLikes = mysqlTable(
+  "mentor_column_likes",
+  {
+    id: int("id").autoincrement().primaryKey(),
+    columnId: int("columnId").notNull(), // References mentor_columns.id
+    userId: int("userId").notNull(), // References users.id
+    createdAt: timestamp("createdAt").defaultNow().notNull(),
+  },
+  (table) => ({
+    unique: uniqueIndex("unique_column_like").on(table.columnId, table.userId),
+  })
+);
+export type MentorColumnLike = typeof mentorColumnLikes.$inferSelect;
+export type InsertMentorColumnLike = typeof mentorColumnLikes.$inferInsert;
+
+/**
+ * Mentor Column Comments - 칼럼 댓글 (1단계 대댓글까지만)
+ */
+export const mentorColumnComments = mysqlTable("mentor_column_comments", {
+  id: int("id").autoincrement().primaryKey(),
+  columnId: int("columnId").notNull(), // References mentor_columns.id
+  authorId: int("authorId").notNull(), // References users.id
+  parentCommentId: int("parentCommentId"), // References mentor_column_comments.id for replies (null = top-level comment)
+  content: text("content").notNull(),
+  // Soft delete
+  deletedAt: timestamp("deletedAt"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+export type MentorColumnComment = typeof mentorColumnComments.$inferSelect;
+export type InsertMentorColumnComment = typeof mentorColumnComments.$inferInsert;

@@ -38,6 +38,10 @@ export default function QnADetail() {
   const [likedAnswers, setLikedAnswers] = useState<Set<number>>(new Set());
   // 좋아요 수 (answerId -> count)
   const [likeCounts, setLikeCounts] = useState<Record<number, number>>({});
+  // 답글 작성 상태 (answerId -> content)
+  const [replyContents, setReplyContents] = useState<Record<number, string>>({});
+  // 답글 작성 중인 답변 ID
+  const [expandedReplyAnswerId, setExpandedReplyAnswerId] = useState<number | null>(null);
 
   // URL에서 questionId 추출
   const params = useParams();
@@ -142,6 +146,19 @@ export default function QnADetail() {
     },
   });
 
+  // 답글 작성 뮤테이션
+  const createReplyMutation = trpc.qnaReply.create.useMutation({
+    onSuccess: () => {
+      alert("답글이 작성되었습니다");
+      setReplyContents({});
+      setExpandedReplyAnswerId(null);
+      refetch();
+    },
+    onError: (error: any) => {
+      alert("오류: " + error.message);
+    },
+  });
+
   const handleCreateAnswer = async () => {
     if (!answerContent.trim()) {
       alert("답변 내용을 입력해주세요");
@@ -189,6 +206,18 @@ export default function QnADetail() {
       return;
     }
     await toggleLikeMutation.mutateAsync({ answerId });
+  };
+
+  const handleCreateReply = async (answerId: number) => {
+    const content = replyContents[answerId]?.trim();
+    if (!content) {
+      alert("답글 내용을 입력해주세요");
+      return;
+    }
+    await createReplyMutation.mutateAsync({
+      answerId,
+      content,
+    });
   };
 
   if (!questionId) {
@@ -436,7 +465,16 @@ export default function QnADetail() {
               <h2 className="text-lg sm:text-xl font-semibold">
                 답변 {question.answers.length}개
               </h2>
-              {question.answers.map((answer: any) => (
+              {question.answers
+                .slice()
+                .sort((a: any, b: any) => {
+                  // 채택된 답변를 먼저 정렬
+                  if (a.isAccepted && !b.isAccepted) return -1;
+                  if (!a.isAccepted && b.isAccepted) return 1;
+                  // 단, 답변 중 좋아요 많은 순으로
+                  return (b.likeCount || 0) - (a.likeCount || 0);
+                })
+                .map((answer: any) => (
                 <Card
                   key={answer.id}
                   className={`${answer.mentorProfile ? "border-l-4 border-l-blue-500" : ""} ${answer.isAccepted ? "ring-2 ring-green-400 bg-green-50/30" : ""}`}
@@ -572,6 +610,51 @@ export default function QnADetail() {
                             </p>
                           </div>
                         ))}
+                      </div>
+                    )}
+
+                    {/* 답글 작성 폴 */}
+                    {isAuthenticated && expandedReplyAnswerId !== answer.id && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setExpandedReplyAnswerId(answer.id)}
+                        className="text-xs h-7 text-muted-foreground hover:text-blue-600 mt-2"
+                      >
+                        <MessageCircle className="h-3 w-3 mr-1" />
+                        답글 작성
+                      </Button>
+                    )}
+
+                    {expandedReplyAnswerId === answer.id && (
+                      <div className="mt-3 pt-3 border-t space-y-2">
+                        <Textarea
+                          value={replyContents[answer.id] || ""}
+                          onChange={(e) => setReplyContents({ ...replyContents, [answer.id]: e.target.value })}
+                          placeholder="이 답변에 대한 의견이나 추가 질문을 남겼주세요"
+                          className="text-xs min-h-16 resize-none"
+                        />
+                        <div className="flex gap-2">
+                          <Button
+                            size="sm"
+                            onClick={() => handleCreateReply(answer.id)}
+                            disabled={createReplyMutation.isPending}
+                            className="text-xs h-8 bg-blue-600 hover:bg-blue-700 flex-1"
+                          >
+                            {createReplyMutation.isPending ? "작성 중..." : "답글 등록"}
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              setExpandedReplyAnswerId(null);
+                              setReplyContents({ ...replyContents, [answer.id]: "" });
+                            }}
+                            className="text-xs h-8"
+                          >
+                            취소
+                          </Button>
+                        </div>
                       </div>
                     )}
                   </CardContent>
