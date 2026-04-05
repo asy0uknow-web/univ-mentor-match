@@ -64,9 +64,8 @@ import { createVerificationToken, verifyEmailToken, getPendingVerificationToken 
 import { startConsultation, completeConsultation, requestReschedule, acceptReschedule, rejectReschedule, isWithinStartWindow, isWithinCompleteWindow, calculateConsultationDuration } from "./booking-consultation";
 import { createQuestion, getQuestionById, getQuestions, updateQuestion, deleteQuestion, createAnswer, getAnswersByQuestionId, getAnswerById, updateAnswer, deleteAnswer, createAnswerReply, getRepliesByAnswerId, getReplyById, updateReply, deleteReply, getQuestionDetail } from "./qna";
 import { emailVerificationTokens } from "../drizzle/schema";
-import { eq } from "drizzle-orm";
 import { mentorGallery, messages, notifications, bookings, reviews, mentorProfiles, mentorVerifications, users, bugReports, mentorConsultationTypes, consultationProposals, studentProfiles } from "../drizzle/schema";
-import { and, eq as drizzleEq, or as drizzleOr, desc as drizzleDesc } from "drizzle-orm";
+import { and, eq, eq as drizzleEq, or as drizzleOr, desc as drizzleDesc } from "drizzle-orm";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2025-12-15.clover",
@@ -213,11 +212,40 @@ export const appRouter = router({
         confirmPassword: z.string().min(8),
       }))
       .mutation(async ({ ctx, input }) => {
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+        
+        // 새 비밀번호가 일치하는지 확인
         if (input.newPassword !== input.confirmPassword) {
           throw new Error("새 비밀번호가 일치하지 않습니다");
         }
         
-        return { success: true, message: "비밀번호 변경 기능은 OAuth 제공자를 통해 관리됩니다" };
+        // 새 비밀번호 강도 검증
+        const passwordValidation = validatePasswordStrength(input.newPassword);
+        if (!passwordValidation.valid) {
+          throw new Error(passwordValidation.errors.join(", "));
+        }
+        
+        // 현재 사용자 정보 조회
+        const user = await db.select().from(users).where(eq(users.id, ctx.user.id)).limit(1);
+        if (user.length === 0) {
+          throw new Error("사용자를 찾을 수 없습니다");
+        }
+        
+        // 현재 비밀번호 검증
+        if (!user[0].passwordHash) {
+          throw new Error("비밀번호가 설정되지 않은 계정입니다");
+        }
+        const isCurrentPasswordValid = await verifyPassword(input.currentPassword, user[0].passwordHash);
+        if (!isCurrentPasswordValid) {
+          throw new Error("현재 비밀번호가 올바르지 않습니다");
+        }
+        
+        // 새 비밀번호로 업데이트
+        const newPasswordHash = await hashPassword(input.newPassword);
+        await db.update(users).set({ passwordHash: newPasswordHash }).where(eq(users.id, ctx.user.id));
+        
+        return { success: true, message: "비밀번호가 성공적으로 변경되었습니다" };
       }),
     getById: publicProcedure
       .input(z.object({

@@ -777,8 +777,23 @@ export default function MentorProfile() {
                         
                         if (!passwordForm.newPassword.trim()) {
                           errors.newPassword = "새 비밀번호를 입력해주세요";
-                        } else if (passwordForm.newPassword.length < 8) {
-                          errors.newPassword = "비밀번호는 8자 이상이어야 합니다";
+                        } else {
+                          const pwValidationErrors: string[] = [];
+                          if (passwordForm.newPassword.length < 8) {
+                            pwValidationErrors.push("비밀번호는 최소 8자 이상이어야 합니다");
+                          }
+                          if (!/[A-Z]/.test(passwordForm.newPassword)) {
+                            pwValidationErrors.push("대문자를 포함해주세요");
+                          }
+                          if (!/[a-z]/.test(passwordForm.newPassword)) {
+                            pwValidationErrors.push("소문자를 포함해주세요");
+                          }
+                          if (!/[0-9]/.test(passwordForm.newPassword)) {
+                            pwValidationErrors.push("숫자를 포함해주세요");
+                          }
+                          if (pwValidationErrors.length > 0) {
+                            errors.newPassword = pwValidationErrors.join(", ");
+                          }
                         }
                         
                         if (!passwordForm.confirmPassword.trim()) {
