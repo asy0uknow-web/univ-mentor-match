@@ -325,6 +325,64 @@ export default function MentorProfile() {
               {/* 프로필 탭 */}
               <TabsContent value="profile" className="space-y-4 sm:space-y-6">
                 <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+                  {/* 학적인증 - 미완료 상태일 때만 기본정보 위에 표시 */}
+                  {(!verification || verification.status !== 'approved') && (
+                    <Card>
+                      <CardHeader className="pb-3 sm:pb-4">
+                        <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+                          <Shield className="h-4 w-4 sm:h-5 sm:w-5" />
+                          학적인증
+                        </CardTitle>
+                        <CardDescription className="text-xs sm:text-sm">대학 포털의 학적내역을 인증하여 멘토로 활동하세요.</CardDescription>
+                      </CardHeader>
+                      <CardContent className="space-y-3 sm:space-y-4">
+                        {verification && (
+                          <div className="space-y-3 sm:space-y-4">
+                            <div className={`flex items-center gap-2 sm:gap-3 p-3 sm:p-4 rounded-lg ${
+                              verification.status === 'pending' ? 'bg-amber-50 border border-amber-200' :
+                              'bg-red-50 border border-red-200'
+                            }`}>
+                              {verification.status === 'pending' && (
+                                <>
+                                  <Clock className="h-5 w-5 sm:h-6 sm:w-6 text-amber-600 flex-shrink-0" />
+                                  <div>
+                                    <p className="font-semibold text-sm sm:text-base text-amber-700">검토 중</p>
+                                    <p className="text-xs sm:text-sm text-amber-600">관리자 검토 후 승인됩니다 (1~2 영업일)</p>
+                                  </div>
+                                </>
+                              )}
+                              {verification.status === 'rejected' && (
+                                <>
+                                  <ShieldAlert className="h-5 w-5 sm:h-6 sm:w-6 text-red-600 flex-shrink-0" />
+                                  <div>
+                                    <p className="font-semibold text-sm sm:text-base text-red-700">인증 거부</p>
+                                    <p className="text-xs sm:text-sm text-red-600">사유를 확인하고 다시 신청해주세요</p>
+                                  </div>
+                                </>
+                              )}
+                            </div>
+                            <Button
+                              type="button"
+                              onClick={() => setLocation("/verify-mentor")}
+                              className="w-full text-xs sm:text-sm h-9 sm:h-10"
+                            >
+                              {verification.status === 'pending' ? '제출 내역 확인' : '재신청하기'}
+                            </Button>
+                          </div>
+                        )}
+                        {!verification && (
+                          <Button
+                            type="button"
+                            onClick={() => setLocation("/verify-mentor")}
+                            className="w-full text-xs sm:text-sm h-9 sm:h-10 bg-green-600 hover:bg-green-700"
+                          >
+                            학적인증 신청하기
+                          </Button>
+                        )}
+                      </CardContent>
+                    </Card>
+                  )}
+
                   {/* 기본 정보 */}
                   <Card>
                 <CardHeader className="pb-3 sm:pb-4">
@@ -424,72 +482,6 @@ export default function MentorProfile() {
                 </CardContent>
               </Card>
 
-              {/* 학적인증 */}
-              <Card>
-                <CardHeader className="pb-3 sm:pb-4">
-                  <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
-                    <Shield className="h-4 w-4 sm:h-5 sm:w-5" />
-                    학적인증
-                  </CardTitle>
-                  <CardDescription className="text-xs sm:text-sm">대학 포털의 학적내역을 인증하여 멘토로 활동하세요.</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-3 sm:space-y-4">
-                  {verification && (
-                    <div className="space-y-3 sm:space-y-4">
-                      <div className={`flex items-center gap-2 sm:gap-3 p-3 sm:p-4 rounded-lg ${
-                        verification.status === 'approved' ? 'bg-green-50 border border-green-200' :
-                        verification.status === 'pending' ? 'bg-amber-50 border border-amber-200' :
-                        'bg-red-50 border border-red-200'
-                      }`}>
-                        {verification.status === 'approved' && (
-                          <>
-                            <ShieldCheck className="h-5 w-5 sm:h-6 sm:w-6 text-green-600 flex-shrink-0" />
-                            <div>
-                              <p className="font-semibold text-sm sm:text-base text-green-700">인증 완료</p>
-                              <p className="text-xs sm:text-sm text-green-600">멘토로 활동할 수 있습니다</p>
-                            </div>
-                          </>
-                        )}
-                        {verification.status === 'pending' && (
-                          <>
-                            <Clock className="h-5 w-5 sm:h-6 sm:w-6 text-amber-600 flex-shrink-0" />
-                            <div>
-                              <p className="font-semibold text-sm sm:text-base text-amber-700">검토 중</p>
-                              <p className="text-xs sm:text-sm text-amber-600">관리자 검토 후 승인됩니다 (1~2 영업일)</p>
-                            </div>
-                          </>
-                        )}
-                        {verification.status === 'rejected' && (
-                          <>
-                            <ShieldAlert className="h-5 w-5 sm:h-6 sm:w-6 text-red-600 flex-shrink-0" />
-                            <div>
-                              <p className="font-semibold text-sm sm:text-base text-red-700">인증 거부</p>
-                              <p className="text-xs sm:text-sm text-red-600">사유를 확인하고 다시 신청해주세요</p>
-                            </div>
-                          </>
-                        )}
-                      </div>
-                      <Button
-                        type="button"
-                        onClick={() => setLocation("/verify-mentor")}
-                        className="w-full text-xs sm:text-sm h-9 sm:h-10"
-                      >
-                        {verification.status === 'approved' ? '인증서 보기' : verification.status === 'pending' ? '제출 내역 확인' : '재신청하기'}
-                      </Button>
-                    </div>
-                  )}
-                  {!verification && (
-                    <Button
-                      type="button"
-                      onClick={() => setLocation("/verify-mentor")}
-                      className="w-full text-xs sm:text-sm h-9 sm:h-10 bg-green-600 hover:bg-green-700"
-                    >
-                      학적인증 신청하기
-                    </Button>
-                  )}
-                </CardContent>
-              </Card>
-
               {/* 갤러리 */}
               <Card>
                 <CardHeader className="pb-3 sm:pb-4">
@@ -541,6 +533,37 @@ export default function MentorProfile() {
                   )}
                 </CardContent>
               </Card>
+
+              {/* 학적인증 - 완료 상태일 때만 갤러리 아래에 표시 */}
+              {verification && verification.status === 'approved' && (
+                <Card>
+                  <CardHeader className="pb-3 sm:pb-4">
+                    <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+                      <Shield className="h-4 w-4 sm:h-5 sm:w-5" />
+                      학적인증
+                    </CardTitle>
+                    <CardDescription className="text-xs sm:text-sm">대학 포털의 학적내역을 인증하여 멘토로 활동하세요.</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-3 sm:space-y-4">
+                    <div className="space-y-3 sm:space-y-4">
+                      <div className="flex items-center gap-2 sm:gap-3 p-3 sm:p-4 rounded-lg bg-green-50 border border-green-200">
+                        <ShieldCheck className="h-5 w-5 sm:h-6 sm:w-6 text-green-600 flex-shrink-0" />
+                        <div>
+                          <p className="font-semibold text-sm sm:text-base text-green-700">인증 완료</p>
+                          <p className="text-xs sm:text-sm text-green-600">멘토로 활동할 수 있습니다</p>
+                        </div>
+                      </div>
+                      <Button
+                        type="button"
+                        onClick={() => setLocation("/verify-mentor")}
+                        className="w-full text-xs sm:text-sm h-9 sm:h-10"
+                      >
+                        인증서 보기
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
 
               {/* 저장 버튼 */}
               <div className="flex gap-2 sm:gap-3">
