@@ -397,6 +397,17 @@ export const questions = mysqlTable("questions", {
   category: varchar("category", { length: 100 }),
   // Whether the question is anonymous
   isAnonymous: boolean("isAnonymous").default(false).notNull(),
+  // Question status: awaiting_answer, answered, solved
+  status: mysqlEnum("status", ["awaiting_answer", "answered", "solved"]).default("awaiting_answer").notNull(),
+  // Answer count (denormalized for performance)
+  answerCount: int("answerCount").default(0).notNull(),
+  // Last answered timestamp
+  lastAnsweredAt: timestamp("lastAnsweredAt"),
+  // Context fields for better answers
+  interestUniversity: varchar("interestUniversity", { length: 255 }),
+  interestMajor: varchar("interestMajor", { length: 255 }),
+  gradeLevel: varchar("gradeLevel", { length: 50 }),
+  contextInfo: text("contextInfo"),
   // Soft delete
   deletedAt: timestamp("deletedAt"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
@@ -412,8 +423,12 @@ export type InsertQuestion = typeof questions.$inferInsert;
 export const answers = mysqlTable("answers", {
   id: int("id").autoincrement().primaryKey(),
   questionId: int("questionId").notNull(), // References questions.id
-  authorId: int("authorId").notNull(), // References users.id (멘토만)
+  authorId: int("authorId").notNull(), // References users.id (멘토)
   content: text("content").notNull(),
+  // Report status
+  isReported: boolean("isReported").default(false).notNull(),
+  reportReason: varchar("reportReason", { length: 255 }),
+  reportCount: int("reportCount").default(0).notNull(),
   // Soft delete
   deletedAt: timestamp("deletedAt"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
@@ -431,6 +446,10 @@ export const answerReplies = mysqlTable("answer_replies", {
   answerId: int("answerId").notNull(), // References answers.id
   authorId: int("authorId").notNull(), // References users.id
   content: text("content").notNull(),
+  // Report status
+  isReported: boolean("isReported").default(false).notNull(),
+  reportReason: varchar("reportReason", { length: 255 }),
+  reportCount: int("reportCount").default(0).notNull(),
   // Soft delete
   deletedAt: timestamp("deletedAt"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
@@ -439,3 +458,28 @@ export const answerReplies = mysqlTable("answer_replies", {
 
 export type AnswerReply = typeof answerReplies.$inferSelect;
 export type InsertAnswerReply = typeof answerReplies.$inferInsert;
+
+/**
+ * QnA Reports - 질문/답변/댓글 신고
+ */
+export const qnaReports = mysqlTable("qna_reports", {
+  id: int("id").autoincrement().primaryKey(),
+  reporterId: int("reporterId").notNull(), // References users.id
+  // Type: question, answer, reply
+  reportType: mysqlEnum("reportType", ["question", "answer", "reply"]).notNull(),
+  // ID of reported content
+  contentId: int("contentId").notNull(),
+  // Reason for report
+  reason: varchar("reason", { length: 255 }).notNull(),
+  // Report description
+  description: text("description"),
+  // Status: pending, reviewed, resolved, dismissed
+  status: mysqlEnum("status", ["pending", "reviewed", "resolved", "dismissed"]).default("pending").notNull(),
+  // Admin notes
+  adminNotes: text("adminNotes"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type QnaReport = typeof qnaReports.$inferSelect;
+export type InsertQnaReport = typeof qnaReports.$inferInsert;

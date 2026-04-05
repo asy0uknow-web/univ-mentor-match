@@ -1,5 +1,5 @@
 import { getDb } from "./db";
-import { questions, answers, answerReplies, users, mentorProfiles } from "../drizzle/schema";
+import { questions, answers, answerReplies, users, mentorProfiles, qnaReports } from "../drizzle/schema";
 import { eq, isNull, desc, and, or } from "drizzle-orm";
 
 /**
@@ -10,7 +10,11 @@ export async function createQuestion(
   title: string,
   content: string,
   category?: string,
-  isAnonymous?: boolean
+  isAnonymous?: boolean,
+  interestUniversity?: string,
+  interestMajor?: string,
+  gradeLevel?: string,
+  contextInfo?: string
 ): Promise<any> {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
@@ -21,6 +25,12 @@ export async function createQuestion(
     content,
     category,
     isAnonymous: isAnonymous || false,
+    status: "awaiting_answer",
+    answerCount: 0,
+    interestUniversity,
+    interestMajor,
+    gradeLevel,
+    contextInfo,
   });
 
   return result;
@@ -44,14 +54,15 @@ export async function getQuestionById(id: number): Promise<any> {
 }
 
 /**
- * 질문 목록 조회 (페이지네이션 + 정렬)
+ * 질문 목록 조회 (페이지네이션 + 정렬 + 상태 필터)
  */
 export async function getQuestions(
   limit: number = 20,
   offset: number = 0,
   searchQuery?: string,
   category?: string,
-  sortBy: string = "recent"
+  sortBy: string = "recent",
+  status?: string
 ): Promise<any[]> {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
@@ -74,11 +85,32 @@ export async function getQuestions(
     whereCondition = and(whereCondition, eq(questions.category, category));
   }
 
+  // 상태 필터
+  if (status) {
+    whereCondition = and(whereCondition, eq(questions.status, status as any));
+  }
+
+  // 정렬 로직
+  let orderByClause: any = desc(questions.createdAt);
+  switch (sortBy) {
+    case "latest_answer":
+      orderByClause = desc(questions.lastAnsweredAt);
+      break;
+    case "most_answers":
+      orderByClause = desc(questions.answerCount);
+      break;
+    case "solved":
+      orderByClause = desc(questions.status);
+      break;
+    default:
+      orderByClause = desc(questions.createdAt);
+  }
+
   const result = await db
     .select()
     .from(questions)
     .where(whereCondition)
-    .orderBy(desc(questions.createdAt))
+    .orderBy(orderByClause)
     .limit(limit)
     .offset(offset);
 
@@ -91,7 +123,8 @@ export async function getQuestions(
 export async function updateQuestion(
   id: number,
   title?: string,
-  content?: string
+  content?: string,
+  status?: string
 ): Promise<void> {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
@@ -99,10 +132,24 @@ export async function updateQuestion(
   const updates: any = {};
   if (title !== undefined) updates.title = title;
   if (content !== undefined) updates.content = content;
+  if (status !== undefined) updates.status = status;
 
   if (Object.keys(updates).length === 0) return;
 
   await db.update(questions).set(updates).where(eq(questions.id, id));
+}
+
+/**
+ * 질문 상태 업데이트 (해결됨 처리)
+ */
+export async function markQuestionAsSolved(id: number): Promise<void> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  await db
+    .update(questions)
+    .set({ status: "solved" })
+    .where(eq(questions.id, id));
 }
 
 /**
@@ -135,6 +182,20 @@ export async function createAnswer(
     content,
   });
 
+  // 질문 상태 및 답변 수 업데이트
+  const question = await getQuestionById(questionId);
+  if (question) {
+    const isFirstAnswer = question.answerCount === 0;
+    await db
+      .update(questions)
+      .set({
+        status: isFirstAnswer ? "answered" : question.status,
+        answerCount: question.answerCount + 1,
+        lastAnsweredAt: new Date(),
+      })
+      .where(eq(questions.id, questionId));
+  }
+
   return result;
 }
 
@@ -149,7 +210,7 @@ export async function getAnswersByQuestionId(questionId: number): Promise<any[]>
     .select()
     .from(answers)
     .where(
-      eq(answers.questionId, questionId) && isNull(answers.deletedAt)
+      and(eq(answers.questionId, questionId), isNull(answers.deletedAt))
     )
     .orderBy(desc(answers.createdAt));
 
@@ -227,7 +288,7 @@ export async function getRepliesByAnswerId(answerId: number): Promise<any[]> {
     .select()
     .from(answerReplies)
     .where(
-      eq(answerReplies.answerId, answerId) && isNull(answerReplies.deletedAt)
+      and(eq(answerReplies.answerId, answerId), isNull(answerReplies.deletedAt))
     )
     .orderBy(desc(answerReplies.createdAt));
 
@@ -275,6 +336,50 @@ export async function deleteReply(id: number): Promise<void> {
     .update(answerReplies)
     .set({ deletedAt: new Date() })
     .where(eq(answerReplies.id, id));
+}
+
+/**
+ * 신고 생성
+ */
+export async function createReport(
+  reporterId: number,
+  reportType: "question" | "answer" | "reply",
+  contentId: number,
+  reason: string,
+  description?: string
+): Promise<any> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  const result = await db.insert(qnaReports).values({
+    reporterId,
+    reportType,
+    contentId,
+    reason,
+    description,
+    status: "pending",
+  });
+
+  // 신고 대상 콘텐츠의 신고 수 증가
+  if (reportType === "answer") {
+    const answer = await getAnswerById(contentId);
+    if (answer) {
+      await db
+        .update(answers)
+        .set({ reportCount: (answer.reportCount || 0) + 1 })
+        .where(eq(answers.id, contentId));
+    }
+  } else if (reportType === "reply") {
+    const reply = await getReplyById(contentId);
+    if (reply) {
+      await db
+        .update(answerReplies)
+        .set({ reportCount: (reply.reportCount || 0) + 1 })
+        .where(eq(answerReplies.id, contentId));
+    }
+  }
+
+  return result;
 }
 
 /**

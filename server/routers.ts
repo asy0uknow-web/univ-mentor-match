@@ -1995,9 +1995,10 @@ getTopMentors: publicProcedure
         searchQuery: z.string().optional(),
         category: z.string().optional(),
         sortBy: z.string().default("recent"),
+        status: z.string().optional(),
       }))
       .query(async ({ input }) => {
-        return await getQuestions(input.limit, input.offset, input.searchQuery, input.category, input.sortBy);
+        return await getQuestions(input.limit, input.offset, input.searchQuery, input.category, input.sortBy, input.status);
       }),
 
     getQuestionById: publicProcedure
@@ -2012,6 +2013,10 @@ getTopMentors: publicProcedure
         content: z.string().min(1, "내용을 입력해주세요"),
         category: z.string().optional(),
         isAnonymous: z.boolean().default(false),
+        interestUniversity: z.string().optional(),
+        interestMajor: z.string().optional(),
+        gradeLevel: z.string().optional(),
+        contextInfo: z.string().optional(),
       }))
       .mutation(async ({ ctx, input }) => {
         const result = await createQuestion(
@@ -2019,7 +2024,11 @@ getTopMentors: publicProcedure
           input.title,
           input.content,
           input.category,
-          input.isAnonymous
+          input.isAnonymous,
+          input.interestUniversity,
+          input.interestMajor,
+          input.gradeLevel,
+          input.contextInfo
         );
         return { success: true, questionId: (result as any).insertId };
       }),
@@ -2039,6 +2048,39 @@ getTopMentors: publicProcedure
         return { success: true };
       }),
 
+
+    updateQuestionStatus: protectedProcedure
+      .input(z.object({
+        questionId: z.number(),
+        status: z.enum(["awaiting_answer", "answered", "solved"]),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const question = await getQuestionById(input.questionId);
+        if (!question) throw new Error("Question not found");
+        if (question.authorId !== ctx.user.id) throw new Error("Unauthorized");
+
+        await updateQuestion(input.questionId, undefined, undefined, input.status);
+        return { success: true };
+      }),
+
+    createReport: protectedProcedure
+      .input(z.object({
+        reportType: z.enum(["question", "answer", "reply"]),
+        contentId: z.number(),
+        reason: z.string(),
+        description: z.string().optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const { createReport } = await import("./qna");
+        await createReport(
+          ctx.user.id,
+          input.reportType,
+          input.contentId,
+          input.reason,
+          input.description
+        );
+        return { success: true };
+      }),
     deleteQuestion: protectedProcedure
       .input(z.object({ questionId: z.number() }))
       .mutation(async ({ ctx, input }) => {

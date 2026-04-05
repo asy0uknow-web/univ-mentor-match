@@ -1,13 +1,34 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { trpc } from "@/lib/trpc";
 import { useLocation } from "wouter";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, AlertCircle, CheckCircle2 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { PageLayout } from "@/components/layout";
-import { setPageMeta, PAGE_META } from "@/lib/seo";
+import { setPageMeta } from "@/lib/seo";
 import { useAuth } from "@/_core/hooks/useAuth";
+import * as Select from "@radix-ui/react-select";
+import { ChevronDown } from "lucide-react";
+
+const CATEGORIES = [
+  { value: "입시 전략", label: "입시 전략" },
+  { value: "전공 선택", label: "전공 선택" },
+  { value: "대학 생활", label: "대학 생활" },
+  { value: "학교 분위기", label: "학교 분위기" },
+  { value: "학업/생기부", label: "학업/생기부" },
+  { value: "기숙사/통학", label: "기숙사/통학" },
+  { value: "인간관계/적응", label: "인간관계/적응" },
+  { value: "진로 고민", label: "진로 고민" },
+  { value: "기타", label: "기타" },
+];
+
+const GOOD_EXAMPLES = [
+  "OO대 경영 vs OO대 경제 중 어디가 전공 만족도가 높은가요?",
+  "컴공 진학 생각 중인데 대학 생활에서 가장 힘든 점이 궁금해요",
+  "생기부에 데이터 분석 활동이 많은데 어떤 전공과 잘 맞을까요?",
+];
 
 export default function QnACreate() {
   const { user, isAuthenticated } = useAuth();
@@ -16,21 +37,24 @@ export default function QnACreate() {
   const [content, setContent] = useState("");
   const [category, setCategory] = useState("");
   const [isAnonymous, setIsAnonymous] = useState(false);
+  const [interestUniversity, setInterestUniversity] = useState("");
+  const [interestMajor, setInterestMajor] = useState("");
+  const [gradeLevel, setGradeLevel] = useState("");
+  const [contextInfo, setContextInfo] = useState("");
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
-    setPageMeta({ title: "Q&A 작성", description: "Q&A 질문 작성 페이지" });
+    setPageMeta({ title: "Q&A 질문 작성", description: "Q&A 질문 작성 페이지" });
   }, []);
 
   // 질문 작성 뮤테이션
   const createQuestionMutation = trpc.qna.createQuestion.useMutation({
     onSuccess: (data: any) => {
       alert("질문이 작성되었습니다");
-      // insertId 또는 id 중 하나 사용
       const questionId = data.questionId || data.insertId || data.id;
       if (questionId) {
         setLocation(`/qna/${questionId}`);
       } else {
-        console.error("질문 ID를 받지 못했습니다", data);
         setLocation('/qna');
       }
     },
@@ -39,14 +63,25 @@ export default function QnACreate() {
     },
   });
 
-  const handleSubmit = async () => {
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {};
+
     if (!title.trim()) {
-      alert("제목을 입력해주세요");
-      return;
+      newErrors.title = "제목을 입력해주세요";
+    }
+    if (!content.trim()) {
+      newErrors.content = "내용을 입력해주세요";
+    }
+    if (!category) {
+      newErrors.category = "카테고리를 선택해주세요";
     }
 
-    if (!content.trim()) {
-      alert("내용을 입력해주세요");
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async () => {
+    if (!validateForm()) {
       return;
     }
 
@@ -55,32 +90,39 @@ export default function QnACreate() {
       content,
       category,
       isAnonymous,
+      interestUniversity: interestUniversity || undefined,
+      interestMajor: interestMajor || undefined,
+      gradeLevel: gradeLevel || undefined,
+      contextInfo: contextInfo || undefined,
     });
   };
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen flex items-center justify-center px-4">
-        <Card className="w-full max-w-md">
-          <CardHeader>
-            <CardTitle className="text-lg sm:text-xl">로그인이 필요합니다</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Button 
-              onClick={() => setLocation('/login')}
-              className="w-full text-xs sm:text-sm h-9 sm:h-10"
-            >
-              로그인
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
+      <PageLayout>
+        <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-12 flex items-center justify-center min-h-[60vh]">
+          <Card className="w-full max-w-md">
+            <CardHeader>
+              <CardTitle className="text-lg sm:text-xl">로그인이 필요합니다</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Button 
+                onClick={() => setLocation('/login')}
+                className="w-full text-xs sm:text-sm h-9 sm:h-10"
+              >
+                로그인
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      </PageLayout>
     );
   }
 
   return (
     <PageLayout>
-      <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-12">
+      <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-12 max-w-2xl">
+        {/* 헤더 */}
         <Button
           variant="ghost"
           onClick={() => setLocation('/qna')}
@@ -90,91 +132,219 @@ export default function QnACreate() {
           돌아가기
         </Button>
 
-        <Card className="max-w-2xl">
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold mb-2">질문 작성하기</h1>
+          <p className="text-sm text-muted-foreground">
+            재학생 멘토에게 궁금한 점을 자유롭게 질문해보세요
+          </p>
+        </div>
+
+        {/* 좋은 질문 예시 */}
+        <Card className="bg-green-50 border-green-200 mb-6">
+          <CardHeader className="pb-3">
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="h-5 w-5 text-green-600" />
+              <CardTitle className="text-base">좋은 질문 예시</CardTitle>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            {GOOD_EXAMPLES.map((example, idx) => (
+              <p key={idx} className="text-xs sm:text-sm text-green-900">
+                • {example}
+              </p>
+            ))}
+          </CardContent>
+        </Card>
+
+        {/* 금지 안내 */}
+        <Card className="bg-red-50 border-red-200 mb-6">
+          <CardHeader className="pb-3">
+            <div className="flex items-center gap-2">
+              <AlertCircle className="h-5 w-5 text-red-600" />
+              <CardTitle className="text-base">금지 사항</CardTitle>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            <p className="text-xs sm:text-sm text-red-900">
+              • 전화번호, 카카오톡 ID, 오픈채팅 링크, 인스타 ID 등 개인정보는 적지 마세요
+            </p>
+            <p className="text-xs sm:text-sm text-red-900">
+              • 비방, 허위, 홍보성 글은 삭제될 수 있습니다
+            </p>
+            <p className="text-xs sm:text-sm text-red-900">
+              • 1:1 맞춤 상담이 필요한 경우 상담 조율을 이용하세요
+            </p>
+          </CardContent>
+        </Card>
+
+        {/* 폼 */}
+        <Card>
           <CardHeader>
-            <CardTitle className="text-2xl sm:text-3xl">질문 작성</CardTitle>
+            <CardTitle className="text-lg">필수 정보</CardTitle>
             <CardDescription className="text-xs sm:text-sm">
-              어디서도 얻을 수 없는 재학생의 솔직한 경험, 정보, 고민들을 질문하세요.
+              *표시된 항목은 필수 항목입니다
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4 sm:space-y-6">
             {/* 제목 */}
             <div>
-              <label htmlFor="title" className="text-sm font-semibold mb-2 block">
+              <label className="block text-xs sm:text-sm font-medium mb-2">
                 제목 *
               </label>
               <Input
-                id="title"
+                placeholder="질문의 핵심을 간단히 적어주세요"
                 value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="질문의 제목을 입력해주세요"
-                className="text-xs sm:text-sm h-9 sm:h-10"
+                onChange={(e) => {
+                  setTitle(e.target.value);
+                  if (errors.title) {
+                    setErrors({ ...errors, title: "" });
+                  }
+                }}
+                className={`text-xs sm:text-sm h-9 sm:h-10 ${errors.title ? "border-red-500" : ""}`}
               />
+              {errors.title && (
+                <p className="text-xs text-red-500 mt-1">{errors.title}</p>
+              )}
             </div>
 
             {/* 카테고리 */}
             <div>
-              <label htmlFor="category" className="text-sm font-semibold mb-2 block">
-                카테고리
+              <label className="block text-xs sm:text-sm font-medium mb-2">
+                카테고리 *
               </label>
-              <select
-                id="category"
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                className="w-full px-3 py-2 text-xs sm:text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary h-9 sm:h-10"
-              >
-                <option value="">카테고리 선택</option>
-                <option value="career">진로</option>
-                <option value="academics">학업</option>
-                <option value="university">대학</option>
-                <option value="other">기타</option>
-              </select>
+              <Select.Root value={category} onValueChange={(val) => {
+                setCategory(val);
+                if (errors.category) {
+                  setErrors({ ...errors, category: "" });
+                }
+              }}>
+                <Select.Trigger className={`w-full px-3 py-2 text-xs sm:text-sm border rounded-md bg-background hover:bg-accent h-9 sm:h-10 flex items-center justify-between ${errors.category ? "border-red-500" : ""}`}>
+                  <Select.Value placeholder="카테고리를 선택해주세요" />
+                  <Select.Icon className="ml-2">
+                    <ChevronDown className="h-4 w-4" />
+                  </Select.Icon>
+                </Select.Trigger>
+                <Select.Content className="bg-background border border-input rounded-md shadow-md z-50">
+                  <Select.Viewport className="p-1">
+                    {CATEGORIES.map((cat) => (
+                      <Select.Item key={cat.value} value={cat.value} className="px-3 py-2 text-xs sm:text-sm cursor-pointer hover:bg-accent rounded">
+                        {cat.label}
+                      </Select.Item>
+                    ))}
+                  </Select.Viewport>
+                </Select.Content>
+              </Select.Root>
+              {errors.category && (
+                <p className="text-xs text-red-500 mt-1">{errors.category}</p>
+              )}
             </div>
 
             {/* 내용 */}
             <div>
-              <label htmlFor="content" className="text-sm font-semibold mb-2 block">
-                내용 *
+              <label className="block text-xs sm:text-sm font-medium mb-2">
+                질문 내용 *
               </label>
-              <textarea
-                id="content"
+              <Textarea
+                placeholder="질문을 자세히 적어주세요. 학교, 전공, 학년, 상황 등을 포함하면 더 정확한 답변을 받을 수 있습니다."
                 value={content}
-                onChange={(e) => setContent(e.target.value)}
-                placeholder="질문의 내용을 자세히 작성해주세요"
-                className="w-full px-3 py-2 text-xs sm:text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary min-h-40 sm:min-h-48 resize-none"
+                onChange={(e) => {
+                  setContent(e.target.value);
+                  if (errors.content) {
+                    setErrors({ ...errors, content: "" });
+                  }
+                }}
+                className={`text-xs sm:text-sm min-h-[150px] ${errors.content ? "border-red-500" : ""}`}
               />
-              <p className="text-xs text-muted-foreground mt-2">
-                {content.length} / 2000자
-              </p>
+              {errors.content && (
+                <p className="text-xs text-red-500 mt-1">{errors.content}</p>
+              )}
             </div>
 
-            {/* 익명 옵션 */}
-            <div className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                id="anonymous"
-                checked={isAnonymous}
-                onChange={(e) => setIsAnonymous(e.target.checked)}
-                className="w-4 h-4 rounded border-gray-300"
-              />
-              <label htmlFor="anonymous" className="text-xs sm:text-sm text-muted-foreground">
-                익명으로 질문하기
-              </label>
+            {/* 선택 정보 */}
+            <div className="border-t pt-4 sm:pt-6">
+              <h3 className="text-xs sm:text-sm font-medium mb-4">추가 정보 (선택)</h3>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {/* 관심 대학 */}
+                <div>
+                  <label className="block text-xs sm:text-sm font-medium mb-2">
+                    관심 대학
+                  </label>
+                  <Input
+                    placeholder="예: 서울대, 연세대"
+                    value={interestUniversity}
+                    onChange={(e) => setInterestUniversity(e.target.value)}
+                    className="text-xs sm:text-sm h-9 sm:h-10"
+                  />
+                </div>
+
+                {/* 관심 전공 */}
+                <div>
+                  <label className="block text-xs sm:text-sm font-medium mb-2">
+                    관심 전공
+                  </label>
+                  <Input
+                    placeholder="예: 컴퓨터공학, 경영학"
+                    value={interestMajor}
+                    onChange={(e) => setInterestMajor(e.target.value)}
+                    className="text-xs sm:text-sm h-9 sm:h-10"
+                  />
+                </div>
+
+                {/* 학년 */}
+                <div>
+                  <label className="block text-xs sm:text-sm font-medium mb-2">
+                    현재 학년
+                  </label>
+                  <Input
+                    placeholder="예: 고2, 고3"
+                    value={gradeLevel}
+                    onChange={(e) => setGradeLevel(e.target.value)}
+                    className="text-xs sm:text-sm h-9 sm:h-10"
+                  />
+                </div>
+
+                {/* 익명 여부 */}
+                <div className="flex items-end">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={isAnonymous}
+                      onChange={(e) => setIsAnonymous(e.target.checked)}
+                      className="w-4 h-4 rounded"
+                    />
+                    <span className="text-xs sm:text-sm">익명으로 질문하기</span>
+                  </label>
+                </div>
+              </div>
+
+              {/* 추가 맥락 정보 */}
+              <div className="mt-4">
+                <label className="block text-xs sm:text-sm font-medium mb-2">
+                  추가 정보
+                </label>
+                <Textarea
+                  placeholder="내신 성적, 모의고사 등급, 생기부 관련 정보 등 추가로 도움이 될 정보가 있으면 적어주세요"
+                  value={contextInfo}
+                  onChange={(e) => setContextInfo(e.target.value)}
+                  className="text-xs sm:text-sm min-h-[100px]"
+                />
+              </div>
             </div>
 
-            {/* 제출 버튼 */}
-            <div className="flex gap-2 pt-4">
+            {/* 버튼 */}
+            <div className="flex gap-2 pt-4 border-t">
               <Button
-                onClick={() => setLocation('/qna')}
                 variant="outline"
-                className="flex-1 text-xs sm:text-sm h-9 sm:h-10"
+                onClick={() => setLocation('/qna')}
+                className="text-xs sm:text-sm h-9 sm:h-10 flex-1"
               >
                 취소
               </Button>
               <Button
                 onClick={handleSubmit}
                 disabled={createQuestionMutation.isPending}
-                className="flex-1 text-xs sm:text-sm h-9 sm:h-10"
+                className="text-xs sm:text-sm h-9 sm:h-10 flex-1"
               >
                 {createQuestionMutation.isPending ? "작성 중..." : "질문 작성"}
               </Button>
