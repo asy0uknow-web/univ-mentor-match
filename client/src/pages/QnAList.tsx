@@ -195,7 +195,7 @@ export default function QnAList() {
                 <Select.Viewport className="p-1">
                   {CATEGORIES.map((cat) => (
                     <Select.Item key={cat.value} value={cat.value} className="px-3 py-2 text-xs sm:text-sm cursor-pointer hover:bg-accent rounded">
-                      {cat.label}
+                      <Select.ItemText>{cat.label}</Select.ItemText>
                     </Select.Item>
                   ))}
                 </Select.Viewport>
@@ -214,7 +214,7 @@ export default function QnAList() {
                 <Select.Viewport className="p-1">
                   {SORT_OPTIONS.map((opt) => (
                     <Select.Item key={opt.value} value={opt.value} className="px-3 py-2 text-xs sm:text-sm cursor-pointer hover:bg-accent rounded">
-                      {opt.label}
+                      <Select.ItemText>{opt.label}</Select.ItemText>
                     </Select.Item>
                   ))}
                 </Select.Viewport>
