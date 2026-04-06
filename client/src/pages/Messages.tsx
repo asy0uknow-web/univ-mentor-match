@@ -1069,32 +1069,58 @@ export function Messages() {
                       }
                       const name = getOtherUserName(parseInt(userId));
                       return (
-                        <button
+                        <div
                           key={userId}
                           onClick={() => {
                             setSelectedConversation(parseInt(userId));
                             if (window.innerWidth < 1024) setSidebarOpen(false);
                           }}
-                          className={`w-full text-left p-2 sm:p-3 rounded-lg sm:rounded-xl transition-all text-xs sm:text-sm ${isSelected ? "bg-primary/10 border-2 border-primary" : "hover:bg-muted/60 border-2 border-transparent"}`}
+                          className={`w-full text-left p-3 sm:p-4 rounded-xl transition-all cursor-pointer group ${
+                            isSelected 
+                              ? "bg-primary text-primary-foreground shadow-md" 
+                              : "bg-white hover:bg-slate-50 border border-slate-200 hover:border-slate-300 hover:shadow-sm"
+                          }`}
                         >
-                          <div className="flex items-center gap-2 sm:gap-3">
+                          <div className="flex items-start gap-3">
                             <Avatar name={name} size="sm" />
                             <div className="flex-1 min-w-0">
-                              <div className="flex items-center justify-between gap-1">
-                                <p className={`font-semibold truncate ${unreadCount > 0 ? "text-foreground" : "text-foreground/80"}`}>{name}</p>
-                                <span className="text-[10px] text-muted-foreground shrink-0">{getRelativeTime(lastMsg.createdAt)}</span>
+                              <div className="flex items-center justify-between gap-2 mb-1.5">
+                                <p className={`font-semibold truncate ${
+                                  isSelected ? "text-primary-foreground" : unreadCount > 0 ? "text-foreground font-bold" : "text-foreground"
+                                }`}>
+                                  {name}
+                                </p>
+                                <span className={`text-xs shrink-0 ${
+                                  isSelected ? "text-primary-foreground/70" : "text-muted-foreground"
+                                }`}>
+                                  {getRelativeTime(lastMsg.createdAt)}
+                                </span>
                               </div>
-                              <div className="flex items-center justify-between gap-1 mt-0.5">
-                                <p className={`text-xs truncate ${unreadCount > 0 ? "text-foreground font-medium" : "text-muted-foreground"}`}>{preview}</p>
+                              
+                              <p className={`text-sm truncate mb-2 ${
+                                isSelected 
+                                  ? "text-primary-foreground/90" 
+                                  : unreadCount > 0 
+                                    ? "text-foreground font-medium" 
+                                    : "text-muted-foreground"
+                              }`}>
+                                {preview}
+                              </p>
+                              
+                              <div className="flex items-center gap-2">
                                 {unreadCount > 0 && (
-                                  <span className="shrink-0 bg-primary text-primary-foreground text-[10px] font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1">
-                                    {unreadCount > 99 ? "99+" : unreadCount}
+                                  <span className={`inline-flex items-center justify-center px-2 py-1 text-xs font-bold rounded-full ${
+                                    isSelected 
+                                      ? "bg-primary-foreground/20 text-primary-foreground" 
+                                      : "bg-primary text-primary-foreground"
+                                  }`}>
+                                    {unreadCount > 99 ? "99+" : unreadCount}개 미확인
                                   </span>
                                 )}
                               </div>
                             </div>
                           </div>
-                        </button>
+                        </div>
                       );
                     })}
                   </div>
@@ -1152,32 +1178,58 @@ export function Messages() {
                       }
                       const name = getOtherUserName(parseInt(userId));
                       return (
-                        <button
+                        <div
                           key={userId}
                           onClick={() => {
                             setSelectedConversation(parseInt(userId));
                             if (window.innerWidth < 1024) setSidebarOpen(false);
                           }}
-                          className={`w-full text-left p-2 sm:p-3 rounded-lg sm:rounded-xl transition-all text-xs sm:text-sm ${isSelected ? "bg-primary/10 border-2 border-primary" : "hover:bg-muted/60 border-2 border-transparent"}`}
+                          className={`w-full text-left p-3 sm:p-4 rounded-xl transition-all cursor-pointer group ${
+                            isSelected 
+                              ? "bg-primary text-primary-foreground shadow-md" 
+                              : "bg-white hover:bg-slate-50 border border-slate-200 hover:border-slate-300 hover:shadow-sm"
+                          }`}
                         >
-                          <div className="flex items-center gap-2 sm:gap-3">
+                          <div className="flex items-start gap-3">
                             <Avatar name={name} size="sm" />
                             <div className="flex-1 min-w-0">
-                              <div className="flex items-center justify-between gap-1">
-                                <p className={`font-semibold truncate ${unreadCount > 0 ? "text-foreground" : "text-foreground/80"}`}>{name}</p>
-                                <span className="text-[10px] text-muted-foreground shrink-0">{getRelativeTime(lastMsg.createdAt)}</span>
+                              <div className="flex items-center justify-between gap-2 mb-1.5">
+                                <p className={`font-semibold truncate ${
+                                  isSelected ? "text-primary-foreground" : unreadCount > 0 ? "text-foreground font-bold" : "text-foreground"
+                                }`}>
+                                  {name}
+                                </p>
+                                <span className={`text-xs shrink-0 ${
+                                  isSelected ? "text-primary-foreground/70" : "text-muted-foreground"
+                                }`}>
+                                  {getRelativeTime(lastMsg.createdAt)}
+                                </span>
                               </div>
-                              <div className="flex items-center justify-between gap-1 mt-0.5">
-                                <p className={`text-xs truncate ${unreadCount > 0 ? "text-foreground font-medium" : "text-muted-foreground"}`}>{preview}</p>
+                              
+                              <p className={`text-sm truncate mb-2 ${
+                                isSelected 
+                                  ? "text-primary-foreground/90" 
+                                  : unreadCount > 0 
+                                    ? "text-foreground font-medium" 
+                                    : "text-muted-foreground"
+                              }`}>
+                                {preview}
+                              </p>
+                              
+                              <div className="flex items-center gap-2">
                                 {unreadCount > 0 && (
-                                  <span className="shrink-0 bg-primary text-primary-foreground text-[10px] font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1">
-                                    {unreadCount > 99 ? "99+" : unreadCount}
+                                  <span className={`inline-flex items-center justify-center px-2 py-1 text-xs font-bold rounded-full ${
+                                    isSelected 
+                                      ? "bg-primary-foreground/20 text-primary-foreground" 
+                                      : "bg-primary text-primary-foreground"
+                                  }`}>
+                                    {unreadCount > 99 ? "99+" : unreadCount}개 미확인
                                   </span>
                                 )}
                               </div>
                             </div>
                           </div>
-                        </button>
+                        </div>
                       );
                     })}
                   </div>
