@@ -33,6 +33,7 @@ const QnADashboard = lazy(() => import("./pages/QnADashboard"));
 const MentorColumns = lazy(() => import("./pages/MentorColumns"));
 const MentorColumnDetail = lazy(() => import("./pages/MentorColumnDetail"));
 const MentorColumnCreate = lazy(() => import("./pages/MentorColumnCreate"));
+const AdminColumnStats = lazy(() => import("./pages/AdminColumnStats"));
 const Terms = lazy(() => import("./pages/Terms"));
 const RefundPolicy = lazy(() => import("./pages/RefundPolicy"));
 
@@ -55,6 +56,7 @@ function Router() {
         <Route path={"/admin"} component={AdminDashboard} />
         <Route path={"/delete-account"} component={DeleteAccount} />
         <Route path={"/admin/bug-reports"} component={AdminBugReports} />
+        <Route path={"/admin/column-stats"} component={AdminColumnStats} />
         <Route path={"/complete-profile"} component={CompleteProfile} />
         <Route path={"/privacy-policy"} component={PrivacyPolicy} />
         <Route path={"/terms"} component={Terms} />
