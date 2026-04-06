@@ -35,7 +35,7 @@ export default function MentorColumns() {
   const [, setLocation] = useLocation();
   const { isAuthenticated, user } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [sortBy, setSortBy] = useState<"latest" | "likes" | "comments">("latest");
 
   setPageMeta({
@@ -47,7 +47,7 @@ export default function MentorColumns() {
     limit: 20,
     offset: 0,
     sortBy,
-    category: selectedCategory || undefined,
+    category: selectedCategory === "all" ? undefined : selectedCategory,
     searchQuery: searchQuery || undefined,
   });
 
@@ -93,7 +93,7 @@ export default function MentorColumns() {
                 <SelectValue placeholder="카테고리 선택" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">전체 카테고리</SelectItem>
+                <SelectItem value="all">전체 카테고리</SelectItem>
                 {COLUMN_CATEGORIES.map((cat) => (
                   <SelectItem key={cat} value={cat}>
                     {cat}
