@@ -65,7 +65,7 @@ import { startConsultation, completeConsultation, requestReschedule, acceptResch
 import { sendConsultationReminders } from "./booking-notifications";
 import { getMonthlyConsultationStats, getOverallConsultationStats, getLast12MonthsStats } from "./booking-statistics";
 import { createQuestion, getQuestionById, getQuestions, updateQuestion, deleteQuestion, createAnswer, getAnswersByQuestionId, getAnswerById, updateAnswer, deleteAnswer, createAnswerReply, getRepliesByAnswerId, getReplyById, updateReply, deleteReply, getQuestionDetail, acceptAnswer, toggleAnswerLike, getUserAnswerLikes, notifyQuestionAuthorOnAnswer, getMyQuestions, getMyAnswers } from "./qna";
-import { getColumnsList, getColumnById, createColumn, updateColumn, deleteColumn, toggleColumnLike, getColumnComments, createComment, updateComment, deleteComment, getMyColumns } from "./columns";
+import { getColumnsList, getColumnById, createColumn, updateColumn, deleteColumn, toggleColumnLike, getColumnComments, createComment, updateComment, deleteComment, getMyColumns, incrementViewCount } from "./columns";
 import { emailVerificationTokens } from "../drizzle/schema";
 import { mentorGallery, messages, notifications, bookings, reviews, mentorProfiles, mentorVerifications, users, bugReports, mentorConsultationTypes, consultationProposals, studentProfiles } from "../drizzle/schema";
 import { and, eq, eq as drizzleEq, or as drizzleOr, desc as drizzleDesc } from "drizzle-orm";
@@ -2537,6 +2537,13 @@ getTopMentors: publicProcedure
     getMyColumns: protectedProcedure
       .query(async ({ ctx }) => {
         return await getMyColumns(ctx.user.id);
+      }),
+
+    incrementViewCount: publicProcedure
+      .input(z.object({ columnId: z.number() }))
+      .mutation(async ({ input }) => {
+        await incrementViewCount(input.columnId);
+        return { success: true };
       }),
   }),
 });

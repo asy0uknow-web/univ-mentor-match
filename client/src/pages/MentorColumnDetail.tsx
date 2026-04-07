@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Heart, MessageCircle, Trash2, Edit2 } from "lucide-react";
+import { ArrowLeft, Heart, MessageCircle, Trash2, Edit2, Share2, Eye } from "lucide-react";
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
 import { toast } from "sonner";
@@ -48,6 +48,14 @@ export default function MentorColumnDetail() {
   const { data: column, isLoading } = trpc.mentorColumns.getById.useQuery({
     columnId,
   });
+
+  const incrementViewMutation = trpc.mentorColumns.incrementViewCount.useMutation();
+
+  const [viewCounted, setViewCounted] = useState(false);
+  if (column && !viewCounted) {
+    setViewCounted(true);
+    incrementViewMutation.mutate({ columnId });
+  }
 
   const { data: comments } = trpc.mentorColumns.getComments.useQuery({
     columnId,
@@ -201,7 +209,7 @@ export default function MentorColumnDetail() {
               </div>
 
               {/* 통계 및 액션 */}
-              <div className="flex items-center gap-4 pt-4 border-t">
+              <div className="flex items-center gap-2 pt-4 border-t flex-wrap">
                 <Button
                   variant={column.isLiked ? "default" : "outline"}
                   size="sm"
@@ -213,10 +221,27 @@ export default function MentorColumnDetail() {
                   />
                   <span className="text-xs sm:text-sm">{column.likesCount}</span>
                 </Button>
-                <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground">
+                <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground px-3 py-2 rounded-md bg-muted">
                   <MessageCircle className="h-4 w-4" />
                   <span>{column.commentsCount}</span>
                 </div>
+                <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground px-3 py-2 rounded-md bg-muted">
+                  <Eye className="h-4 w-4" />
+                  <span>{column.viewCount || 0}</span>
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    const url = window.location.href;
+                    navigator.clipboard.writeText(url);
+                    toast.success('링크가 복사되었습니다');
+                  }}
+                  className="gap-2 ml-auto"
+                >
+                  <Share2 className="h-4 w-4" />
+                  <span className="text-xs sm:text-sm">공유</span>
+                </Button>
               </div>
             </CardContent>
           </Card>

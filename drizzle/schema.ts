@@ -532,6 +532,7 @@ export const mentorColumns = mysqlTable("mentor_columns", {
   coverImageUrl: varchar("coverImageUrl", { length: 500 }), // Optional cover image
   likesCount: int("likesCount").default(0).notNull(),
   commentsCount: int("commentsCount").default(0).notNull(),
+  viewCount: int("viewCount").default(0).notNull(), // 칼럼 조회수
   status: mysqlEnum("status", ["draft", "published"]).default("draft").notNull(),
   // Soft delete
   deletedAt: timestamp("deletedAt"),

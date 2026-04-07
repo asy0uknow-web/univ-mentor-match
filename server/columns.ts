@@ -23,6 +23,7 @@ export async function getColumnsList(options: {
       category: mentorColumns.category,
       likesCount: mentorColumns.likesCount,
       commentsCount: mentorColumns.commentsCount,
+      viewCount: mentorColumns.viewCount,
       createdAt: mentorColumns.createdAt,
       author: {
         id: users.id,
@@ -83,6 +84,7 @@ export async function getColumnById(columnId: number, userId?: number) {
       coverImageUrl: mentorColumns.coverImageUrl,
       likesCount: mentorColumns.likesCount,
       commentsCount: mentorColumns.commentsCount,
+      viewCount: mentorColumns.viewCount,
       createdAt: mentorColumns.createdAt,
       updatedAt: mentorColumns.updatedAt,
       author: {
@@ -462,4 +464,18 @@ export async function getMyColumns(userId: number) {
     .orderBy(desc(mentorColumns.createdAt));
 
   return columns;
+}
+
+
+// 칼럼 조회수 증가
+export async function incrementViewCount(columnId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  await db
+    .update(mentorColumns)
+    .set({
+      viewCount: sql`${mentorColumns.viewCount} + 1`,
+    })
+    .where(eq(mentorColumns.id, columnId));
 }

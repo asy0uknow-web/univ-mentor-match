@@ -15,7 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Heart, MessageCircle, Plus, Search } from "lucide-react";
+import { Heart, MessageCircle, Plus, Search, Eye } from "lucide-react";
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
 
@@ -195,6 +195,10 @@ export default function MentorColumns() {
                     <div className="flex items-center gap-1">
                       <MessageCircle className="h-3 w-3" />
                       <span>{column.commentsCount}</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Eye className="h-3 w-3" />
+                      <span>{column.viewCount || 0}</span>
                     </div>
                   </div>
                 </CardContent>
