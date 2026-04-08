@@ -201,6 +201,14 @@ export default function Home() {
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-12 sm:mb-16 text-foreground" id="how-heading">
             이용 방법
           </h2>
+          <div className="max-w-4xl mx-auto mb-12 sm:mb-16">
+            <img 
+              src="https://d2xsxph8kpxj0f.cloudfront.net/310519663280786037/Gy6RaYwMhnXP5TJQbTpkxJ/mentor-mentee-connection-XGHfpL6N9vBEtSx8M8oRB8.webp"
+              alt="멘토와 멘티의 직접 연결"
+              className="w-full h-auto rounded-2xl shadow-lg"
+            />
+          </div>
+          
           <div className="max-w-6xl mx-auto">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
               {[

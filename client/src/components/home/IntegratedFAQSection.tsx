@@ -181,25 +181,7 @@ export const IntegratedFAQSection = () => {
             ))}
           </div>
 
-          {/* Emergency Contact Banner */}
-          <div className="mt-12 sm:mt-16 bg-gradient-to-r from-red-50 to-orange-50 rounded-2xl p-6 sm:p-8 border-2 border-red-200">
-            <div className="flex items-start gap-4">
-              <AlertCircle className="w-6 h-6 sm:w-8 sm:h-8 text-red-600 flex-shrink-0 mt-1" />
-              <div>
-                <h3 className="text-lg sm:text-xl font-bold text-red-900 mb-3 sm:mb-4">
-                  🚨 긴급 상황 시 즉시 연락하세요
-                </h3>
-                <p className="text-base sm:text-lg text-red-800 mb-4">
-                  부적절한 상담이나 문제 상황이 발생하면 즉시 고객센터에 연락하세요. 우리는 24시간 대응 가능합니다.
-                </p>
-                <div className="flex flex-col sm:flex-row gap-4 text-sm sm:text-base text-red-700">
-                  <span>
-                    <span className="font-bold">이메일:</span> support@univmatch.com
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
+
 
           {/* More Questions */}
           <div className="mt-12 sm:mt-16 text-center">
