@@ -32,10 +32,10 @@ const DROPDOWN_MENU = [
   { href: "/columns", label: "멘토 칼럼" },
 ] as const;
 
-// 뙈페이지 메뉴 (스크롤 이동)
+// 홈페이지 메뉴 (스크롤 이동)
 const HOME_MENU = [
   { id: "hero", label: "멘토 찾기" },
-  { id: "service-intro", label: "서비스 소개" },
+  { id: "quick-entry", label: "서비스 소개" },
   { id: "how-it-works", label: "이용 방법" },
 ] as const;
 
