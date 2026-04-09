@@ -2234,3 +2234,10 @@
 ### ZeroCommissionUSPSection rect 요소 완전 삭제
 - [x] rect data-loc="client/src/components/home/ZeroCommissionUSPSection.tsx:82" 요소 완전 삭제
 - [x] 브라우저에서 렌더링 확인 (그림이 완전히 사라졌는지 테스트 완료)
+
+
+## 버튼 UI 개선 (4월 9일 - 계속)
+### PopularQnASection 중복 버튼 제거
+- [x] PopularQnASection.tsx의 "더 많은 Q&A 보기" 버튼 삭제 (149번 줄)
+- [x] "Q&A 커뮤니티 참여하기" 버튼만 유지 (역할 중복 제거)
+- [x] 개발 서버 정상 작동 확인 (TypeScript 에러 0개)

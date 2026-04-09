@@ -143,19 +143,6 @@ export function PopularQnASection() {
             ))}
           </div>
 
-          {/* "더 보기" 버튼 */}
-          <div className="text-center">
-            <Link href="/qna">
-              <Button
-                size="lg"
-                variant="outline"
-                className="text-base sm:text-lg px-8 sm:px-10 py-6 sm:py-7 font-semibold border-2 hover:bg-blue-50"
-              >
-                더 많은 Q&A 보기
-              </Button>
-            </Link>
-          </div>
-
           {/* 하단 CTA */}
           <div className="mt-12 sm:mt-16 p-6 sm:p-8 rounded-xl bg-blue-50 border border-blue-200 text-center">
             <h3 className="text-lg sm:text-xl font-semibold text-foreground mb-2">
