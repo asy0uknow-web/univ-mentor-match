@@ -78,8 +78,7 @@ export function ZeroCommissionUSPSection() {
                   </linearGradient>
                 </defs>
 
-                {/* 배경 */}
-                <rect width="500" height="500" fill="url(#bgGradient)" />
+                {/* 배경 생략 - 그림 없이 진행 */}
 
                 {/* 왼쪽 멘토 (파란색) */}
                 <g>

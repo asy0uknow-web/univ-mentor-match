@@ -2222,3 +2222,15 @@
 ### Phase 4: 전체 테스트 및 체크포인트 저장
 - [x] TypeScript 컴파일 에러 확인 (0개)
 - [x] 개발 서버 정상 작동 확인
+
+
+## 새로운 작업 (4월 9일 - 계속)
+### QnA 답글 기능 완성
+- [x] QnA 답글 DB 스키마 확인 (이미 완전 구현됨)
+- [x] 백엔드 API 구현 (답글 생성, jogwi, 수정, 삭제) (이미 완전 구현됨)
+- [x] 프론트엔드 UI 연동 (답글 작성 폼, 답글 목록 표시) (이미 완전 구현됨)
+- [x] 테스트 작성 및 실행 (완료)
+
+### ZeroCommissionUSPSection rect 요소 완전 삭제
+- [x] rect data-loc="client/src/components/home/ZeroCommissionUSPSection.tsx:82" 요소 완전 삭제
+- [x] 브라우저에서 렌더링 확인 (그림이 완전히 사라졌는지 테스트 완료)
