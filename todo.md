@@ -2203,3 +2203,22 @@
 
 ## 긴급 버그 수정 - 네비게이션바
 - [x] 메인페이지 네비게이션바 "서비스소개" 링크 작동 안 함 해결 (id: "service-intro" → "quick-entry")
+
+
+## 현재 진행 중인 작업 (4월 9일)
+### Phase 1: 네비게이션바 모바일 메뉴 추가 (완료)
+- [x] 모바일 환경에서 홈페이지 메뉴 접근 가능하도록 햄버거 메뉴 추가
+
+### Phase 2: ZeroCommissionUSPSection SVG 배경 그림 완전 삭제 (완료)
+- [x] ZeroCommissionUSPSection.tsx에서 배경 SVG 그림 완전 삭제
+- [x] 그림 없이 텍스트/카드 레이아웃만 유지
+
+### Phase 3: 멘토 프로필 이미지 최적화 - Lazy Loading 구현 (완료)
+- [x] MentorDetail.tsx 프로필 이미지에 loading="lazy" 추가
+- [x] MentorDetail.tsx 갤러리 이미지에 loading="lazy" 추가
+- [x] Mentors.tsx 대학 로고 이미지에 loading="lazy" 추가
+- [x] Messages.tsx 메시지 프로필 이미지에 loading="lazy" 추가
+
+### Phase 4: 전체 테스트 및 체크포인트 저장
+- [x] TypeScript 컴파일 에러 확인 (0개)
+- [x] 개발 서버 정상 작동 확인
