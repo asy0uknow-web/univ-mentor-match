@@ -81,7 +81,7 @@ export const IntegratedFAQSection = () => {
 
   // 이메일 복사 이벤트 리스너
   const handleCopyEmail = () => {
-    navigator.clipboard.writeText('univmatch@gmail.com');
+    navigator.clipboard.writeText('2026univmatch@gmail.com');
     toast.success('이메일 주소가 복사되었습니다!');
   };
 
@@ -197,7 +197,7 @@ export const IntegratedFAQSection = () => {
             </p>
             <div className="flex items-center gap-3 flex-wrap">
               <span className="text-sm sm:text-base font-mono text-blue-600 font-semibold cursor-pointer hover:text-blue-700 transition-colors" onClick={handleCopyEmail} title="클릭하여 복사">
-                univmatch@gmail.com
+                2026univmatch@gmail.com
               </span>
               <button
                 onClick={handleCopyEmail}
@@ -210,7 +210,7 @@ export const IntegratedFAQSection = () => {
                 복사
               </button>
               <a
-                href="mailto:univmatch@gmail.com"
+                href="mailto:2026univmatch@gmail.com"
                 className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors text-sm sm:text-base font-semibold"
               >
                 <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
