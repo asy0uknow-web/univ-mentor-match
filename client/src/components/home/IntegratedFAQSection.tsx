@@ -5,6 +5,7 @@ interface FAQItem {
   question: string;
   answer: string;
   category: "cost" | "safety" | "verification" | "general";
+  categoryLabel: string;
 }
 
 const FAQ_ITEMS: FAQItem[] = [
@@ -12,50 +13,57 @@ const FAQ_ITEMS: FAQItem[] = [
   {
     question: "상담료는 얼마인가요?",
     answer:
-      "상담료는 멘토마다 다르며, 각 멘토의 프로필 페이지에서 확인할 수 있습니다. 멘토가 직접 상담 유형별 가격을 설정하며, 유니브매치는 별도의 중개 수수료를 받지 않습니다.",
+      "상담료는 멘토가 본인의 경력과 상담 내용에 따라 직접 책정합니다. 유니브매치는 중간 수수료를 전혀 받지 않으므로, 타 플랫폼보다 합리적인 가격으로 명문대생의 노하우를 얻으실 수 있습니다.",
     category: "cost",
+    categoryLabel: "💰 [비용] 투명하고 정직한 운영",
   },
   {
     question: "환불은 어떻게 되나요?",
     answer:
-      "상담 예약 후 24시간 이내에 취소하면 100% 환불됩니다. 24시간 이후 취소는 50% 환불되며, 상담 시작 후 취소는 환불이 불가능합니다.",
+      "상담 시작 전에는 언제든 100% 환불이 가능합니다. 다만, 상담이 이미 진행되었거나 일정 확정 후 노쇼(No-show)가 발생한 경우 멘토의 시간을 보호하기 위해 자체 환불 규정에 따라 차등 환불됩니다.",
     category: "cost",
+    categoryLabel: "💰 [비용] 투명하고 정직한 운영",
   },
 
   // 검증 관련
   {
     question: "멘토는 정말 대학생인가요?",
     answer:
-      "네, 모든 멘토는 유효한 학생증을 제출하여 신원을 검증받습니다. 검증된 멘토만 플랫폼에서 활동할 수 있으며, 정기적으로 재검증을 진행합니다.",
+      "네, 100% 재학생 또는 졸업생입니다. 유니브매치는 **[1. 실물 학생증 확인], [2. 대학 공식 웹메일 인증], [3. 운영진 프로필 심사]**라는 까다로운 3단계 검증 프로세스를 통과한 분들만 멘토로 활동할 수 있습니다.",
     category: "verification",
+    categoryLabel: "✅ [검증] 믿을 수 있는 멘토진",
   },
 
   // 안전 관련
   {
     question: "개인정보는 안전한가요?",
     answer:
-      "네, 모든 개인정보는 암호화되어 안전하게 보관됩니다. 개인정보는 상담 진행에만 사용되며, 제3자와 공유되지 않습니다. 주민등록번호, 계좌 정보 등 민감한 개인정보는 절대 공유하지 마세요.",
+      "유니브매치는 사용자의 연락처나 주소 등 민감한 개인정보를 멘토에게 직접 노출하지 않습니다. 모든 상담 연결은 플랫폼 내 자체 채팅 시스템을 통해 이루어지며, 데이터는 암호화되어 안전하게 관리됩니다.",
     category: "safety",
+    categoryLabel: "🛡️ [안전] 안심하고 이용하는 환경",
   },
   {
     question: "상담 중 문제가 발생하면 어떻게 되나요?",
     answer:
-      "부적절한 행동이나 문제가 발생하면 즉시 고객센터에 신고할 수 있습니다. 온라인 상담은 안전한 플랫폼을 통해서만 진행되며, 오프라인 상담은 공공장소에서 진행하세요. 모든 결제는 안전한 결제 시스템을 통해 진행되며, 직거래는 절대 금지입니다.",
+      "상담 중 불쾌한 언행, 사기 유도, 규정 위반 등이 발생할 경우 채팅창 내 '신고하기' 버튼을 눌러주세요. 운영진이 즉시 개입하여 사실 관계를 확인하며, 위반 사항 발견 시 해당 멘토의 활동은 영구 정지됩니다.",
     category: "safety",
+    categoryLabel: "🛡️ [안전] 안심하고 이용하는 환경",
   },
 
   // 일반 질문
   {
     question: "상담 후 만족하지 않으면 어떻게 되나요?",
     answer:
-      "상담 후 만족하지 않으면 고객센터에 문의하세요. 상담 내용을 검토한 후 환불 또는 다른 멘토와의 재상담을 제안해드립니다.",
+      "유니브매치는 100% 리뷰 시스템을 운영합니다. 상담에 대한 솔직한 피드백을 남겨주시면 다른 멘티들에게 큰 도움이 됩니다. 만약 서비스 규정을 어긴 불량 상담이었다면 운영진 심사를 통해 적절한 조치를 도와드립니다.",
     category: "general",
+    categoryLabel: "❓ [일반] 서비스 이용 및 기대 효과",
   },
   {
     question: "성적 향상을 보장하나요?",
     answer:
-      "성적 향상은 학생의 노력과 실천이 가장 중요합니다. 우리의 멘토들은 진로 선택, 학습 방법, 대학 정보 등을 제공하여 학생이 올바른 결정을 내릴 수 있도록 돕습니다.",
+      "유니브매치는 단순한 과외 연결을 넘어, 공부 방법과 진로 고민을 해결해 주는 '러닝 메이트'를 지향합니다. 멘토의 노하우를 본인의 것으로 만드는 노력과 병행한다면, 반드시 긍정적인 변화를 경험하실 수 있습니다.",
     category: "general",
+    categoryLabel: "❓ [일반] 서비스 이용 및 기대 효과",
   },
 ];
 
@@ -67,14 +75,21 @@ const CATEGORY_LABELS: Record<string, string> = {
 };
 
 export const IntegratedFAQSection = () => {
-  const [expandedIndex, setExpandedIndex] = useState<number | null>(0);
+  const [expandedIndex, setExpandedIndex] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   const filteredFAQs = selectedCategory
     ? FAQ_ITEMS.filter((item) => item.category === selectedCategory)
     : FAQ_ITEMS;
 
-  const categories = ["cost", "safety", "verification", "general"];
+  const categories = ["cost", "verification", "safety", "general"];
+  
+  // 카테고리별로 그룹화
+  const groupedFAQs = categories.map(category => ({
+    category,
+    label: FAQ_ITEMS.find(item => item.category === category)?.categoryLabel || "",
+    items: FAQ_ITEMS.filter(item => item.category === category)
+  }));
 
   return (
     <section
@@ -90,111 +105,91 @@ export const IntegratedFAQSection = () => {
             🛡️ 안전하고 투명한 서비스
           </span>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-4">
-            자주 묻는 질문 & 안전 가이드
+            자주 묻는 질문
           </h2>
           <p className="text-lg sm:text-xl text-muted-foreground">
-            학부모님과 학생들이 궁금해하는 모든 것을 답변해드립니다.
+            학생과 학부모님들이 궁금해하는 모든 것을 답변해드립니다.
           </p>
         </div>
 
-        {/* Category Filter */}
-        <div className="max-w-3xl mx-auto mb-12 sm:mb-16">
-          <div className="flex flex-wrap justify-center gap-2 sm:gap-3">
-            <button
-              onClick={() => setSelectedCategory(null)}
-              className={`px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm rounded-full font-semibold transition-all ${
-                selectedCategory === null
-                  ? "bg-blue-600 text-white shadow-lg"
-                  : "bg-white text-foreground border border-gray-300 hover:border-blue-600"
-              }`}
-            >
-              전체 보기
-            </button>
-            {categories.map((category) => (
-              <button
-                key={category}
-                onClick={() => setSelectedCategory(category)}
-                className={`px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm rounded-full font-semibold transition-all ${
-                  selectedCategory === category
-                    ? "bg-blue-600 text-white shadow-lg"
-                    : "bg-white text-foreground border border-gray-300 hover:border-blue-600"
-                }`}
-              >
-                {CATEGORY_LABELS[category]}
-              </button>
-            ))}
-          </div>
+        {/* FAQ by Category */}
+        <div className="max-w-4xl mx-auto space-y-12 sm:space-y-16">
+          {groupedFAQs.map((group, groupIdx) => (
+            <div key={group.category} className="space-y-4">
+              {/* Category Header */}
+              <div className="mb-6 pb-4 border-b-2 border-gray-200">
+                <h3 className="text-xl sm:text-2xl font-bold text-foreground">
+                  {group.label}
+                </h3>
+              </div>
+
+              {/* FAQ Items in Category */}
+              <div className="space-y-4">
+                {group.items.map((faq, idx) => (
+                  <div
+                    key={`${group.category}-${idx}`}
+                    className="bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden"
+                  >
+                    {/* Question */}
+                    <button
+                      onClick={() => setExpandedIndex(expandedIndex === `${group.category}-${idx}` ? null : `${group.category}-${idx}`)}
+                      className="w-full px-4 sm:px-6 md:px-8 py-4 sm:py-5 text-left hover:bg-gray-50 transition-colors flex items-start justify-between gap-4"
+                      aria-expanded={expandedIndex === `${group.category}-${idx}`}
+                      aria-controls={`faq-answer-${group.category}-${idx}`}
+                    >
+                      <div className="flex-1 min-w-0">
+                        <h4 className="text-sm sm:text-base md:text-lg font-semibold text-foreground">
+                          Q. {faq.question}
+                        </h4>
+                      </div>
+                      <div className="flex-shrink-0 mt-1">
+                        <svg
+                          className={`w-5 h-5 sm:w-6 sm:h-6 text-primary transition-transform duration-300 ${
+                            expandedIndex === `${group.category}-${idx}` ? "rotate-180" : ""
+                          }`}
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M19 14l-7 7m0 0l-7-7m7 7V3"
+                          />
+                        </svg>
+                      </div>
+                    </button>
+
+                    {/* Answer */}
+                    {expandedIndex === `${group.category}-${idx}` && (
+                      <div
+                        id={`faq-answer-${group.category}-${idx}`}
+                        className="px-4 sm:px-6 md:px-8 py-4 sm:py-5 bg-gradient-to-r from-blue-50 to-transparent border-t border-gray-200"
+                      >
+                        <p className="text-xs sm:text-sm md:text-base text-muted-foreground leading-relaxed whitespace-pre-wrap">
+                          A. {faq.answer}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
         </div>
 
-        {/* FAQ Accordion */}
-        <div className="max-w-3xl mx-auto">
-          <div className="space-y-4">
-            {filteredFAQs.map((faq, idx) => (
-              <div
-                key={idx}
-                className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-300"
-              >
-                {/* Question */}
-                <button
-                  onClick={() => setExpandedIndex(expandedIndex === idx ? null : idx)}
-                  className="w-full px-4 sm:px-6 md:px-8 py-3 sm:py-4 md:py-5 text-left flex items-center justify-between hover:bg-gray-50 transition-colors"
-                  aria-expanded={expandedIndex === idx}
-                  aria-controls={`faq-answer-${idx}`}
-                >
-                  <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
-                    <span className="text-lg sm:text-xl flex-shrink-0">{CATEGORY_LABELS[faq.category].split(" ")[0]}</span>
-                    <h3 className="text-sm sm:text-base md:text-lg font-semibold text-foreground line-clamp-2">
-                      {faq.question}
-                    </h3>
-                  </div>
-                  <div className="flex-shrink-0">
-                    <svg
-                      className={`w-5 h-5 sm:w-6 sm:h-6 text-primary transition-transform duration-300 ${
-                        expandedIndex === idx ? "rotate-180" : ""
-                      }`}
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M19 14l-7 7m0 0l-7-7m7 7V3"
-                      />
-                    </svg>
-                  </div>
-                </button>
-
-                {/* Answer */}
-                {expandedIndex === idx && (
-                  <div
-                    id={`faq-answer-${idx}`}
-                    className="px-4 sm:px-6 md:px-8 py-3 sm:py-4 md:py-5 bg-gray-50 border-t border-gray-200"
-                  >
-                    <p className="text-xs sm:text-sm md:text-base text-muted-foreground leading-relaxed">
-                      {faq.answer}
-                    </p>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-
-
-
-          {/* More Questions */}
-          <div className="mt-12 sm:mt-16 text-center">
-            <p className="text-base sm:text-lg text-muted-foreground mb-4">
-              더 궁금한 점이 있으신가요?
-            </p>
-            <a
-              href="mailto:support@univmatch.com"
-              className="inline-block text-primary font-semibold hover:underline text-base sm:text-lg"
-            >
-              고객센터에 문의하기 →
-            </a>
-          </div>
+        {/* More Questions */}
+        <div className="mt-12 sm:mt-16 text-center max-w-4xl mx-auto">
+          <p className="text-base sm:text-lg text-muted-foreground mb-4">
+            더 궁금한 점이 있으신가요?
+          </p>
+          <a
+            href="mailto:support@univmatch.com"
+            className="inline-block text-primary font-semibold hover:underline text-base sm:text-lg"
+          >
+            고객센터에 문의하기 →
+          </a>
         </div>
       </div>
     </section>
