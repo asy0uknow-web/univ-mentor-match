@@ -104,10 +104,10 @@ export default function SafetyGuideModal({ isOpen, onClose }: SafetyGuideModalPr
         </div>
 
         {/* Footer */}
-        <div className="bg-gray-50 px-6 sm:px-8 py-6 border-t border-gray-200 flex gap-3 justify-end">
+        <div className="bg-gray-50 px-6 sm:px-8 py-6 border-t border-gray-200 flex gap-3 justify-end items-center">
           <button
             onClick={onClose}
-            className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors text-sm sm:text-base"
+            className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors text-sm sm:text-base flex items-center justify-center h-10"
           >
             닫기
           </button>
