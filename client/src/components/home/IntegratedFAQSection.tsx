@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Shield, AlertCircle } from "lucide-react";
+import { toast } from "sonner";
 
 interface FAQItem {
   question: string;
@@ -77,6 +78,12 @@ const CATEGORY_LABELS: Record<string, string> = {
 export const IntegratedFAQSection = () => {
   const [expandedIndex, setExpandedIndex] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+
+  // 이메일 복사 이벤트 리스너
+  const handleCopyEmail = () => {
+    navigator.clipboard.writeText('univmatch@gmail.com');
+    toast.success('이메일 주소가 복사되었습니다!');
+  };
 
   const filteredFAQs = selectedCategory
     ? FAQ_ITEMS.filter((item) => item.category === selectedCategory)
@@ -179,17 +186,40 @@ export const IntegratedFAQSection = () => {
           ))}
         </div>
 
-        {/* More Questions */}
-        <div className="mt-12 sm:mt-16 text-center max-w-4xl mx-auto">
-          <p className="text-base sm:text-lg text-muted-foreground mb-4">
-            더 궁금한 점이 있으신가요?
-          </p>
-          <a
-            href="mailto:support@univmatch.com"
-            className="inline-block text-primary font-semibold hover:underline text-base sm:text-lg"
-          >
-            고객센터에 문의하기 →
-          </a>
+        {/* More Questions - Email Contact Section */}
+        <div className="mt-12 sm:mt-16 max-w-4xl mx-auto">
+          <div className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl p-6 sm:p-8 md:p-10 border border-blue-200">
+            <p className="text-base sm:text-lg text-foreground font-semibold mb-4">
+              더 궁금한 점이 있으신가요?
+            </p>
+            <p className="text-sm sm:text-base text-muted-foreground mb-6">
+              아래 이메일로 문의해 주세요. 평일 기준 24시간 이내에 운영진이 직접 답변해 드립니다.
+            </p>
+            <div className="flex items-center gap-3 flex-wrap">
+              <span className="text-sm sm:text-base font-mono bg-white px-4 py-2 rounded-lg border border-blue-300 text-foreground">
+                univmatch@gmail.com
+              </span>
+              <button
+                onClick={handleCopyEmail}
+                className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors text-sm sm:text-base font-semibold"
+                title="이메일 주소 복사"
+              >
+                <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                </svg>
+                복사
+              </button>
+              <a
+                href="mailto:univmatch@gmail.com"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors text-sm sm:text-base font-semibold"
+              >
+                <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+                메일 보내기
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </section>
