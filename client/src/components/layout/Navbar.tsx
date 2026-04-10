@@ -28,7 +28,6 @@ const AUTHENTICATED_MENU = [
 const DROPDOWN_MENU = [
   { href: "/my-profile", label: "내 프로필" },
   { href: "/notifications", label: "알림" },
-  { href: "/qna", label: "Q&A" },
   { href: "/columns", label: "멘토 칼럼" },
 ] as const;
 
