@@ -1,10 +1,10 @@
-import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { trpc } from "@/lib/trpc";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
+import { useAuth } from "@/_core/hooks/useAuth";
 import { ShieldCheck, ShieldAlert, Clock, Upload, X, Loader2, ArrowLeft, Shield, AlertTriangle } from "lucide-react";
 import { useState } from "react";
 import { getLoginUrl } from "@/const";
@@ -13,7 +13,30 @@ import { PageLayout } from "@/components/layout";
 
 export default function VerifyMentor() {
   const { isAuthenticated } = useAuth();
+  const [, setLocation] = useLocation();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+  if (!isAuthenticated) {
+    return (
+      <PageLayout>
+        <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-12 flex items-center justify-center min-h-[60vh]">
+          <Card className="w-full max-w-md">
+            <CardHeader>
+              <CardTitle className="text-lg sm:text-xl">로그인이 필요합니다</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Button 
+                onClick={() => setLocation('/login')}
+                className="w-full text-xs sm:text-sm h-9 sm:h-10"
+              >
+                로그인
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      </PageLayout>
+    );
+  }
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [dragActive, setDragActive] = useState(false);
 

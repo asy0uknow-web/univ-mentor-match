@@ -14,6 +14,10 @@ export default function MyProfile() {
 
   const { user, isAuthenticated } = useAuth();
 
+  if (!isAuthenticated) {
+    return null; // MentorProfile 또는 StudentProfile에서 처리됨
+  }
+
   // 멘티 (고등학생)
   if (user?.userType === "high_school_student") {
     return <StudentProfile />;

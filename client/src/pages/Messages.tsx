@@ -442,8 +442,30 @@ function StatusBanner({ statusData }: { statusData: any }) {
 
 // ===== 메인 Messages 컴포넌트 =====
 export function Messages() {
+  const [location, setLocation] = useLocation();
   const { user, isAuthenticated } = useAuth();
-  const [location] = useLocation();
+
+  if (!isAuthenticated) {
+    return (
+      <PageLayout>
+        <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-12 flex items-center justify-center min-h-[60vh]">
+          <Card className="w-full max-w-md">
+            <CardHeader>
+              <CardTitle className="text-lg sm:text-xl">로그인이 필요합니다</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Button 
+                onClick={() => setLocation('/login')}
+                className="w-full text-xs sm:text-sm h-9 sm:h-10"
+              >
+                로그인
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      </PageLayout>
+    );
+  }
   const [messageContent, setMessageContent] = useState("");
   const [selectedConversation, setSelectedConversation] = useState<number | null>(null);
   const [mentorProfileId, setMentorProfileId] = useState<string | null>(null);

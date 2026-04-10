@@ -1,4 +1,3 @@
-import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -7,7 +6,8 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { trpc } from "@/lib/trpc";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
+import { useAuth } from "@/_core/hooks/useAuth";
 import {
   ShieldCheck, ShieldAlert, Search, CheckCircle, XCircle, Clock,
   Edit, Trash2, Bug, Users, AlertTriangle, Loader2, GraduationCap,
@@ -22,6 +22,29 @@ import { PageLayout } from "@/components/layout";
 
 export default function AdminDashboard() {
   const { user, isAuthenticated } = useAuth();
+  const [, setLocation] = useLocation();
+
+  if (!isAuthenticated || user?.role !== "admin") {
+    return (
+      <PageLayout>
+        <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-12 flex items-center justify-center min-h-[60vh]">
+          <Card className="w-full max-w-md">
+            <CardHeader>
+              <CardTitle className="text-lg sm:text-xl">접근 권한이 없습니다</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Button 
+                onClick={() => setLocation('/')}
+                className="w-full text-xs sm:text-sm h-9 sm:h-10"
+              >
+                홈으로 이동
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      </PageLayout>
+    );
+  }
   const [searchQuery, setSearchQuery] = useState("");
   const [editingMentor, setEditingMentor] = useState<any>(null);
   const [rejectingId, setRejectingId] = useState<number | null>(null);
