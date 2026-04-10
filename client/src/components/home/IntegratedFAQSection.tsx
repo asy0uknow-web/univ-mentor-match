@@ -196,7 +196,7 @@ export const IntegratedFAQSection = () => {
               아래 이메일로 문의해 주세요. 평일 기준 24시간 이내에 운영진이 직접 답변해 드립니다.
             </p>
             <div className="flex items-center gap-3 flex-wrap">
-              <span className="text-sm sm:text-base font-mono bg-white px-4 py-2 rounded-lg border border-blue-300 text-foreground">
+              <span className="text-sm sm:text-base font-mono text-blue-600 font-semibold cursor-pointer hover:text-blue-700 transition-colors" onClick={handleCopyEmail} title="클릭하여 복사">
                 univmatch@gmail.com
               </span>
               <button
