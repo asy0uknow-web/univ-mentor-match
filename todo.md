@@ -545,6 +545,7 @@
 - [ ] TypeScript 에러 없이 빌드 확인
 - [ ] 기존 테스트 통과 확인
 - [ ] 리팩토링 전/후 비교 보고서 작성
+- [x] MyProfile 페이지 "멘토 프로필 수정" → "내 프로필" 텍스트 변경
 
 ## 웹페이지 메타 태그 개편 (pt 1.0 → pt 1.1 - 카톡 공유 최적화)
 - [x] index.html 메타 태그 개편 (og:title, og:description, og:image, twitter card)

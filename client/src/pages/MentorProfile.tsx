@@ -327,7 +327,7 @@ export default function MentorProfile() {
                   <GraduationCap className="h-4 w-4 sm:h-5 sm:w-5 text-green-600" />
                 </div>
                 <h1 className="text-xl sm:text-3xl font-bold text-gray-900 truncate">
-                  {profile ? "멘토 프로필 수정" : "멘토로 등록하기"}
+                  {profile ? "내 프로필" : "멘토로 등록하기"}
                 </h1>
               </div>
               <p className="text-gray-500 text-xs sm:text-sm ml-10 sm:ml-13 pl-1">
