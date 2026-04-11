@@ -132,28 +132,6 @@ function EndReasonModal({
 export default function Bookings() {
   const { user, isAuthenticated } = useAuth();
   const [location, setLocation] = useLocation();
-
-  if (!isAuthenticated) {
-    return (
-      <PageLayout>
-        <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-12 flex items-center justify-center min-h-[60vh]">
-          <Card className="w-full max-w-md">
-            <CardHeader>
-              <CardTitle className="text-lg sm:text-xl">로그인이 필요합니다</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Button 
-                onClick={() => setLocation('/login')}
-                className="w-full text-xs sm:text-sm h-9 sm:h-10"
-              >
-                로그인
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-      </PageLayout>
-    );
-  }
   const [endModalOpen, setEndModalOpen] = useState(false);
   const [selectedBookingId, setSelectedBookingId] = useState<number | null>(null);
   const [endType, setEndType] = useState<'early' | 'late' | 'normal'>('normal');
@@ -165,13 +143,18 @@ export default function Bookings() {
     setPageMeta(PAGE_META.bookings);
   }, []);
 
+  // 멘토 여부 판단: role이 mentor이거나 userType이 university_student인 경우
+  const isMentorUser = isAuthenticated && (user?.role === "mentor" || user?.userType === "university_student");
+  // 멘티 여부 판단: role이 user이고 userType이 high_school_student인 경우 (또는 university_student가 아닌 경우)
+  const isStudentUser = isAuthenticated && !isMentorUser;
+
   const { data: bookings, isLoading: bookingsLoading, refetch: refetchBookings } = trpc.booking.getMyBookings.useQuery(undefined, {
-    enabled: isAuthenticated && user?.userType === "high_school_student",
+    enabled: isStudentUser,
     refetchInterval: 10000, // 10초마다 자동 갱신
   });
 
   const { data: mentorBookings, isLoading: mentorBookingsLoading, refetch: refetchMentorBookings } = trpc.mentor.getMyBookings.useQuery(undefined, {
-    enabled: isAuthenticated && user?.userType === "university_student",
+    enabled: isMentorUser,
     refetchInterval: 10000,
   });
 
@@ -334,7 +317,7 @@ export default function Bookings() {
   };
 
   // 학생(멘티) 역할
-  if (user?.userType === "high_school_student") {
+  if (isStudentUser) {
     return (
       <PageLayout>
         <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-12">
@@ -353,10 +336,11 @@ export default function Bookings() {
                 const durationMs = parseFloat(item.booking.duration.toString()) * 60 * 60 * 1000;
                 const scheduledEnd = new Date(scheduledAt.getTime() + durationMs);
                 const fiveMinutesMs = 5 * 60 * 1000;
+                const startWindowMs = 60 * 60 * 1000; // 상담 시작 가능 창: 예정 시간 ±60분
 
                 const canStart = item.booking.status === "confirmed" &&
                   now >= new Date(scheduledAt.getTime() - fiveMinutesMs) &&
-                  now <= new Date(scheduledAt.getTime() + fiveMinutesMs) &&
+                  now <= new Date(scheduledAt.getTime() + startWindowMs) &&
                   !item.booking.studentStartedAt; // 아직 시작 안 한 경우만
 
                 const alreadyStarted = item.booking.status === "confirmed" && !!item.booking.studentStartedAt;
@@ -542,10 +526,11 @@ export default function Bookings() {
               const durationMs = parseFloat(item.booking.duration.toString()) * 60 * 60 * 1000;
               const scheduledEnd = new Date(scheduledAt.getTime() + durationMs);
               const fiveMinutesMs = 5 * 60 * 1000;
+              const startWindowMs = 60 * 60 * 1000; // 상담 시작 가능 창: 예정 시간 ±60분
 
               const canStart = item.booking.status === "confirmed" &&
                 now >= new Date(scheduledAt.getTime() - fiveMinutesMs) &&
-                now <= new Date(scheduledAt.getTime() + fiveMinutesMs) &&
+                now <= new Date(scheduledAt.getTime() + startWindowMs) &&
                 !item.booking.mentorStartedAt;
 
               const alreadyStarted = item.booking.status === "confirmed" && !!item.booking.mentorStartedAt;

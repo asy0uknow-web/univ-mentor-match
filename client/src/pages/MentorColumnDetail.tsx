@@ -20,46 +20,27 @@ export default function MentorColumnDetail() {
   const [replyContent, setReplyContent] = useState("");
   const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
   const [editingCommentContent, setEditingCommentContent] = useState("");
+  const [viewCounted, setViewCounted] = useState(false);
 
-  if (!match) {
-    return (
-      <PageLayout>
-        <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-12">
-          <Button
-            variant="ghost"
-            onClick={() => setLocation("/columns")}
-            className="mb-4 text-xs sm:text-sm"
-          >
-            <ArrowLeft className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-            돌아가기
-          </Button>
-          <Card>
-            <CardContent className="py-8 sm:py-12 text-center">
-              <p className="text-xs sm:text-sm text-muted-foreground">칼럼을 찾을 수 없습니다</p>
-            </CardContent>
-          </Card>
-        </div>
-      </PageLayout>
-    );
-  }
+  // match가 없을 때도 훈은 항상 실행되어야 함 (React 훈 규칙)
+  const columnId = match ? parseInt(params!.id) : 0;
 
-  const columnId = parseInt(params!.id);
-
-  const { data: column, isLoading } = trpc.mentorColumns.getById.useQuery({
-    columnId,
-  });
+  const { data: column, isLoading } = trpc.mentorColumns.getById.useQuery(
+    { columnId },
+    { enabled: !!match && columnId > 0 }
+  );
 
   const incrementViewMutation = trpc.mentorColumns.incrementViewCount.useMutation();
 
-  const [viewCounted, setViewCounted] = useState(false);
   if (column && !viewCounted) {
     setViewCounted(true);
     incrementViewMutation.mutate({ columnId });
   }
 
-  const { data: comments } = trpc.mentorColumns.getComments.useQuery({
-    columnId,
-  });
+  const { data: comments } = trpc.mentorColumns.getComments.useQuery(
+    { columnId },
+    { enabled: !!match && columnId > 0 }
+  );
 
   const toggleLikeMutation = trpc.mentorColumns.toggleLike.useMutation({
     onSuccess: () => {

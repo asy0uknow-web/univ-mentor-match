@@ -107,7 +107,7 @@ export default function MentorColumnCreate() {
     );
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = (submitStatus: "draft" | "published" = status) => {
     // 유효성 검사
     if (!title.trim()) {
       toast.error("제목을 입력해주세요");
@@ -136,7 +136,7 @@ export default function MentorColumnCreate() {
       category,
       excerpt: excerpt || content.substring(0, 200),
       coverImageUrl: coverImageUrl || undefined,
-      status,
+      status: submitStatus,
     });
   };
 
@@ -318,8 +318,7 @@ export default function MentorColumnCreate() {
                   </Button>
                   <Button
                     onClick={() => {
-                      setStatus("published");
-                      handleSubmit();
+                      handleSubmit("published");
                     }}
                     disabled={createMutation.isPending}
                     className="flex-1 gap-2"
