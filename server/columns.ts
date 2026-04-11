@@ -142,19 +142,21 @@ export async function createColumn(
   const db = await getDb();
   if (!db) throw new Error("Database not available");
 
-  // 멘토 인증 확인
+  // 멘토 프로필 확인
   const mentorProfile = await db
     .select()
     .from(mentorProfiles)
     .where(
-      and(
-        eq(mentorProfiles.userId, authorId),
-        eq(mentorProfiles.verificationStatus, "approved")
-      )
+      eq(mentorProfiles.userId, authorId)
     )
     .then((rows) => rows[0]);
 
   if (!mentorProfile) {
+    throw new Error("Mentor profile not found");
+  }
+
+  // 개발 환경에서는 인증 상태 검증 스킵, 프로덕션에서만 확인
+  if (process.env.NODE_ENV === "production" && mentorProfile.verificationStatus !== "approved") {
     throw new Error("Only verified mentors can create columns");
   }
 

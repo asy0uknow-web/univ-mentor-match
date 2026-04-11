@@ -32,9 +32,33 @@ const COLUMN_CATEGORIES = [
 ];
 
 export default function MentorColumnCreate() {
+  // 모든 훅을 조건부 return 이전에 선언 (React 훅 규칙)
   const [, setLocation] = useLocation();
   const { user, isAuthenticated } = useAuth();
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const [category, setCategory] = useState("");
+  const [excerpt, setExcerpt] = useState("");
+  const [coverImageUrl, setCoverImageUrl] = useState("");
+  const [status, setStatus] = useState<"draft" | "published">("draft");
+  const [isPreview, setIsPreview] = useState(false);
 
+  const createMutation = trpc.mentorColumns.create.useMutation({
+    onSuccess: (data: any) => {
+      toast.success("칼럼이 작성되었습니다");
+      setLocation(`/columns/${data.id}`);
+    },
+    onError: (error: any) => {
+      toast.error(`오류: ${error.message}`);
+    },
+  });
+
+  setPageMeta({
+    title: "칼럼 작성 | 유니브매치",
+    description: "멘토 칼럼을 작성해보세요",
+  });
+
+  // 조건부 렌더링 (return 제거)
   if (!isAuthenticated) {
     return (
       <PageLayout>
@@ -56,18 +80,6 @@ export default function MentorColumnCreate() {
       </PageLayout>
     );
   }
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const [category, setCategory] = useState("");
-  const [excerpt, setExcerpt] = useState("");
-  const [coverImageUrl, setCoverImageUrl] = useState("");
-  const [status, setStatus] = useState<"draft" | "published">("draft");
-  const [isPreview, setIsPreview] = useState(false);
-
-  setPageMeta({
-    title: "칼럼 작성 | 유니브매치",
-    description: "멘토 칼럼을 작성해보세요",
-  });
 
   // 멘토 역할 확인
   if (user?.role !== "mentor") {
@@ -94,16 +106,6 @@ export default function MentorColumnCreate() {
       </PageLayout>
     );
   }
-
-  const createMutation = trpc.mentorColumns.create.useMutation({
-    onSuccess: (data: any) => {
-      toast.success("칼럼이 작성되었습니다");
-      setLocation(`/columns/${data.id}`);
-    },
-    onError: (error: any) => {
-      toast.error(`오류: ${error.message}`);
-    },
-  });
 
   const handleSubmit = () => {
     // 유효성 검사
@@ -183,8 +185,14 @@ export default function MentorColumnCreate() {
                   >
                     편집으로 돌아가기
                   </Button>
-                  <Button onClick={handleSubmit} disabled={createMutation.isPending}>
-                    {createMutation.isPending ? "작성 중..." : "칼럼 발행"}
+                  <Button 
+                    onClick={() => {
+                      setStatus("published");
+                      handleSubmit();
+                    }} 
+                    disabled={createMutation.isPending}
+                  >
+                    {createMutation.isPending ? "발행 중..." : "칼럼 발행"}
                   </Button>
                 </div>
               </CardContent>
@@ -309,12 +317,15 @@ export default function MentorColumnCreate() {
                     미리보기
                   </Button>
                   <Button
-                    onClick={handleSubmit}
+                    onClick={() => {
+                      setStatus("published");
+                      handleSubmit();
+                    }}
                     disabled={createMutation.isPending}
                     className="flex-1 gap-2"
                   >
                     <Save className="h-4 w-4" />
-                    {createMutation.isPending ? "작성 중..." : "작성"}
+                    {createMutation.isPending ? "발행 중..." : "발행"}
                   </Button>
                 </div>
               </CardContent>
