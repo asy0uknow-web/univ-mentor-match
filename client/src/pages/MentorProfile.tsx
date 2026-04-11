@@ -446,6 +446,16 @@ export default function MentorProfile() {
                         <p className="font-semibold text-gray-900">{profile?.major || "-"}</p>
                       </div>
                     </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <p className="text-sm text-gray-600">학년</p>
+                        <p className="font-semibold text-gray-900">{profile?.grade || "-"}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-600">상담가능지역</p>
+                        <p className="font-semibold text-gray-900">{profile?.region || "-"}</p>
+                      </div>
+                    </div>
                     <div>
                       <p className="text-sm text-gray-600">자기소개</p>
                       <p className="font-semibold text-gray-900">{profile?.bio || "-"}</p>
