@@ -93,6 +93,21 @@ export default function MentorProfile() {
     enabled: isAuthenticated,
   });
 
+  // 수정 모드 진입 시 기존 값으로 폼 초기화
+  useEffect(() => {
+    if (isEditingProfile && profile) {
+      setUniversity(profile.university || "");
+      setMajor(profile.major || "");
+      setGrade(profile.grade || "1");
+      setBio(profile.bio || "");
+      setRegions(profile.region ? [profile.region] : []);
+      // 상담 유형은 myConsultationTypes에서 가져옴
+      if (myConsultationTypes && myConsultationTypes.length > 0) {
+        setConsultationTypes(myConsultationTypes.map((t: any) => t.consultationType));
+      }
+    }
+  }, [isEditingProfile, profile, myConsultationTypes]);
+
   const updateConsultationTypesMutation = trpc.mentor.updateConsultationTypes.useMutation({
     onSuccess: () => {
       toast.success("상담 유형이 업데이트되었습니다");
@@ -368,7 +383,16 @@ export default function MentorProfile() {
 
                     <div className="flex gap-2 pt-4">
                       <Button
-                        onClick={() => setIsEditingProfile(false)}
+                        onClick={() => {
+                          setIsEditingProfile(false);
+                          // 폼 초기화
+                          setUniversity("");
+                          setMajor("");
+                          setGrade("1");
+                          setBio("");
+                          setRegions([]);
+                          setConsultationTypes([]);
+                        }}
                         variant="outline"
                         size="sm"
                         className="flex-1"
