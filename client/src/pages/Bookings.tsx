@@ -393,6 +393,16 @@ export default function Bookings() {
                         </div>
                       )}
 
+                      {/* 상담 시작 가능 시간 안내 */}
+                      {item.booking.status === "confirmed" && (
+                        <div className="p-2 sm:p-3 bg-blue-50 rounded-lg border border-blue-100 mb-3">
+                          <p className="text-xs font-semibold text-blue-700 mb-1">상담 시작 가능 시간</p>
+                          <p className="text-xs sm:text-sm text-blue-600">
+                            {format(new Date(scheduledAt.getTime() - fiveMinutesMs), "HH:mm", { locale: ko })} ~ {format(new Date(scheduledAt.getTime() + startWindowMs), "HH:mm", { locale: ko })}
+                          </p>
+                        </div>
+                      )}
+
                       {/* 상담 진행 상태 표시 */}
                       <ConsultationStatusInfo booking={item.booking} isStudent={true} />
 
@@ -586,6 +596,16 @@ export default function Bookings() {
                         <div className="p-2 sm:p-3 bg-muted rounded-lg">
                           <p className="text-xs text-muted-foreground mb-1">멘티 메시지</p>
                           <p className="text-xs sm:text-sm whitespace-pre-wrap line-clamp-3">{item.booking.studentMessage}</p>
+                        </div>
+                      )}
+
+                      {/* 상담 시작 가능 시간 안내 */}
+                      {item.booking.status === "confirmed" && (
+                        <div className="p-2 sm:p-3 bg-blue-50 rounded-lg border border-blue-100">
+                          <p className="text-xs font-semibold text-blue-700 mb-1">상담 시작 가능 시간</p>
+                          <p className="text-xs sm:text-sm text-blue-600">
+                            {format(new Date(scheduledAt.getTime() - fiveMinutesMs), "HH:mm", { locale: ko })} ~ {format(new Date(scheduledAt.getTime() + startWindowMs), "HH:mm", { locale: ko })}
+                          </p>
                         </div>
                       )}
 
