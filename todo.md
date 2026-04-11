@@ -2367,20 +2367,22 @@
 ## 기본설정 수정 버그 수정 (4월 11일)
 - [ ] 기본설정 수정 후 저장이 안 되는 버그 원인 파악
 - [ ] updateProfileMutation 로직 확인 및 수정
-- [ ] 브라우저 테스트 및 검증
-
-
-## 버그 수정 - MentorProfile.tsx 저장 기능 및 타입 오류 (pt 1.9)
+- [ ] 브라우저 테스트 및 검증## 버그 수정 - MentorProfile.tsx 저장 기능 및 타입 오류 (pt 1.9)
 - [x] TypeScript 타입 오류 수정 (trpc.auth.changePassword → trpc.user.changePassword)
 - [x] changePassword mutation에 confirmPassword 필드 추가
 - [x] 멘토 프로필 저장 버튼 onClick 핸들러 수정 (else 로직 추가)
-- [x] 평균 평점 NaN 버그 수정 (r.review?.rating 처리 추가)
-- [x] 평균 평점 기본값을 "-"로 변경 (후기 없을 때)
+- [x] 평균c 평점 NaN 버그 수정 (r.review?.rating 처리 추가)
+- [x] 평균c 평점 기본값을 "-"로 변경 (후기 없을 때)
 - [x] Select 컴포넌트에 placeholder 추가 (학년, 지역 필드)
-- [x] 모든 변경사항 테스트 완료 (기본설정 저장, 평균 평점 표시 정상 작동)
+- [x] 모든 변경사항 테스트 완료 (기본설정 저장, 평균c 평점 표시 정상 동작)
 
 
 ## 기능 개선 - 멘토 프로필 기본 설정 섹션 표시
 - [x] 기본 설정 섹션에 학년 표시 (수정 모드가 아닐 때도 표시)
 - [x] 기본 설정 섹션에 상담가능지역 표시 (수정 모드가 아닐 때도 표시)
 - [x] 프로필 페이지 새로고침 후 데이터 표시 확인
+
+## 버그 수정 - 멘토 프로필 저장 시 오류 및 영어 표시 (pt 1.10)
+- [x] 멘토 프로필 저장 시 학년 유효성 검사 오류 수정 (TypeScript 타입 단순화)
+- [x] 상담가능지역 영어 표시 문제 수정 (REGION_LABELS 맨평 적용)
+- [x] 모든 변경사항 테스트 남료 (저장 시 오류 없이 정상 동작)

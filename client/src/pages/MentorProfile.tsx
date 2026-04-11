@@ -52,9 +52,9 @@ export default function MentorProfile() {
 
   const [university, setUniversity] = useState("");
   const [major, setMajor] = useState("");
-  const [grade, setGrade] = useState<"1" | "2" | "3" | "4" | "graduate">("1");
+  const [grade, setGrade] = useState<string>("1");
   const [bio, setBio] = useState("");
-  const [regions, setRegions] = useState<Array<"seoul" | "gyeonggi" | "incheon" | "gangwon" | "chungcheong" | "jeolla" | "gyeongsang" | "jeju">>([]);
+  const [regions, setRegions] = useState<Array<string>>([]);
   const [dragActive, setDragActive] = useState(false);
   const [uploadedImages, setUploadedImages] = useState<Array<{ url: string; caption: string }>>([]);
   const [isUploading, setIsUploading] = useState(false);
@@ -408,9 +408,9 @@ export default function MentorProfile() {
                           const payload = {
                             university,
                             major,
-                            grade,
+                            grade: grade as "1" | "2" | "3" | "4" | "graduate",
                             bio,
-                            region: selectedRegion,
+                            region: selectedRegion as "seoul" | "gyeonggi" | "incheon" | "gangwon" | "chungcheong" | "jeolla" | "gyeongsang" | "jeju",
                             hourlyRate: "50000",
                           };
 
@@ -451,10 +451,10 @@ export default function MentorProfile() {
                         <p className="text-sm text-gray-600">학년</p>
                         <p className="font-semibold text-gray-900">{profile?.grade || "-"}</p>
                       </div>
-                      <div>
-                        <p className="text-sm text-gray-600">상담가능지역</p>
-                        <p className="font-semibold text-gray-900">{profile?.region || "-"}</p>
-                      </div>
+                    <div>
+                      <p className="text-sm text-gray-600">상담가능지역</p>
+                      <p className="font-semibold text-gray-900">{profile?.region ? REGION_LABELS[profile.region] || profile.region : "-"}</p>
+                    </div>
                     </div>
                     <div>
                       <p className="text-sm text-gray-600">자기소개</p>
