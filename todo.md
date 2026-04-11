@@ -2332,3 +2332,4 @@
 - [x] SafetyGuideModal.tsx의 닫기 버튼 텍스트를 정중앙에 위치하도록 수정 (완료)
 - [x] 브라우저 테스트 및 체크포인트 저장 (완료)
 - [x] FAQ 섮션 답변 콘텐츠 완전 변경 (비용, 검증, 안전, 일반 4개 카테고리)
+- [x] AdminDashboard 페이지 React 훈 에러(#310) 수정 - 조건부 return 이후 useState 호출 문제

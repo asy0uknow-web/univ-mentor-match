@@ -21,30 +21,9 @@ import { toast } from "sonner";
 import { PageLayout } from "@/components/layout";
 
 export default function AdminDashboard() {
+  // 모든 훅을 조건부 return 이전에 선언 (React 훅 규칙)
   const { user, isAuthenticated } = useAuth();
   const [, setLocation] = useLocation();
-
-  if (!isAuthenticated || user?.role !== "admin") {
-    return (
-      <PageLayout>
-        <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-12 flex items-center justify-center min-h-[60vh]">
-          <Card className="w-full max-w-md">
-            <CardHeader>
-              <CardTitle className="text-lg sm:text-xl">접근 권한이 없습니다</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Button 
-                onClick={() => setLocation('/')}
-                className="w-full text-xs sm:text-sm h-9 sm:h-10"
-              >
-                홈으로 이동
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-      </PageLayout>
-    );
-  }
   const [searchQuery, setSearchQuery] = useState("");
   const [editingMentor, setEditingMentor] = useState<any>(null);
   const [rejectingId, setRejectingId] = useState<number | null>(null);
@@ -101,45 +80,26 @@ export default function AdminDashboard() {
     onError: (error) => toast.error(`삭제 실패: ${error.message}`),
   });
 
-  if (!isAuthenticated) {
+  // 조건부 렌더링 (return 제거)
+  if (!isAuthenticated || user?.role !== "admin") {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-tr from-green-50 via-white to-blue-50">
-        <Card className="max-w-md shadow-lg border-0">
-          <CardHeader className="text-center pb-4">
-            <div className="mx-auto w-14 h-14 rounded-2xl bg-green-100 flex items-center justify-center mb-3">
-              <ShieldCheck className="h-7 w-7 text-green-600" />
-            </div>
-            <CardTitle className="text-xl">로그인이 필요합니다</CardTitle>
-            <CardDescription>관리자로 로그인해주세요.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <a href={getLoginUrl()}>
-              <Button className="w-full bg-green-600 hover:bg-green-700">로그인</Button>
-            </a>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
-  if (user?.role !== "admin") {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-tr from-red-50 via-white to-orange-50">
-        <Card className="max-w-md shadow-lg border-0">
-          <CardHeader className="text-center pb-4">
-            <div className="mx-auto w-14 h-14 rounded-2xl bg-red-100 flex items-center justify-center mb-3">
-              <ShieldAlert className="h-7 w-7 text-red-600" />
-            </div>
-            <CardTitle className="text-xl">접근 권한 없음</CardTitle>
-            <CardDescription>관리자만 접근할 수 있습니다.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Link href="/">
-              <Button className="w-full" variant="outline">홈으로 돌아가기</Button>
-            </Link>
-          </CardContent>
-        </Card>
-      </div>
+      <PageLayout>
+        <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-12 flex items-center justify-center min-h-[60vh]">
+          <Card className="w-full max-w-md">
+            <CardHeader>
+              <CardTitle className="text-lg sm:text-xl">접근 권한이 없습니다</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Button 
+                onClick={() => setLocation('/')}
+                className="w-full text-xs sm:text-sm h-9 sm:h-10"
+              >
+                홈으로 이동
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      </PageLayout>
     );
   }
 
@@ -249,498 +209,258 @@ export default function AdminDashboard() {
                 className="rounded-lg data-[state=active]:bg-green-600 data-[state=active]:text-white flex items-center gap-2"
               >
                 <BarChart3 className="h-4 w-4" />
-                상담 통계
+                통계
               </TabsTrigger>
             </TabsList>
 
             {/* 인증 요청 관리 탭 */}
             <TabsContent value="verifications" className="space-y-4">
-              <div className="flex items-center justify-between mb-2">
-                <h2 className="text-lg font-semibold text-gray-900">대기 중인 인증 요청</h2>
-                <Badge variant="outline" className="text-amber-600 border-amber-300">
-                  {pendingVerifications?.length || 0}건 대기 중
-                </Badge>
-              </div>
-
-              {!pendingVerifications || pendingVerifications.length === 0 ? (
-                <Card className="border-0 shadow-sm bg-white">
-                  <CardContent className="py-16 text-center">
-                    <div className="w-16 h-16 rounded-2xl bg-green-100 flex items-center justify-center mx-auto mb-4">
-                      <ShieldCheck className="h-8 w-8 text-green-600" />
-                    </div>
-                    <p className="text-gray-700 font-medium mb-1">모든 인증 요청이 처리되었습니다</p>
-                    <p className="text-sm text-gray-400">새로운 인증 요청이 들어오면 여기에 표시됩니다.</p>
-                  </CardContent>
-                </Card>
-              ) : (
-                <div className="space-y-4">
-                  {pendingVerifications.map((item: any) => (
-                    <Card key={item.verification.id} className="border-0 shadow-sm bg-white overflow-hidden">
-                      <CardContent className="p-0">
-                        {/* 상단 정보 */}
-                        <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
-                          <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center">
-                              <GraduationCap className="h-5 w-5 text-gray-600" />
+              <Card className="border-0 shadow-sm">
+                <CardHeader>
+                  <CardTitle className="text-lg">인증 요청 관리</CardTitle>
+                  <CardDescription>멘토 신원 인증 요청을 검토하고 승인/거부합니다.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {pendingVerifications && pendingVerifications.length > 0 ? (
+                    <div className="space-y-4">
+                      {pendingVerifications.map((verification: any) => (
+                        <div key={verification.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-sm transition-shadow">
+                          <div className="flex items-start justify-between mb-3">
+                            <div>
+                              <h3 className="font-semibold text-gray-900">{verification.user?.name}</h3>
+                              <p className="text-sm text-gray-500">{verification.user?.email}</p>
+                            </div>
+                            <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200">
+                              대기 중
+                            </Badge>
+                          </div>
+                          
+                          <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
+                            <div>
+                              <p className="text-gray-500">대학교</p>
+                              <p className="font-medium text-gray-900">{verification.university}</p>
                             </div>
                             <div>
-                              <p className="font-semibold text-gray-900">{item.user.name}</p>
-                              <p className="text-xs text-gray-500">
-                                신청일: {new Date(item.verification.createdAt).toLocaleDateString("ko-KR", {
-                                  year: "numeric", month: "long", day: "numeric"
-                                })}
-                              </p>
+                              <p className="text-gray-500">학과</p>
+                              <p className="font-medium text-gray-900">{verification.major}</p>
                             </div>
                           </div>
-                          <Badge className="bg-amber-100 text-amber-700 border-amber-200 hover:bg-amber-100">
-                            <Clock className="h-3 w-3 mr-1" />
-                            검토 대기
-                          </Badge>
-                        </div>
 
-                        {/* 학생증 이미지 */}
-                        <div className="px-5 py-4">
-                          <div className="flex items-center justify-between mb-2">
-                            <Label className="text-sm font-medium text-gray-700">학생증 이미지</Label>
-                            <button
-                              type="button"
-                              onClick={() => setExpandedImage(expandedImage === item.verification.id ? null : item.verification.id)}
-                              className="flex items-center gap-1 text-xs text-gray-500 hover:text-gray-700"
-                            >
-                              {expandedImage === item.verification.id ? (
-                                <><ChevronUp className="h-3 w-3" />접기</>
-                              ) : (
-                                <><ChevronDown className="h-3 w-3" />펼치기</>
-                              )}
-                            </button>
-                          </div>
-                          {item.verification.studentIdImageUrl ? (
-                            <div className={`overflow-hidden rounded-xl border border-gray-200 transition-all ${expandedImage === item.verification.id ? "max-h-[500px]" : "max-h-32"}`}>
-                              <img
-                                src={item.verification.studentIdImageUrl}
-                                alt="학생증"
-                                className="w-full object-cover cursor-pointer"
-                                onClick={() => setExpandedImage(expandedImage === item.verification.id ? null : item.verification.id)}
-                              />
-                            </div>
-                          ) : (
-                            <div className="bg-gray-50 rounded-xl border border-dashed border-gray-200 py-6 text-center">
-                              <p className="text-sm text-gray-400">이미지가 없습니다</p>
+                          {verification.documentUrl && (
+                            <div className="mb-4">
+                              <p className="text-sm text-gray-500 mb-2">제출 서류</p>
+                              <a 
+                                href={verification.documentUrl} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="text-green-600 hover:text-green-700 text-sm flex items-center gap-1"
+                              >
+                                <ExternalLink className="h-4 w-4" />
+                                서류 보기
+                              </a>
                             </div>
                           )}
-                        </div>
 
-                        {/* 거부 사유 입력 (거부 버튼 클릭 시 표시) */}
-                        {rejectingId === item.verification.id && (
-                          <div className="px-5 pb-4">
-                            <div className="bg-red-50 border border-red-200 rounded-xl p-4">
-                              <div className="flex items-center gap-2 mb-2">
-                                <AlertTriangle className="h-4 w-4 text-red-600" />
-                                <Label className="text-sm font-medium text-red-700">거부 사유 입력</Label>
-                              </div>
-                              <Textarea
-                                placeholder="멘토에게 전달될 거부 사유를 입력해주세요..."
-                                value={rejectReason}
-                                onChange={(e) => setRejectReason(e.target.value)}
-                                className="bg-white border-red-200 focus:border-red-400 text-sm resize-none"
-                                rows={3}
-                              />
-                              <div className="flex gap-2 mt-3">
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  onClick={() => { setRejectingId(null); setRejectReason(""); }}
-                                  className="flex-1"
-                                >
-                                  취소
-                                </Button>
-                                <Button
-                                  size="sm"
-                                  variant="destructive"
-                                  onClick={() => {
-                                    if (!rejectReason.trim()) {
-                                      toast.error("거부 사유를 입력해주세요.");
-                                      return;
-                                    }
-                                    rejectMutation.mutate({
-                                      verificationId: item.verification.id,
-                                      adminNotes: rejectReason,
-                                    });
-                                  }}
-                                  disabled={rejectMutation.isPending}
-                                  className="flex-1"
-                                >
-                                  {rejectMutation.isPending ? (
-                                    <><Loader2 className="h-3 w-3 animate-spin mr-1" />처리 중</>
-                                  ) : (
-                                    <><XCircle className="h-3 w-3 mr-1" />거부 확정</>
-                                  )}
-                                </Button>
-                              </div>
-                            </div>
-                          </div>
-                        )}
-
-                        {/* 승인/거부 버튼 */}
-                        {rejectingId !== item.verification.id && (
-                          <div className="flex gap-3 px-5 pb-5">
+                          <div className="flex gap-2">
                             <Button
-                              onClick={() => approveMutation.mutate({ verificationId: item.verification.id })}
+                              size="sm"
+                              className="bg-green-600 hover:bg-green-700 text-white"
+                              onClick={() => approveMutation.mutate({ verificationId: verification.id })}
                               disabled={approveMutation.isPending}
-                              className="flex-1 bg-green-600 hover:bg-green-700"
                             >
-                              {approveMutation.isPending ? (
-                                <><Loader2 className="h-4 w-4 animate-spin mr-2" />처리 중...</>
-                              ) : (
-                                <><CheckCircle className="h-4 w-4 mr-2" />승인</>
-                              )}
+                              {approveMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCircle className="h-4 w-4" />}
+                              승인
                             </Button>
                             <Button
+                              size="sm"
                               variant="outline"
-                              onClick={() => setRejectingId(item.verification.id)}
-                              disabled={rejectMutation.isPending}
-                              className="flex-1 border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300"
+                              onClick={() => setRejectingId(rejectingId === verification.id ? null : verification.id)}
                             >
-                              <XCircle className="h-4 w-4 mr-2" />
+                              <XCircle className="h-4 w-4" />
                               거부
                             </Button>
                           </div>
-                        )}
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              )}
+
+                          {rejectingId === verification.id && (
+                            <div className="mt-3 p-3 bg-red-50 rounded-lg border border-red-200">
+                              <Label className="text-sm text-gray-700 mb-2 block">거부 사유</Label>
+                              <Textarea
+                                value={rejectReason}
+                                onChange={(e) => setRejectReason(e.target.value)}
+                                placeholder="거부 사유를 입력하세요..."
+                                className="mb-2 text-sm"
+                              />
+                              <div className="flex gap-2">
+                                <Button
+                                  size="sm"
+                                  className="bg-red-600 hover:bg-red-700"
+                                  onClick={() => {
+                                  rejectMutation.mutate({
+                                    verificationId: verification.id,
+                                    adminNotes: rejectReason,
+                                  });
+                                  }}
+                                  disabled={rejectMutation.isPending || !rejectReason.trim()}
+                                >
+                                  {rejectMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : "거부 확인"}
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => {
+                                    setRejectingId(null);
+                                    setRejectReason("");
+                                  }}
+                                >
+                                  취소
+                                </Button>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-8">
+                      <CheckCircle className="h-12 w-12 text-green-500 mx-auto mb-3" />
+                      <p className="text-gray-600">대기 중인 인증 요청이 없습니다.</p>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
             </TabsContent>
 
             {/* 멘토 프로필 관리 탭 */}
             <TabsContent value="mentors" className="space-y-4">
-              <div className="flex items-center justify-between mb-2">
-                <h2 className="text-lg font-semibold text-gray-900">멘토 프로필 관리</h2>
-                <Badge variant="outline" className="text-green-600 border-green-300">
-                  총 {filteredMentors.length}명
-                </Badge>
-              </div>
+              <Card className="border-0 shadow-sm">
+                <CardHeader>
+                  <CardTitle className="text-lg">멘토 프로필 관리</CardTitle>
+                  <CardDescription>등록된 멘토 프로필을 검색하고 관리합니다.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="mb-4 relative">
+                    <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                    <Input
+                      placeholder="대학, 학과, 이름으로 검색..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="pl-10"
+                    />
+                  </div>
 
-              {/* 검색 */}
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-                <Input
-                  placeholder="대학, 전공, 이름으로 검색..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 bg-white border-gray-200 shadow-sm"
-                />
-              </div>
-
-              {/* 멘토 목록 */}
-              {filteredMentors.length === 0 ? (
-                <Card className="border-0 shadow-sm bg-white">
-                  <CardContent className="py-16 text-center">
-                    <div className="w-16 h-16 rounded-2xl bg-gray-100 flex items-center justify-center mx-auto mb-4">
-                      <Users className="h-8 w-8 text-gray-400" />
-                    </div>
-                    <p className="text-gray-700 font-medium mb-1">
-                      {searchQuery ? "검색 결과가 없습니다" : "등록된 멘토가 없습니다"}
-                    </p>
-                    <p className="text-sm text-gray-400">
-                      {searchQuery ? "다른 키워드로 검색해보세요." : "멘토가 등록되면 여기에 표시됩니다."}
-                    </p>
-                  </CardContent>
-                </Card>
-              ) : (
-                <div className="space-y-3">
-                  {filteredMentors.map((mentor) => (
-                    <Card key={mentor.profile.id} className="border-0 shadow-sm bg-white">
-                      <CardContent className="p-5">
-                        <div className="flex items-start justify-between gap-4">
-                          <div className="flex items-start gap-3 flex-1 min-w-0">
-                            <div className="w-10 h-10 rounded-xl bg-green-100 flex items-center justify-center flex-shrink-0">
-                              <GraduationCap className="h-5 w-5 text-green-600" />
+                  {filteredMentors && filteredMentors.length > 0 ? (
+                    <div className="space-y-3">
+                      {filteredMentors.map((mentor: any) => (
+                        <div key={mentor.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-sm transition-shadow">
+                          <div className="flex items-start justify-between mb-2">
+                            <div>
+                              <h3 className="font-semibold text-gray-900">{mentor.user?.name}</h3>
+                              <p className="text-sm text-gray-500">{mentor.profile.university} · {mentor.profile.major}</p>
                             </div>
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-center gap-2 flex-wrap mb-1">
-                                <p className="font-semibold text-gray-900">{mentor.user?.name || "이름 없음"}</p>
-                                <Badge
-                                  className={
-                                    mentor.profile.verificationStatus === "approved"
-                                      ? "bg-green-100 text-green-700 border-green-200 hover:bg-green-100"
-                                      : mentor.profile.verificationStatus === "pending"
-                                      ? "bg-amber-100 text-amber-700 border-amber-200 hover:bg-amber-100"
-                                      : "bg-gray-100 text-gray-600 border-gray-200 hover:bg-gray-100"
-                                  }
-                                >
-                                  {mentor.profile.verificationStatus === "approved"
-                                    ? "인증됨"
-                                    : mentor.profile.verificationStatus === "pending"
-                                    ? "검토 중"
-                                    : "미인증"}
-                                </Badge>
-                                <Badge
-                                  className={
-                                    mentor.profile.verificationStatus === "approved"
-                                      ? "bg-blue-100 text-blue-700 border-blue-200 hover:bg-blue-100"
-                                      : "bg-gray-100 text-gray-500 border-gray-200 hover:bg-gray-100"
-                                  }
-                                >
-                                  {mentor.profile.verificationStatus === "approved" ? "인증" : "대기중"}
-                                </Badge>
-                              </div>
-                              <p className="text-sm text-gray-600 mb-1">
-                                {mentor.profile.university} · {mentor.profile.major} · {mentor.profile.grade}학년
-                              </p>
-                              {mentor.profile.bio && (
-                                <p className="text-xs text-gray-400 truncate">{mentor.profile.bio}</p>
-                              )}
-                            </div>
+                            <Badge className="bg-green-100 text-green-700 border-0">활성</Badge>
                           </div>
-                          <div className="flex items-center gap-2 flex-shrink-0">
+                          <p className="text-sm text-gray-600 mb-3">{mentor.profile.bio}</p>
+                          <div className="flex gap-2">
                             <Button
-                              variant="ghost"
                               size="sm"
-                              className="text-red-500 hover:text-red-600 hover:bg-red-50"
+                              variant="outline"
+                              onClick={() => setEditingMentor(editingMentor?.id === mentor.id ? null : mentor)}
+                            >
+                              <Edit className="h-4 w-4" />
+                              편집
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="destructive"
                               onClick={() => {
-                                if (confirm(`${mentor.user?.name || "이 멘토"}의 프로필을 삭제하시겠습니까?`)) {
-                                  deleteMentorMutation.mutate({ mentorId: mentor.profile.userId });
+                                if (confirm("정말 이 멘토를 삭제하시겠습니까?")) {
+                                  deleteMentorMutation.mutate({ mentorId: mentor.id });
                                 }
                               }}
                             >
                               <Trash2 className="h-4 w-4" />
+                              삭제
                             </Button>
                           </div>
                         </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              )}
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-8">
+                      <Users className="h-12 w-12 text-gray-300 mx-auto mb-3" />
+                      <p className="text-gray-600">검색 결과가 없습니다.</p>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
             </TabsContent>
 
             {/* 상담 예약 관리 탭 */}
             <TabsContent value="bookings" className="space-y-4">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold text-gray-900">상담 예약 관리</h2>
-                <div className="flex gap-2">
-                  <Badge variant="outline" className="text-gray-600">
-                    전체 {allBookings.length}건
-                  </Badge>
-                  <Badge variant="outline" className="text-blue-600 border-blue-300">
-                    진행중 {allBookings.filter((b: any) => b.booking.status === "in_progress").length}건
-                  </Badge>
-                  <Badge variant="outline" className="text-amber-600 border-amber-300">
-                    대기중 {allBookings.filter((b: any) => b.booking.status === "confirmed").length}건
-                  </Badge>
-                </div>
-              </div>
-
-              {allBookings.length === 0 ? (
-                <Card>
-                  <CardContent className="py-12 text-center">
-                    <Calendar className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-                    <p className="text-gray-500">예약 내역이 없습니다.</p>
-                  </CardContent>
-                </Card>
-              ) : (
-                <div className="space-y-3">
-                  {allBookings.map((item: any) => {
-                    const booking = item.booking;
-                    const scheduledAt = new Date(booking.scheduledAt);
-                    const statusColors: Record<string, string> = {
-                      pending: "border-amber-200 bg-amber-50/30",
-                      confirmed: "border-blue-200 bg-blue-50/30",
-                      in_progress: "border-green-200 bg-green-50/30",
-                      completed: "border-gray-200",
-                      cancelled: "border-red-200 bg-red-50/30",
-                    };
-                    const statusLabels: Record<string, string> = {
-                      pending: "대기중",
-                      confirmed: "확정",
-                      in_progress: "진행중",
-                      completed: "완료",
-                      cancelled: "취소됨",
-                      reschedule_requested: "일정변경요청",
-                    };
-
-                    return (
-                      <Card key={booking.id} className={`overflow-hidden ${statusColors[booking.status] || ""}`}>
-                        <CardContent className="px-4 py-3">
-                          <div className="flex items-start justify-between gap-3 mb-3">
-                            <div className="flex-1">
-                              <div className="flex items-center gap-2 mb-1">
-                                <span className="font-semibold text-sm">
-                                  {item.student?.name || "학생"}
-                                </span>
-                                <span className="text-gray-400 text-xs">→</span>
-                                <span className="font-semibold text-sm text-primary">
-                                  {item.mentorProfile?.university || "멘토"} {item.mentorProfile?.major || ""}
-                                </span>
-                              </div>
-                              <div className="flex items-center gap-3 text-xs text-gray-500">
-                                <span className="flex items-center gap-1">
-                                  <Calendar className="h-3 w-3" />
-                                  {format(scheduledAt, "M월 d일 HH:mm", { locale: ko })}
-                                </span>
-                                <span className="flex items-center gap-1">
-                                  <Clock className="h-3 w-3" />
-                                  {booking.duration}시간
-                                </span>
-                                <span>₩{parseInt(booking.totalAmount).toLocaleString()}</span>
-                              </div>
-                            </div>
-                            <Badge
-                              variant={booking.status === "completed" ? "outline" : booking.status === "cancelled" ? "destructive" : "default"}
-                              className="shrink-0"
-                            >
-                              {statusLabels[booking.status] || booking.status}
-                            </Badge>
-                          </div>
-
-                          {/* 시작/종료 이행 현황 */}
-                          {(booking.status === "confirmed" || booking.status === "in_progress" || booking.status === "completed") && (
-                            <div className="grid grid-cols-2 gap-2 p-3 bg-white/80 rounded-lg border border-gray-100">
-                              <div>
-                                <p className="text-xs font-medium text-gray-600 mb-1">멘티 확인</p>
-                                <div className="space-y-1">
-                                  <div className="flex items-center gap-1 text-xs">
-                                    <span className={booking.studentStartedAt ? "text-green-600" : "text-gray-300"}>●</span>
-                                    <span className={booking.studentStartedAt ? "text-green-700" : "text-gray-400"}>
-                                      시작: {booking.studentStartedAt ? format(new Date(booking.studentStartedAt), "HH:mm", { locale: ko }) : "미확인"}
-                                    </span>
-                                  </div>
-                                  <div className="flex items-center gap-1 text-xs">
-                                    <span className={booking.studentEndedAt ? "text-green-600" : "text-gray-300"}>●</span>
-                                    <span className={booking.studentEndedAt ? "text-green-700" : "text-gray-400"}>
-                                      종료: {booking.studentEndedAt ? format(new Date(booking.studentEndedAt), "HH:mm", { locale: ko }) : "미확인"}
-                                    </span>
-                                  </div>
-                                </div>
-                              </div>
-                              <div>
-                                <p className="text-xs font-medium text-gray-600 mb-1">멘토 확인</p>
-                                <div className="space-y-1">
-                                  <div className="flex items-center gap-1 text-xs">
-                                    <span className={booking.mentorStartedAt ? "text-green-600" : "text-gray-300"}>●</span>
-                                    <span className={booking.mentorStartedAt ? "text-green-700" : "text-gray-400"}>
-                                      시작: {booking.mentorStartedAt ? format(new Date(booking.mentorStartedAt), "HH:mm", { locale: ko }) : "미확인"}
-                                    </span>
-                                  </div>
-                                  <div className="flex items-center gap-1 text-xs">
-                                    <span className={booking.mentorEndedAt ? "text-green-600" : "text-gray-300"}>●</span>
-                                    <span className={booking.mentorEndedAt ? "text-green-700" : "text-gray-400"}>
-                                      종료: {booking.mentorEndedAt ? format(new Date(booking.mentorEndedAt), "HH:mm", { locale: ko }) : "미확인"}
-                                    </span>
-                                  </div>
-                                </div>
-                              </div>
-                              {booking.consultationStartedAt && (
-                                <div className="col-span-2 pt-2 border-t border-gray-100">
-                                  <p className="text-xs text-gray-500">
-                                    실제 시작: <span className="font-medium text-gray-700">{format(new Date(booking.consultationStartedAt), "M월 d일 HH:mm", { locale: ko })}</span>
-                                    {booking.consultationCompletedAt && (
-                                      <> · 완료: <span className="font-medium text-gray-700">{format(new Date(booking.consultationCompletedAt), "HH:mm", { locale: ko })}</span></>
-                                    )}
-                                  </p>
-                                </div>
-                              )}
-                              {booking.endReason && (
-                                <div className="col-span-2">
-                                  <p className="text-xs text-amber-600">
-                                    종료 사유: {booking.endReason}
-                                    {booking.endReasonDetails && ` - ${booking.endReasonDetails}`}
-                                  </p>
-                                </div>
-                              )}
-                            </div>
-                          )}
-                        </CardContent>
-                      </Card>
-                    );
-                  })}
-                </div>
-              )}
-            </TabsContent>
-
-            {/* 상담 통계 탭 */}
-            <TabsContent value="statistics" className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <Card>
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-sm font-medium text-gray-600">전체 상담</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-2xl font-bold text-gray-900">{allBookings.length}</p>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-sm font-medium text-gray-600">완료된 상담</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-2xl font-bold text-green-600">{allBookings.filter((b: any) => b.booking.status === "completed").length}</p>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-sm font-medium text-gray-600">완료율</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-2xl font-bold text-blue-600">
-                      {allBookings.length > 0
-                        ? Math.round((allBookings.filter((b: any) => b.booking.status === "completed").length / allBookings.length) * 100)
-                        : 0}%
-                    </p>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-sm font-medium text-gray-600">조기 종료</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-2xl font-bold text-amber-600">
-                      {allBookings.filter((b: any) => {
-                        if (b.booking.status !== "completed" || !b.booking.consultationCompletedAt) return false;
-                        const scheduledEnd = new Date(new Date(b.booking.scheduledAt).getTime() + parseInt(b.booking.duration) * 60 * 60 * 1000);
-                        return new Date(b.booking.consultationCompletedAt) < scheduledEnd;
-                      }).length}
-                    </p>
-                  </CardContent>
-                </Card>
-              </div>
-              <Card>
+              <Card className="border-0 shadow-sm">
                 <CardHeader>
-                  <CardTitle>상담 통계 요약</CardTitle>
+                  <CardTitle className="text-lg">상담 예약 관리</CardTitle>
+                  <CardDescription>모든 상담 예약을 확인하고 관리합니다.</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-3 text-sm">
-                    <div className="flex justify-between items-center pb-2 border-b">
-                      <span className="text-gray-600">전체 상담 건수</span>
-                      <span className="font-semibold">{allBookings.length}건</span>
+                  {allBookings && allBookings.length > 0 ? (
+                    <div className="space-y-3">
+                      {allBookings.map((item: any) => (
+                        <div key={item.booking.id} className="border border-gray-200 rounded-lg p-4">
+                          <div className="flex items-start justify-between mb-2">
+                            <div>
+                              <h3 className="font-semibold text-gray-900">{item.booking.mentee?.name} → {item.booking.mentor?.name}</h3>
+                              <p className="text-sm text-gray-500">{format(new Date(item.booking.scheduledAt), "PPP p", { locale: ko })}</p>
+                            </div>
+                            <Badge className={
+                              item.booking.status === "completed" ? "bg-green-100 text-green-700" :
+                              item.booking.status === "in_progress" ? "bg-blue-100 text-blue-700" :
+                              item.booking.status === "cancelled" ? "bg-red-100 text-red-700" :
+                              "bg-gray-100 text-gray-700"
+                            }>
+                              {item.booking.status === "completed" ? "완료" :
+                               item.booking.status === "in_progress" ? "진행 중" :
+                               item.booking.status === "cancelled" ? "취소됨" : "예약됨"}
+                            </Badge>
+                          </div>
+                          <p className="text-sm text-gray-600">{item.booking.topic}</p>
+                        </div>
+                      ))}
                     </div>
-                    <div className="flex justify-between items-center pb-2 border-b">
-                      <span className="text-gray-600">완료된 상담</span>
-                      <span className="font-semibold text-green-600">{allBookings.filter((b: any) => b.booking.status === "completed").length}건</span>
+                  ) : (
+                    <div className="text-center py-8">
+                      <Calendar className="h-12 w-12 text-gray-300 mx-auto mb-3" />
+                      <p className="text-gray-600">상담 예약이 없습니다.</p>
                     </div>
-                    <div className="flex justify-between items-center pb-2 border-b">
-                      <span className="text-gray-600">진행 중인 상담</span>
-                      <span className="font-semibold text-blue-600">{allBookings.filter((b: any) => b.booking.status === "in_progress").length}건</span>
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            {/* 통계 탭 */}
+            <TabsContent value="statistics" className="space-y-4">
+              <Card className="border-0 shadow-sm">
+                <CardHeader>
+                  <CardTitle className="text-lg">통계</CardTitle>
+                  <CardDescription>서비스 통계 및 분석</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                      <p className="text-sm text-blue-600 font-medium mb-1">총 멘토 수</p>
+                      <p className="text-2xl font-bold text-blue-900">{mentors?.length || 0}</p>
                     </div>
-                    <div className="flex justify-between items-center pb-2 border-b">
-                      <span className="text-gray-600">취소된 상담</span>
-                      <span className="font-semibold text-red-600">{allBookings.filter((b: any) => b.booking.status === "cancelled").length}건</span>
+                    <div className="p-4 bg-amber-50 rounded-lg border border-amber-200">
+                      <p className="text-sm text-amber-600 font-medium mb-1">대기 중인 인증</p>
+                      <p className="text-2xl font-bold text-amber-900">{pendingVerifications?.length || 0}</p>
                     </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-600">조기 종료 비율</span>
-                      <span className="font-semibold text-amber-600">
-                        {allBookings.filter((b: any) => b.booking.status === "completed").length > 0
-                          ? Math.round(
-                              (allBookings.filter((b: any) => {
-                                if (b.booking.status !== "completed" || !b.booking.consultationCompletedAt) return false;
-                                const scheduledEnd = new Date(new Date(b.booking.scheduledAt).getTime() + parseInt(b.booking.duration) * 60 * 60 * 1000);
-                                return new Date(b.booking.consultationCompletedAt) < scheduledEnd;
-                              }).length / allBookings.filter((b: any) => b.booking.status === "completed").length) * 100
-                            )
-                          : 0}%
-                      </span>
+                    <div className="p-4 bg-green-50 rounded-lg border border-green-200">
+                      <p className="text-sm text-green-600 font-medium mb-1">완료된 상담</p>
+                      <p className="text-2xl font-bold text-green-900">{allBookings.filter((b: any) => b.booking.status === "completed").length}</p>
+                    </div>
+                    <div className="p-4 bg-red-50 rounded-lg border border-red-200">
+                      <p className="text-sm text-red-600 font-medium mb-1">신규 버그 신고</p>
+                      <p className="text-2xl font-bold text-red-900">{newBugCount}</p>
                     </div>
                   </div>
                 </CardContent>
