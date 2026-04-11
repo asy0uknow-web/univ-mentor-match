@@ -50,9 +50,10 @@ export default function MentorProfile() {
     confirmPassword: "",
   });
 
+  // 초기 프로필 데이터로 상태 초기화
   const [university, setUniversity] = useState("");
   const [major, setMajor] = useState("");
-  const [grade, setGrade] = useState<string>("1");
+  const [grade, setGrade] = useState<string>("");
   const [bio, setBio] = useState("");
   const [regions, setRegions] = useState<Array<string>>([]);
   const [dragActive, setDragActive] = useState(false);
@@ -87,6 +88,17 @@ export default function MentorProfile() {
     enabled: isAuthenticated,
   });
 
+  // 프로필 데이터가 로드되면 폼 상태 초기화 (수정 모드가 아닐 때)
+  useEffect(() => {
+    if (profile && !isEditingProfile) {
+      setUniversity(profile.university || "");
+      setMajor(profile.major || "");
+      setGrade(profile.grade || "");
+      setBio(profile.bio || "");
+      setRegions(profile.region ? [profile.region] : []);
+    }
+  }, [profile]);
+
   const { data: verification, refetch: refetchVerification } = trpc.verification.getMyVerification.useQuery(undefined, {
     enabled: isAuthenticated,
   });
@@ -97,12 +109,11 @@ export default function MentorProfile() {
   );
 
   // 수정 모드 진입 시 기존 값으로 폼 초기화
-  // 주의: profile을 의존성 배열에서 제거했습니다. profile이 변경될 때마다 폼이 초기화되는 것을 방지하기 위함
   useEffect(() => {
     if (isEditingProfile && profile) {
       setUniversity(profile.university || "");
       setMajor(profile.major || "");
-      setGrade(profile.grade || "1");
+      setGrade(profile.grade || "");
       setBio(profile.bio || "");
       setRegions(profile.region ? [profile.region] : []);
       // 상담 유형은 myConsultationTypes에서 가져옴
@@ -409,7 +420,7 @@ export default function MentorProfile() {
                           const payload = {
                             university,
                             major,
-                            grade: grade as "1" | "2" | "3" | "4" | "graduate",
+                            grade: (grade || "1") as "1" | "2" | "3" | "4" | "graduate",
                             bio,
                             region: selectedRegion as "seoul" | "gyeonggi" | "incheon" | "gangwon" | "chungcheong" | "jeolla" | "gyeongsang" | "jeju",
                             hourlyRate: "50000",
