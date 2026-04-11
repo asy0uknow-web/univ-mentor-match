@@ -97,6 +97,7 @@ export default function MentorProfile() {
   );
 
   // 수정 모드 진입 시 기존 값으로 폼 초기화
+  // 주의: profile을 의존성 배열에서 제거했습니다. profile이 변경될 때마다 폼이 초기화되는 것을 방지하기 위함
   useEffect(() => {
     if (isEditingProfile && profile) {
       setUniversity(profile.university || "");
@@ -109,7 +110,7 @@ export default function MentorProfile() {
         setConsultationTypes(myConsultationTypes.map((t: any) => t.consultationType));
       }
     }
-  }, [isEditingProfile, profile, myConsultationTypes]);
+  }, [isEditingProfile, myConsultationTypes]);
 
   const updateConsultationTypesMutation = trpc.mentor.updateConsultationTypes.useMutation({
     onSuccess: () => {
