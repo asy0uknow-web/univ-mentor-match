@@ -119,20 +119,42 @@ export default function Home() {
               </p>
             </div>
 
-            {/* Primary CTA */}
-            <div className="flex flex-col gap-3 sm:gap-4 justify-center mb-8 sm:mb-10">
+            {/* Primary CTA - 3개 병렬 진입점 */}
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center mb-8 sm:mb-10 flex-wrap">
+              {/* 멘토 찾기 */}
               <Button 
                 size="default" 
-                className="w-full sm:w-auto font-bold shadow-lg hover:shadow-xl transition-shadow"
+                className="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white font-bold shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
                 onClick={() => navigate('/mentors')}
                 aria-label="멘토 찾기 페이지로 이동"
               >
                 멘토 찾기
               </Button>
+              
+              {/* Q&A 커뮤니티 */}
+              <Button 
+                size="default" 
+                className="w-full sm:w-auto bg-slate-200 hover:bg-slate-300 text-slate-900 font-bold shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+                onClick={() => navigate('/qna')}
+                aria-label="Q&A 커뮤니티로 이동"
+              >
+                Q&A 커뮤니티
+              </Button>
+              
+              {/* 멘토 칼럼 */}
+              <Button 
+                size="default" 
+                className="w-full sm:w-auto bg-slate-200 hover:bg-slate-300 text-slate-900 font-bold shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+                onClick={() => navigate('/columns')}
+                aria-label="멘토 칼럼으로 이동"
+              >
+                멘토 칼럼
+              </Button>
+              
               {isAuthenticated && (
                 <Button 
                   size="default" 
-                  className="w-full sm:w-auto bg-gray-300 hover:bg-gray-400 text-black font-bold shadow-lg hover:shadow-xl transition-shadow"
+                  className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-bold shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
                   onClick={() => navigate('/my-profile')}
                 >
                   멘토로 참여하기
