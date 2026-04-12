@@ -2410,3 +2410,9 @@
 - [x] 학과 필드 수정 기능 구현 (Input 컴포넌트)
 - [x] 저장 버튼 클릭 시 API 호출 및 데이터 업데이트 (admin.updateMentorProfile mutation)
 - [x] 모든 변경사항 테스트 완료 (로드링 상태 및 에러 체크)
+
+## 버그 수정 - 관리자 페이지 멘토 프로필 편집 null 참조 오류 (pt 1.14)
+- [x] editingMentor.profile null 참조 오류 원인 파악
+- [x] 편집 폼 렌더링 조건에 profile 존재 여부 체크 추가
+- [x] 입력 필드에 optional chaining 및 기본값 추가
+- [x] 저장 버튼 클릭 시 profile 존재 여부 재확인

@@ -396,14 +396,14 @@ export default function AdminDashboard() {
                           </div>
                           
                           {/* 편집 폼 */}
-                          {editingMentor?.id === mentor.id && (
+                          {editingMentor?.id === mentor.id && editingMentor?.profile && (
                             <div className="border border-blue-200 bg-blue-50 rounded-lg p-4 mt-2">
                               <h4 className="font-semibold text-gray-900 mb-3">프로필 편집</h4>
                               <div className="space-y-3">
                                 <div>
                                   <Label className="text-sm">대학교</Label>
                                   <Input
-                                    value={editingMentor.profile.university}
+                                    value={editingMentor.profile?.university || ""}
                                     onChange={(e) => setEditingMentor({
                                       ...editingMentor,
                                       profile: { ...editingMentor.profile, university: e.target.value }
@@ -414,7 +414,7 @@ export default function AdminDashboard() {
                                 <div>
                                   <Label className="text-sm">학과</Label>
                                   <Input
-                                    value={editingMentor.profile.major}
+                                    value={editingMentor.profile?.major || ""}
                                     onChange={(e) => setEditingMentor({
                                       ...editingMentor,
                                       profile: { ...editingMentor.profile, major: e.target.value }
@@ -426,11 +426,13 @@ export default function AdminDashboard() {
                                   <Button
                                     size="sm"
                                     onClick={() => {
-                                      updateMentorMutation.mutate({
-                                        mentorId: mentor.id,
-                                        university: editingMentor.profile.university,
-                                        major: editingMentor.profile.major,
-                                      });
+                                      if (editingMentor?.profile) {
+                                        updateMentorMutation.mutate({
+                                          mentorId: mentor.id,
+                                          university: editingMentor.profile.university,
+                                          major: editingMentor.profile.major,
+                                        });
+                                      }
                                     }}
                                     disabled={updateMentorMutation.isPending}
                                   >
