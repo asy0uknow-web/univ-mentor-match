@@ -2424,8 +2424,8 @@
 - [x] count 함수 임포트 추가
 - [x] 개발 서버 재시작 및 TypeScript 컴파일 확인
 
-## 버그 수정 - 관리자 페이지 메나토 프로필 편집 버튼 onClick 없음 (pt 1.16)
+## 버그 수정 - 관리자 페이지 메나토 프로필 편집 버튼 렌더링 안 됨 (pt 1.16)
 - [x] AdminDashboard.tsx의 편집 버튼 onClick 핸들러 이미 존재 확인 (브라우저 캠시 문제)
-- [x] 편집 버튼 클릭 시 editingMentor 상태 업데이트 (동작 예상)
+- [x] getAllActiveMentors 데이터 구조 분석 (mentor.profile?.id 구조)
+- [x] 편집 폼 렌더링 조건 수정: mentor.id → mentor.profile?.id
 - [x] 개발 서버 재시작 및 브라우저 캠시 초기화 완료
-- [x] 모든 변경사항 테스트 대기 중

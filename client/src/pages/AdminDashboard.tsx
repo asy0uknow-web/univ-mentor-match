@@ -396,7 +396,7 @@ export default function AdminDashboard() {
                           </div>
                           
                           {/* 편집 폼 */}
-                          {editingMentor?.id === mentor.id && editingMentor?.profile && (
+                          {editingMentor?.profile?.id === mentor.profile?.id && editingMentor?.profile && (
                             <div className="border border-blue-200 bg-blue-50 rounded-lg p-4 mt-2">
                               <h4 className="font-semibold text-gray-900 mb-3">프로필 편집</h4>
                               <div className="space-y-3">
