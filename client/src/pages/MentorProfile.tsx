@@ -200,6 +200,29 @@ export default function MentorProfile() {
     },
   });
 
+  const uploadGalleryImageMutation = trpc.gallery.uploadImage.useMutation({
+    onSuccess: () => {
+      toast.success("이미지가 업로드되었습니다");
+      setIsUploading(false);
+      setNewCaption("");
+      utils.gallery.getByMentorId.invalidate();
+    },
+    onError: (error: any) => {
+      toast.error(error.message || "이미지 업로드에 실패했습니다");
+      setIsUploading(false);
+    },
+  });
+
+  const deleteGalleryImageMutation = trpc.gallery.deleteImage.useMutation({
+    onSuccess: () => {
+      toast.success("이미지가 삭제되었습니다");
+      utils.gallery.getByMentorId.invalidate();
+    },
+    onError: (error: any) => {
+      toast.error(error.message || "이미지 삭제에 실패했습니다");
+    },
+  });
+
   if (!isAuthenticated) {
     return <PageLayout><div>로그인이 필요합니다</div></PageLayout>;
   }
@@ -226,6 +249,44 @@ export default function MentorProfile() {
       : [...consultationTypes, type];
     setConsultationTypes(newTypes);
     updateConsultationTypesMutation.mutate({ consultationTypes: newTypes });
+  };
+
+  const handleImageUpload = (file: File) => {
+    if (!profile) {
+      toast.error("멘토 프로필을 먼저 등록해주세요");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const base64Data = e.target?.result as string;
+      setIsUploading(true);
+      uploadGalleryImageMutation.mutate({
+        mentorId: profile.id,
+        imageData: base64Data,
+        caption: newCaption,
+      });
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setDragActive(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    setDragActive(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setDragActive(false);
+    const files = e.dataTransfer.files;
+    if (files && files.length > 0) {
+      handleImageUpload(files[0]);
+    }
   };
 
   return (
@@ -576,6 +637,110 @@ export default function MentorProfile() {
                   </div>
                 ) : (
                   <p className="text-gray-600">받은 후기가 없습니다</p>
+                )}
+              </Card>
+
+              {/* 그룹 5: 갤러리 */}
+              <Card className="bg-white rounded-2xl p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-2xl font-bold text-gray-900">갤러리</h2>
+                  {profile && (
+                    <span className="text-sm text-gray-600">{gallery?.length || 0}개 이미지</span>
+                  )}
+                </div>
+
+                {profile ? (
+                  <div className="space-y-6">
+                    {/* 이미지 업로드 영역 */}
+                    <div
+                      onDragOver={handleDragOver}
+                      onDragLeave={handleDragLeave}
+                      onDrop={handleDrop}
+                      className={`border-2 border-dashed rounded-lg p-8 text-center transition ${
+                        dragActive
+                          ? "border-green-500 bg-green-50"
+                          : "border-gray-300 bg-gray-50 hover:border-gray-400"
+                      }`}
+                    >
+                      <Upload className="w-8 h-8 mx-auto text-gray-400 mb-2" />
+                      <p className="text-gray-600 mb-2">이미지를 드래그하거나 클릭하여 업로드</p>
+                      <p className="text-xs text-gray-500 mb-4">JPG, PNG 형식 (최대 5MB)</p>
+                      <label className="inline-block">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => {
+                            if (e.target.files && e.target.files.length > 0) {
+                              handleImageUpload(e.target.files[0]);
+                            }
+                          }}
+                          disabled={isUploading}
+                          className="hidden"
+                        />
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            (e.currentTarget.previousElementSibling as HTMLInputElement)?.click();
+                          }}
+                          disabled={isUploading}
+                          className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition disabled:opacity-50"
+                        >
+                          {isUploading ? (
+                            <span className="flex items-center justify-center gap-2">
+                              <Loader2 className="w-4 h-4 animate-spin" /> 업로드 중...
+                            </span>
+                          ) : (
+                            "파일 선택"
+                          )}
+                        </button>
+                      </label>
+                    </div>
+
+                    {/* 캡션 입력 */}
+                    <div>
+                      <Label>이미지 설명 (선택사항)</Label>
+                      <Textarea
+                        value={newCaption}
+                        onChange={(e) => setNewCaption(e.target.value)}
+                        placeholder="이 이미지에 대한 설명을 입력해주세요"
+                        className="mt-2"
+                        rows={2}
+                      />
+                    </div>
+
+                    {/* 갤러리 이미지 그리드 */}
+                    {gallery && gallery.length > 0 ? (
+                      <div className="grid grid-cols-3 gap-4">
+                        {gallery.map((image: any) => (
+                          <div key={image.id} className="relative group">
+                            <img
+                              src={image.imageUrl}
+                              alt={image.caption || "갤러리 이미지"}
+                              className="w-full h-40 object-cover rounded-lg"
+                            />
+                            <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 rounded-lg transition flex items-center justify-center opacity-0 group-hover:opacity-100">
+                              <button
+                                type="button"
+                                onClick={() => deleteGalleryImageMutation.mutate({ imageId: image.id })}
+                                className="p-2 bg-red-600 hover:bg-red-700 text-white rounded-full transition"
+                                title="삭제"
+                              >
+                                <X className="w-4 h-4" />
+                              </button>
+                            </div>
+                            {image.caption && (
+                              <p className="text-xs text-gray-600 mt-2 truncate">{image.caption}</p>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-gray-600 text-center py-8">아직 업로드된 이미지가 없습니다</p>
+                    )}
+                  </div>
+                ) : (
+                  <p className="text-gray-600">멘토 프로필을 먼저 등록해주세요</p>
                 )}
               </Card>
             </div>
