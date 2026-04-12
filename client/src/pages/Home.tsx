@@ -122,15 +122,15 @@ export default function Home() {
             {/* Primary CTA */}
             <div className="flex flex-col gap-3 sm:gap-4 justify-center mb-8 sm:mb-10">
               <Link href="/mentors" className="w-full sm:w-auto" aria-label="멘토 찾기 페이지로 이동">
-                <Button size="lg" className="w-full sm:w-auto text-base sm:text-lg px-8 sm:px-10 py-6 sm:py-7 font-bold shadow-lg hover:shadow-xl transition-shadow">
+                <div className="w-full sm:w-auto text-base sm:text-lg px-8 sm:px-10 py-6 sm:py-7 font-bold shadow-lg hover:shadow-xl transition-shadow bg-primary text-primary-foreground hover:bg-primary/90 rounded-md inline-flex items-center justify-center">
                   멘토 찾기
-                </Button>
+                </div>
               </Link>
               {isAuthenticated && (
                 <Link href="/my-profile" className="w-full sm:w-auto">
-                  <Button size="lg" className="w-full sm:w-auto text-base sm:text-lg px-8 sm:px-10 py-6 sm:py-7 bg-gray-300 hover:bg-gray-400 text-black font-bold shadow-lg hover:shadow-xl transition-shadow">
+                  <div className="w-full sm:w-auto text-base sm:text-lg px-8 sm:px-10 py-6 sm:py-7 bg-gray-300 hover:bg-gray-400 text-black font-bold shadow-lg hover:shadow-xl transition-shadow rounded-md inline-flex items-center justify-center">
                     멘토로 참여하기
-                  </Button>
+                  </div>
                 </Link>
               )}
             </div>
@@ -150,8 +150,8 @@ export default function Home() {
           </h2>
           
           <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
-            <Link href="/mentors?field=major" className="group">
-              <div className="bg-white rounded-xl p-6 sm:p-8 shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 hover:border-primary/30 cursor-pointer">
+            <div className="group cursor-pointer" onClick={() => navigate('/mentors?field=major')}>
+              <div className="bg-white rounded-xl p-6 sm:p-8 shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 hover:border-primary/30">
                 <div className="mb-4 flex justify-center">
                   <MajorIcon />
                 </div>
@@ -162,10 +162,10 @@ export default function Home() {
                   실제 전공 생활과 진로를 알고 싶어요
                 </p>
               </div>
-            </Link>
+            </div>
 
-            <Link href="/mentors?field=career" className="group">
-              <div className="bg-white rounded-xl p-6 sm:p-8 shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 hover:border-primary/30 cursor-pointer">
+            <div className="group cursor-pointer" onClick={() => navigate('/mentors?field=career')}>
+              <div className="bg-white rounded-xl p-6 sm:p-8 shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 hover:border-primary/30">
                 <div className="mb-4 flex justify-center">
                   <CareerIcon />
                 </div>
@@ -176,10 +176,10 @@ export default function Home() {
                   대학에서 어떻게 준비해야 할까요?
                 </p>
               </div>
-            </Link>
+            </div>
 
-            <Link href="/mentors?field=life" className="group">
-              <div className="bg-white rounded-xl p-6 sm:p-8 shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 hover:border-primary/30 cursor-pointer">
+            <div className="group cursor-pointer" onClick={() => navigate('/mentors?field=life')}>
+              <div className="bg-white rounded-xl p-6 sm:p-8 shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 hover:border-primary/30">
                 <div className="mb-4 flex justify-center">
                   <LifeIcon />
                 </div>
@@ -190,7 +190,7 @@ export default function Home() {
                   캠퍼스 생활과 학교 문화를 알고 싶어요
                 </p>
               </div>
-            </Link>
+            </div>
           </div>
         </div>
       </section>
