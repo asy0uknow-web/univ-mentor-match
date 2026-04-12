@@ -755,12 +755,20 @@ export default function MentorProfile() {
             <DialogTitle>비밀번호 변경</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
+            {/* 비밀번호 요구사항 안내 */}
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+              <p className="text-sm text-blue-800">
+                <strong>비밀번호 요구사항:</strong> 최소 8자 이상이어야 합니다
+              </p>
+            </div>
+
             <div>
               <Label>현재 비밀번호</Label>
               <Input
                 type="password"
                 value={passwordForm.currentPassword}
                 onChange={(e) => setPasswordForm({ ...passwordForm, currentPassword: e.target.value })}
+                placeholder="현재 비밀번호를 입력해주세요"
                 className="mt-2"
               />
             </div>
@@ -770,8 +778,15 @@ export default function MentorProfile() {
                 type="password"
                 value={passwordForm.newPassword}
                 onChange={(e) => setPasswordForm({ ...passwordForm, newPassword: e.target.value })}
+                placeholder="새 비밀번호를 입력해주세요 (8자 이상)"
+                minLength={8}
                 className="mt-2"
               />
+              {passwordForm.newPassword && passwordForm.newPassword.length < 8 && (
+                <p className="text-xs text-red-600 mt-1">
+                  ⚠️ 비밀번호는 최소 8자 이상이어야 합니다
+                </p>
+              )}
             </div>
             <div>
               <Label>새 비밀번호 확인</Label>
@@ -779,8 +794,20 @@ export default function MentorProfile() {
                 type="password"
                 value={passwordForm.confirmPassword}
                 onChange={(e) => setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })}
+                placeholder="새 비밀번호를 다시 입력해주세요"
+                minLength={8}
                 className="mt-2"
               />
+              {passwordForm.confirmPassword && passwordForm.confirmPassword.length < 8 && (
+                <p className="text-xs text-red-600 mt-1">
+                  ⚠️ 비밀번호는 최소 8자 이상이어야 합니다
+                </p>
+              )}
+              {passwordForm.newPassword && passwordForm.confirmPassword && passwordForm.newPassword !== passwordForm.confirmPassword && (
+                <p className="text-xs text-red-600 mt-1">
+                  ⚠️ 비밀번호가 일치하지 않습니다
+                </p>
+              )}
             </div>
             <div className="flex gap-3 pt-4">
               <button
@@ -791,13 +818,22 @@ export default function MentorProfile() {
               </button>
               <button
                 onClick={handlePasswordChange}
-                disabled={changePasswordMutation.isPending}
-                className="flex-1 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition disabled:opacity-50"
+                disabled={
+                  changePasswordMutation.isPending ||
+                  !passwordForm.currentPassword ||
+                  passwordForm.newPassword.length < 8 ||
+                  passwordForm.confirmPassword.length < 8 ||
+                  passwordForm.newPassword !== passwordForm.confirmPassword
+                }
+                className="flex-1 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {changePasswordMutation.isPending ? (
-                  <Loader2 className="w-4 h-4 animate-spin inline mr-2" />
-                ) : null}
-                변경
+                  <span className="flex items-center justify-center gap-2">
+                    <Loader2 className="w-4 h-4 animate-spin" /> 변경 중...
+                  </span>
+                ) : (
+                  "변경"
+                )}
               </button>
             </div>
           </div>
