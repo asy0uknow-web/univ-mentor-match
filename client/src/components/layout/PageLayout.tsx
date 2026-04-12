@@ -12,11 +12,11 @@ export default function PageLayout({ children, showFooter = false }: PageLayoutP
   const [showBugReport, setShowBugReport] = useState(false);
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen page-enter">
       <Navbar onBugReport={() => setShowBugReport(true)} />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 animate-in fade-in slide-in-from-bottom-4 duration-300">
         {children}
-      </div>
+      </main>
       {showFooter && <Footer />}
       <BugReportModal isOpen={showBugReport} onClose={() => setShowBugReport(false)} />
     </div>

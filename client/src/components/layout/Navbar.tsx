@@ -69,7 +69,7 @@ export default function Navbar({ onBugReport }: NavbarProps) {
 
   return (
     <nav
-      className="border-b border-border bg-[#fdfcfd] sticky top-0 z-50 shadow-sm"
+      className="border-b border-border bg-[#fdfcfd] sticky top-0 z-50 shadow-sm animate-in fade-in slide-in-from-top-4 duration-300"
       role="navigation"
       aria-label="메인 네비게이션"
     >

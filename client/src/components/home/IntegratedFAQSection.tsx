@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Shield, AlertCircle } from "lucide-react";
+import { Shield, AlertCircle, ChevronDown } from "lucide-react";
 import { toast } from "sonner";
 
 interface FAQItem {
@@ -135,36 +135,26 @@ export const IntegratedFAQSection = () => {
                 {group.items.map((faq, idx) => (
                   <div
                     key={`${group.category}-${idx}`}
-                    className="bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden"
+                    className="bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden hover:scale-102 hover:-translate-y-1"
                   >
                     {/* Question */}
                     <button
                       onClick={() => setExpandedIndex(expandedIndex === `${group.category}-${idx}` ? null : `${group.category}-${idx}`)}
-                      className="w-full px-4 sm:px-6 md:px-8 py-4 sm:py-5 text-left hover:bg-gray-50 transition-colors flex items-start justify-between gap-4"
+                      className="w-full px-4 sm:px-6 md:px-8 py-4 sm:py-5 text-left hover:bg-blue-50 transition-all duration-200 flex items-start justify-between gap-4 group"
                       aria-expanded={expandedIndex === `${group.category}-${idx}`}
                       aria-controls={`faq-answer-${group.category}-${idx}`}
                     >
                       <div className="flex-1 min-w-0">
-                        <h4 className="text-sm sm:text-base md:text-lg font-semibold text-foreground">
+                        <h4 className="text-sm sm:text-base md:text-lg font-semibold text-foreground group-hover:text-indigo-600 transition-colors">
                           Q. {faq.question}
                         </h4>
                       </div>
                       <div className="flex-shrink-0 mt-1">
-                        <svg
-                          className={`w-5 h-5 sm:w-6 sm:h-6 text-primary transition-transform duration-300 ${
+                        <ChevronDown
+                          className={`w-5 h-5 sm:w-6 sm:h-6 text-primary transition-all duration-300 group-hover:scale-110 ${
                             expandedIndex === `${group.category}-${idx}` ? "rotate-180" : ""
                           }`}
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M19 14l-7 7m0 0l-7-7m7 7V3"
-                          />
-                        </svg>
+                        />
                       </div>
                     </button>
 
@@ -172,7 +162,7 @@ export const IntegratedFAQSection = () => {
                     {expandedIndex === `${group.category}-${idx}` && (
                       <div
                         id={`faq-answer-${group.category}-${idx}`}
-                        className="px-4 sm:px-6 md:px-8 py-4 sm:py-5 bg-gradient-to-r from-blue-50 to-transparent border-t border-gray-200"
+                        className="px-4 sm:px-6 md:px-8 py-4 sm:py-5 bg-gradient-to-r from-indigo-50 via-blue-50 to-transparent border-t border-gray-200 animate-in fade-in slide-in-from-top-2 duration-300"
                       >
                         <p className="text-xs sm:text-sm md:text-base text-muted-foreground leading-relaxed whitespace-pre-wrap">
                           A. {faq.answer}
@@ -188,7 +178,7 @@ export const IntegratedFAQSection = () => {
 
         {/* More Questions - Email Contact Section */}
         <div className="mt-12 sm:mt-16 max-w-4xl mx-auto">
-          <div className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl p-6 sm:p-8 md:p-10 border border-blue-200">
+          <div className="bg-gradient-to-r from-indigo-50 via-blue-50 to-blue-100 rounded-xl p-6 sm:p-8 md:p-10 border border-blue-200 hover:shadow-lg hover:scale-102 transition-all duration-300">
             <p className="text-base sm:text-lg text-foreground font-semibold mb-4">
               더 궁금한 점이 있으신가요?
             </p>
@@ -196,12 +186,12 @@ export const IntegratedFAQSection = () => {
               아래 이메일로 문의해 주세요. 평일 기준 24시간 이내에 운영진이 직접 답변해 드립니다.
             </p>
             <div className="flex items-center gap-3 flex-wrap">
-              <span className="text-sm sm:text-base font-mono text-blue-600 font-semibold cursor-pointer hover:text-blue-700 transition-colors" onClick={handleCopyEmail} title="클릭하여 복사">
+              <span className="text-sm sm:text-base font-mono text-blue-600 font-semibold cursor-pointer hover:text-blue-700 hover:scale-105 transition-all" onClick={handleCopyEmail} title="클릭하여 복사">
                 2026univmatch@gmail.com
               </span>
               <button
                 onClick={handleCopyEmail}
-                className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors text-sm sm:text-base font-semibold"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg hover:scale-105 active:scale-95 transition-transform text-sm sm:text-base font-semibold"
                 title="이메일 주소 복사"
               >
                 <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -211,7 +201,7 @@ export const IntegratedFAQSection = () => {
               </button>
               <a
                 href="mailto:2026univmatch@gmail.com"
-                className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors text-sm sm:text-base font-semibold"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg hover:scale-105 active:scale-95 transition-transform text-sm sm:text-base font-semibold"
               >
                 <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />

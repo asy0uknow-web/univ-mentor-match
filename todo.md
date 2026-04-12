@@ -2627,3 +2627,21 @@
   - [x] Navbar: 홈페이지 메뉴 underline 애니메이션 추가
   - [x] Navbar: 인증 메뉴 버튼 scale 인터랙션
   - [x] Footer: 모든 링크 hover:translate-x-1 애니메이션
+
+
+## UnivMatch 다음 단계 3가지 완료 (Step 1-3)
+- [x] Step 1: FAQ 섹션 개편 (Accordion + Valley 스타일)
+  - [x] 카드 hover:scale-102, hover:-translate-y-1 (Valley 스타일)
+  - [x] ChevronDown 아이콘 rotate-180 + group-hover:scale-110
+  - [x] 답변 영역 animate-in fade-in slide-in-from-top-2
+  - [x] 질문 텍스트 group-hover:text-indigo-600
+  - [x] 하단 CTA 박스 hover:scale-102 + 버튼 hover:scale-105
+- [x] Step 2: 모바일 터치 인터랙션 (hover → tap/press 피드백)
+  - [x] @media (hover: none) and (pointer: coarse) 미디어 쿼리
+  - [x] 터치 시 active:scale-95 active:opacity-75 피드백
+  - [x] 모든 버튼, 링크, 폼 요소에 일관된 터치 반응
+- [x] Step 3: 페이지 전환 애니메이션 (fade-in/fade-out)
+  - [x] PageLayout: animate-in fade-in slide-in-from-bottom-4 duration-300
+  - [x] Navbar: animate-in fade-in slide-in-from-top-4 duration-300
+  - [x] Footer: animate-in fade-in slide-in-from-bottom-4 duration-300
+  - [x] index.css: main, section, [role="main"] 자동 애니메이션
