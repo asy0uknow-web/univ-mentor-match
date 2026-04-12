@@ -2447,6 +2447,28 @@ getTopMentors: publicProcedure
         return await getColumnById(input.columnId, ctx.user?.id);
       }),
 
+    uploadCoverImage: protectedProcedure
+      .input(z.object({
+        imageData: z.string(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const allowedMimeTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
+        const mimeMatch = input.imageData.match(/^data:(image\/[a-z]+);base64,/);
+        const mimeType = mimeMatch?.[1];
+        
+        if (!mimeType || !allowedMimeTypes.includes(mimeType)) {
+          throw new Error("Unsupported image type. Use JPEG, PNG, GIF, or WebP.");
+        }
+        
+        const base64Data = input.imageData.replace(/^data:image\/[a-z]+;base64,/, '');
+        const buffer = Buffer.from(base64Data, 'base64');
+        
+        const fileName = `column-covers/${ctx.user.id}-${Date.now()}-${Math.random().toString(36).substring(7)}.jpg`;
+        const { url } = await storagePut(fileName, buffer, 'image/jpeg');
+        
+        return { imageUrl: url };
+      }),
+
     create: protectedProcedure
       .input(z.object({
         title: z.string().min(5).max(255),

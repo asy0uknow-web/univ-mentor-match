@@ -45,6 +45,8 @@ export default function MentorColumnCreate() {
   const [isPreview, setIsPreview] = useState(false);
   const [isMentor, setIsMentor] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
+  const [dragActive, setDragActive] = useState(false);
 
   // 멘토 프로필 조회
   const { data: profile } = trpc.mentor.getMyProfile.useQuery(undefined, {
@@ -58,6 +60,16 @@ export default function MentorColumnCreate() {
       setIsLoading(false);
     }
   }, [profile, isAuthenticated]);
+
+  const uploadImageMutation = trpc.mentorColumns.uploadCoverImage.useMutation({
+    onSuccess: (data: any) => {
+      setCoverImageUrl(data.imageUrl);
+      toast.success("이미지가 업로드되었습니다");
+    },
+    onError: (error: any) => {
+      toast.error(`업로드 실패: ${error.message}`);
+    },
+  });
 
   const createMutation = trpc.mentorColumns.create.useMutation({
     onSuccess: (data: any) => {
@@ -133,6 +145,48 @@ export default function MentorColumnCreate() {
       </PageLayout>
     );
   }
+
+  const handleImageUpload = async (file: File) => {
+    if (!file.type.startsWith('image/')) {
+      toast.error('이미지 파일만 업로드 가능합니다');
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('이미지 크기는 5MB 이하여야 합니다');
+      return;
+    }
+
+    setIsUploadingImage(true);
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const base64 = e.target?.result as string;
+      uploadImageMutation.mutate({ imageData: base64 });
+      setIsUploadingImage(false);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleDrag = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === 'dragenter' || e.type === 'dragover') {
+      setDragActive(true);
+    } else if (e.type === 'dragleave') {
+      setDragActive(false);
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+    
+    const files = e.dataTransfer.files;
+    if (files && files[0]) {
+      handleImageUpload(files[0]);
+    }
+  };
 
   const handleSubmit = (submitStatus: "draft" | "published" = status) => {
     // 유효성 검사
@@ -264,17 +318,71 @@ export default function MentorColumnCreate() {
                   </Select>
                 </div>
 
-                {/* 커버 이미지 URL */}
+                {/* 커버 이미지 업로드 */}
                 <div>
                   <label className="block text-xs sm:text-sm font-medium mb-2">
-                    커버 이미지 URL (선택)
+                    커버 이미지 (선택)
                   </label>
-                  <Input
-                    placeholder="https://example.com/image.jpg"
-                    value={coverImageUrl}
-                    onChange={(e) => setCoverImageUrl(e.target.value)}
-                    className="text-sm"
-                  />
+                  
+                  {/* 드래그 앤드 드롭 영역 */}
+                  <div
+                    onDragEnter={handleDrag}
+                    onDragLeave={handleDrag}
+                    onDragOver={handleDrag}
+                    onDrop={handleDrop}
+                    className={`border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors ${
+                      dragActive
+                        ? 'border-green-500 bg-green-50'
+                        : 'border-gray-300 bg-gray-50 hover:border-gray-400'
+                    }`}
+                  >
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => e.target.files && handleImageUpload(e.target.files[0])}
+                      className="hidden"
+                      id="cover-image-input"
+                      disabled={isUploadingImage}
+                    />
+                    <label htmlFor="cover-image-input" className="cursor-pointer block">
+                      <div className="text-xs sm:text-sm text-muted-foreground">
+                        {isUploadingImage ? (
+                          <>
+                            <p className="font-medium">업로드 중...</p>
+                          </>
+                        ) : (
+                          <>
+                            <p className="font-medium">이미지를 드래그 앤드 드롭하거나</p>
+                            <p className="text-xs mt-1">클릭하여 업로드</p>
+                            <p className="text-xs mt-2 text-gray-500">(JPEG, PNG, GIF, WebP - 최대 5MB)</p>
+                          </>
+                        )}
+                      </div>
+                    </label>
+                  </div>
+                  
+                  {/* 업로드된 이미지 미리보기 */}
+                  {coverImageUrl && (
+                    <div className="mt-4">
+                      <p className="text-xs sm:text-sm font-medium mb-2">미리보기</p>
+                      <div className="relative w-full h-40 bg-gray-100 rounded-lg overflow-hidden">
+                        <img
+                          src={coverImageUrl}
+                          alt="Cover preview"
+                          className="w-full h-full object-cover"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setCoverImageUrl('')}
+                          className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 {/* 요약 */}
