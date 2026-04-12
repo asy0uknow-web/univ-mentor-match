@@ -68,7 +68,7 @@ import { createQuestion, getQuestionById, getQuestions, updateQuestion, deleteQu
 import { getColumnsList, getColumnById, createColumn, updateColumn, deleteColumn, toggleColumnLike, getColumnComments, createComment, updateComment, deleteComment, getMyColumns, incrementViewCount } from "./columns";
 import { emailVerificationTokens } from "../drizzle/schema";
 import { mentorGallery, messages, notifications, bookings, reviews, mentorProfiles, mentorVerifications, users, bugReports, mentorConsultationTypes, consultationProposals, studentProfiles } from "../drizzle/schema";
-import { and, eq, eq as drizzleEq, or as drizzleOr, desc as drizzleDesc } from "drizzle-orm";
+import { and, eq, eq as drizzleEq, or as drizzleOr, desc as drizzleDesc, count } from "drizzle-orm";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2025-12-15.clover",
@@ -1563,10 +1563,11 @@ getTopMentors: publicProcedure
           .limit(limit)
           .offset(offset);
 
-        const countResult = await db.select({ count: drizzleDesc(bookings.id) }).from(bookings);
+        const countResult = await db.select({ count: count() }).from(bookings);
+        const total = countResult[0]?.count ?? 0;
         return {
           bookings: results,
-          total: results.length,
+          total,
           page,
           limit,
         };

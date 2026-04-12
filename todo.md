@@ -2416,3 +2416,10 @@
 - [x] 편집 폼 렌더링 조건에 profile 존재 여부 체크 추가
 - [x] 입력 필드에 optional chaining 및 기본값 추가
 - [x] 저장 버튼 클릭 시 profile 존재 여부 재확인
+
+
+## 버그 수정 - 관리자 페이지 getAllBookings API SQL 오류 (pt 1.15)
+- [x] getAllBookings 프로시저의 SQL 문법 오류 파악 (drizzleDesc 잘못 사용)
+- [x] count() 함수를 올바르게 사용하도록 수정
+- [x] count 함수 임포트 추가
+- [x] 개발 서버 재시작 및 TypeScript 컴파일 확인
