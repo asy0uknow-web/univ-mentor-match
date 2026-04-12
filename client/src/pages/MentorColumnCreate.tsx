@@ -391,7 +391,7 @@ export default function MentorColumnCreate() {
                     요약
                   </label>
                   <Textarea
-                    placeholder="이미지에 대한 부가설명을 붙여주세요!"
+                    placeholder="이 칼럼에 대해 간단히 설명해주세요!"
                     value={excerpt}
                     onChange={(e) => setExcerpt(e.target.value)}
                     maxLength={200}
