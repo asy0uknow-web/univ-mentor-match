@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -78,6 +79,15 @@ export default function AdminDashboard() {
       utils.admin.getAllMentors.invalidate();
     },
     onError: (error) => toast.error(`삭제 실패: ${error.message}`),
+  });
+
+  const updateMentorMutation = trpc.admin.updateMentorProfile.useMutation({
+    onSuccess: () => {
+      toast.success("멘토 프로필이 수정되었습니다.");
+      setEditingMentor(null);
+      utils.admin.getAllMentors.invalidate();
+    },
+    onError: (error) => toast.error(`수정 실패: ${error.message}`),
   });
 
   // 조건부 렌더링 (return 제거)
@@ -351,37 +361,99 @@ export default function AdminDashboard() {
                   {filteredMentors && filteredMentors.length > 0 ? (
                     <div className="space-y-3">
                       {filteredMentors.map((mentor: any) => (
-                        <div key={mentor.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-sm transition-shadow">
-                          <div className="flex items-start justify-between mb-2">
-                            <div>
-                              <h3 className="font-semibold text-gray-900">{mentor.user?.name}</h3>
-                              <p className="text-sm text-gray-500">{mentor.profile.university} · {mentor.profile.major}</p>
+                        <div key={mentor.id}>
+                          <div className="border border-gray-200 rounded-lg p-4 hover:shadow-sm transition-shadow">
+                            <div className="flex items-start justify-between mb-2">
+                              <div>
+                                <h3 className="font-semibold text-gray-900">{mentor.user?.name}</h3>
+                                <p className="text-sm text-gray-500">{mentor.profile.university} · {mentor.profile.major}</p>
+                              </div>
+                              <Badge className="bg-green-100 text-green-700 border-0">활성</Badge>
                             </div>
-                            <Badge className="bg-green-100 text-green-700 border-0">활성</Badge>
+                            <p className="text-sm text-gray-600 mb-3">{mentor.profile.bio}</p>
+                            <div className="flex gap-2">
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => setEditingMentor(editingMentor?.id === mentor.id ? null : mentor)}
+                              >
+                                <Edit className="h-4 w-4" />
+                                편집
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="destructive"
+                                onClick={() => {
+                                  if (confirm("정말 이 멘토를 삭제하시겠습니까?")) {
+                                    deleteMentorMutation.mutate({ mentorId: mentor.id });
+                                  }
+                                }}
+                              >
+                                <Trash2 className="h-4 w-4" />
+                                삭제
+                              </Button>
+                            </div>
                           </div>
-                          <p className="text-sm text-gray-600 mb-3">{mentor.profile.bio}</p>
-                          <div className="flex gap-2">
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => setEditingMentor(editingMentor?.id === mentor.id ? null : mentor)}
-                            >
-                              <Edit className="h-4 w-4" />
-                              편집
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="destructive"
-                              onClick={() => {
-                                if (confirm("정말 이 멘토를 삭제하시겠습니까?")) {
-                                  deleteMentorMutation.mutate({ mentorId: mentor.id });
-                                }
-                              }}
-                            >
-                              <Trash2 className="h-4 w-4" />
-                              삭제
-                            </Button>
-                          </div>
+                          
+                          {/* 편집 폼 */}
+                          {editingMentor?.id === mentor.id && (
+                            <div className="border border-blue-200 bg-blue-50 rounded-lg p-4 mt-2">
+                              <h4 className="font-semibold text-gray-900 mb-3">프로필 편집</h4>
+                              <div className="space-y-3">
+                                <div>
+                                  <Label className="text-sm">대학교</Label>
+                                  <Input
+                                    value={editingMentor.profile.university}
+                                    onChange={(e) => setEditingMentor({
+                                      ...editingMentor,
+                                      profile: { ...editingMentor.profile, university: e.target.value }
+                                    })}
+                                    className="mt-1"
+                                  />
+                                </div>
+                                <div>
+                                  <Label className="text-sm">학과</Label>
+                                  <Input
+                                    value={editingMentor.profile.major}
+                                    onChange={(e) => setEditingMentor({
+                                      ...editingMentor,
+                                      profile: { ...editingMentor.profile, major: e.target.value }
+                                    })}
+                                    className="mt-1"
+                                  />
+                                </div>
+                                <div className="flex gap-2 pt-2">
+                                  <Button
+                                    size="sm"
+                                    onClick={() => {
+                                      updateMentorMutation.mutate({
+                                        mentorId: mentor.id,
+                                        university: editingMentor.profile.university,
+                                        major: editingMentor.profile.major,
+                                      });
+                                    }}
+                                    disabled={updateMentorMutation.isPending}
+                                  >
+                                    {updateMentorMutation.isPending ? (
+                                      <>
+                                        <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                                        저장 중...
+                                      </>
+                                    ) : (
+                                      "저장"
+                                    )}
+                                  </Button>
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={() => setEditingMentor(null)}
+                                  >
+                                    취소
+                                  </Button>
+                                </div>
+                              </div>
+                            </div>
+                          )}
                         </div>
                       ))}
                     </div>
