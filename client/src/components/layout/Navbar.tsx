@@ -22,7 +22,6 @@ const AUTHENTICATED_MENU = [
   { href: "/messages", label: "상담 신청" },
   { href: "/bookings", label: "예약 내역" },
   { href: "/qna", label: "Q&A" },
-  { href: "/columns", label: "멘토 칼럼" },
 ] as const;
 
 const DROPDOWN_MENU = [
