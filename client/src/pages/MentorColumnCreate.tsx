@@ -321,7 +321,7 @@ export default function MentorColumnCreate() {
                 {/* 커버 이미지 업로드 */}
                 <div>
                   <label className="block text-xs sm:text-sm font-medium mb-2">
-                    커버 이미지 (선택)
+                    커버 이미지
                   </label>
                   
                   {/* 드래그 앤드 드롭 영역 */}
@@ -352,7 +352,7 @@ export default function MentorColumnCreate() {
                           </>
                         ) : (
                           <>
-                            <p className="font-medium">이미지를 드래그 앤드 드롭하거나</p>
+                            <p className="font-medium">이미지를 가져오거나</p>
                             <p className="text-xs mt-1">클릭하여 업로드</p>
                             <p className="text-xs mt-2 text-gray-500">(JPEG, PNG, GIF, WebP - 최대 5MB)</p>
                           </>
@@ -388,17 +388,17 @@ export default function MentorColumnCreate() {
                 {/* 요약 */}
                 <div>
                   <label className="block text-xs sm:text-sm font-medium mb-2">
-                    요약 (선택)
+                    요약
                   </label>
                   <Textarea
-                    placeholder="칼럼의 요약을 입력해주세요 (입력하지 않으면 내용의 첫 200자가 사용됩니다)"
+                    placeholder="이미지에 대한 부가설명을 붙여주세요!"
                     value={excerpt}
                     onChange={(e) => setExcerpt(e.target.value)}
-                    maxLength={500}
+                    maxLength={200}
                     className="min-h-20 text-sm"
                   />
                   <p className="text-xs text-muted-foreground mt-1">
-                    {excerpt.length}/500
+                    {excerpt.length}/200
                   </p>
                 </div>
 
