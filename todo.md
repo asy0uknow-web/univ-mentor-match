@@ -2574,3 +2574,56 @@
 - [ ] 모바일 반응형 테스트
 - [ ] 접근성 테스트 (focus-visible, keyboard navigation)
 - [ ] 성능 테스트 (animation smoothness)
+
+
+## UnivMatch 공개 UX 전면 개편 (Phase 1-5 진행 중)
+- [x] Phase 1: 기존 코드 구조 분석
+- [x] Phase 2: 공통 컴포넌트 생성
+  - [x] ConsultationCTAButton (3가지 variant + hover 애니메이션)
+  - [x] StatusBadge (6가지 상태)
+  - [x] ScrollReveal (스크롤 애니메이션)
+- [x] Phase 3 (진행 중): Home 페이지 전면 개편
+  - [x] Hero 섹션 개편 (3개 병렬 진입점 + 멘토 참여 CTA)
+  - [x] Quick Entry 섹션 인터랙션 강화 (Valley 스타일 hover 효과)
+  - [x] How It Works 섹션 인터랙션 추가 (hover scale 효과)
+  - [ ] Featured Mentors 섹션 개편
+  - [ ] Testimonials 섹션 개편
+  - [ ] Popular QnA 섹션 개편
+  - [ ] Featured Columns 섹션 개편
+  - [ ] USP 섹션 개편
+  - [ ] FAQ 섹션 개편
+- [x] Phase 4 (진행 중): QnA 페이지 전면 개편
+  - [x] QnAList 페이지 개편 (StatusBadge 적용, hover 인터랙션 추가)
+  - [x] QnADetail 페이지 개편 (StatusBadge 적용)
+  - [ ] QnACreate 페이지 개편
+- [x] Phase 5 (진행 중): 칼럼 페이지 전면 개편
+  - [x] MentorColumns 페이지 개편 (Valley 스타일 인터랙션, 카드 호버 효과)
+  - [x] MentorColumnDetail 페이지 개편 (상담 신청 CTA 추가)
+  - [ ] MentorColumnCreate 페이지 개편
+- [ ] Phase 6: 전환 로직 연결 (QnA 답변 → 상담 문의, 칼럼 → 상담 문의)
+- [ ] Phase 7: 네비게이션/풀터 업데이트
+- [ ] Phase 8: 전체 테스트 및 검증
+
+
+## UnivMatch 공개 UX 전면 개편 (Phase 3-7)
+- [x] Phase 3: Home 페이지 나머지 섹션 개편
+  - [x] Quick Entry 섹션 Valley 스타일 인터랙션
+  - [x] FeaturedMentorsSlide 카드 hover 효과
+  - [x] TestimonialsSection 카드 Valley 스타일 적용
+  - [x] PopularQnASection 카드 Valley 스타일 + CTA 버튼 애니메이션
+  - [x] FeaturedColumnsSection 카드 Valley 스타일 적용
+- [x] Phase 4: QnA 페이지 전면 개편
+  - [x] QnAList: StatusBadge 컴포넌트 적용 + hover 인터랙션
+  - [x] QnADetail: StatusBadge 적용 + ConsultationCTAButton 추가
+  - [x] QnACreate: 폼 UI 강화 (Lightbulb 아이콘, 그래디언트 배경, 버튼 애니메이션)
+- [x] Phase 5: 칼럼 페이지 전면 개편
+  - [x] MentorColumns: Valley 스타일 카드 호버 효과
+  - [x] MentorColumnDetail: 상담 신청 CTA 버튼 추가
+  - [x] MentorColumnCreate: 헤더 강화 (BookOpen 아이콘, 그래디언트)
+- [x] Phase 6: 전환 로직 연결
+  - [x] QnADetail: 멘토 답변에 ConsultationCTAButton 적용
+  - [x] MentorColumnDetail: ConsultationCTAButton으로 강화
+- [x] Phase 7: 네비게이션/풀터 업데이트
+  - [x] Navbar: 홈페이지 메뉴 underline 애니메이션 추가
+  - [x] Navbar: 인증 메뉴 버튼 scale 인터랙션
+  - [x] Footer: 모든 링크 hover:translate-x-1 애니메이션

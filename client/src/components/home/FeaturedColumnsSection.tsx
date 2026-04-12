@@ -56,7 +56,7 @@ export function FeaturedColumnsSection() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 mb-12">
           {columns.map((column: any) => (
             <Link key={column.id} href={`/columns/${column.id}`}>
-              <div className="group rounded-2xl overflow-hidden bg-white shadow-md hover:shadow-xl transition-all duration-300 h-full flex flex-col cursor-pointer">
+              <div className="group rounded-2xl overflow-hidden bg-white shadow-md hover:shadow-xl transition-all duration-300 h-full flex flex-col cursor-pointer hover:scale-105 hover:-translate-y-2">
                 {/* 커버 이미지 */}
                 {column.coverImageUrl && (
                   <div className="relative h-48 overflow-hidden bg-gradient-to-br from-primary/20 to-primary/5">
@@ -78,12 +78,12 @@ export function FeaturedColumnsSection() {
                   </div>
 
                   {/* 제목 */}
-                  <h3 className="text-lg font-bold text-foreground mb-2 line-clamp-2 group-hover:text-primary transition-colors">
+                  <h3 className="text-lg font-bold text-foreground mb-2 line-clamp-2 group-hover:text-indigo-600 transition-colors">
                     {column.title}
                   </h3>
 
                   {/* 요약 */}
-                  <p className="text-sm text-muted-foreground mb-4 line-clamp-2 flex-1">
+                  <p className="text-sm text-muted-foreground mb-4 line-clamp-2 flex-1 group-hover:text-foreground transition-colors">
                     {column.excerpt || column.content.substring(0, 100)}
                   </p>
 
@@ -114,7 +114,7 @@ export function FeaturedColumnsSection() {
         <div className="text-center">
           <Link href="/columns">
             <div>
-              <Button variant="outline" size="lg" className="group">
+              <Button variant="outline" size="lg" className="group hover:scale-105 active:scale-95 transition-transform">
                 모든 칼럼 보기
                 <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
               </Button>

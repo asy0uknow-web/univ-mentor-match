@@ -17,7 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Save, Eye } from "lucide-react";
+import { ArrowLeft, Save, Eye, Sparkles, BookOpen } from "lucide-react";
 import { toast } from "sonner";
 
 const COLUMN_CATEGORIES = [
@@ -234,8 +234,11 @@ export default function MentorColumnCreate() {
         </Button>
 
         <div className="max-w-3xl mx-auto space-y-6">
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-bold mb-2">칼럼 작성</h1>
+          <div className="bg-gradient-to-r from-indigo-50 to-blue-50 p-4 sm:p-6 rounded-lg border border-indigo-100">
+            <div className="flex items-center gap-3 mb-2">
+              <BookOpen className="h-6 w-6 text-indigo-600" />
+              <h1 className="text-2xl sm:text-3xl font-bold">칼럼 작성</h1>
+            </div>
             <p className="text-sm sm:text-base text-muted-foreground">
               당신의 경험과 조언을 담은 칼럼을 작성해보세요
             </p>
@@ -243,7 +246,7 @@ export default function MentorColumnCreate() {
 
           {isPreview ? (
             /* 미리보기 모드 */
-            <Card>
+            <Card className="hover:shadow-lg transition-shadow">
               <CardHeader className="pb-3 sm:pb-4">
                 <div className="flex items-start justify-between gap-2 mb-3">
                   <div className="flex-1">
@@ -280,11 +283,12 @@ export default function MentorColumnCreate() {
             </Card>
           ) : (
             /* 편집 모드 */
-            <Card>
+            <Card className="hover:shadow-lg transition-shadow">
               <CardContent className="pt-6 space-y-4 sm:space-y-6">
                 {/* 제목 */}
                 <div>
-                  <label className="block text-xs sm:text-sm font-medium mb-2">
+                  <label className="block text-xs sm:text-sm font-medium mb-2 flex items-center gap-2">
+                    <Sparkles className="h-4 w-4 text-indigo-600" />
                     제목 <span className="text-red-500">*</span>
                   </label>
                   <Input
@@ -292,7 +296,7 @@ export default function MentorColumnCreate() {
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     maxLength={255}
-                    className="text-sm"
+                    className="text-sm hover:border-indigo-300 focus:border-indigo-500 transition-colors"
                   />
                   <p className="text-xs text-muted-foreground mt-1">
                     {title.length}/255
@@ -330,10 +334,10 @@ export default function MentorColumnCreate() {
                     onDragLeave={handleDrag}
                     onDragOver={handleDrag}
                     onDrop={handleDrop}
-                    className={`border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors ${
+                    className={`border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-all duration-300 hover:scale-102 ${
                       dragActive
-                        ? 'border-green-500 bg-green-50'
-                        : 'border-gray-300 bg-gray-50 hover:border-gray-400'
+                        ? 'border-indigo-500 bg-indigo-50 scale-105'
+                        : 'border-gray-300 bg-gray-50 hover:border-indigo-400'
                     }`}
                   >
                     <input

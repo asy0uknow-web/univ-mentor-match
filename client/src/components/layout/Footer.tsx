@@ -27,9 +27,9 @@ export default function Footer() {
             <div>
               <h3 className="text-white font-bold text-lg mb-4">서비스</h3>
               <ul className="space-y-2 text-sm">
-                <li><Link href="/mentors" className="hover:text-white transition-colors">멘토 찾기</Link></li>
-                <li><Link href="/my-profile" className="hover:text-white transition-colors">멘토 등록</Link></li>
-                <li><Link href="/columns" className="hover:text-white transition-colors">칼럼 보기</Link></li>
+                <li><Link href="/mentors" className="hover:text-white transition-all duration-200 hover:translate-x-1">멘토 찾기</Link></li>
+                <li><Link href="/my-profile" className="hover:text-white transition-all duration-200 hover:translate-x-1">멘토 등록</Link></li>
+                <li><Link href="/columns" className="hover:text-white transition-all duration-200 hover:translate-x-1">칼럼 보기</Link></li>
               </ul>
             </div>
 
@@ -37,9 +37,9 @@ export default function Footer() {
             <div>
               <h3 className="text-white font-bold text-lg mb-4">지원</h3>
               <ul className="space-y-2 text-sm">
-                <li><a href="#faq" className="hover:text-white transition-colors">자주 묻는 질문</a></li>
-                <li><button onClick={() => setIsSafetyGuideOpen(true)} className="hover:text-white transition-colors text-left">안전 가이드</button></li>
-                <li><a href="mailto:2026univmatch@gmail.com" className="hover:text-white transition-colors">이메일 문의</a></li>
+                <li><a href="#faq" className="hover:text-white transition-all duration-200 hover:translate-x-1">자주 묻는 질문</a></li>
+                <li><button onClick={() => setIsSafetyGuideOpen(true)} className="hover:text-white transition-all duration-200 hover:translate-x-1 text-left">안전 가이드</button></li>
+                <li><a href="mailto:2026univmatch@gmail.com" className="hover:text-white transition-all duration-200 hover:translate-x-1">이메일 문의</a></li>
               </ul>
             </div>
 
@@ -47,9 +47,9 @@ export default function Footer() {
             <div>
               <h3 className="text-white font-bold text-lg mb-4">법적</h3>
               <ul className="space-y-2 text-sm">
-                <li><Link href="/terms" className="hover:text-white transition-colors">이용약관</Link></li>
-                <li><Link href="/privacy-policy" className="hover:text-slate-200 transition-colors text-slate-300 font-medium">개인정보처리방침</Link></li>
-                <li><Link href="/refund-policy" className="hover:text-white transition-colors">환불 정책</Link></li>
+                <li><Link href="/terms" className="hover:text-white transition-all duration-200 hover:translate-x-1">이용약관</Link></li>
+                <li><Link href="/privacy-policy" className="hover:text-slate-200 transition-all duration-200 hover:translate-x-1 text-slate-300 font-medium">개인정보처리방침</Link></li>
+                <li><Link href="/refund-policy" className="hover:text-white transition-all duration-200 hover:translate-x-1">환불 정책</Link></li>
               </ul>
             </div>
           </div>

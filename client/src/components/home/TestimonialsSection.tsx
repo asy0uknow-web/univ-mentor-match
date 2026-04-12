@@ -60,9 +60,9 @@ export const TestimonialsSection = () => {
           {TESTIMONIALS.map((testimonial) => (
             <div
               key={testimonial.id}
-              className="bg-gradient-to-br from-gray-50 to-white rounded-2xl p-6 sm:p-8 shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100"
+              className="bg-gradient-to-br from-gray-50 to-white rounded-2xl p-6 sm:p-8 shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100 hover:scale-105 hover:-translate-y-2 group"
             >
-              <span className="inline-block px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-xs font-semibold mb-4">
+              <span className="inline-block px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-xs font-semibold mb-4 group-hover:bg-indigo-100 group-hover:text-indigo-700 transition-colors">
                 {testimonial.category}
               </span>
 
@@ -79,7 +79,7 @@ export const TestimonialsSection = () => {
                 ))}
               </div>
 
-              <p className="text-base sm:text-lg text-foreground mb-6 leading-relaxed italic">
+              <p className="text-base sm:text-lg text-foreground mb-6 leading-relaxed italic group-hover:text-indigo-900 transition-colors">
                 "{testimonial.content}"
               </p>
 
@@ -107,8 +107,8 @@ export const TestimonialsSection = () => {
             나에게 맞는 멘토를 직접 찾아보세요
           </p>
           <Link href="/mentors">
-            <div className="inline-block px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold rounded-lg hover:shadow-xl transition-all duration-300 text-base sm:text-lg cursor-pointer">
-              멘토 찾기
+            <div className="inline-block px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold rounded-lg hover:shadow-xl transition-all duration-300 text-base sm:text-lg cursor-pointer hover:scale-105 active:scale-95">
+              멘늤토 찾기
             </div>
           </Link>
         </div>

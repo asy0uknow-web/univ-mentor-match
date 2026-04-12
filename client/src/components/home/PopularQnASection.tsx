@@ -92,7 +92,7 @@ export function PopularQnASection() {
                 href={`/qna/${question.id}`}
                 className="group"
               >
-                <Card className="h-full hover:shadow-lg transition-all duration-300 border-gray-200 hover:border-blue-300 cursor-pointer">
+                <Card className="h-full hover:shadow-lg transition-all duration-300 border-gray-200 hover:border-blue-300 cursor-pointer hover:scale-105 hover:-translate-y-2 group">
                   <CardHeader className="pb-3 sm:pb-4">
                     {/* 카테고리 및 상태 배지 */}
                     <div className="flex items-center gap-2 mb-3 flex-wrap">
@@ -115,14 +115,14 @@ export function PopularQnASection() {
                     </div>
 
                     {/* 질문 제목 */}
-                    <h3 className="text-sm sm:text-base font-semibold text-foreground group-hover:text-blue-600 transition-colors line-clamp-2">
+                    <h3 className="text-sm sm:text-base font-semibold text-foreground group-hover:text-indigo-600 transition-colors line-clamp-2">
                       {question.title}
                     </h3>
                   </CardHeader>
 
                   <CardContent className="space-y-3 sm:space-y-4">
                     {/* 질문 내용 미리보기 */}
-                    <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2">
+                    <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2 group-hover:text-foreground transition-colors">
                       {question.content}
                     </p>
 
@@ -152,7 +152,7 @@ export function PopularQnASection() {
               전공 선택, 대학 생활, 진로 고민 등 무엇이든 성실한 멘토들이 답변해줄 준비가 되어있습니다.
             </p>
             <Link href="/qna">
-              <Button className="bg-blue-600 hover:bg-blue-700 text-white text-sm sm:text-base px-6 sm:px-8 py-5 sm:py-6 font-semibold">
+              <Button className="bg-blue-600 hover:bg-blue-700 text-white text-sm sm:text-base px-6 sm:px-8 py-5 sm:py-6 font-semibold hover:scale-105 active:scale-95 transition-transform">
                 Q&A 커뮤니티 참여하기
               </Button>
             </Link>

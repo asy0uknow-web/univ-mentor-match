@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { trpc } from "@/lib/trpc";
 import { useLocation } from "wouter";
-import { Search, Plus, MessageCircle, ChevronDown, AlertCircle } from "lucide-react";
+import { Search, Plus, MessageCircle, ChevronDown, AlertCircle, ArrowRight } from "lucide-react";
 import { useState, useEffect } from "react";
 import { PageLayout } from "@/components/layout";
 import { setPageMeta } from "@/lib/seo";
@@ -13,6 +13,8 @@ import { format } from "date-fns";
 import { ko } from "date-fns/locale";
 import * as Select from "@radix-ui/react-select";
 import * as Tabs from "@radix-ui/react-tabs";
+import { StatusBadge } from "@/components/StatusBadge";
+import { ConsultationCTAButton } from "@/components/ConsultationCTAButton";
 
 const CATEGORIES = [
   { value: "all", label: "전체" },
@@ -41,16 +43,16 @@ const STATUS_TABS = [
   { value: "solved", label: "해결됨" },
 ];
 
-const getStatusBadge = (status: string) => {
+const mapStatusToStatusBadge = (status: string) => {
   switch (status) {
     case "awaiting_answer":
-      return { label: "답변 대기 중", className: "bg-yellow-100 text-yellow-800" };
+      return "pending";
     case "answered":
-      return { label: "답변 완료", className: "bg-blue-100 text-blue-800" };
+      return "accepted";
     case "solved":
-      return { label: "해결됨", className: "bg-green-100 text-green-800" };
+      return "completed";
     default:
-      return { label: status, className: "bg-gray-100 text-gray-800" };
+      return "new";
   }
 };
 
@@ -244,23 +246,20 @@ export default function QnAList() {
         ) : questions && questions.length > 0 ? (
           <div className="space-y-3 sm:space-y-4">
             {questions.map((question: any) => {
-              const statusBadge = getStatusBadge(question.status);
               return (
                 <Card
                   key={question.id}
-                  className="overflow-hidden hover:shadow-md transition-shadow cursor-pointer"
+                  className="overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer group hover:scale-[1.02]"
                   onClick={() => setLocation(`/qna/${question.id}`)}
                 >
                   <CardHeader className="pb-2 sm:pb-3 px-3 sm:px-6">
                     <div className="flex items-start justify-between gap-2">
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
-                          <CardTitle className="text-base sm:text-lg truncate">
+                          <CardTitle className="text-base sm:text-lg truncate group-hover:text-indigo-600 transition-colors">
                             {question.title}
                           </CardTitle>
-                          <Badge variant="secondary" className={`text-xs flex-shrink-0 ${statusBadge.className}`}>
-                            {statusBadge.label}
-                          </Badge>
+                          <StatusBadge status={mapStatusToStatusBadge(question.status)} />
                         </div>
                         <CardDescription className="text-xs sm:text-sm">
                           {question.isAnonymous ? "익명" : question.author?.name || "사용자"} • {format(new Date(question.createdAt), "MMM dd", { locale: ko })}
@@ -291,6 +290,7 @@ export default function QnAList() {
                           <span>최근: {format(new Date(question.lastAnsweredAt), "MMM dd", { locale: ko })}</span>
                         )}
                       </div>
+                      <ArrowRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" />
                     </div>
                   </CardContent>
                 </Card>

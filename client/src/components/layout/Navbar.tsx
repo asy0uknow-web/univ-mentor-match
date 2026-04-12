@@ -2,7 +2,7 @@ import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "wouter";
-import { LogOut, Trash2, ChevronDown, Bug } from "lucide-react";
+import { LogOut, Trash2, ChevronDown, Bug, Sparkles } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -95,10 +95,11 @@ export default function Navbar({ onBugReport }: NavbarProps) {
                 <button
                   key={item.id}
                   onClick={() => handleSmoothScroll(item.id)}
-                  className="text-sm font-medium text-foreground hover:text-primary transition-colors"
+                  className="text-sm font-medium text-foreground hover:text-primary transition-all duration-200 hover:scale-105 active:scale-95 relative group"
                   aria-label={`${item.label} 섹션으로 이동`}
                 >
                   {item.label}
+                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-300"></span>
                 </button>
               ))}
             </div>
@@ -119,7 +120,7 @@ export default function Navbar({ onBugReport }: NavbarProps) {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="text-sm font-medium hover:bg-blue-100 hover:text-primary relative"
+                        className="text-sm font-medium hover:bg-blue-100 hover:text-primary relative hover:scale-105 transition-transform duration-200 active:scale-95"
                       >
                         {item.label}
                         {item.href === "/qna" && unreadAnswerCount > 0 && (

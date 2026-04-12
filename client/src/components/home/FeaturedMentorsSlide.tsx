@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ChevronLeft, ChevronRight, Cpu, Microscope, Briefcase, BookOpen, GraduationCap, Lightbulb, Stethoscope } from "lucide-react";
+import { ChevronLeft, ChevronRight, Cpu, Microscope, Briefcase, BookOpen, GraduationCap, Lightbulb, Stethoscope, ArrowRight } from "lucide-react";
 import { useLocation } from "wouter";
 import { trpc } from "@/lib/trpc";
 
@@ -215,16 +215,16 @@ export const FeaturedMentorsSlide = () => {
             {visibleMentors.map((mentor) => (
               <div
                 key={`${mentor.id}-${currentIndex}`}
-                className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden hover:scale-105 cursor-pointer flex flex-col h-full"
+                className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden hover:scale-105 hover:-translate-y-2 cursor-pointer flex flex-col h-full group"
                 style={{ height: `${maxCardHeight}px` }}
               >
                 {/* Mentor Image Placeholder */}
-                <div className="w-full flex-shrink-0 bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center" style={{ height: '192px' }}>
+                <div className="w-full flex-shrink-0 bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 overflow-hidden" style={{ height: '192px' }}>
                   {/* 유니브매치 로고 이미지 */}
                   <img
                     src="/logonew.png"
                     alt="유니브매치 로고"
-                    className="w-24 h-24 object-contain"
+                    className="w-24 h-24 object-contain group-hover:scale-125 transition-transform duration-300"
                   />
                 </div>
 
@@ -232,7 +232,7 @@ export const FeaturedMentorsSlide = () => {
                 <div className="p-4 sm:p-6 md:p-8 flex flex-col flex-grow">
                   {/* Name and Rating Row */}
                   <div className="flex items-start justify-between gap-2 sm:gap-3 mb-3 sm:mb-4">
-                    <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-foreground flex-1 line-clamp-1">
+                    <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-foreground flex-1 line-clamp-1 group-hover:text-indigo-600 transition-colors">
                       {mentor.name}
                     </h3>
                     {/* Rating or New Badge */}

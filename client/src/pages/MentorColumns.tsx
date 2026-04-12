@@ -15,7 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Heart, MessageCircle, Plus, Search, Eye } from "lucide-react";
+import { Heart, MessageCircle, Plus, Search, Eye, ArrowRight } from "lucide-react";
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
 
@@ -137,12 +137,12 @@ export default function MentorColumns() {
             {columns.map((column: any) => (
               <Card
                 key={column.id}
-                className="hover:shadow-lg transition-shadow cursor-pointer overflow-hidden"
+                className="hover:shadow-xl transition-all duration-300 cursor-pointer overflow-hidden group hover:scale-105 hover:-translate-y-2"
                 onClick={() => setLocation(`/columns/${column.id}`)}
               >
                 {/* 커버 이미지 */}
                 {column.coverImageUrl && (
-                  <div className="h-40 bg-gradient-to-br from-blue-400 to-blue-600 overflow-hidden">
+                  <div className="h-40 bg-gradient-to-br from-blue-400 to-blue-600 overflow-hidden group-hover:scale-110 transition-transform duration-300">
                     <img
                       src={column.coverImageUrl}
                       alt={column.title}
@@ -160,7 +160,7 @@ export default function MentorColumns() {
                       {format(new Date(column.createdAt), "MMM d", { locale: ko })}
                     </span>
                   </div>
-                  <CardTitle className="line-clamp-2 text-base sm:text-lg">
+                  <CardTitle className="line-clamp-2 text-base sm:text-lg group-hover:text-indigo-600 transition-colors">
                     {column.title}
                   </CardTitle>
                   <CardDescription className="line-clamp-2 text-xs sm:text-sm">
@@ -171,7 +171,7 @@ export default function MentorColumns() {
                 <CardContent className="pb-4">
                   {/* 멘토 정보 */}
                   <div className="flex items-center gap-3 mb-4 pb-4 border-b">
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white text-xs font-bold">
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white text-xs font-bold group-hover:scale-110 transition-transform">
                       {column.author.name?.charAt(0) || "M"}
                     </div>
                     <div className="flex-1 min-w-0">
@@ -187,19 +187,22 @@ export default function MentorColumns() {
                   </div>
 
                   {/* 통계 */}
-                  <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                    <div className="flex items-center gap-1">
-                      <Heart className="h-3 w-3" />
-                      <span>{column.likesCount}</span>
+                  <div className="flex items-center justify-between text-xs text-muted-foreground">
+                    <div className="flex gap-4">
+                      <div className="flex items-center gap-1">
+                        <Heart className="h-3 w-3" />
+                        <span>{column.likesCount}</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <MessageCircle className="h-3 w-3" />
+                        <span>{column.commentsCount}</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <Eye className="h-3 w-3" />
+                        <span>{column.viewCount || 0}</span>
+                      </div>
                     </div>
-                    <div className="flex items-center gap-1">
-                      <MessageCircle className="h-3 w-3" />
-                      <span>{column.commentsCount}</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Eye className="h-3 w-3" />
-                      <span>{column.viewCount || 0}</span>
-                    </div>
+                    <ArrowRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" />
                   </div>
                 </CardContent>
               </Card>

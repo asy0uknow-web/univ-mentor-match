@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { ConsultationCTAButton } from "@/components/ConsultationCTAButton";
 import { useLocation, useRoute } from "wouter";
 import { trpc } from "@/lib/trpc";
 import { PageLayout } from "@/components/layout";
@@ -8,7 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Heart, MessageCircle, Trash2, Edit2, Share2, Eye } from "lucide-react";
+import { ArrowLeft, Heart, MessageCircle, Trash2, Edit2, Share2, Eye, MessageSquare } from "lucide-react";
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
 import { toast } from "sonner";
@@ -165,20 +166,35 @@ export default function MentorColumnDetail() {
               </div>
 
               {/* 멘토 정보 */}
-              <div className="flex items-center gap-3 py-4 border-b">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white font-bold">
-                  {column.author.name?.charAt(0) || "M"}
+              <div className="flex items-center gap-3 py-4 border-b justify-between">
+                <div className="flex items-center gap-3 flex-1">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white font-bold">
+                    {column.author.name?.charAt(0) || "M"}
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-medium text-sm sm:text-base">{column.author.name}</p>
+                    {column.mentorProfile && (
+                      <p className="text-xs sm:text-sm text-muted-foreground">
+                        {column.mentorProfile.university} {column.mentorProfile.major}
+                      </p>
+                    )}
+                  </div>
                 </div>
-                <div className="flex-1">
-                  <p className="font-medium text-sm sm:text-base">{column.author.name}</p>
-                  {column.mentorProfile && (
-                    <p className="text-xs sm:text-sm text-muted-foreground">
-                      {column.mentorProfile.university} {column.mentorProfile.major}
-                    </p>
+                <div className="flex items-center gap-2">
+                  <div className="text-xs sm:text-sm text-muted-foreground">
+                    {format(new Date(column.createdAt), "yyyy년 M월 d일", { locale: ko })}
+                  </div>
+                  {column.mentorProfile && column.author.id && (
+                    <ConsultationCTAButton
+                      variant="primary"
+                      size="sm"
+                      onClick={() => setLocation(`/messages?mentorId=${column.author.id}`)}
+                      className="ml-2 text-xs sm:text-sm h-8 sm:h-9"
+                    >
+                      <MessageSquare className="h-3 w-3 mr-1" />
+                      상담 신청
+                    </ConsultationCTAButton>
                   )}
-                </div>
-                <div className="text-xs sm:text-sm text-muted-foreground">
-                  {format(new Date(column.createdAt), "yyyy년 M월 d일", { locale: ko })}
                 </div>
               </div>
             </CardHeader>

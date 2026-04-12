@@ -12,17 +12,19 @@ import { useAuth } from "@/_core/hooks/useAuth";
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
 import * as Dialog from "@radix-ui/react-dialog";
+import { StatusBadge } from "@/components/StatusBadge";
+import { ConsultationCTAButton } from "@/components/ConsultationCTAButton";
 
-const getStatusBadge = (status: string) => {
+const mapStatusToStatusBadge = (status: string) => {
   switch (status) {
     case "awaiting_answer":
-      return { label: "답변 대기 중", icon: Clock, className: "bg-yellow-100 text-yellow-800" };
+      return "pending";
     case "answered":
-      return { label: "답변 완료", icon: MessageCircle, className: "bg-blue-100 text-blue-800" };
+      return "accepted";
     case "solved":
-      return { label: "해결됨", icon: CheckCircle2, className: "bg-green-100 text-green-800" };
+      return "completed";
     default:
-      return { label: status, icon: AlertCircle, className: "bg-gray-100 text-gray-800" };
+      return "new";
   }
 };
 
@@ -297,8 +299,6 @@ export default function QnADetail() {
     );
   }
 
-  const statusBadge = getStatusBadge(question.status);
-  const StatusIcon = statusBadge.icon;
   const isQuestionAuthor = user?.id === question.authorId;
 
   return (
@@ -321,10 +321,7 @@ export default function QnADetail() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-2 flex-wrap">
                     <CardTitle className="text-xl sm:text-2xl">{question.title}</CardTitle>
-                    <Badge className={`text-xs flex-shrink-0 ${statusBadge.className}`}>
-                      <StatusIcon className="h-3 w-3 mr-1" />
-                      {statusBadge.label}
-                    </Badge>
+                    <StatusBadge status={mapStatusToStatusBadge(question.status)} />
                   </div>
                 </div>
                 <Dialog.Root open={reportDialogOpen} onOpenChange={setReportDialogOpen}>
@@ -527,15 +524,14 @@ export default function QnADetail() {
                       <div className="flex gap-1 flex-shrink-0 flex-wrap justify-end">
                         {/* 상담 신청 버튼 */}
                         {answer.mentorProfile && isAuthenticated && user?.userType === "high_school_student" && (
-                          <Button
+                          <ConsultationCTAButton
                             variant="outline"
                             size="sm"
                             onClick={() => setLocation(`/messages?mentorUUID=${answer.mentorProfile.uuid}`)}
-                            className="text-xs h-8 whitespace-nowrap"
                           >
                             <MessageSquare className="h-3 w-3 mr-1" />
                             상담 신청
-                          </Button>
+                          </ConsultationCTAButton>
                         )}
                         {/* 채택 버튼 (질문 작성자만, 미해결 상태) */}
                         {isQuestionAuthor && question.status !== "solved" && (

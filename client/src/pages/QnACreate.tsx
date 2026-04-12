@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { trpc } from "@/lib/trpc";
 import { useLocation } from "wouter";
-import { ArrowLeft, AlertCircle, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, AlertCircle, CheckCircle2, Lightbulb, Sparkles } from "lucide-react";
 import { useState, useEffect } from "react";
 import { PageLayout } from "@/components/layout";
 import { setPageMeta } from "@/lib/seo";
@@ -169,16 +169,18 @@ export default function QnACreate() {
         </div>
 
         {/* 좋은 질문 예시 */}
-        <Card className="bg-green-50 border-green-200 mb-6">
+        <Card className="bg-gradient-to-br from-green-50 to-emerald-50 border-green-200 mb-6 hover:shadow-md transition-shadow">
           <CardHeader className="pb-3">
             <div className="flex items-center gap-2">
-              <CheckCircle2 className="h-5 w-5 text-green-600" />
+              <div className="p-2 bg-green-100 rounded-lg">
+                <Lightbulb className="h-5 w-5 text-green-600" />
+              </div>
               <CardTitle className="text-base">좋은 질문 예시</CardTitle>
             </div>
           </CardHeader>
           <CardContent className="space-y-2">
             {GOOD_EXAMPLES.map((example, idx) => (
-              <p key={idx} className="text-xs sm:text-sm text-green-900">
+              <p key={idx} className="text-xs sm:text-sm text-green-900 hover:text-green-700 transition-colors cursor-pointer">
                 • {example}
               </p>
             ))}
@@ -186,10 +188,12 @@ export default function QnACreate() {
         </Card>
 
         {/* 금지 안내 */}
-        <Card className="bg-red-50 border-red-200 mb-6">
+        <Card className="bg-gradient-to-br from-red-50 to-rose-50 border-red-200 mb-6 hover:shadow-md transition-shadow">
           <CardHeader className="pb-3">
             <div className="flex items-center gap-2">
-              <AlertCircle className="h-5 w-5 text-red-600" />
+              <div className="p-2 bg-red-100 rounded-lg">
+                <AlertCircle className="h-5 w-5 text-red-600" />
+              </div>
               <CardTitle className="text-base">금지 사항</CardTitle>
             </div>
           </CardHeader>
@@ -206,10 +210,13 @@ export default function QnACreate() {
           </CardContent>
         </Card>
 
-        {/* 폼 */}
-        <Card>
+        {/* 폰 */}
+        <Card className="hover:shadow-lg transition-shadow">
           <CardHeader>
-            <CardTitle className="text-lg">필수 정보</CardTitle>
+            <div className="flex items-center gap-2 mb-2">
+              <Sparkles className="h-5 w-5 text-indigo-600" />
+              <CardTitle className="text-lg">필수 정보</CardTitle>
+            </div>
             <CardDescription className="text-xs sm:text-sm">
               *표시된 항목은 필수 항목입니다
             </CardDescription>
@@ -361,14 +368,14 @@ export default function QnACreate() {
               <Button
                 variant="outline"
                 onClick={() => setLocation('/qna')}
-                className="text-xs sm:text-sm h-9 sm:h-10 flex-1"
+                className="text-xs sm:text-sm h-9 sm:h-10 flex-1 hover:bg-gray-100 transition-colors"
               >
                 취소
               </Button>
               <Button
                 onClick={handleSubmit}
                 disabled={createQuestionMutation.isPending}
-                className="text-xs sm:text-sm h-9 sm:h-10 flex-1"
+                className="text-xs sm:text-sm h-9 sm:h-10 flex-1 bg-indigo-600 hover:bg-indigo-700 transition-all duration-200 hover:scale-105 active:scale-95"
               >
                 {createQuestionMutation.isPending ? "작성 중..." : "질문 작성"}
               </Button>

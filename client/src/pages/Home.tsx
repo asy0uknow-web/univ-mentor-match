@@ -185,11 +185,11 @@ export default function Home() {
               tabIndex={0}
               aria-label="전공 탐색 멘토 찾기"
             >
-              <div className="bg-white rounded-xl p-6 sm:p-8 shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 hover:border-primary/30">
-                <div className="mb-4 flex justify-center">
+              <div className="bg-white rounded-xl p-6 sm:p-8 shadow-sm hover:shadow-lg hover:scale-105 transition-all duration-300 border border-gray-100 hover:border-indigo-300 group-hover:-translate-y-2">
+                <div className="mb-4 flex justify-center group-hover:scale-110 transition-transform duration-300">
                   <MajorIcon />
                 </div>
-                <h3 className="text-lg sm:text-xl font-semibold text-center text-foreground group-hover:text-primary transition-colors">
+                <h3 className="text-lg sm:text-xl font-semibold text-center text-foreground group-hover:text-indigo-600 transition-colors">
                   전공 탐색
                 </h3>
                 <p className="text-sm sm:text-base text-muted-foreground text-center mt-2">
@@ -206,11 +206,11 @@ export default function Home() {
               tabIndex={0}
               aria-label="진로 상담 멘토 찾기"
             >
-              <div className="bg-white rounded-xl p-6 sm:p-8 shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 hover:border-primary/30">
-                <div className="mb-4 flex justify-center">
+              <div className="bg-white rounded-xl p-6 sm:p-8 shadow-sm hover:shadow-lg hover:scale-105 transition-all duration-300 border border-gray-100 hover:border-indigo-300 group-hover:-translate-y-2">
+                <div className="mb-4 flex justify-center group-hover:scale-110 transition-transform duration-300">
                   <CareerIcon />
                 </div>
-                <h3 className="text-lg sm:text-xl font-semibold text-center text-foreground group-hover:text-primary transition-colors">
+                <h3 className="text-lg sm:text-xl font-semibold text-center text-foreground group-hover:text-indigo-600 transition-colors">
                   진로 상담
                 </h3>
                 <p className="text-sm sm:text-base text-muted-foreground text-center mt-2">
@@ -227,11 +227,11 @@ export default function Home() {
               tabIndex={0}
               aria-label="대학 생활 멘토 찾기"
             >
-              <div className="bg-white rounded-xl p-6 sm:p-8 shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 hover:border-primary/30">
-                <div className="mb-4 flex justify-center">
+              <div className="bg-white rounded-xl p-6 sm:p-8 shadow-sm hover:shadow-lg hover:scale-105 transition-all duration-300 border border-gray-100 hover:border-indigo-300 group-hover:-translate-y-2">
+                <div className="mb-4 flex justify-center group-hover:scale-110 transition-transform duration-300">
                   <LifeIcon />
                 </div>
-                <h3 className="text-lg sm:text-xl font-semibold text-center text-foreground group-hover:text-primary transition-colors">
+                <h3 className="text-lg sm:text-xl font-semibold text-center text-foreground group-hover:text-indigo-600 transition-colors">
                   대학 생활
                 </h3>
                 <p className="text-sm sm:text-base text-muted-foreground text-center mt-2">
@@ -271,7 +271,7 @@ export default function Home() {
               ].map(({ title, desc, iconComponent: IconComponent }, idx) => (
                 <div
                   key={idx}
-                  className="bg-white rounded-2xl p-6 sm:p-8 shadow-md hover:shadow-lg transition-shadow duration-300"
+                  className="bg-white rounded-2xl p-6 sm:p-8 shadow-md hover:shadow-lg transition-shadow duration-300 hover:scale-105 transition-transform"
                 >
                   <div className="mb-6 sm:mb-8 flex justify-center">
                     <IconComponent />
