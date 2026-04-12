@@ -107,9 +107,9 @@ export const TestimonialsSection = () => {
             나에게 맞는 멘토를 직접 찾아보세요
           </p>
           <Link href="/mentors">
-            <button className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold rounded-lg hover:shadow-xl transition-all duration-300 text-base sm:text-lg">
+            <div className="inline-block px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold rounded-lg hover:shadow-xl transition-all duration-300 text-base sm:text-lg cursor-pointer">
               멘토 찾기
-            </button>
+            </div>
           </Link>
         </div>
       </div>

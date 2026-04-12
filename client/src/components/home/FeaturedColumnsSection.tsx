@@ -56,7 +56,7 @@ export function FeaturedColumnsSection() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 mb-12">
           {columns.map((column: any) => (
             <Link key={column.id} href={`/columns/${column.id}`}>
-              <a className="group rounded-2xl overflow-hidden bg-white shadow-md hover:shadow-xl transition-all duration-300 h-full flex flex-col">
+              <div className="group rounded-2xl overflow-hidden bg-white shadow-md hover:shadow-xl transition-all duration-300 h-full flex flex-col cursor-pointer">
                 {/* 커버 이미지 */}
                 {column.coverImageUrl && (
                   <div className="relative h-48 overflow-hidden bg-gradient-to-br from-primary/20 to-primary/5">
@@ -105,7 +105,7 @@ export function FeaturedColumnsSection() {
                     </div>
                   </div>
                 </div>
-              </a>
+              </div>
             </Link>
           ))}
         </div>
@@ -113,12 +113,12 @@ export function FeaturedColumnsSection() {
         {/* 더보기 버튼 */}
         <div className="text-center">
           <Link href="/columns">
-            <a>
+            <div>
               <Button variant="outline" size="lg" className="group">
                 모든 칼럼 보기
                 <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
               </Button>
-            </a>
+            </div>
           </Link>
         </div>
       </div>
