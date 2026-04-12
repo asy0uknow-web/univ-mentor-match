@@ -327,8 +327,13 @@ export default function MentorProfile() {
                           placeholder="예: 서울대학교"
                           value={university}
                           onChange={(e) => setUniversity(e.target.value)}
+                          disabled={verification?.status === "approved"}
                           className="mt-2"
+                          title={verification?.status === "approved" ? "인증 완료된 대학교는 수정할 수 없습니다" : ""}
                         />
+                        {verification?.status === "approved" && (
+                          <p className="text-xs text-gray-500 mt-1">✓ 인증 완료된 정보입니다</p>
+                        )}
                       </div>
                       <div>
                         <Label>전공 *</Label>
@@ -336,8 +341,13 @@ export default function MentorProfile() {
                           placeholder="예: 컴퓨터공학"
                           value={major}
                           onChange={(e) => setMajor(e.target.value)}
+                          disabled={verification?.status === "approved"}
                           className="mt-2"
+                          title={verification?.status === "approved" ? "인증 완료된 전공은 수정할 수 없습니다" : ""}
                         />
+                        {verification?.status === "approved" && (
+                          <p className="text-xs text-gray-500 mt-1">✓ 인증 완료된 정보입니다</p>
+                        )}
                       </div>
                     </div>
 
