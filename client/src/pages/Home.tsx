@@ -122,8 +122,8 @@ export default function Home() {
             {/* Primary CTA */}
             <div className="flex flex-col gap-3 sm:gap-4 justify-center mb-8 sm:mb-10">
               <Button 
-                size="lg" 
-                className="w-full sm:w-auto text-base sm:text-lg px-8 sm:px-10 py-6 sm:py-7 font-bold shadow-lg hover:shadow-xl transition-shadow"
+                size="default" 
+                className="w-full sm:w-auto font-bold shadow-lg hover:shadow-xl transition-shadow"
                 onClick={() => navigate('/mentors')}
                 aria-label="멘토 찾기 페이지로 이동"
               >
@@ -131,8 +131,8 @@ export default function Home() {
               </Button>
               {isAuthenticated && (
                 <Button 
-                  size="lg" 
-                  className="w-full sm:w-auto text-base sm:text-lg px-8 sm:px-10 py-6 sm:py-7 bg-gray-300 hover:bg-gray-400 text-black font-bold shadow-lg hover:shadow-xl transition-shadow"
+                  size="default" 
+                  className="w-full sm:w-auto bg-gray-300 hover:bg-gray-400 text-black font-bold shadow-lg hover:shadow-xl transition-shadow"
                   onClick={() => navigate('/my-profile')}
                 >
                   멘토로 참여하기
