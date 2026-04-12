@@ -23,7 +23,7 @@ import { PageLayout } from "@/components/layout";
 
 export default function AdminDashboard() {
   // 모든 훅을 조건부 return 이전에 선언 (React 훅 규칙)
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, loading } = useAuth();
   const [, setLocation] = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
   const [editingMentor, setEditingMentor] = useState<any>(null);
@@ -89,6 +89,20 @@ export default function AdminDashboard() {
     },
     onError: (error) => toast.error(`수정 실패: ${error.message}`),
   });
+
+  // 로딩 중일 때
+  if (loading) {
+    return (
+      <PageLayout>
+        <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-12 flex items-center justify-center min-h-[60vh]">
+          <div className="flex flex-col items-center gap-4">
+            <Loader2 className="h-8 w-8 animate-spin text-green-600" />
+            <p className="text-gray-600">로딩 중...</p>
+          </div>
+        </div>
+      </PageLayout>
+    );
+  }
 
   // 조건부 렌더링 (return 제거)
   if (!isAuthenticated || user?.role !== "admin") {
@@ -396,7 +410,7 @@ export default function AdminDashboard() {
                           </div>
                           
                           {/* 편집 폼 */}
-                          {editingMentor?.profile?.id === mentor.profile?.id && editingMentor?.profile && (
+                          {editingMentor?.id === mentor.id && editingMentor?.profile && (
                             <div className="border border-blue-200 bg-blue-50 rounded-lg p-4 mt-2">
                               <h4 className="font-semibold text-gray-900 mb-3">프로필 편집</h4>
                               <div className="space-y-3">

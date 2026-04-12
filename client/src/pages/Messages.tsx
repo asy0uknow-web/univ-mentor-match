@@ -868,6 +868,18 @@ export function Messages() {
     const isEditing = editingMessageId === msg.id;
     const showEmojiPicker = emojiPickerMessageId === msg.id;
 
+    // 시스템 메시지(senderId === 0) 처리 - 메시지 창에만 표시
+    if (msg.senderId === 0) {
+      return (
+        <div className="flex justify-center my-3">
+          <div className="bg-blue-50 border border-blue-200 rounded-lg px-4 py-2 text-center">
+            <p className="text-sm text-blue-700 font-medium">{msg.content}</p>
+            <p className="text-xs text-blue-600 mt-1">{getRelativeTime(msg.createdAt)}</p>
+          </div>
+        </div>
+      );
+    }
+
     // proposal 타입 메시지 처리
     if (msg.messageType === "proposal") {
       let parsed: any = null;
@@ -1056,7 +1068,8 @@ export function Messages() {
                 {filteredConversations.length > 0 ? (
                   <div className="space-y-1">
                     {filteredConversations.map(([userId, msgs]: [string, any]) => {
-                      const lastMsg = msgs[0];
+                      // 시스템 메시지(senderId === 0)를 제외하고 마지막 일반 메시지 찾기
+                      const lastMsg = msgs.find((m: any) => m.senderId !== 0) || msgs[0];
                       const isSelected = parseInt(userId) === selectedConversation;
                       const unreadCount = getUnreadCount(parseInt(userId));
                       let preview = lastMsg.content;
@@ -1165,7 +1178,8 @@ export function Messages() {
                 {filteredConversations.length > 0 ? (
                   <div className="space-y-1">
                     {filteredConversations.map(([userId, msgs]: [string, any]) => {
-                      const lastMsg = msgs[0];
+                      // 시스템 메시지(senderId === 0)를 제외하고 마지막 일반 메시지 찾기
+                      const lastMsg = msgs.find((m: any) => m.senderId !== 0) || msgs[0];
                       const isSelected = parseInt(userId) === selectedConversation;
                       const unreadCount = getUnreadCount(parseInt(userId));
                       let preview = lastMsg.content;

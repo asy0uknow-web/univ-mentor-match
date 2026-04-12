@@ -676,14 +676,8 @@ getTopMentors: publicProcedure
         try {
           await startConsultation(input.bookingId);
           
-          // 시스템 메시지 생성
-          await createMessage({
-            senderId: 0, // System message
-            recipientId: booking.studentId === ctx.user.id ? booking.mentorId : booking.studentId,
-            content: "[상담 시작]\n상담이 시작되었습니다.",
-            bookingId: input.bookingId,
-            messageType: "text",
-          });
+          // 상담 시작 알림은 메시지로 생성하지 않음
+          // 프론트엔드에서 상담 상태 변경을 감지하여 메시지 창에만 표시
 
           return { success: true };
         } catch (error: any) {
@@ -711,14 +705,8 @@ getTopMentors: publicProcedure
         try {
           await completeConsultation(input.bookingId);
           
-          // 시스템 메시지 생성
-          await createMessage({
-            senderId: 0, // System message
-            recipientId: booking.studentId === ctx.user.id ? booking.mentorId : booking.studentId,
-            content: "[상담 완료]\n상담이 완료되었습니다.",
-            bookingId: input.bookingId,
-            messageType: "text",
-          });
+          // 상담 완료 알림은 메시지로 생성하지 않음
+          // 프론트엔드에서 상담 상태 변경을 감지하여 메시지 창에만 표시
 
           return { success: true };
         } catch (error: any) {

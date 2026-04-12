@@ -2429,3 +2429,30 @@
 - [x] getAllActiveMentors 데이터 구조 분석 (mentor.profile?.id 구조)
 - [x] 편집 폼 렌더링 조건 수정: mentor.id → mentor.profile?.id
 - [x] 개발 서버 재시작 및 브라우저 캠시 초기화 완료
+
+
+## 버그 수정 - 관리자 페이지 멘토 목록 로드 실패 (pt 1.17)
+- [x] useAuth 훅의 loading 상태 확인
+- [x] AdminDashboard에 로딩 상태 처리 추가
+- [x] 데이터 로드 중 "로딩 중..." 메시지 표시
+- [x] 개발 서버 재시작 및 테스트 대기 중
+
+
+## 버그 수정 - 관리자 페이지 멘토 편집 폼 렌더링 조건 오류 (pt 1.18)
+- [x] 편집 폼 렌더링 조건 분석 (mentor.profile?.id vs mentor.id)
+- [x] 렌더링 조건 수정: editingMentor?.profile?.id === mentor.profile?.id → editingMentor?.id === mentor.id
+- [x] 개발 서버 재시작 및 테스트 대기 중
+
+
+## 버그 수정 - 테스트 계정 로그인 오류 (pt 1.19)
+- [x] kim@test.com 계정 비밀번호를 Kim12345로 업데이트 (PBKDF2+SHA512 해싱 적용)
+- [x] park@test.com 계정 비밀번호를 Park12345로 업데이트 (PBKDF2+SHA512 해싱 적용)
+- [ ] 두 계정 모두 로그인 정상 동작 테스트
+
+
+## 기능 개선 - 상담 시작 알림 시스템 개선 (pt 1.20)
+- [x] 메시지 및 알림 시스템 코드 구조 파악
+- [x] 상담 시작 알림이 메시지 목록에 표시되는 문제 해결
+- [x] 상담 시작 알림을 해당 상담 메시지 창에만 표시하도록 수정
+- [x] 알림 클릭 불가 문제 해결
+- [x] 모든 변경사항 테스트 완료
