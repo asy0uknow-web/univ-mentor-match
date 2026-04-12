@@ -1,9 +1,10 @@
-import { useState } from "react";
+
 import { useLocation } from "wouter";
 import { trpc } from "@/lib/trpc";
 import { PageLayout } from "@/components/layout";
 import { setPageMeta } from "@/lib/seo";
 import { useAuth } from "@/_core/hooks/useAuth";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -42,6 +43,21 @@ export default function MentorColumnCreate() {
   const [coverImageUrl, setCoverImageUrl] = useState("");
   const [status, setStatus] = useState<"draft" | "published">("draft");
   const [isPreview, setIsPreview] = useState(false);
+  const [isMentor, setIsMentor] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // 멘토 프로필 조회
+  const { data: profile } = trpc.mentor.getMyProfile.useQuery(undefined, {
+    enabled: isAuthenticated,
+  });
+
+  // 멘토 여부 확인
+  useEffect(() => {
+    if (isAuthenticated) {
+      setIsMentor(!!profile);
+      setIsLoading(false);
+    }
+  }, [profile, isAuthenticated]);
 
   const createMutation = trpc.mentorColumns.create.useMutation({
     onSuccess: (data: any) => {
@@ -81,8 +97,19 @@ export default function MentorColumnCreate() {
     );
   }
 
+  // 로딩 중
+  if (isLoading) {
+    return (
+      <PageLayout>
+        <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-12 flex items-center justify-center min-h-[60vh]">
+          <p className="text-xs sm:text-sm text-muted-foreground">로딩 중...</p>
+        </div>
+      </PageLayout>
+    );
+  }
+
   // 멘토 역할 확인
-  if (user?.role !== "mentor") {
+  if (!isMentor) {
     return (
       <PageLayout>
         <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-12">
