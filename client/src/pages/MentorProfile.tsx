@@ -232,6 +232,23 @@ export default function MentorProfile() {
   }
 
   const handlePasswordChange = () => {
+    // 비밀번호 검증
+    if (passwordForm.newPassword.length < 8) {
+      toast.error("비밀번호는 최소 8자 이상이어야 합니다");
+      return;
+    }
+    if (!/[A-Z]/.test(passwordForm.newPassword)) {
+      toast.error("비밀번호는 대문자를 포함해야 합니다");
+      return;
+    }
+    if (!/[a-z]/.test(passwordForm.newPassword)) {
+      toast.error("비밀번호는 소문자를 포함해야 합니다");
+      return;
+    }
+    if (!/[0-9]/.test(passwordForm.newPassword)) {
+      toast.error("비밀번호는 숫자를 포함해야 합니다");
+      return;
+    }
     if (passwordForm.newPassword !== passwordForm.confirmPassword) {
       toast.error("새 비밀번호가 일치하지 않습니다");
       return;
@@ -757,9 +774,13 @@ export default function MentorProfile() {
           <div className="space-y-4">
             {/* 비밀번호 요구사항 안내 */}
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-              <p className="text-sm text-blue-800">
-                <strong>비밀번호 요구사항:</strong> 최소 8자 이상이어야 합니다
+              <p className="text-sm text-blue-800 font-semibold mb-2">
+                <strong>비밀번호 요구사항:</strong>
               </p>
+              <ul className="text-xs text-blue-700 space-y-1">
+                <li>• 최소 8자 이상</li>
+                <li>• 대문자, 소문자, 숫자 포함</li>
+              </ul>
             </div>
 
             <div>
@@ -782,10 +803,29 @@ export default function MentorProfile() {
                 minLength={8}
                 className="mt-2"
               />
-              {passwordForm.newPassword && passwordForm.newPassword.length < 8 && (
-                <p className="text-xs text-red-600 mt-1">
-                  ⚠️ 비밀번호는 최소 8자 이상이어야 합니다
-                </p>
+              {passwordForm.newPassword && (
+                <div className="mt-2 space-y-1">
+                  {passwordForm.newPassword.length < 8 && (
+                    <p className="text-xs text-red-600">
+                      ⚠️ 최소 8자 이상 ({passwordForm.newPassword.length}/8)
+                    </p>
+                  )}
+                  {!/[A-Z]/.test(passwordForm.newPassword) && (
+                    <p className="text-xs text-red-600">
+                      ⚠️ 대문자 포함 필요
+                    </p>
+                  )}
+                  {!/[a-z]/.test(passwordForm.newPassword) && (
+                    <p className="text-xs text-red-600">
+                      ⚠️ 소문자 포함 필요
+                    </p>
+                  )}
+                  {!/[0-9]/.test(passwordForm.newPassword) && (
+                    <p className="text-xs text-red-600">
+                      ⚠️ 숫자 포함 필요
+                    </p>
+                  )}
+                </div>
               )}
             </div>
             <div>
@@ -798,15 +838,19 @@ export default function MentorProfile() {
                 minLength={8}
                 className="mt-2"
               />
-              {passwordForm.confirmPassword && passwordForm.confirmPassword.length < 8 && (
-                <p className="text-xs text-red-600 mt-1">
-                  ⚠️ 비밀번호는 최소 8자 이상이어야 합니다
-                </p>
-              )}
-              {passwordForm.newPassword && passwordForm.confirmPassword && passwordForm.newPassword !== passwordForm.confirmPassword && (
-                <p className="text-xs text-red-600 mt-1">
-                  ⚠️ 비밀번호가 일치하지 않습니다
-                </p>
+              {passwordForm.confirmPassword && (
+                <div className="mt-2 space-y-1">
+                  {passwordForm.newPassword !== passwordForm.confirmPassword && (
+                    <p className="text-xs text-red-600">
+                      ⚠️ 비밀번호가 일치하지 않습니다
+                    </p>
+                  )}
+                  {passwordForm.newPassword === passwordForm.confirmPassword && passwordForm.newPassword.length >= 8 && /[A-Z]/.test(passwordForm.newPassword) && /[a-z]/.test(passwordForm.newPassword) && /[0-9]/.test(passwordForm.newPassword) && (
+                    <p className="text-xs text-green-600">
+                      ✅ 비밀번호 조건 총충족
+                    </p>
+                  )}
+                </div>
               )}
             </div>
             <div className="flex gap-3 pt-4">
@@ -822,6 +866,9 @@ export default function MentorProfile() {
                   changePasswordMutation.isPending ||
                   !passwordForm.currentPassword ||
                   passwordForm.newPassword.length < 8 ||
+                  !/[A-Z]/.test(passwordForm.newPassword) ||
+                  !/[a-z]/.test(passwordForm.newPassword) ||
+                  !/[0-9]/.test(passwordForm.newPassword) ||
                   passwordForm.confirmPassword.length < 8 ||
                   passwordForm.newPassword !== passwordForm.confirmPassword
                 }

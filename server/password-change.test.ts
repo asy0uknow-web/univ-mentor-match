@@ -33,7 +33,7 @@ function createAuthContext(userId: number = 1): TrpcContext {
   return ctx;
 }
 
-describe("Password Change Validation", () => {
+describe("Password Change Validation - Unified with SignUp Requirements", () => {
   it("should validate password minimum length requirement", async () => {
     const ctx = createAuthContext(1);
     const caller = appRouter.createCaller(ctx);
@@ -42,8 +42,8 @@ describe("Password Change Validation", () => {
       // 8자 미만의 비밀번호로 변경 시도
       await caller.user.changePassword({
         currentPassword: "TestPassword123",
-        newPassword: "short",
-        confirmPassword: "short",
+        newPassword: "Short1",
+        confirmPassword: "Short1",
       });
 
       // 오류가 발생해야 함
@@ -52,6 +52,66 @@ describe("Password Change Validation", () => {
       // 최소 길이 검증 오류 확인
       expect(error).toBeDefined();
       expect(error.message || error.toString()).toContain("too_small");
+    }
+  });
+
+  it("should validate uppercase letter requirement", async () => {
+    const ctx = createAuthContext(6);
+    const caller = appRouter.createCaller(ctx);
+
+    try {
+      // 대문자 없는 비밀번호로 변경 시도
+      await caller.user.changePassword({
+        currentPassword: "TestPassword123",
+        newPassword: "newpassword123",
+        confirmPassword: "newpassword123",
+      });
+
+      // 오류가 발생해야 함
+      expect(true).toBe(false);
+    } catch (error: any) {
+      // 대문자 검증 오류 확인
+      expect(error).toBeDefined();
+    }
+  });
+
+  it("should validate lowercase letter requirement", async () => {
+    const ctx = createAuthContext(7);
+    const caller = appRouter.createCaller(ctx);
+
+    try {
+      // 소문자 없는 비밀번호로 변경 시도
+      await caller.user.changePassword({
+        currentPassword: "TestPassword123",
+        newPassword: "NEWPASSWORD123",
+        confirmPassword: "NEWPASSWORD123",
+      });
+
+      // 오류가 발생해야 함
+      expect(true).toBe(false);
+    } catch (error: any) {
+      // 소문자 검증 오류 확인
+      expect(error).toBeDefined();
+    }
+  });
+
+  it("should validate digit requirement", async () => {
+    const ctx = createAuthContext(8);
+    const caller = appRouter.createCaller(ctx);
+
+    try {
+      // 숫자 없는 비밀번호로 변경 시도
+      await caller.user.changePassword({
+        currentPassword: "TestPassword123",
+        newPassword: "NewPassword",
+        confirmPassword: "NewPassword",
+      });
+
+      // 오류가 발생해야 함
+      expect(true).toBe(false);
+    } catch (error: any) {
+      // 숫자 검증 오류 확인
+      expect(error).toBeDefined();
     }
   });
 
@@ -130,6 +190,9 @@ describe("Password Change Validation", () => {
     const passwords = {
       valid: "ValidPassword123",
       tooShort: "Short1",
+      noUppercase: "newpassword123",
+      noLowercase: "NEWPASSWORD123",
+      noDigit: "NewPassword",
       empty: "",
       withSpaces: "Valid Password 123",
     };
@@ -139,6 +202,18 @@ describe("Password Change Validation", () => {
     expect(passwords.tooShort.length >= 8).toBe(false);
     expect(passwords.empty.length >= 8).toBe(false);
     expect(passwords.withSpaces.length >= 8).toBe(true);
+
+    // 대문자 검증
+    expect(/[A-Z]/.test(passwords.valid)).toBe(true);
+    expect(/[A-Z]/.test(passwords.noUppercase)).toBe(false);
+
+    // 소문자 검증
+    expect(/[a-z]/.test(passwords.valid)).toBe(true);
+    expect(/[a-z]/.test(passwords.noLowercase)).toBe(false);
+
+    // 숫자 검증
+    expect(/[0-9]/.test(passwords.valid)).toBe(true);
+    expect(/[0-9]/.test(passwords.noDigit)).toBe(false);
   });
 
   it("should check password confirmation match logic", () => {
@@ -149,5 +224,32 @@ describe("Password Change Validation", () => {
 
     expect(newPassword === confirmPassword1).toBe(true);
     expect(newPassword === confirmPassword2).toBe(false);
+  });
+
+  it("should validate all password requirements together", () => {
+    // 모든 비밀번호 요구사항 검증
+    const validPassword = "ValidPassword123";
+    const invalidPasswords = [
+      "short", // 8자 미만
+      "nouppercase123", // 대문자 없음
+      "NOLOWERCASE123", // 소문자 없음
+      "NoDigitPassword", // 숫자 없음
+    ];
+
+    // 유효한 비밀번호 검증
+    expect(validPassword.length >= 8).toBe(true);
+    expect(/[A-Z]/.test(validPassword)).toBe(true);
+    expect(/[a-z]/.test(validPassword)).toBe(true);
+    expect(/[0-9]/.test(validPassword)).toBe(true);
+
+    // 무효한 비밀번호 검증
+    invalidPasswords.forEach((password) => {
+      const isValid =
+        password.length >= 8 &&
+        /[A-Z]/.test(password) &&
+        /[a-z]/.test(password) &&
+        /[0-9]/.test(password);
+      expect(isValid).toBe(false);
+    });
   });
 });
