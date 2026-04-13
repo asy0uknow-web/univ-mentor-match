@@ -594,7 +594,7 @@ export default function MentorProfile() {
                     {myColumns.slice(0, 4).map((column: any) => (
                       <Link key={column.id} href={`/columns/${column.id}`}>
                         <div className="p-3 border border-gray-200 rounded-lg hover:border-green-500 hover:bg-green-50 transition cursor-pointer">
-                          <h3 className="font-semibold text-gray-900">{column.title}</h3>
+                          <h3 className="text-sm font-semibold text-gray-900">{column.title}</h3>
                           <p className="text-sm text-gray-600 mt-1">
                             {new Date(column.createdAt).toLocaleDateString("ko-KR")}
                           </p>

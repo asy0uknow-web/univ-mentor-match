@@ -188,7 +188,11 @@ export default function MentorColumnDetail() {
                     <ConsultationCTAButton
                       variant="primary"
                       size="sm"
-                      onClick={() => setLocation(`/messages?mentorId=${column.author.id}`)}
+                      onClick={() => {
+                        // 멘토와의 메시지 대화 시작 - 멘토 프로필 ID를 URL 파라미터로 전달
+                        const mentorProfileId = column.author.id;
+                        setLocation(`/messages?mentorId=${mentorProfileId}`);
+                      }}
                       className="ml-2 text-xs sm:text-sm h-8 sm:h-9"
                     >
                       <MessageSquare className="h-3 w-3 mr-1" />

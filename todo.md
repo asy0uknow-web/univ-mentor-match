@@ -2645,3 +2645,8 @@
   - [x] Navbar: animate-in fade-in slide-in-from-top-4 duration-300
   - [x] Footer: animate-in fade-in slide-in-from-bottom-4 duration-300
   - [x] index.css: main, section, [role="main"] 자동 애니메이션
+
+
+## 버그 수정 (사용자 리포트)
+- [x] Bug 1: 내 프로필 - 칼럼스튜디오의 칼럼 제목 폰트 크기 축소
+- [x] Bug 2: 멘토 칼럼 상담신청 시 메시지 페이지에서 해당 멘토 채팅창 자동 열기
