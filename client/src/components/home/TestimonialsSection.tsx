@@ -108,7 +108,7 @@ export const TestimonialsSection = () => {
           </p>
           <Link href="/mentors">
             <div className="inline-block px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold rounded-lg hover:shadow-xl transition-all duration-300 text-base sm:text-lg cursor-pointer hover:scale-105 active:scale-95">
-              멘늤토 찾기
+              멘토 찾기
             </div>
           </Link>
         </div>
