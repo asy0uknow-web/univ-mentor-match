@@ -41,9 +41,14 @@ export default function MentorDetail() {
   );
 
   const { data: mentorColumns } = trpc.mentorColumns.getList.useQuery(
-    { limit: 3, sortBy: "latest" },
+    { limit: 10, sortBy: "latest" },
     { enabled: !!mentor?.user?.id }
   );
+
+  // 현재 멘토가 작성한 칼럼만 필터링
+  const filteredMentorColumns = mentorColumns?.filter(
+    (column: any) => column.authorId === mentor?.user?.id
+  ) || [];
 
   const [, setLocation] = useLocation();
 
@@ -246,17 +251,17 @@ export default function MentorDetail() {
               )}
 
               {/* 칼럼 */}
-              {mentorColumns && mentorColumns.length > 0 && (
+              {filteredMentorColumns && filteredMentorColumns.length > 0 && (
                 <Card className="border-0 shadow-sm">
                   <CardHeader className="pb-3 sm:pb-4">
                     <CardTitle className="text-lg sm:text-xl flex items-center gap-2">
                       <Sparkles className="w-5 h-5 text-blue-600" />
-                      멘토 칼럼
+                      멘늤토 칼럼
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-3">
-                      {mentorColumns.slice(0, 3).map((column: any) => (
+                      {filteredMentorColumns.slice(0, 3).map((column: any) => (
                         <Link key={column.id} href={`/columns/${column.id}`}>
                           <a className="block p-3 bg-slate-50 hover:bg-slate-100 rounded-lg transition-colors">
                             <h4 className="font-medium text-sm text-foreground line-clamp-1 mb-1">
@@ -276,7 +281,7 @@ export default function MentorDetail() {
                         </Link>
                       ))}
                     </div>
-                    {mentorColumns.length > 3 && (
+                    {filteredMentorColumns.length > 3 && (
                       <Link href="/columns">
                         <a className="mt-4 inline-block text-sm text-primary hover:underline">
                           모든 칼럼 보기 →
