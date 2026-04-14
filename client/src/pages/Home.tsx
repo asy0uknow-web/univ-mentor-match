@@ -179,8 +179,8 @@ export default function Home() {
           <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
             <div 
               className="group cursor-pointer"
-              onClick={() => navigate('/mentors?field=major')}
-              onKeyDown={(e) => e.key === 'Enter' && navigate('/mentors?field=major')}
+              onClick={() => navigate('/mentors?types=생기부컨설팅,학업관리')}
+              onKeyDown={(e) => e.key === 'Enter' && navigate('/mentors?types=생기부컨설팅,학업관리')}
               role="button"
               tabIndex={0}
               aria-label="전공 탐색 멘토 찾기"
@@ -200,8 +200,8 @@ export default function Home() {
 
             <div 
               className="group cursor-pointer"
-              onClick={() => navigate('/mentors?field=career')}
-              onKeyDown={(e) => e.key === 'Enter' && navigate('/mentors?field=career')}
+              onClick={() => navigate('/mentors?types=진로상담')}
+              onKeyDown={(e) => e.key === 'Enter' && navigate('/mentors?types=진로상담')}
               role="button"
               tabIndex={0}
               aria-label="진로 상담 멘토 찾기"
@@ -221,8 +221,8 @@ export default function Home() {
 
             <div 
               className="group cursor-pointer"
-              onClick={() => navigate('/mentors?field=life')}
-              onKeyDown={(e) => e.key === 'Enter' && navigate('/mentors?field=life')}
+              onClick={() => navigate('/mentors?types=대학탐방')}
+              onKeyDown={(e) => e.key === 'Enter' && navigate('/mentors?types=대학탐방')}
               role="button"
               tabIndex={0}
               aria-label="대학 생활 멘토 찾기"

@@ -2679,3 +2679,17 @@
 - [x] Bug: 멘토 프로필 페이지에서 칼럼 섹션이 안 보임 - 소개 섹션 밑에 표시 필요
 - [x] Feature: 해당 멘토ID의 칼럼만 필터링
 - [x] Feature: 칼럼 없을 때 "아직 작성한 칼럼이 없습니다." 메시지 표시
+
+
+## Home.tsx - Mentors.tsx 필터 연동
+- [ ] Feature: Home.tsx 카테고리 버튼에 useNavigate 추가
+- [ ] Feature: URL Query Parameter로 필터 정보 전달
+- [ ] Feature: Mentors.tsx에서 useSearchParams로 파라미터 읽기
+- [ ] Feature: 파라미터에 맞게 필터 상태 초기화
+- [ ] Feature: 체크박스 UI 자동 연동
+
+
+## Home.tsx - Mentors.tsx 필터 연동 (현재 진행 중)
+- [x] Feature: Home.tsx 카테고리 버튼에 상담 유형 필터 URL 파라미터 추가
+- [x] Feature: Mentors.tsx에 useSearchParams 추가 및 URL 파라미터 처리
+- [x] Feature: 페이지 로드 시 URL 파라미터의 상담 유형 필터 자동 적용

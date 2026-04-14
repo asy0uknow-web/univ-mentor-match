@@ -1,6 +1,6 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { trpc } from "@/lib/trpc";
-import { Link } from "wouter";
+import { Link, useSearchParams } from "wouter";
 import { Search, X, ChevronRight, Star, MapPin, BadgeCheck, Sparkles, TrendingUp, AlertCircle } from "lucide-react";
 import { useState, useEffect, useMemo } from "react";
 import { PageLayout } from "@/components/layout";
@@ -43,6 +43,7 @@ const CONSULTATION_TYPES = [
 ] as const;
 
 export default function Mentors() {
+  const [searchParams] = useSearchParams();
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [selectedRegions, setSelectedRegions] = useState<string[]>([]);
@@ -61,6 +62,19 @@ export default function Mentors() {
   useEffect(() => {
     setPageMeta(PAGE_META.mentors);
   }, []);
+
+  // URL 파라미터에서 상담 유형 필터 읽기
+  useEffect(() => {
+    const typesParam = searchParams.get('types');
+    if (typesParam) {
+      const types = typesParam.split(',').map(t => t.trim());
+      const mappedTypes = types.map(type => {
+        const consultationType = CONSULTATION_TYPES.find(ct => ct.label === type);
+        return consultationType ? consultationType.value : null;
+      }).filter(Boolean) as string[];
+      setSelectedConsultationTypes(mappedTypes);
+    }
+  }, [searchParams]);
 
   const handleSearch = () => {
     setDebouncedSearch(searchTerm);
