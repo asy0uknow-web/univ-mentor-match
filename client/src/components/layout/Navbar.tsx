@@ -146,7 +146,7 @@ export default function Navbar({ onBugReport }: NavbarProps) {
                       <ChevronDown className="h-4 w-4" aria-hidden="true" />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-48 bg-white">
+                  <DropdownMenuContent align="end" className="w-48 bg-white fixed">
                     {/* 모바일: 인증 메뉴 */}
                     <div className="lg:hidden">
                       {AUTHENTICATED_MENU.map((item) => (
