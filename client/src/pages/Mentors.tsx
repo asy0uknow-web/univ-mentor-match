@@ -661,22 +661,16 @@ export default function Mentors() {
                         </div>
                       )}
 
-                      {/* 상담 정보 */}
+                      {/* 리뷰 정보 */}
                       <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-100">
-                        {mentor.field && mentor.field !== '.' && (
-                          <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-600 mb-2">
-                            <Sparkles className="h-4 w-4 text-green-600" />
-                            <span className="font-medium">{mentor.field}</span>
-                          </div>
-                        )}
                         {mentor.reviewCount > 0 && (
                           <div className="text-xs text-gray-500">
                             리뷰 {mentor.reviewCount}개
                           </div>
                         )}
-                        {(!mentor.field || mentor.field === '.') && mentor.reviewCount === 0 && (
+                        {mentor.reviewCount === 0 && (
                           <div className="text-xs text-gray-400">
-                            상담 정보 준비 중
+                            리뷰 준비 중
                           </div>
                         )}
                       </div>
