@@ -608,7 +608,7 @@ export default function Mentors() {
                           <div className="flex-1">
                             <div className="flex items-center gap-2 mb-1">
                               <h3 className="text-base sm:text-lg font-bold text-gray-900 group-hover:text-green-600 transition-colors">
-                                {mentor.user?.name}
+                                {mentor.name || mentor.user?.name}
                               </h3>
                               {mentor.verificationStatus === "approved" && (
                                 <BadgeCheck className="h-4 w-4 text-green-600 flex-shrink-0" />
@@ -636,6 +636,30 @@ export default function Mentors() {
                           )}
                         </div>
                       </div>
+
+                      {/* 상담 유형 */}
+                      {mentor.consultationTypes && mentor.consultationTypes.length > 0 && (
+                        <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-100">
+                          <div className="flex flex-wrap gap-2">
+                            {mentor.consultationTypes.slice(0, 3).map((type: string) => {
+                              const typeLabel = CONSULTATION_TYPES.find(t => t.value === type)?.label || type;
+                              return (
+                                <span
+                                  key={type}
+                                  className="inline-block bg-blue-50 text-blue-700 text-xs px-2 py-1 rounded-full"
+                                >
+                                  {typeLabel}
+                                </span>
+                              );
+                            })}
+                            {mentor.consultationTypes.length > 3 && (
+                              <span className="inline-block text-gray-500 text-xs px-2 py-1">
+                                +{mentor.consultationTypes.length - 3}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      )}
 
                       {/* 상담 정보 */}
                       <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-100">
