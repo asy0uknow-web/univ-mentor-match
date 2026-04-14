@@ -35,17 +35,27 @@ const SORT_OPTIONS = [
   { value: "consultations", label: "상담 많은순" },
 ] as const;
 
+const CONSULTATION_TYPES = [
+  { value: "career_counseling", label: "진로상담" },
+  { value: "university_tour", label: "대학탐방" },
+  { value: "resume_consulting", label: "생기부컨설팅" },
+  { value: "academic_management", label: "학업관리" },
+] as const;
+
 export default function Mentors() {
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [selectedRegions, setSelectedRegions] = useState<string[]>([]);
   const [selectedMajors, setSelectedMajors] = useState<string[]>([]);
+  const [selectedConsultationTypes, setSelectedConsultationTypes] = useState<string[]>([]);
   const [showMajorPanel, setShowMajorPanel] = useState(false);
   const [tempSelectedMajors, setTempSelectedMajors] = useState<string[]>([]);
   const [majorSearchTerm, setMajorSearchTerm] = useState("");
   const [showRegionPanel, setShowRegionPanel] = useState(false);
   const [tempSelectedRegions, setTempSelectedRegions] = useState<string[]>([]);
   const [regionSearchTerm, setRegionSearchTerm] = useState("");
+  const [showConsultationTypePanel, setShowConsultationTypePanel] = useState(false);
+  const [tempSelectedConsultationTypes, setTempSelectedConsultationTypes] = useState<string[]>([]);
   const [sortBy, setSortBy] = useState("rating");
 
   useEffect(() => {
@@ -117,6 +127,32 @@ export default function Mentors() {
     );
   };
 
+  const openConsultationTypePanel = () => {
+    setTempSelectedConsultationTypes(selectedConsultationTypes);
+    setShowConsultationTypePanel(true);
+  };
+
+  const closeConsultationTypePanel = () => {
+    setShowConsultationTypePanel(false);
+  };
+
+  const applyConsultationTypeSelection = () => {
+    setSelectedConsultationTypes(tempSelectedConsultationTypes);
+    setShowConsultationTypePanel(false);
+  };
+
+  const resetConsultationTypeSelection = () => {
+    setTempSelectedConsultationTypes([]);
+  };
+
+  const toggleConsultationType = (typeValue: string) => {
+    setTempSelectedConsultationTypes((prev) =>
+      prev.includes(typeValue)
+        ? prev.filter((t) => t !== typeValue)
+        : [...prev, typeValue]
+    );
+  };
+
   const filteredMajorsBySearch = useMemo(() => {
     return COLLEGES.flatMap((college) =>
       college.majors.filter((major) =>
@@ -159,6 +195,16 @@ export default function Mentors() {
       result = result.filter((m: any) => selectedRegions.includes(m.region));
     }
 
+    // 상담 유형 필터링
+    if (selectedConsultationTypes.length > 0) {
+      result = result.filter((m: any) => {
+        if (!m.consultationTypes || m.consultationTypes.length === 0) return false;
+        return selectedConsultationTypes.some((type: string) =>
+          m.consultationTypes.includes(type)
+        );
+      });
+    }
+
     // 정렬
     const sorted = [...result];
     if (sortBy === "rating") {
@@ -170,7 +216,7 @@ export default function Mentors() {
     }
 
     return sorted;
-  }, [mentors, debouncedSearch, selectedMajors, selectedRegions, sortBy]);
+  }, [mentors, debouncedSearch, selectedMajors, selectedRegions, selectedConsultationTypes, sortBy]);
 
 
   return (
@@ -218,6 +264,19 @@ export default function Mentors() {
                   )}
                 </button>
 
+                {/* 상담 유형 필터 */}
+                <button
+                  onClick={openConsultationTypePanel}
+                  className="flex items-center justify-center gap-1 px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors border border-gray-200"
+                >
+                  <span>상담 유형</span>
+                  {selectedConsultationTypes.length > 0 && (
+                    <span className="bg-green-100 text-green-700 rounded-full px-1.5 py-0.5 text-xs font-semibold">
+                      {selectedConsultationTypes.length}
+                    </span>
+                  )}
+                </button>
+
                 {/* 지역 필터 */}
                 <button
                   onClick={openRegionPanel}
@@ -257,7 +316,7 @@ export default function Mentors() {
             </div>
 
             {/* 초기화 버튼 */}
-            {(selectedMajors.length > 0 || selectedRegions.length > 0 || debouncedSearch) && (
+            {(selectedMajors.length > 0 || selectedRegions.length > 0 || selectedConsultationTypes.length > 0 || debouncedSearch) && (
               <div className="flex justify-center mt-4">
                 <Button
                   onClick={() => {
@@ -265,6 +324,7 @@ export default function Mentors() {
                     setDebouncedSearch("");
                     setSelectedMajors([]);
                     setSelectedRegions([]);
+                    setSelectedConsultationTypes([]);
                     setSortBy("rating");
                   }}
                   variant="ghost"
@@ -355,6 +415,82 @@ export default function Mentors() {
                 </Button>
                 <Button
                   onClick={applyMajorSelection}
+                  variant="default"
+                  className="flex-1 h-8 text-xs"
+                >
+                  적용
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* 상담 유형 선택 사이드 패널 */}
+        {showConsultationTypePanel && (
+          <div className="fixed inset-0 z-50 bg-black/50">
+            <div className="fixed right-0 top-0 bottom-0 w-full sm:w-96 bg-background shadow-lg flex flex-col">
+              <div className="flex items-center justify-between p-3 sm:p-4 border-b border-border">
+                <h3 className="text-base sm:text-lg font-semibold">상담 유형 선택</h3>
+                <button
+                  onClick={closeConsultationTypePanel}
+                  className="p-1 hover:bg-muted rounded-md transition-colors"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+
+              <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-1 sm:space-y-2">
+                {CONSULTATION_TYPES.map((type) => (
+                  <label
+                    key={type.value}
+                    className="flex items-center gap-2 p-2 rounded-md hover:bg-muted cursor-pointer transition-colors"
+                  >
+                    <input
+                      type="checkbox"
+                      checked={tempSelectedConsultationTypes.includes(type.value)}
+                      onChange={() => toggleConsultationType(type.value)}
+                      className="w-4 h-4 rounded border-gray-300"
+                    />
+                    <span className="text-xs sm:text-sm">{type.label}</span>
+                  </label>
+                ))}
+              </div>
+
+              {tempSelectedConsultationTypes.length > 0 && (
+                <div className="border-t border-border p-3 sm:p-4 bg-muted/50">
+                  <p className="text-xs font-medium text-muted-foreground mb-2">선택된 상담 유형 ({tempSelectedConsultationTypes.length})</p>
+                  <div className="flex flex-wrap gap-2">
+                    {tempSelectedConsultationTypes.map((typeValue) => {
+                      const typeName = CONSULTATION_TYPES.find(t => t.value === typeValue)?.label || typeValue;
+                      return (
+                        <div
+                          key={typeValue}
+                          className="bg-green-100 text-green-700 rounded-full px-2 py-1 text-xs font-medium flex items-center gap-1"
+                        >
+                          <span>{typeName}</span>
+                          <button
+                            onClick={() => toggleConsultationType(typeValue)}
+                            className="ml-1 hover:opacity-70 transition-opacity"
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              <div className="border-t border-border p-3 sm:p-4 flex gap-2">
+                <Button
+                  onClick={resetConsultationTypeSelection}
+                  variant="outline"
+                  className="h-8 text-xs"
+                >
+                  초기화
+                </Button>
+                <Button
+                  onClick={applyConsultationTypeSelection}
                   variant="default"
                   className="flex-1 h-8 text-xs"
                 >
