@@ -2693,3 +2693,7 @@
 - [x] Feature: Home.tsx 카테고리 버튼에 상담 유형 필터 URL 파라미터 추가
 - [x] Feature: Mentors.tsx에 useSearchParams 추가 및 URL 파라미터 처리
 - [x] Feature: 페이지 로드 시 URL 파라미터의 상담 유형 필터 자동 적용
+
+
+## FAQ 섹션 이메일 수정
+- [x] Bug: Home.tsx FAQ 섹션의 support@univmatch.com을 2026univmatch@gmail.com으로 변경
