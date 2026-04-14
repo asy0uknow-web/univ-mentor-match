@@ -125,6 +125,9 @@
     font-weight: 400;
     letter-spacing: -0.01em;
   }
+  body.dropdown-open {
+    overflow: hidden;
+  }
   button:not(:disabled),
   [role="button"]:not([aria-disabled="true"]),
   [type="button"]:not(:disabled),

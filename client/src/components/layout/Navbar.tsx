@@ -134,7 +134,13 @@ export default function Navbar({ onBugReport }: NavbarProps) {
                 </div>
 
                 {/* 드롭다운 메뉴 (모든 화면에서) */}
-                <DropdownMenu>
+                <DropdownMenu onOpenChange={(open) => {
+                  if (open) {
+                    document.body.classList.add('dropdown-open');
+                  } else {
+                    document.body.classList.remove('dropdown-open');
+                  }
+                }}>
                   <DropdownMenuTrigger asChild>
                     <Button
                       variant="ghost"
