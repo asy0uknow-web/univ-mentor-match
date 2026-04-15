@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { PageLayout } from "@/components/layout";
 import { setPageMeta, PAGE_META } from "@/lib/seo";
 import { useAuth } from "@/_core/hooks/useAuth";
+import { GalleryUpload } from "@/components/GalleryUpload";
 
 const OPEN_CONVERSATION_KEY = "univmatch:openConversationUserId";
 const DRAFT_MESSAGE_KEY = "univmatch:draftMessage";
@@ -227,6 +228,54 @@ export default function MentorDetail() {
                     <p className="text-sm sm:text-base leading-relaxed text-gray-700 whitespace-pre-wrap break-words">
                       {mentor.profile.bio}
                     </p>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* 갤러리 */}
+              {mentor.profile?.id && user?.id === mentor.profile.userId && (
+                <GalleryUpload
+                  mentorId={mentor.profile.id}
+                  initialImages={gallery || []}
+                  onUploadSuccess={() => {
+                    // 갤러리 데이터 새로고침
+                    window.location.reload();
+                  }}
+                />
+              )}
+
+              {/* 갤러리 읽기 전용 */}
+              {gallery && gallery.length > 0 && user?.id !== mentor.profile.userId && (
+                <Card className="border-0 shadow-sm">
+                  <CardHeader className="pb-3 sm:pb-4">
+                    <CardTitle className="text-lg sm:text-xl">갤러리</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    {/* PC: 3열 그리드 */}
+                    <div className="hidden sm:grid grid-cols-3 gap-3">
+                      {gallery.map((image) => (
+                        <img
+                          key={image.id}
+                          src={image.imageUrl}
+                          alt="갤러리"
+                          className="w-full aspect-square object-cover rounded-lg"
+                        />
+                      ))}
+                    </div>
+
+                    {/* 모바일: 가로 스크롤 */}
+                    <div className="sm:hidden overflow-x-auto pb-2">
+                      <div className="flex gap-3 min-w-min">
+                        {gallery.map((image) => (
+                          <img
+                            key={image.id}
+                            src={image.imageUrl}
+                            alt="갤러리"
+                            className="flex-shrink-0 w-24 h-24 object-cover rounded-lg"
+                          />
+                        ))}
+                      </div>
+                    </div>
                   </CardContent>
                 </Card>
               )}
