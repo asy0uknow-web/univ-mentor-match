@@ -576,3 +576,22 @@ export const mentorColumnComments = mysqlTable("mentor_column_comments", {
 });
 export type MentorColumnComment = typeof mentorColumnComments.$inferSelect;
 export type InsertMentorColumnComment = typeof mentorColumnComments.$inferInsert;
+
+
+/**
+ * Email Verification Codes - 이메일 인증 코드
+ * 회원가입 전 이메일 인증을 위한 임시 코드 저장
+ */
+export const emailVerificationCodes = mysqlTable("email_verification_codes", {
+  id: int("id").autoincrement().primaryKey(),
+  email: varchar("email", { length: 320 }).notNull(),
+  code: varchar("code", { length: 10 }).notNull(), // 6자리 인증 코드
+  isVerified: boolean("isVerified").default(false).notNull(), // 인증 완료 여부
+  attemptCount: int("attemptCount").default(0).notNull(), // 인증 시도 횟수
+  lastSentAt: timestamp("lastSentAt").defaultNow().notNull(), // 마지막 발송 시간
+  expiresAt: timestamp("expiresAt").notNull(), // 코드 만료 시간 (10분)
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+export type EmailVerificationCode = typeof emailVerificationCodes.$inferSelect;
+export type InsertEmailVerificationCode = typeof emailVerificationCodes.$inferInsert;

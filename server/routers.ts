@@ -60,13 +60,13 @@ import { CONSULTATION_PRODUCT, MIN_BOOKING_DURATION, MAX_BOOKING_DURATION } from
 import { storagePut } from "./storage";
 import { hashPassword, verifyPassword, validateEmail, validatePasswordStrength } from "./auth-utils";
 import { signupProcedure, loginProcedure } from "./auth-procedures";
-import { createVerificationToken, verifyEmailToken, getPendingVerificationToken } from "./email-verification";
+import { sendVerificationCode, verifyEmailCode, isEmailVerified, getResendWaitTime } from "./email-verification";
 import { startConsultation, completeConsultation, requestReschedule, acceptReschedule, rejectReschedule, isWithinStartWindow, isWithinCompleteWindow, calculateConsultationDuration, recordUserStart, recordUserEnd } from "./booking-consultation";
 import { sendConsultationReminders } from "./booking-notifications";
 import { getMonthlyConsultationStats, getOverallConsultationStats, getLast12MonthsStats } from "./booking-statistics";
 import { createQuestion, getQuestionById, getQuestions, updateQuestion, deleteQuestion, createAnswer, getAnswersByQuestionId, getAnswerById, updateAnswer, deleteAnswer, createAnswerReply, getRepliesByAnswerId, getReplyById, updateReply, deleteReply, getQuestionDetail, acceptAnswer, toggleAnswerLike, getUserAnswerLikes, notifyQuestionAuthorOnAnswer, getMyQuestions, getMyAnswers } from "./qna";
 import { getColumnsList, getColumnById, createColumn, updateColumn, deleteColumn, toggleColumnLike, getColumnComments, createComment, updateComment, deleteComment, getMyColumns, incrementViewCount } from "./columns";
-import { emailVerificationTokens } from "../drizzle/schema";
+import { emailVerificationCodes } from "../drizzle/schema";
 import { mentorGallery, messages, notifications, bookings, reviews, mentorProfiles, mentorVerifications, users, bugReports, mentorConsultationTypes, consultationProposals, studentProfiles } from "../drizzle/schema";
 import { and, eq, eq as drizzleEq, or as drizzleOr, desc as drizzleDesc, count } from "drizzle-orm";
 
@@ -130,31 +130,34 @@ export const appRouter = router({
       }),
     signup: signupProcedure,
     login: loginProcedure,
-    requestEmailVerification: protectedProcedure
-      .mutation(async ({ ctx }) => {
-        // 이미 검증된 이메일이면 에러
-        if (ctx.user.emailVerified) {
-          throw new Error("Email already verified");
-        }
-
-        // 기존 토큰이 있는지 확인
-        const existingToken = await getPendingVerificationToken(ctx.user.id);
-        if (existingToken) {
-          return { token: existingToken }; // 기존 토큰 반환
-        }
-
-        // 새 토큰 생성
-        const token = await createVerificationToken(ctx.user.id);
-        return { token };
-      }),
-    verifyEmail: publicProcedure
-      .input(z.object({ token: z.string() }))
+    sendVerificationCode: publicProcedure
+      .input(z.object({ email: z.string().email() }))
       .mutation(async ({ input }) => {
-        const result = await verifyEmailToken(input.token);
-        if (!result) {
-          throw new Error("Invalid or expired token");
+        try {
+          await sendVerificationCode(input.email);
+          return { success: true, message: "Verification code sent" };
+        } catch (error: any) {
+          throw new Error(error.message || "Failed to send verification code");
         }
-        return { success: true, userId: result.userId };
+      }),
+    verifyCode: publicProcedure
+      .input(z.object({ email: z.string().email(), code: z.string().min(6).max(6) }))
+      .mutation(async ({ input }) => {
+        try {
+          const isValid = await verifyEmailCode(input.email, input.code);
+          if (!isValid) {
+            throw new Error("Invalid verification code");
+          }
+          return { success: true, message: "Email verified successfully" };
+        } catch (error: any) {
+          throw new Error(error.message || "Failed to verify code");
+        }
+      }),
+    getResendWaitTime: publicProcedure
+      .input(z.object({ email: z.string().email() }))
+      .query(async ({ input }) => {
+        const waitTime = await getResendWaitTime(input.email);
+        return { waitTime }; // 초 단위
       }),
   }),
 

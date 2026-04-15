@@ -5,9 +5,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
+import EmailVerification from "./EmailVerification";
 
 export default function SignUp() {
   const [, navigate] = useLocation();
+  const [step, setStep] = useState<"email" | "form">("email"); // 단계: 이메일 인증 또는 회원가입 폼
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -81,6 +83,49 @@ export default function SignUp() {
       setIsLoading(false);
     }
   };
+
+  const handleEmailVerified = () => {
+    setStep("form");
+    toast.success("이메일 인증이 완료되었습니다. 회원가입을 진행해주세요.");
+  };
+
+  if (step === "email") {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-cream-50 to-cream-100 flex items-center justify-center p-3 sm:p-4">
+        <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-4 sm:p-8 max-h-[90vh] overflow-y-auto">
+          <h1 className="text-2xl sm:text-3xl font-bold text-navy-900 mb-1 sm:mb-2">회원가입</h1>
+          <p className="text-xs sm:text-sm text-gray-600 mb-4 sm:mb-6">이메일 인증 후 가입하세요</p>
+
+          <div className="mb-6">
+            <label className="block text-sm font-semibold text-navy-900 mb-2">
+              이메일
+            </label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="example@email.com"
+              className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-primary focus:outline-none"
+            />
+          </div>
+
+          {email && (
+            <EmailVerification email={email} onVerified={handleEmailVerified} />
+          )}
+
+          <p className="text-center text-xs sm:text-sm text-gray-600 mt-4">
+            이미 계정이 있으신가요?{" "}
+            <button
+              onClick={() => navigate("/login")}
+              className="text-primary hover:text-primary/80 font-semibold"
+            >
+              로그인
+            </button>
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-cream-50 to-cream-100 flex items-center justify-center p-3 sm:p-4">
@@ -191,7 +236,7 @@ export default function SignUp() {
           이미 계정이 있으신가요?{" "}
           <button
             onClick={() => navigate("/login")}
-            className="text-gold-500 hover:text-gold-600 font-semibold"
+            className="text-primary hover:text-primary/80 font-semibold"
           >
             로그인
           </button>
