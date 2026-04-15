@@ -114,18 +114,10 @@ export default function EmailVerification({ email, onVerified }: EmailVerificati
     return `${minutes}:${secs.toString().padStart(2, "0")}`;
   };
 
-  // 코드 발송 전 - 이메일 입력 후 버튼 클릭 대기
+  // 코드 발송 전 - 버튼은 항상 표시
   if (!isCodeSent) {
     return (
       <div className="space-y-4">
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-          <p className="text-sm text-blue-800">
-            <strong>{email}</strong>로 인증 코드를 발송합니다.
-            <br />
-            아래 버튼을 클릭해주세요.
-          </p>
-        </div>
-
         <button
           onClick={handleSendCode}
           disabled={isLoading || sendCodeMutation.isPending}
@@ -146,12 +138,6 @@ export default function EmailVerification({ email, onVerified }: EmailVerificati
   // 코드 발송 후 - 인증 코드 입력
   return (
     <div className="space-y-4">
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-        <p className="text-sm text-blue-800">
-          <strong>{email}</strong>로 발송된 6자리 코드를 입력해주세요.
-        </p>
-      </div>
-
       <form onSubmit={handleVerify} className="space-y-4">
         {/* 인증 코드 입력 */}
         <div className="space-y-2">
