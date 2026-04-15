@@ -1,8 +1,9 @@
 import { useAuth } from "@/_core/hooks/useAuth";
+import { useDarkMode } from "@/hooks/useDarkMode";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "wouter";
-import { LogOut, Trash2, ChevronDown, Bug, Sparkles } from "lucide-react";
+import { LogOut, Trash2, ChevronDown, Bug, Moon, Sun } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -41,6 +42,7 @@ const LOGO_URL = "/logonew.png";
 
 export default function Navbar({ onBugReport }: NavbarProps) {
   const { isAuthenticated, user } = useAuth();
+  const { isDark, toggleDarkMode, isLoaded } = useDarkMode();
   const logoutMutation = trpc.auth.logout.useMutation({
     onSuccess: () => {
       window.location.href = "/";
@@ -105,8 +107,24 @@ export default function Navbar({ onBugReport }: NavbarProps) {
             </div>
           )}
 
-          {/* 오른쪽: 로그인 상태별 메뉴 */}
+          {/* 오른쪽: 다크 모드 토글 + 로그인 상태별 메뉴 */}
           <div className="flex items-center gap-2 sm:gap-4 ml-auto">
+            {/* 다크 모드 토글 */}
+            {isLoaded && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={toggleDarkMode}
+                aria-label={isDark ? "라이트 모드로 전환" : "다크 모드로 전환"}
+                className="p-2 hover:bg-primary/10"
+              >
+                {isDark ? (
+                  <Sun className="h-4 w-4 text-yellow-500" aria-hidden="true" />
+                ) : (
+                  <Moon className="h-4 w-4 text-slate-600" aria-hidden="true" />
+                )}
+              </Button>
+            )}
             {isAuthenticated ? (
               <>
                 {/* 데스크톱: 가로 메뉴 */}
@@ -170,8 +188,25 @@ export default function Navbar({ onBugReport }: NavbarProps) {
 
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
+                      onClick={() => toggleDarkMode()}
+                      className="hover:bg-primary/10 cursor-pointer"
+                    >
+                      {isDark ? (
+                        <>
+                          <Sun className="h-4 w-4 mr-2 text-yellow-500" aria-hidden="true" />
+                          라이트 모드
+                        </>
+                      ) : (
+                        <>
+                          <Moon className="h-4 w-4 mr-2" aria-hidden="true" />
+                          다크 모드
+                        </>
+                      )}
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
                       onClick={() => onBugReport()}
-                      className="hover:bg-blue-100 hover:text-primary cursor-pointer"
+                      className="hover:bg-primary/10 cursor-pointer"
                     >
                       <Bug className="h-4 w-4 mr-2" aria-hidden="true" />
                       버그 신고
