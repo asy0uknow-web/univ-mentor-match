@@ -96,22 +96,23 @@ export default function SignUp() {
           <h1 className="text-2xl sm:text-3xl font-bold text-navy-900 mb-1 sm:mb-2">회원가입</h1>
           <p className="text-xs sm:text-sm text-gray-600 mb-4 sm:mb-6">이메일 인증 후 가입하세요</p>
 
-          <div className="mb-6">
-            <label className="block text-sm font-semibold text-navy-900 mb-2">
-              이메일
-            </label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="example@email.com"
-              className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-primary focus:outline-none"
-            />
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-semibold text-navy-900 mb-2">
+                이메일
+              </label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="example@email.com"
+                className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-primary focus:outline-none text-sm"
+              />
+            </div>
+            {email && (
+              <EmailVerification email={email} onVerified={handleEmailVerified} />
+            )}
           </div>
-
-          {email && (
-            <EmailVerification email={email} onVerified={handleEmailVerified} />
-          )}
 
           <p className="text-center text-xs sm:text-sm text-gray-600 mt-4">
             이미 계정이 있으신가요?{" "}

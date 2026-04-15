@@ -1,5 +1,4 @@
-import { useState, useEffect } from "react";
-import { useLocation } from "wouter";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -21,46 +20,6 @@ export default function EmailVerification({ email, onVerified }: EmailVerificati
   const sendCodeMutation = trpc.auth.sendVerificationCode.useMutation();
   const verifyCodeMutation = trpc.auth.verifyCode.useMutation();
 
-  // 컴포넌트 마운트 시 인증 코드 발송
-  useEffect(() => {
-    const sendCode = async () => {
-      try {
-        await sendCodeMutation.mutateAsync({ email });
-        setIsCodeSent(true);
-        toast.success("인증 코드가 이메일로 발송되었습니다");
-        checkResendWaitTime();
-      } catch (error: any) {
-        toast.error(error.message || "인증 코드 발송에 실패했습니다");
-      }
-    };
-
-    sendCode();
-  }, [email]);
-
-  // 재발송 대기 시간 확인
-  const checkResendWaitTime = async () => {
-    try {
-      const result = await trpc.auth.getResendWaitTime.useQuery({ email });
-      setResendWaitTime(result.data?.waitTime || 0);
-
-      if ((result.data?.waitTime || 0) > 0) {
-        const interval = setInterval(() => {
-          setResendWaitTime((prev) => {
-            if (prev <= 1) {
-              clearInterval(interval);
-              return 0;
-            }
-            return prev - 1;
-          });
-        }, 1000);
-
-        return () => clearInterval(interval);
-      }
-    } catch (error) {
-      console.error("Failed to check resend wait time:", error);
-    }
-  };
-
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
 
@@ -74,6 +33,28 @@ export default function EmailVerification({ email, onVerified }: EmailVerificati
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSendCode = async () => {
+    if (!email.trim()) {
+      setErrors({ email: "이메일을 입력해주세요" });
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      setErrors({});
+      await sendCodeMutation.mutateAsync({ email });
+      setIsCodeSent(true);
+      toast.success("인증 코드가 이메일로 발송되었습니다");
+      startResendTimer();
+    } catch (err: any) {
+      const errorMsg = err.message || "코드 발송 실패";
+      setErrors({ email: errorMsg });
+      toast.error(errorMsg);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleVerify = async (e: React.FormEvent) => {
@@ -107,23 +88,71 @@ export default function EmailVerification({ email, onVerified }: EmailVerificati
     try {
       await sendCodeMutation.mutateAsync({ email });
       toast.success("인증 코드가 다시 발송되었습니다");
-      checkResendWaitTime();
+      startResendTimer();
     } catch (error: any) {
       toast.error(error.message || "인증 코드 재발송에 실패했습니다");
     }
   };
 
+  const startResendTimer = () => {
+    setResendWaitTime(300); // 5분 = 300초
+
+    const interval = setInterval(() => {
+      setResendWaitTime((prev) => {
+        if (prev <= 1) {
+          clearInterval(interval);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  };
+
+  const formatTime = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${minutes}:${secs.toString().padStart(2, "0")}`;
+  };
+
+  // 코드 발송 전 - 이메일 입력 후 버튼 클릭 대기
+  if (!isCodeSent) {
+    return (
+      <div className="space-y-4">
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <p className="text-sm text-blue-800">
+            <strong>{email}</strong>로 인증 코드를 발송합니다.
+            <br />
+            아래 버튼을 클릭해주세요.
+          </p>
+        </div>
+
+        <button
+          onClick={handleSendCode}
+          disabled={isLoading || sendCodeMutation.isPending}
+          className="w-full bg-primary hover:bg-primary/90 text-white font-semibold py-3 rounded-lg transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+        >
+          {isLoading || sendCodeMutation.isPending ? "발송 중..." : "코드 발송"}
+        </button>
+
+        {Object.values(errors).length > 0 && (
+          <div className="p-3 bg-red-50 border border-red-200 rounded text-red-700 text-sm">
+            {Object.values(errors)[0]}
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // 코드 발송 후 - 인증 코드 입력
   return (
     <div className="space-y-4">
       <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
         <p className="text-sm text-blue-800">
-          <strong>{email}</strong>로 인증 코드가 발송되었습니다.
-          <br />
-          이메일을 확인하고 아래에 6자리 코드를 입력해주세요.
+          <strong>{email}</strong>로 발송된 6자리 코드를 입력해주세요.
         </p>
       </div>
 
-      <form onSubmit={handleVerify} className="space-y-3">
+      <form onSubmit={handleVerify} className="space-y-4">
         {/* 인증 코드 입력 */}
         <div className="space-y-2">
           <Label htmlFor="code" className="text-sm text-navy-900 font-semibold">
@@ -150,13 +179,13 @@ export default function EmailVerification({ email, onVerified }: EmailVerificati
         </div>
 
         {/* 인증 버튼 */}
-        <Button
+        <button
           type="submit"
           disabled={isLoading || verifyCodeMutation.isPending || code.length !== 6}
-          className="w-full bg-primary hover:bg-primary/90 text-white font-semibold py-3 rounded-lg transition-colors"
+          className="w-full bg-primary hover:bg-primary/90 text-white font-semibold py-3 rounded-lg transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
         >
           {isLoading || verifyCodeMutation.isPending ? "인증 중..." : "인증하기"}
-        </Button>
+        </button>
       </form>
 
       {/* 재발송 버튼 */}
@@ -171,7 +200,7 @@ export default function EmailVerification({ email, onVerified }: EmailVerificati
           }`}
         >
           {resendWaitTime > 0
-            ? `${resendWaitTime}초 후 재발송 가능`
+            ? `${formatTime(resendWaitTime)} 후 재발송 가능`
             : "코드를 받지 못했나요? 다시 발송"}
         </button>
       </div>
