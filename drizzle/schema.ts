@@ -387,20 +387,8 @@ export const mentorConsultationTypes = mysqlTable("mentor_consultation_types", {
 export type MentorConsultationType = typeof mentorConsultationTypes.$inferSelect;
 export type InsertMentorConsultationType = typeof mentorConsultationTypes.$inferInsert;
 
-/**
- * Email verification tokens for simple email verification flow
- */
-export const emailVerificationTokens = mysqlTable("email_verification_tokens", {
-  id: int("id").autoincrement().primaryKey(),
-  userId: int("userId").notNull(), // References users.id
-  token: varchar("token", { length: 255 }).notNull().unique(), // Unique verification token
-  expiresAt: timestamp("expiresAt").notNull(), // Token expiration time (24 hours)
-  isUsed: boolean("isUsed").default(false).notNull(), // Whether token has been used
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-});
-
-export type EmailVerificationToken = typeof emailVerificationTokens.$inferSelect;
-export type InsertEmailVerificationToken = typeof emailVerificationTokens.$inferInsert;
+// Deprecated: emailVerificationTokens removed in favor of emailVerificationCodes
+// Use emailVerificationCodes for 6-digit code-based email verification instead
 
 /**
  * QnA Questions - 멘티가 올리는 질문

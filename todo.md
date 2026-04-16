@@ -2746,3 +2746,13 @@
 - [x] 코드 발송 버튼 항상 표시 (이메일 입력 여부 상관없이)
 - [x] 안내 메시지 삭제 ("~~로 인증 코드를 발송합니다..." 문구 제거)
 - [x] 더 깔끔한 UI 구성
+
+
+## Gmail SMTP 연동 (완료)
+- [x] nodemailer 패키지 설치 (@types/nodemailer 포함)
+- [x] GMAIL_USER, GMAIL_APP_PASSWORD 환경변수 설정
+- [x] email-verification.ts에 Gmail SMTP 연동 로직 구현
+- [x] HTML 이메일 템플릿 디자인 (파란색 브랜드 색상 적용)
+- [x] 실제 Gmail SMTP를 통한 이메일 발송 테스트 성공
+- [x] 회원가입 페이지에서 인증 코드 이메일 발송 확인
+- [x] 5분 재발송 제한 기능 정상 작동 확인

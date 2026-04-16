@@ -8,7 +8,9 @@ import {
 } from "./email-verification";
 
 describe("Email Verification", () => {
-  const testEmail = "test@example.com";
+  // 각 테스트마다 고유한 이메일 주소 생성 (5분 재발송 제한 우회)
+  const getTestEmail = (suffix: string) => `test-${Date.now()}-${suffix}@example.com`;
+  const testEmail = getTestEmail("base");
 
   describe("generateVerificationCode", () => {
     it("should generate a 6-digit code", () => {
@@ -31,17 +33,19 @@ describe("Email Verification", () => {
 
   describe("sendVerificationCode", () => {
     it("should send verification code successfully", async () => {
-      const result = await sendVerificationCode(testEmail);
+      const email = getTestEmail("send");
+      const result = await sendVerificationCode(email);
       expect(result).toBe(true);
     });
 
     it("should prevent resending within 5 minutes", async () => {
       // 첫 번째 발송
-      await sendVerificationCode(testEmail + "1");
+      const email = getTestEmail("resend");
+      await sendVerificationCode(email);
 
       // 즉시 재발송 시도 - 실패해야 함
       try {
-        await sendVerificationCode(testEmail + "1");
+        await sendVerificationCode(email);
         expect.fail("Should throw error for resend within 5 minutes");
       } catch (error: any) {
         expect(error.message).toContain("5 minutes");
@@ -51,7 +55,7 @@ describe("Email Verification", () => {
 
   describe("verifyEmailCode", () => {
     it("should verify correct code", async () => {
-      const email = testEmail + "2";
+      const email = getTestEmail("verify");
       await sendVerificationCode(email);
 
       // 실제로는 데이터베이스에서 코드를 조회해야 하지만,
@@ -73,7 +77,7 @@ describe("Email Verification", () => {
     });
 
     it("should limit verification attempts", async () => {
-      const email = testEmail + "3";
+      const email = getTestEmail("attempts");
       await sendVerificationCode(email);
 
       // 5번 이상 실패 시도
@@ -97,7 +101,7 @@ describe("Email Verification", () => {
 
   describe("isEmailVerified", () => {
     it("should return false for unverified email", async () => {
-      const email = testEmail + "4";
+      const email = getTestEmail("unverified");
       const result = await isEmailVerified(email);
       expect(result).toBe(false);
     });
@@ -105,13 +109,13 @@ describe("Email Verification", () => {
 
   describe("getResendWaitTime", () => {
     it("should return 0 for new email", async () => {
-      const email = testEmail + "5";
+      const email = getTestEmail("newwait");
       const waitTime = await getResendWaitTime(email);
       expect(waitTime).toBe(0);
     });
 
     it("should return wait time after sending code", async () => {
-      const email = testEmail + "6";
+      const email = getTestEmail("waittime");
       await sendVerificationCode(email);
 
       const waitTime = await getResendWaitTime(email);

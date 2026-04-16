@@ -23,7 +23,7 @@ const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const StudentProfile = lazy(() => import("./pages/StudentProfile"));
 const SignUp = lazy(() => import("./pages/SignUp"));
 const Login = lazy(() => import("./pages/Login"));
-const VerifyEmail = lazy(() => import("./pages/VerifyEmail"));
+// Deprecated: VerifyEmail removed in favor of EmailVerification component integrated in SignUp
 const ReviewCreate = lazy(() => import("./pages/ReviewCreate"));
 const QnAList = lazy(() => import("./pages/QnAList"));
 const QnADetail = lazy(() => import("./pages/QnADetail"));
@@ -44,7 +44,7 @@ function Router() {
         <Route path={"/"} component={Home} />
         <Route path={"/signup"} component={SignUp} />
         <Route path={"/login"} component={Login} />
-        <Route path={"/verify-email"} component={VerifyEmail} />
+        {/* Deprecated: /verify-email route removed - use SignUp with integrated EmailVerification instead */}
         <Route path={"/mentors"} component={Mentors} />
         <Route path={"/mentor/:id"} component={MentorDetail} />
         <Route path={"/my-profile"} component={MentorProfile} />
