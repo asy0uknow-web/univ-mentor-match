@@ -133,7 +133,7 @@ export default function MentorDetail() {
     <PageLayout>
       <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
         {/* 헤더 */}
-        <div className="bg-card dark:bg-card border-b border-gray-200 dark:border-slate-700 dark:border-slate-700">
+        <div className="bg-card  border-b border-gray-200 700 700">
           <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6">
             <Link href="/mentors">
               <Button variant="ghost" className="mb-3 sm:mb-4 px-2 sm:px-4 h-8 sm:h-10 text-xs sm:text-sm">
@@ -149,7 +149,7 @@ export default function MentorDetail() {
             {/* 메인 콘텐츠 */}
             <div className="lg:col-span-2 space-y-6 sm:space-y-8">
               {/* 멘토 프로필 카드 */}
-              <Card className="overflow-hidden border-0 shadow-md dark:shadow-lg">
+              <Card className="overflow-hidden border-0 shadow-md ">
                 <CardContent className="p-4 sm:p-8">
                   <div className="flex flex-col sm:flex-row gap-4 sm:gap-8">
                     <div className="flex-shrink-0">
@@ -164,7 +164,7 @@ export default function MentorDetail() {
                       <div className="flex items-start justify-between mb-3 sm:mb-4">
                         <div>
                           <h1 className="text-2xl sm:text-3xl font-bold mb-1">{mentor.user.name}</h1>
-                          <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300 dark:text-gray-300 mb-3">
+                          <div className="flex items-center gap-2 text-sm text-gray-600 300 300 mb-3">
                             <GraduationCap className="w-4 h-4" />
                             <span>{mentor.profile?.university}</span>
                             <span className="text-gray-400">•</span>
@@ -187,7 +187,7 @@ export default function MentorDetail() {
                               <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
                               <span className="text-lg font-bold">{avgRating}</span>
                             </div>
-                            <p className="text-xs text-gray-600 dark:text-gray-300 dark:text-gray-300">{reviews?.length || 0}개 리뷰</p>
+                            <p className="text-xs text-gray-600 300 300">{reviews?.length || 0}개 리뷰</p>
                           </div>
                         )}
                         <div className="bg-blue-50 p-3 rounded-lg">
@@ -195,7 +195,7 @@ export default function MentorDetail() {
                             <Users className="w-4 h-4 text-blue-600" />
                             <span className="text-lg font-bold">5+</span>
                           </div>
-                          <p className="text-xs text-gray-600 dark:text-gray-300 dark:text-gray-300">상담 경험</p>
+                          <p className="text-xs text-gray-600 300 300">상담 경험</p>
                         </div>
                         <div className={`p-3 rounded-lg ${
                           (mentor.profile?.answerCount || 0) >= 10
@@ -210,7 +210,7 @@ export default function MentorDetail() {
                             }`} />
                             <span className="text-lg font-bold">{mentor.profile?.answerCount || 0}</span>
                           </div>
-                          <p className="text-xs text-gray-600 dark:text-gray-300 dark:text-gray-300">답변 수</p>
+                          <p className="text-xs text-gray-600 300 300">답변 수</p>
                         </div>
                       </div>
                     </div>

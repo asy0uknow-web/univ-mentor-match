@@ -87,9 +87,9 @@ export default function VerifyEmail() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
-      <div className="bg-card dark:bg-card rounded-lg shadow-lg p-8 max-w-md w-full">
+      <div className="bg-card  rounded-lg shadow-lg p-8 max-w-md w-full">
         <h1 className="text-3xl font-bold text-center mb-2 text-gray-800">이메일 인증</h1>
-        <p className="text-center text-gray-600 dark:text-gray-300 dark:text-gray-300 mb-6">이메일로 발송된 6자리 코드를 입력해주세요</p>
+        <p className="text-center text-gray-600 300 300 mb-6">이메일로 발송된 6자리 코드를 입력해주세요</p>
 
         {success ? (
           <div className="bg-green-50 border border-green-200 rounded-lg p-4 text-center">

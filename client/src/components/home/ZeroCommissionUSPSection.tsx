@@ -1,13 +1,13 @@
 /**
  * 중개 수수료 0% USP 섹션 (지그재그 #2)
- * - 배경: 화이트 (bg-card dark:bg-card)
+ * - 배경: 화이트 (bg-card )
  * - 왼쪽: 제목 및 설명 텍스트
  * - 오른쪽: 고급 일러스트레이션 (멘토-멘티 직접 연결)
  * - 높이: py-24 (충분한 여백)
  */
 export function ZeroCommissionUSPSection() {
   return (
-    <section className="py-24 bg-card dark:bg-card" aria-label="중개 수수료 0%">
+    <section className="py-24 bg-card " aria-label="중개 수수료 0%">
       <div className="container mx-auto px-4">
         <div className="max-w-6xl mx-auto">
           {/* 지그재그 레이아웃: 왼쪽 텍스트, 오른쪽 일러스트 */}

@@ -237,13 +237,13 @@ export default function Mentors() {
     <PageLayout>
       <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
         {/* 헤더 섹션 */}
-        <div className="bg-card dark:bg-card border-b border-gray-200 dark:border-slate-700 dark:border-slate-700 sticky top-16 z-40">
+        <div className="bg-card  border-b border-gray-200 700 700 sticky top-16 z-40">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
             <div className="mb-6">
               <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-2">
                 멘토 찾기
               </h1>
-              <p className="text-gray-600 dark:text-gray-300 dark:text-gray-300 text-sm sm:text-base">
+              <p className="text-gray-600 300 300 text-sm sm:text-base">
                 당신의 목표를 함께 이루어줄 멘토를 찾아보세요
               </p>
             </div>
@@ -251,7 +251,7 @@ export default function Mentors() {
             {/* 검색 및 필터 바 */}
             <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
               {/* 검색 바 */}
-              <div className="bg-card dark:bg-card border border-gray-200 dark:border-slate-700 dark:border-slate-700 rounded-full shadow-sm hover:shadow-md dark:shadow-lg transition-shadow duration-300 p-2 flex items-center gap-0 flex-1">
+              <div className="bg-card  border border-gray-200 700 700 rounded-full shadow-sm hover:shadow-md  transition-shadow duration-300 p-2 flex items-center gap-0 flex-1">
                 <Search className="h-4 sm:h-5 w-4 sm:w-5 text-gray-400 flex-shrink-0 ml-3 sm:ml-6" />
                 <input
                   type="text"
@@ -268,7 +268,7 @@ export default function Mentors() {
                 {/* 학과 필터 */}
                 <button
                   onClick={openMajorPanel}
-                  className="flex items-center justify-center gap-1 px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium text-gray-700 hover:bg-slate-50 dark:bg-slate-900 transition-colors border border-gray-200 dark:border-slate-700 dark:border-slate-700"
+                  className="flex items-center justify-center gap-1 px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium text-gray-700 hover:bg-slate-50 900 transition-colors border border-gray-200 700 700"
                 >
                   <span>학과</span>
                   {selectedMajors.length > 0 && (
@@ -281,7 +281,7 @@ export default function Mentors() {
                 {/* 상담 유형 필터 */}
                 <button
                   onClick={openConsultationTypePanel}
-                  className="flex items-center justify-center gap-1 px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium text-gray-700 hover:bg-slate-50 dark:bg-slate-900 transition-colors border border-gray-200 dark:border-slate-700 dark:border-slate-700"
+                  className="flex items-center justify-center gap-1 px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium text-gray-700 hover:bg-slate-50 900 transition-colors border border-gray-200 700 700"
                 >
                   <span>상담 유형</span>
                   {selectedConsultationTypes.length > 0 && (
@@ -294,7 +294,7 @@ export default function Mentors() {
                 {/* 지역 필터 */}
                 <button
                   onClick={openRegionPanel}
-                  className="flex items-center justify-center gap-1 px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium text-gray-700 hover:bg-slate-50 dark:bg-slate-900 transition-colors border border-gray-200 dark:border-slate-700 dark:border-slate-700"
+                  className="flex items-center justify-center gap-1 px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium text-gray-700 hover:bg-slate-50 900 transition-colors border border-gray-200 700 700"
                 >
                   <span>지역</span>
                   {selectedRegions.length > 0 && (
@@ -306,7 +306,7 @@ export default function Mentors() {
 
                 {/* 정렬 옵션 */}
                 <Select value={sortBy} onValueChange={setSortBy}>
-                  <SelectTrigger className="w-auto border-gray-200 dark:border-slate-700 dark:border-slate-700 text-xs sm:text-sm">
+                  <SelectTrigger className="w-auto border-gray-200 700 700 text-xs sm:text-sm">
                     <TrendingUp className="h-4 w-4 mr-1" />
                     <SelectValue />
                   </SelectTrigger>
@@ -609,15 +609,15 @@ export default function Mentors() {
             </div>
           ) : filteredMentors.length === 0 ? (
             <div className="text-center py-12">
-              <p className="text-gray-600 dark:text-gray-300 dark:text-gray-300 text-sm sm:text-base">검색 결과가 없습니다</p>
+              <p className="text-gray-600 300 300 text-sm sm:text-base">검색 결과가 없습니다</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredMentors.map((mentor: any) => (
                 <Link key={mentor.uuid || mentor.id} href={`/mentor/${mentor.uuid}`} className="group">
-                  <div className="bg-card dark:bg-card border border-gray-200 dark:border-slate-700 dark:border-slate-700 rounded-xl overflow-hidden hover:shadow-lg hover:border-gray-300 transition-all duration-300 h-full flex flex-col cursor-pointer">
+                  <div className="bg-card  border border-gray-200 700 700 rounded-xl overflow-hidden hover:shadow-lg hover:border-gray-300 transition-all duration-300 h-full flex flex-col cursor-pointer">
                       {/* 멘토 정보 헤더 */}
-                      <div className="p-4 sm:p-6 border-b border-gray-100 dark:border-slate-700 dark:border-slate-700">
+                      <div className="p-4 sm:p-6 border-b border-gray-100 700 700">
                         <div className="flex items-start justify-between mb-3">
                           <div className="flex-1">
                             <div className="flex items-center gap-2 mb-1">
@@ -628,7 +628,7 @@ export default function Mentors() {
                                 <BadgeCheck className="h-4 w-4 text-green-600 flex-shrink-0" />
                               )}
                             </div>
-                            <div className="flex items-center gap-1 text-xs sm:text-sm text-gray-600 dark:text-gray-300 dark:text-gray-300 mb-2">
+                            <div className="flex items-center gap-1 text-xs sm:text-sm text-gray-600 300 300 mb-2">
                               {getUniversityLogo(mentor.university) && (
                                 <img
                                   src={getUniversityLogo(mentor.university)}
@@ -638,7 +638,7 @@ export default function Mentors() {
                               )}
                               <span>{mentor.university}</span>
                             </div>
-                            <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 dark:text-gray-300">{mentor.major}</p>
+                            <p className="text-xs sm:text-sm text-gray-600 300 300">{mentor.major}</p>
                           </div>
                           {mentor.averageRating && mentor.averageRating > 0 && (
                             <div className="flex items-center gap-1 bg-yellow-50 px-2 py-1 rounded-lg">
@@ -653,7 +653,7 @@ export default function Mentors() {
 
                       {/* 상담 유형 */}
                       {mentor.consultationTypes && mentor.consultationTypes.length > 0 && (
-                        <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-100 dark:border-slate-700 dark:border-slate-700">
+                        <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-100 700 700">
                           <div className="flex flex-wrap gap-2">
                             {mentor.consultationTypes.slice(0, 3).map((type: string) => {
                               const typeLabel = CONSULTATION_TYPES.find(t => t.value === type)?.label || type;
@@ -676,7 +676,7 @@ export default function Mentors() {
                       )}
 
                       {/* 리뷰 정보 */}
-                      <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-100 dark:border-slate-700 dark:border-slate-700">
+                      <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-100 700 700">
                         {mentor.reviewCount > 0 && (
                           <div className="text-xs text-gray-500">
                             리뷰 {mentor.reviewCount}개

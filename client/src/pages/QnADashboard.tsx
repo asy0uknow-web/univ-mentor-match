@@ -20,7 +20,7 @@ const getStatusBadge = (status: string) => {
     case "solved":
       return { label: "해결됨", className: "bg-green-100 text-green-800" };
     default:
-      return { label: status, className: "bg-slate-100 dark:bg-slate-800 text-gray-800" };
+      return { label: status, className: "bg-slate-100 800 text-gray-800" };
   }
 };
 
@@ -89,7 +89,7 @@ function MenteeDashboard() {
               return (
                 <Card
                   key={question.id}
-                  className="cursor-pointer hover:shadow-md dark:shadow-lg transition-shadow"
+                  className="cursor-pointer hover:shadow-md  transition-shadow"
                   onClick={() => setLocation(`/qna/${question.id}`)}
                 >
                   <CardContent className="py-3 sm:py-4 px-4 sm:px-5">
@@ -217,7 +217,7 @@ function MentorDashboard() {
               return (
                 <Card
                   key={answer.id}
-                  className={`cursor-pointer hover:shadow-md dark:shadow-lg transition-shadow ${answer.isAccepted ? "ring-2 ring-green-300" : ""}`}
+                  className={`cursor-pointer hover:shadow-md  transition-shadow ${answer.isAccepted ? "ring-2 ring-green-300" : ""}`}
                   onClick={() => answer.question && setLocation(`/qna/${answer.question.id}`)}
                 >
                   <CardContent className="py-3 sm:py-4 px-4 sm:px-5">

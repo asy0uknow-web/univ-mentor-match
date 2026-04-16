@@ -46,7 +46,7 @@ export const ContactSection = () => {
                 href={channel.link}
                 target={channel.link.startsWith("http") ? "_blank" : undefined}
                 rel={channel.link.startsWith("http") ? "noopener noreferrer" : undefined}
-                className="bg-card dark:bg-card rounded-2xl p-6 sm:p-8 shadow-md dark:shadow-lg hover:shadow-lg hover:scale-105 transition-all duration-300 border border-gray-100 dark:border-slate-700 dark:border-slate-700 text-center group"
+                className="bg-card  rounded-2xl p-6 sm:p-8 shadow-md  hover:shadow-lg hover:scale-105 transition-all duration-300 border border-gray-100 700 700 text-center group"
               >
                 {/* Icon */}
                 <div className="text-4xl sm:text-5xl mb-4 group-hover:scale-110 transition-transform duration-300">

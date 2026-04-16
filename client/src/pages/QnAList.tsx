@@ -193,7 +193,7 @@ export default function QnAList() {
                   <ChevronDown className="h-3 w-3 sm:h-4 sm:w-4" />
                 </Select.Icon>
               </Select.Trigger>
-              <Select.Content className="bg-background border border-input rounded-md shadow-md dark:shadow-lg z-50">
+              <Select.Content className="bg-background border border-input rounded-md shadow-md  z-50">
                 <Select.Viewport className="p-1">
                   {CATEGORIES.map((cat) => (
                     <Select.Item key={cat.value} value={cat.value} className="px-3 py-2 text-xs sm:text-sm cursor-pointer hover:bg-accent rounded">
@@ -212,7 +212,7 @@ export default function QnAList() {
                   <ChevronDown className="h-3 w-3 sm:h-4 sm:w-4" />
                 </Select.Icon>
               </Select.Trigger>
-              <Select.Content className="bg-background border border-input rounded-md shadow-md dark:shadow-lg z-50">
+              <Select.Content className="bg-background border border-input rounded-md shadow-md  z-50">
                 <Select.Viewport className="p-1">
                   {SORT_OPTIONS.map((opt) => (
                     <Select.Item key={opt.value} value={opt.value} className="px-3 py-2 text-xs sm:text-sm cursor-pointer hover:bg-accent rounded">

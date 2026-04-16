@@ -40,7 +40,7 @@ export const CompanyInfoSection = () => {
   ];
 
   return (
-    <section id="company-info" role="region" className="py-16 sm:py-24 md:py-32 bg-card dark:bg-card" aria-label="운영 주체 소개">
+    <section id="company-info" role="region" className="py-16 sm:py-24 md:py-32 bg-card " aria-label="운영 주체 소개">
       <div className="container mx-auto px-4">
         {/* Section Header */}
         <div className="max-w-4xl mx-auto text-center mb-12 sm:mb-16">
@@ -82,7 +82,7 @@ export const CompanyInfoSection = () => {
             {values.map((value, idx) => (
               <div
                 key={idx}
-                className="bg-card dark:bg-card rounded-2xl p-6 sm:p-8 shadow-md dark:shadow-lg hover:shadow-lg transition-shadow duration-300 border border-gray-100 dark:border-slate-700 dark:border-slate-700 text-center"
+                className="bg-card  rounded-2xl p-6 sm:p-8 shadow-md  hover:shadow-lg transition-shadow duration-300 border border-gray-100 700 700 text-center"
               >
                 <div className="text-4xl sm:text-5xl mb-4">
                   {value.icon}
@@ -105,7 +105,7 @@ export const CompanyInfoSection = () => {
             {teamMembers.map((member, idx) => (
               <div
                 key={idx}
-                className="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-6 sm:p-8 shadow-md dark:shadow-lg hover:shadow-lg transition-shadow duration-300 border border-gray-100 dark:border-slate-700 dark:border-slate-700 text-center"
+                className="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-6 sm:p-8 shadow-md  hover:shadow-lg transition-shadow duration-300 border border-gray-100 700 700 text-center"
               >
                 <div className="text-5xl sm:text-6xl mb-4">
                   {member.icon}

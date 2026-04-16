@@ -280,7 +280,7 @@ export default function MentorColumnDetail() {
                     <div
                       key={comment.id}
                       className={`p-3 sm:p-4 rounded-lg ${
-                        comment.parentCommentId ? "bg-slate-50 dark:bg-slate-900 ml-4 sm:ml-8" : "bg-slate-100 dark:bg-slate-800"
+                        comment.parentCommentId ? "bg-slate-50 900 ml-4 sm:ml-8" : "bg-slate-100 800"
                       }`}
                     >
                       <div className="flex items-start justify-between gap-2 mb-2">

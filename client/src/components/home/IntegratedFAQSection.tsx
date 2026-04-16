@@ -124,7 +124,7 @@ export const IntegratedFAQSection = () => {
           {groupedFAQs.map((group, groupIdx) => (
             <div key={group.category} className="space-y-4">
               {/* Category Header */}
-              <div className="mb-6 pb-4 border-b-2 border-gray-200 dark:border-slate-700 dark:border-slate-700">
+              <div className="mb-6 pb-4 border-b-2 border-gray-200 700 700">
                 <h3 className="text-xl sm:text-2xl font-bold text-foreground">
                   {group.label}
                 </h3>
@@ -135,7 +135,7 @@ export const IntegratedFAQSection = () => {
                 {group.items.map((faq, idx) => (
                   <div
                     key={`${group.category}-${idx}`}
-                    className="bg-card dark:bg-card rounded-lg border border-gray-200 dark:border-slate-700 dark:border-slate-700 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden hover:scale-102 hover:-translate-y-1"
+                    className="bg-card  rounded-lg border border-gray-200 700 700 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden hover:scale-102 hover:-translate-y-1"
                   >
                     {/* Question */}
                     <button
@@ -162,7 +162,7 @@ export const IntegratedFAQSection = () => {
                     {expandedIndex === `${group.category}-${idx}` && (
                       <div
                         id={`faq-answer-${group.category}-${idx}`}
-                        className="px-4 sm:px-6 md:px-8 py-4 sm:py-5 bg-gradient-to-r from-indigo-50 via-blue-50 to-transparent border-t border-gray-200 dark:border-slate-700 dark:border-slate-700 animate-in fade-in slide-in-from-top-2 duration-300"
+                        className="px-4 sm:px-6 md:px-8 py-4 sm:py-5 bg-gradient-to-r from-indigo-50 via-blue-50 to-transparent border-t border-gray-200 700 700 animate-in fade-in slide-in-from-top-2 duration-300"
                       >
                         <p className="text-xs sm:text-sm md:text-base text-muted-foreground leading-relaxed whitespace-pre-wrap">
                           A. {faq.answer}

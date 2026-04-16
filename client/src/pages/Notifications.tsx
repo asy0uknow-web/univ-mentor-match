@@ -72,7 +72,7 @@ export default function Notifications() {
           <h1 className="text-2xl sm:text-4xl font-bold">알림</h1>
         </div>
 
-        <Card className="mb-4 sm:mb-6 shadow-sm sm:shadow-md dark:shadow-lg">
+        <Card className="mb-4 sm:mb-6 shadow-sm sm:shadow-md ">
           <CardContent className="pt-3 sm:pt-6 px-3 sm:px-6 pb-3 sm:pb-6">
             <Input
               placeholder="알림 검색..."
@@ -90,7 +90,7 @@ export default function Notifications() {
             {filteredNotifications.map((notification) => (
               <Card
                 key={notification.id}
-                className={`transition-colors shadow-sm sm:shadow-md dark:shadow-lg ${
+                className={`transition-colors shadow-sm sm:shadow-md  ${
                   notification.isRead ? "bg-card" : "bg-primary/5 border-primary/20"
                 }`}
               >
@@ -134,7 +134,7 @@ export default function Notifications() {
             ))}
           </div>
         ) : (
-          <Card className="shadow-sm sm:shadow-md dark:shadow-lg">
+          <Card className="shadow-sm sm:shadow-md ">
             <CardContent className="py-8 sm:py-12 px-3 sm:px-6 text-center">
               <Bell className="h-8 w-8 sm:h-12 sm:w-12 text-muted-foreground mx-auto mb-3 sm:mb-4" />
               <p className="text-xs sm:text-sm text-muted-foreground">알림이 없습니다.</p>

@@ -22,7 +22,7 @@ export function FeaturedColumnsSection() {
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
             {[1, 2, 3].map((idx) => (
-              <div key={idx} className="rounded-2xl overflow-hidden bg-card dark:bg-card shadow-md dark:shadow-lg">
+              <div key={idx} className="rounded-2xl overflow-hidden bg-card  shadow-md ">
                 <Skeleton className="w-full h-48" />
                 <div className="p-6">
                   <Skeleton className="h-6 w-3/4 mb-3" />
@@ -56,7 +56,7 @@ export function FeaturedColumnsSection() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 mb-12">
           {columns.map((column: any) => (
             <Link key={column.id} href={`/columns/${column.id}`}>
-              <div className="group rounded-2xl overflow-hidden bg-card dark:bg-card shadow-md dark:shadow-lg hover:shadow-xl transition-all duration-300 h-full flex flex-col cursor-pointer hover:scale-105 hover:-translate-y-2">
+              <div className="group rounded-2xl overflow-hidden bg-card  shadow-md  hover:shadow-xl transition-all duration-300 h-full flex flex-col cursor-pointer hover:scale-105 hover:-translate-y-2">
                 {/* 커버 이미지 */}
                 {column.coverImageUrl && (
                   <div className="relative h-48 overflow-hidden bg-gradient-to-br from-primary/20 to-primary/5">

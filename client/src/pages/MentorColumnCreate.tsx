@@ -337,7 +337,7 @@ export default function MentorColumnCreate() {
                     className={`border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-all duration-300 hover:scale-102 ${
                       dragActive
                         ? 'border-indigo-500 bg-indigo-50 scale-105'
-                        : 'border-gray-300 bg-slate-50 dark:bg-slate-900 hover:border-indigo-400'
+                        : 'border-gray-300 bg-slate-50 900 hover:border-indigo-400'
                     }`}
                   >
                     <input
@@ -369,7 +369,7 @@ export default function MentorColumnCreate() {
                   {coverImageUrl && (
                     <div className="mt-4">
                       <p className="text-xs sm:text-sm font-medium mb-2">미리보기</p>
-                      <div className="relative w-full h-40 bg-slate-100 dark:bg-slate-800 rounded-lg overflow-hidden">
+                      <div className="relative w-full h-40 bg-slate-100 800 rounded-lg overflow-hidden">
                         <img
                           src={coverImageUrl}
                           alt="Cover preview"

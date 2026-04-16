@@ -31,9 +31,9 @@ export function PopularQnASection() {
       "대학 생활": "bg-green-100 text-green-700",
       "학업 관리": "bg-orange-100 text-orange-700",
       "진로 상담": "bg-pink-100 text-pink-700",
-      "기타": "bg-slate-100 dark:bg-slate-800 text-gray-700",
+      "기타": "bg-slate-100 800 text-gray-700",
     };
-    return colors[category] || "bg-slate-100 dark:bg-slate-800 text-gray-700";
+    return colors[category] || "bg-slate-100 800 text-gray-700";
   };
 
   const getStatusBadgeColor = (status: string) => {
@@ -42,7 +42,7 @@ export function PopularQnASection() {
       answered: "bg-blue-100 text-blue-700",
       solved: "bg-green-100 text-green-700",
     };
-    return colors[status] || "bg-slate-100 dark:bg-slate-800 text-gray-700";
+    return colors[status] || "bg-slate-100 800 text-gray-700";
   };
 
   const getStatusLabel = (status: string) => {
@@ -92,7 +92,7 @@ export function PopularQnASection() {
                 href={`/qna/${question.id}`}
                 className="group"
               >
-                <Card className="h-full hover:shadow-lg transition-all duration-300 border-gray-200 dark:border-slate-700 dark:border-slate-700 hover:border-blue-300 cursor-pointer hover:scale-105 hover:-translate-y-2 group">
+                <Card className="h-full hover:shadow-lg transition-all duration-300 border-gray-200 700 700 hover:border-blue-300 cursor-pointer hover:scale-105 hover:-translate-y-2 group">
                   <CardHeader className="pb-3 sm:pb-4">
                     {/* 카테고리 및 상태 배지 */}
                     <div className="flex items-center gap-2 mb-3 flex-wrap">
@@ -127,8 +127,8 @@ export function PopularQnASection() {
                     </p>
 
                     {/* 답변 수 및 추가 정보 */}
-                    <div className="flex items-center justify-between pt-2 border-t border-gray-100 dark:border-slate-700 dark:border-slate-700">
-                      <div className="flex items-center gap-1 text-xs sm:text-sm text-gray-600 dark:text-gray-300 dark:text-gray-300">
+                    <div className="flex items-center justify-between pt-2 border-t border-gray-100 700 700">
+                      <div className="flex items-center gap-1 text-xs sm:text-sm text-gray-600 300 300">
                         <MessageCircle className="h-4 w-4 text-blue-500" />
                         <span className="font-semibold">{question.answerCount || 0}</span>
                         <span>개의 답변</span>

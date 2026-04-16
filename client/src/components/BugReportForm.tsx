@@ -51,7 +51,7 @@ export default function BugReportForm() {
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto p-6 bg-card dark:bg-card rounded-lg border border-gray-200 dark:border-slate-700 dark:border-slate-700 shadow-sm">
+    <div className="w-full max-w-2xl mx-auto p-6 bg-card  rounded-lg border border-gray-200 700 700 shadow-sm">
       <div className="flex items-center gap-3 mb-6">
         <AlertCircle className="w-6 h-6 text-orange-500" />
         <h2 className="text-2xl font-bold">버그 신고</h2>

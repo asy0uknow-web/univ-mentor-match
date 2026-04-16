@@ -76,7 +76,7 @@ export default function AdminColumnStats() {
           <h1 className="text-3xl font-bold mb-8">칼럼 통계</h1>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             {[1, 2, 3].map((idx) => (
-              <div key={idx} className="bg-card dark:bg-card rounded-lg p-6 shadow-md dark:shadow-lg">
+              <div key={idx} className="bg-card  rounded-lg p-6 shadow-md ">
                 <Skeleton className="h-8 w-1/2 mb-2" />
                 <Skeleton className="h-6 w-1/3" />
               </div>
@@ -100,7 +100,7 @@ export default function AdminColumnStats() {
 
         {/* 전체 통계 카드 */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-6 shadow-md dark:shadow-lg border border-blue-200">
+          <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-6 shadow-md  border border-blue-200">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground mb-2">총 칼럼 수</p>
@@ -110,7 +110,7 @@ export default function AdminColumnStats() {
             </div>
           </div>
 
-          <div className="bg-gradient-to-br from-red-50 to-red-100 rounded-lg p-6 shadow-md dark:shadow-lg border border-red-200">
+          <div className="bg-gradient-to-br from-red-50 to-red-100 rounded-lg p-6 shadow-md  border border-red-200">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground mb-2">총 좋아요</p>
@@ -120,7 +120,7 @@ export default function AdminColumnStats() {
             </div>
           </div>
 
-          <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-6 shadow-md dark:shadow-lg border border-green-200">
+          <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-6 shadow-md  border border-green-200">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground mb-2">총 댓글</p>
@@ -132,7 +132,7 @@ export default function AdminColumnStats() {
         </div>
 
         {/* 카테고리별 통계 테이블 */}
-        <div className="bg-card dark:bg-card rounded-lg shadow-md dark:shadow-lg overflow-hidden">
+        <div className="bg-card  rounded-lg shadow-md  overflow-hidden">
           <div className="px-6 py-4 border-b border-border">
             <h2 className="text-xl font-bold">카테고리별 통계</h2>
           </div>
