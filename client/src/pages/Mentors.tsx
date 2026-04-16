@@ -264,7 +264,7 @@ export default function Mentors() {
               </div>
 
               {/* 필터 및 정렬 버튼 그룹 */}
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
                 {/* 학과 필터 */}
                 <button
                   onClick={openMajorPanel}
