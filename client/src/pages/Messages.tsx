@@ -35,7 +35,7 @@ const PROPOSAL_STATUS = {
   accepted: { label: "상담 확정됨", color: "text-emerald-600", bg: "bg-emerald-50 border-emerald-200", icon: CheckCircle2 },
   rejected: { label: "거절됨", color: "text-red-500", bg: "bg-red-50 border-red-200", icon: XCircle },
   counter_proposed: { label: "수정 제안됨", color: "text-blue-600", bg: "bg-blue-50 border-blue-200", icon: RefreshCw },
-  cancelled: { label: "취소됨", color: "text-gray-500", bg: "bg-gray-50 border-gray-200", icon: XCircle },
+  cancelled: { label: "취소됨", color: "text-gray-500", bg: "bg-slate-50 dark:bg-slate-900 border-gray-200 dark:border-slate-700 dark:border-slate-700", icon: XCircle },
   completed: { label: "상담 완료", color: "text-purple-600", bg: "bg-purple-50 border-purple-200", icon: Star },
 } as const;
 
@@ -372,7 +372,7 @@ function ProposalCard({ proposalData, isMyMessage, currentUserId, onAccept, onRe
           <span className="ml-auto text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">수정 제안</span>
         )}
       </div>
-      <div className="px-4 py-3 space-y-2 bg-white/80">
+      <div className="px-4 py-3 space-y-2 bg-card dark:bg-card/80">
         <div className="flex items-center gap-2 text-sm">
           <Calendar className="h-4 w-4 text-primary shrink-0" />
           <span className="font-medium">{formattedDate}</span>
@@ -394,7 +394,7 @@ function ProposalCard({ proposalData, isMyMessage, currentUserId, onAccept, onRe
         )}
       </div>
       {canAct && (
-        <div className="px-4 py-3 flex gap-2 border-t bg-white/60">
+        <div className="px-4 py-3 flex gap-2 border-t bg-card dark:bg-card/60">
           <Button size="sm" className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white" onClick={() => onAccept(proposalData.proposalId)}>
             <ThumbsUp className="h-3 w-3 mr-1" /> 수락
           </Button>
@@ -407,7 +407,7 @@ function ProposalCard({ proposalData, isMyMessage, currentUserId, onAccept, onRe
         </div>
       )}
       {canComplete && (
-        <div className="px-4 py-3 border-t bg-white/60 space-y-3">
+        <div className="px-4 py-3 border-t bg-card dark:bg-card/60 space-y-3">
           <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-lg">
             <p className="text-xs font-semibold text-emerald-700 mb-1">🎉 상담이 확정되었습니다!</p>
             <p className="text-xs text-emerald-600 leading-relaxed">
@@ -1091,8 +1091,8 @@ export function Messages() {
                           }}
                           className={`w-full text-left p-3 sm:p-4 rounded-xl transition-all cursor-pointer group ${
                             isSelected 
-                              ? "bg-primary text-primary-foreground shadow-md" 
-                              : "bg-white hover:bg-slate-50 border border-slate-200 hover:border-slate-300 hover:shadow-sm"
+                              ? "bg-primary text-primary-foreground shadow-md dark:shadow-lg" 
+                              : "bg-card dark:bg-card hover:bg-slate-50 border border-slate-200 hover:border-slate-300 hover:shadow-sm"
                           }`}
                         >
                           <div className="flex items-start gap-3">
@@ -1201,8 +1201,8 @@ export function Messages() {
                           }}
                           className={`w-full text-left p-3 sm:p-4 rounded-xl transition-all cursor-pointer group ${
                             isSelected 
-                              ? "bg-primary text-primary-foreground shadow-md" 
-                              : "bg-white hover:bg-slate-50 border border-slate-200 hover:border-slate-300 hover:shadow-sm"
+                              ? "bg-primary text-primary-foreground shadow-md dark:shadow-lg" 
+                              : "bg-card dark:bg-card hover:bg-slate-50 border border-slate-200 hover:border-slate-300 hover:shadow-sm"
                           }`}
                         >
                           <div className="flex items-start gap-3">

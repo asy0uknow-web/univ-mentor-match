@@ -71,7 +71,7 @@ export default function Navbar({ onBugReport }: NavbarProps) {
 
   return (
     <nav
-      className="border-b border-border bg-[#fdfcfd] sticky top-0 z-50 shadow-sm animate-in fade-in slide-in-from-top-4 duration-300"
+      className="border-b border-border bg-background dark:bg-slate-950 sticky top-0 z-50 shadow-sm animate-in fade-in slide-in-from-top-4 duration-300"
       role="navigation"
       aria-label="메인 네비게이션"
     >
@@ -138,7 +138,7 @@ export default function Navbar({ onBugReport }: NavbarProps) {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="text-sm font-medium hover:bg-blue-100 hover:text-primary relative hover:scale-105 transition-transform duration-200 active:scale-95"
+                        className="text-sm font-medium hover:bg-blue-100 dark:hover:bg-slate-800 dark:hover:bg-slate-800 dark:hover:bg-slate-800 hover:text-primary relative hover:scale-105 transition-transform duration-200 active:scale-95"
                       >
                         {item.label}
                         {item.href === "/qna" && unreadAnswerCount > 0 && (
@@ -164,7 +164,7 @@ export default function Navbar({ onBugReport }: NavbarProps) {
                       <ChevronDown className="h-4 w-4" aria-hidden="true" />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" side="bottom" sideOffset={8} className="w-52 bg-white">
+                  <DropdownMenuContent align="end" side="bottom" sideOffset={8} className="w-52 bg-card dark:bg-card dark:bg-slate-900">
                     {/* 모바일: 인증 메뉴 */}
                     <div className="lg:hidden">
                       {AUTHENTICATED_MENU.map((item) => (

@@ -20,8 +20,8 @@ export function ConsultationCTAButton({
   
   const variantClass = {
     primary: "bg-indigo-600 hover:bg-indigo-700 text-white hover:shadow-lg hover:-translate-y-1",
-    secondary: "bg-slate-100 hover:bg-slate-200 text-slate-900 hover:shadow-md hover:-translate-y-0.5",
-    outline: "border-2 border-indigo-600 text-indigo-600 hover:bg-indigo-50 hover:shadow-md hover:-translate-y-0.5",
+    secondary: "bg-slate-100 hover:bg-slate-200 text-slate-900 hover:shadow-md dark:shadow-lg hover:-translate-y-0.5",
+    outline: "border-2 border-indigo-600 text-indigo-600 hover:bg-indigo-50 hover:shadow-md dark:shadow-lg hover:-translate-y-0.5",
   };
 
   const sizeClass = {

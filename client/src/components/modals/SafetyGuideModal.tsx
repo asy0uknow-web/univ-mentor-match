@@ -60,7 +60,7 @@ export default function SafetyGuideModal({ isOpen, onClose }: SafetyGuideModalPr
       onClick={onClose}
     >
       <div 
-        className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full max-h-[70vh] overflow-hidden flex flex-col"
+        className="bg-card dark:bg-card rounded-3xl shadow-2xl max-w-2xl w-full max-h-[70vh] overflow-hidden flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -104,7 +104,7 @@ export default function SafetyGuideModal({ isOpen, onClose }: SafetyGuideModalPr
         </div>
 
         {/* Footer */}
-        <div className="bg-gray-50 px-6 sm:px-8 py-6 border-t border-gray-200 flex gap-3 justify-end items-center">
+        <div className="bg-slate-50 dark:bg-slate-900 px-6 sm:px-8 py-6 border-t border-gray-200 dark:border-slate-700 dark:border-slate-700 flex gap-3 justify-end items-center">
           <button
             onClick={onClose}
             className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors text-sm sm:text-base flex items-center justify-center h-10"

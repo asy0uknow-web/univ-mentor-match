@@ -73,9 +73,9 @@ export default function BugReportModal({ isOpen, onClose }: BugReportModalProps)
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-lg max-w-md w-full max-h-[90vh] overflow-y-auto">
+      <div className="bg-card dark:bg-card rounded-lg shadow-lg max-w-md w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200">
+        <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-slate-700 dark:border-slate-700">
           <h2 className="text-xl font-bold">버그 신고</h2>
           <button onClick={onClose} className="text-gray-500 hover:text-gray-700 transition-colors">
             <X className="w-5 h-5" />
@@ -87,7 +87,7 @@ export default function BugReportModal({ isOpen, onClose }: BugReportModalProps)
           {submitted ? (
             <div className="text-center py-8">
               <div className="text-green-600 text-lg font-semibold mb-2">완료!</div>
-              <p className="text-gray-600">버그 신고가 접수되었습니다.</p>
+              <p className="text-gray-600 dark:text-gray-300 dark:text-gray-300">버그 신고가 접수되었습니다.</p>
               <p className="text-sm text-gray-500 mt-2">감사합니다!</p>
             </div>
           ) : (

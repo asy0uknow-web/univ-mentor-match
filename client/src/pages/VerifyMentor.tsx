@@ -241,7 +241,7 @@ export default function VerifyMentor() {
             {/* [오류4 수정] pending 상태에서는 업로드 폼 숨김, approved 상태에서도 숨김 */}
             {/* 업로드 폼: 미인증 또는 거부 상태에서만 표시 */}
             {(!verification || verification.status === "rejected") && (
-              <Card className="shadow-sm border-0 bg-white">
+              <Card className="shadow-sm border-0 bg-card dark:bg-card">
                 <CardHeader className="pb-4">
                   <CardTitle className="text-lg">학적내역 캡처 업로드</CardTitle>
                   <CardDescription>
@@ -277,7 +277,7 @@ export default function VerifyMentor() {
                       className={`border-2 border-dashed rounded-xl p-8 text-center transition-all ${
                         dragActive
                           ? "border-green-400 bg-green-50"
-                          : "border-gray-200 hover:border-gray-300 hover:bg-gray-50"
+                          : "border-gray-200 dark:border-slate-700 dark:border-slate-700 hover:border-gray-300 hover:bg-slate-50 dark:bg-slate-900"
                       }`}
                     >
                       <input
@@ -302,7 +302,7 @@ export default function VerifyMentor() {
                   {previewUrl && (
                     <div className="space-y-2">
                       <Label className="text-sm font-medium">미리보기</Label>
-                      <div className="relative rounded-xl overflow-hidden border border-gray-200">
+                      <div className="relative rounded-xl overflow-hidden border border-gray-200 dark:border-slate-700 dark:border-slate-700">
                         <img
                           src={previewUrl}
                           alt="Preview"
@@ -311,7 +311,7 @@ export default function VerifyMentor() {
                         <button
                           type="button"
                           onClick={() => { setSelectedFile(null); setPreviewUrl(null); }}
-                          className="absolute top-2 right-2 bg-white/90 text-red-500 p-1.5 rounded-lg shadow-sm hover:bg-red-50 transition-colors"
+                          className="absolute top-2 right-2 bg-card dark:bg-card/90 text-red-500 p-1.5 rounded-lg shadow-sm hover:bg-red-50 transition-colors"
                         >
                           <X className="h-4 w-4" />
                         </button>
@@ -351,7 +351,7 @@ export default function VerifyMentor() {
 
             {/* 승인 완료 상태: 프로필 이동 버튼 */}
             {verification?.status === "approved" && (
-              <Card className="shadow-sm border-0 bg-white">
+              <Card className="shadow-sm border-0 bg-card dark:bg-card">
                 <CardContent className="pt-6 pb-6">
                   <div className="text-center">
                     <div className="w-16 h-16 rounded-2xl bg-green-100 flex items-center justify-center mx-auto mb-4">
@@ -373,7 +373,7 @@ export default function VerifyMentor() {
 
             {/* 검토 중 상태: 대기 안내 */}
             {verification?.status === "pending" && (
-              <Card className="shadow-sm border-0 bg-white">
+              <Card className="shadow-sm border-0 bg-card dark:bg-card">
                 <CardContent className="pt-6 pb-6">
                   <div className="text-center">
                     <div className="w-16 h-16 rounded-2xl bg-amber-100 flex items-center justify-center mx-auto mb-4">

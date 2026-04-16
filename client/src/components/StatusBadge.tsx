@@ -14,7 +14,7 @@ const STATUS_CONFIG: Record<StatusType, { label: string; className: string }> = 
   },
   accepted: {
     label: "진행 중",
-    className: "bg-blue-100 text-blue-800 border-blue-200",
+    className: "bg-blue-100 dark:bg-slate-800 text-blue-800 border-blue-200",
   },
   rejected: {
     label: "거절됨",

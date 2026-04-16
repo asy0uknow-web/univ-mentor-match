@@ -8,7 +8,7 @@ export default function Footer() {
 
   return (
     <>
-      <footer className="bg-[#0B1120] text-slate-400 animate-in fade-in slide-in-from-bottom-4 duration-300" role="contentinfo" aria-label="사이트 정보">
+      <footer className="bg-slate-900 dark:bg-slate-950 text-slate-400 dark:text-slate-400 animate-in fade-in slide-in-from-bottom-4 duration-300" role="contentinfo" aria-label="사이트 정보">
         <div className="container mx-auto px-4 py-12 sm:py-16 md:py-20">
           {/* Main Footer Content */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 sm:gap-12 mb-12 sm:mb-16">

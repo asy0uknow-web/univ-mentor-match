@@ -2756,3 +2756,15 @@
 - [x] 실제 Gmail SMTP를 통한 이메일 발송 테스트 성공
 - [x] 회원가입 페이지에서 인증 코드 이메일 발송 확인
 - [x] 5분 재발송 제한 기능 정상 작동 확인
+
+
+## 다크 모드 전체 UI 통일 (완료)
+- [x] 배경색 통일: bg-white → bg-card dark:bg-card (73개 위치)
+- [x] 라이트 배경: bg-gray-50 → bg-slate-50 dark:bg-slate-900
+- [x] 중간 배경: bg-gray-100 → bg-slate-100 dark:bg-slate-800
+- [x] 호버 상태: hover:bg-* → 다크 모드 색상 추가
+- [x] 텍스트 색상: text-gray-600 → dark:text-gray-300
+- [x] 테두리 색상: border-gray-* → dark:border-slate-700
+- [x] 그림자 효과: shadow-md → dark:shadow-lg
+- [x] Footer: 다크 모드 색상 통일
+- [x] 라이트/다크 모드 전환 테스트 완료

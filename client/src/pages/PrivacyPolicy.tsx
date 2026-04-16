@@ -12,7 +12,7 @@ export default function PrivacyPolicy() {
 
   return (
     <PageLayout showFooter>
-      <div className="min-h-screen bg-white py-12 sm:py-16 md:py-20">
+      <div className="min-h-screen bg-card dark:bg-card py-12 sm:py-16 md:py-20">
         <div className="container mx-auto px-4 max-w-4xl">
           {/* Header */}
           <div className="mb-12">
@@ -22,7 +22,7 @@ export default function PrivacyPolicy() {
             <p className="text-base sm:text-lg text-muted-foreground">
               유니브매치(이하 "서비스")는 「개인정보 보호법」 제30조에 따라 정보주체의 개인정보를 보호하고 이와 관련한 고충을 신속하고 원활하게 처리할 수 있도록 다음과 같이 개인정보처리방침을 수립·공개합니다.
             </p>
-            <div className="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+            <div className="mt-4 p-4 bg-slate-50 dark:bg-slate-900 rounded-lg border border-gray-200 dark:border-slate-700 dark:border-slate-700">
               <p className="text-sm text-muted-foreground">
                 <strong>시행일</strong>: 2026년 3월 14일 &nbsp;|&nbsp; <strong>최종 수정일</strong>: 2026년 3월 14일
               </p>
@@ -41,7 +41,7 @@ export default function PrivacyPolicy() {
               <div className="overflow-x-auto mb-6">
                 <table className="w-full border-collapse border border-gray-300 text-sm">
                   <thead>
-                    <tr className="bg-gray-100">
+                    <tr className="bg-slate-100 dark:bg-slate-800">
                       <th className="border border-gray-300 px-4 py-3 text-left font-semibold">처리 목적</th>
                       <th className="border border-gray-300 px-4 py-3 text-left font-semibold">처리 항목</th>
                       <th className="border border-gray-300 px-4 py-3 text-left font-semibold">법적 근거</th>
@@ -53,7 +53,7 @@ export default function PrivacyPolicy() {
                       <td className="border border-gray-300 px-4 py-2">이름, 이메일, 휴대전화번호</td>
                       <td className="border border-gray-300 px-4 py-2">정보주체 동의 (법 제15조제1항제1호)</td>
                     </tr>
-                    <tr className="bg-gray-50">
+                    <tr className="bg-slate-50 dark:bg-slate-900">
                       <td className="border border-gray-300 px-4 py-2">멘토-멘티 매칭 및 상담 서비스 제공</td>
                       <td className="border border-gray-300 px-4 py-2">학교/대학, 전공, 학년, 지역, 자기소개, 상담 유형</td>
                       <td className="border border-gray-300 px-4 py-2">계약 이행 (법 제15조제1항제4호)</td>
@@ -63,7 +63,7 @@ export default function PrivacyPolicy() {
                       <td className="border border-gray-300 px-4 py-2">학생증 이미지</td>
                       <td className="border border-gray-300 px-4 py-2">정보주체 동의 (법 제15조제1항제1호)</td>
                     </tr>
-                    <tr className="bg-gray-50">
+                    <tr className="bg-slate-50 dark:bg-slate-900">
                       <td className="border border-gray-300 px-4 py-2">서비스 개선 및 통계 분석</td>
                       <td className="border border-gray-300 px-4 py-2">서비스 이용 기록, 접속 로그</td>
                       <td className="border border-gray-300 px-4 py-2">정당한 이익 (법 제15조제1항제6호)</td>
@@ -73,7 +73,7 @@ export default function PrivacyPolicy() {
                       <td className="border border-gray-300 px-4 py-2">결제 기록 (결제수단 정보는 Stripe에서 직접 처리)</td>
                       <td className="border border-gray-300 px-4 py-2">법적 의무 이행 (법 제15조제1항제2호)</td>
                     </tr>
-                    <tr className="bg-gray-50">
+                    <tr className="bg-slate-50 dark:bg-slate-900">
                       <td className="border border-gray-300 px-4 py-2">부정 이용 방지 및 보안</td>
                       <td className="border border-gray-300 px-4 py-2">접속 IP, 기기 정보, 이용 기록</td>
                       <td className="border border-gray-300 px-4 py-2">정당한 이익 (법 제15조제1항제6호)</td>
@@ -92,7 +92,7 @@ export default function PrivacyPolicy() {
               <div className="overflow-x-auto mb-6">
                 <table className="w-full border-collapse border border-gray-300 text-sm">
                   <thead>
-                    <tr className="bg-gray-100">
+                    <tr className="bg-slate-100 dark:bg-slate-800">
                       <th className="border border-gray-300 px-4 py-3 text-left font-semibold">구분</th>
                       <th className="border border-gray-300 px-4 py-3 text-left font-semibold">필수 항목</th>
                       <th className="border border-gray-300 px-4 py-3 text-left font-semibold">선택 항목</th>
@@ -104,7 +104,7 @@ export default function PrivacyPolicy() {
                       <td className="border border-gray-300 px-4 py-2">이름, 이메일 주소, 휴대전화번호</td>
                       <td className="border border-gray-300 px-4 py-2">-</td>
                     </tr>
-                    <tr className="bg-gray-50">
+                    <tr className="bg-slate-50 dark:bg-slate-900">
                       <td className="border border-gray-300 px-4 py-2 font-medium">멘토 추가 정보</td>
                       <td className="border border-gray-300 px-4 py-2">소속 대학, 전공, 학년, 상담 가능 지역, 상담 유형, 학생증 이미지</td>
                       <td className="border border-gray-300 px-4 py-2">자기소개, 프로필 사진, 갤러리 이미지</td>
@@ -114,7 +114,7 @@ export default function PrivacyPolicy() {
                       <td className="border border-gray-300 px-4 py-2">재학 중인 학교, 상담 희망 지역</td>
                       <td className="border border-gray-300 px-4 py-2">자기소개</td>
                     </tr>
-                    <tr className="bg-gray-50">
+                    <tr className="bg-slate-50 dark:bg-slate-900">
                       <td className="border border-gray-300 px-4 py-2 font-medium">자동 수집 정보</td>
                       <td className="border border-gray-300 px-4 py-2">접속 IP, 쿠키, 기기 정보, 접속 시간·이용 기록</td>
                       <td className="border border-gray-300 px-4 py-2">-</td>
@@ -138,7 +138,7 @@ export default function PrivacyPolicy() {
               <div className="overflow-x-auto mb-6">
                 <table className="w-full border-collapse border border-gray-300 text-sm">
                   <thead>
-                    <tr className="bg-gray-100">
+                    <tr className="bg-slate-100 dark:bg-slate-800">
                       <th className="border border-gray-300 px-4 py-3 text-left font-semibold">처리 목적</th>
                       <th className="border border-gray-300 px-4 py-3 text-left font-semibold">보유 기간</th>
                       <th className="border border-gray-300 px-4 py-3 text-left font-semibold">근거</th>
@@ -150,7 +150,7 @@ export default function PrivacyPolicy() {
                       <td className="border border-gray-300 px-4 py-2">회원 탈퇴 시까지</td>
                       <td className="border border-gray-300 px-4 py-2">이용자 동의</td>
                     </tr>
-                    <tr className="bg-gray-50">
+                    <tr className="bg-slate-50 dark:bg-slate-900">
                       <td className="border border-gray-300 px-4 py-2">소비자 불만 또는 분쟁처리 기록</td>
                       <td className="border border-gray-300 px-4 py-2">3년</td>
                       <td className="border border-gray-300 px-4 py-2">전자상거래 등에서의 소비자보호에 관한 법률 제6조</td>
@@ -160,7 +160,7 @@ export default function PrivacyPolicy() {
                       <td className="border border-gray-300 px-4 py-2">5년</td>
                       <td className="border border-gray-300 px-4 py-2">전자상거래 등에서의 소비자보호에 관한 법률 제6조</td>
                     </tr>
-                    <tr className="bg-gray-50">
+                    <tr className="bg-slate-50 dark:bg-slate-900">
                       <td className="border border-gray-300 px-4 py-2">표시·광고에 관한 기록</td>
                       <td className="border border-gray-300 px-4 py-2">6개월</td>
                       <td className="border border-gray-300 px-4 py-2">전자상거래 등에서의 소비자보호에 관한 법률 제6조</td>
@@ -170,7 +170,7 @@ export default function PrivacyPolicy() {
                       <td className="border border-gray-300 px-4 py-2">3개월</td>
                       <td className="border border-gray-300 px-4 py-2">통신비밀보호법 제15조의2</td>
                     </tr>
-                    <tr className="bg-gray-50">
+                    <tr className="bg-slate-50 dark:bg-slate-900">
                       <td className="border border-gray-300 px-4 py-2">결제 정보</td>
                       <td className="border border-gray-300 px-4 py-2">5년</td>
                       <td className="border border-gray-300 px-4 py-2">전자상거래 등에서의 소비자보호에 관한 법률 제6조</td>
@@ -196,7 +196,7 @@ export default function PrivacyPolicy() {
               <div className="overflow-x-auto mb-6">
                 <table className="w-full border-collapse border border-gray-300 text-sm">
                   <thead>
-                    <tr className="bg-gray-100">
+                    <tr className="bg-slate-100 dark:bg-slate-800">
                       <th className="border border-gray-300 px-4 py-3 text-left font-semibold">제공 대상</th>
                       <th className="border border-gray-300 px-4 py-3 text-left font-semibold">제공 항목</th>
                       <th className="border border-gray-300 px-4 py-3 text-left font-semibold">제공 목적</th>
@@ -218,7 +218,7 @@ export default function PrivacyPolicy() {
               <div className="overflow-x-auto mb-6">
                 <table className="w-full border-collapse border border-gray-300 text-sm">
                   <thead>
-                    <tr className="bg-gray-100">
+                    <tr className="bg-slate-100 dark:bg-slate-800">
                       <th className="border border-gray-300 px-4 py-3 text-left font-semibold">제공 대상</th>
                       <th className="border border-gray-300 px-4 py-3 text-left font-semibold">제공 항목</th>
                       <th className="border border-gray-300 px-4 py-3 text-left font-semibold">제공 목적</th>
@@ -252,7 +252,7 @@ export default function PrivacyPolicy() {
               <div className="overflow-x-auto mb-6">
                 <table className="w-full border-collapse border border-gray-300 text-sm">
                   <thead>
-                    <tr className="bg-gray-100">
+                    <tr className="bg-slate-100 dark:bg-slate-800">
                       <th className="border border-gray-300 px-4 py-3 text-left font-semibold">수탁자</th>
                       <th className="border border-gray-300 px-4 py-3 text-left font-semibold">위탁 업무 내용</th>
                       <th className="border border-gray-300 px-4 py-3 text-left font-semibold">보유 및 이용 기간</th>
@@ -264,7 +264,7 @@ export default function PrivacyPolicy() {
                       <td className="border border-gray-300 px-4 py-2">결제 처리 및 결제 정보 관리</td>
                       <td className="border border-gray-300 px-4 py-2">위탁 계약 종료 시까지</td>
                     </tr>
-                    <tr className="bg-gray-50">
+                    <tr className="bg-slate-50 dark:bg-slate-900">
                       <td className="border border-gray-300 px-4 py-2">Amazon Web Services (AWS)</td>
                       <td className="border border-gray-300 px-4 py-2">서버 및 데이터 저장·관리</td>
                       <td className="border border-gray-300 px-4 py-2">위탁 계약 종료 시까지</td>
@@ -297,7 +297,7 @@ export default function PrivacyPolicy() {
               <div className="overflow-x-auto mb-6">
                 <table className="w-full border-collapse border border-gray-300 text-sm">
                   <thead>
-                    <tr className="bg-gray-100">
+                    <tr className="bg-slate-100 dark:bg-slate-800">
                       <th className="border border-gray-300 px-4 py-3 text-left font-semibold">권리</th>
                       <th className="border border-gray-300 px-4 py-3 text-left font-semibold">내용</th>
                     </tr>
@@ -307,7 +307,7 @@ export default function PrivacyPolicy() {
                       <td className="border border-gray-300 px-4 py-2 font-medium">개인정보 열람 요구</td>
                       <td className="border border-gray-300 px-4 py-2">자신의 개인정보 처리 현황 및 내용 확인</td>
                     </tr>
-                    <tr className="bg-gray-50">
+                    <tr className="bg-slate-50 dark:bg-slate-900">
                       <td className="border border-gray-300 px-4 py-2 font-medium">오류 정정 요구</td>
                       <td className="border border-gray-300 px-4 py-2">부정확하거나 불완전한 개인정보의 정정</td>
                     </tr>
@@ -315,7 +315,7 @@ export default function PrivacyPolicy() {
                       <td className="border border-gray-300 px-4 py-2 font-medium">삭제 요구</td>
                       <td className="border border-gray-300 px-4 py-2">법령에서 수집이 의무화된 경우를 제외한 개인정보 삭제</td>
                     </tr>
-                    <tr className="bg-gray-50">
+                    <tr className="bg-slate-50 dark:bg-slate-900">
                       <td className="border border-gray-300 px-4 py-2 font-medium">처리 정지 요구</td>
                       <td className="border border-gray-300 px-4 py-2">개인정보 처리의 일시적 정지</td>
                     </tr>
@@ -364,7 +364,7 @@ export default function PrivacyPolicy() {
               <div className="overflow-x-auto mb-6">
                 <table className="w-full border-collapse border border-gray-300 text-sm">
                   <thead>
-                    <tr className="bg-gray-100">
+                    <tr className="bg-slate-100 dark:bg-slate-800">
                       <th className="border border-gray-300 px-4 py-3 text-left font-semibold">구분</th>
                       <th className="border border-gray-300 px-4 py-3 text-left font-semibold">조치 내용</th>
                     </tr>
@@ -374,7 +374,7 @@ export default function PrivacyPolicy() {
                       <td className="border border-gray-300 px-4 py-2 font-medium">관리적 조치</td>
                       <td className="border border-gray-300 px-4 py-2">내부관리계획 수립·시행, 개인정보 취급 직원 최소화 및 교육</td>
                     </tr>
-                    <tr className="bg-gray-50">
+                    <tr className="bg-slate-50 dark:bg-slate-900">
                       <td className="border border-gray-300 px-4 py-2 font-medium">기술적 조치</td>
                       <td className="border border-gray-300 px-4 py-2">개인정보처리시스템 접근 권한 관리, 접근통제시스템 설치, 고유식별정보 등의 암호화, 보안프로그램 설치, SSL/TLS 프로토콜 적용</td>
                     </tr>
@@ -416,17 +416,17 @@ export default function PrivacyPolicy() {
                 <table className="w-full border-collapse border border-gray-300 text-sm">
                   <tbody>
                     <tr>
-                      <td className="border border-gray-300 px-4 py-3 font-semibold bg-gray-100 w-1/3">성명</td>
+                      <td className="border border-gray-300 px-4 py-3 font-semibold bg-slate-100 dark:bg-slate-800 w-1/3">성명</td>
                       <td className="border border-gray-300 px-4 py-3">유니브매치 개인정보 보호책임자</td>
                     </tr>
-                    <tr className="bg-gray-50">
-                      <td className="border border-gray-300 px-4 py-3 font-semibold bg-gray-100">이메일</td>
+                    <tr className="bg-slate-50 dark:bg-slate-900">
+                      <td className="border border-gray-300 px-4 py-3 font-semibold bg-slate-100 dark:bg-slate-800">이메일</td>
                       <td className="border border-gray-300 px-4 py-3">
                         <a href="mailto:privacy@univmatch.com" className="text-primary hover:underline">privacy@univmatch.com</a>
                       </td>
                     </tr>
                     <tr>
-                      <td className="border border-gray-300 px-4 py-3 font-semibold bg-gray-100">연락처</td>
+                      <td className="border border-gray-300 px-4 py-3 font-semibold bg-slate-100 dark:bg-slate-800">연락처</td>
                       <td className="border border-gray-300 px-4 py-3">서비스 내 고객지원 센터</td>
                     </tr>
                   </tbody>
@@ -441,7 +441,7 @@ export default function PrivacyPolicy() {
               <div className="overflow-x-auto mb-6">
                 <table className="w-full border-collapse border border-gray-300 text-sm">
                   <thead>
-                    <tr className="bg-gray-100">
+                    <tr className="bg-slate-100 dark:bg-slate-800">
                       <th className="border border-gray-300 px-4 py-3 text-left font-semibold">기관명</th>
                       <th className="border border-gray-300 px-4 py-3 text-left font-semibold">연락처</th>
                       <th className="border border-gray-300 px-4 py-3 text-left font-semibold">웹사이트</th>
@@ -453,7 +453,7 @@ export default function PrivacyPolicy() {
                       <td className="border border-gray-300 px-4 py-2">국번없이 182</td>
                       <td className="border border-gray-300 px-4 py-2"><a href="https://privacy.go.kr" className="text-primary hover:underline" target="_blank" rel="noopener noreferrer">privacy.go.kr</a></td>
                     </tr>
-                    <tr className="bg-gray-50">
+                    <tr className="bg-slate-50 dark:bg-slate-900">
                       <td className="border border-gray-300 px-4 py-2">개인정보분쟁조정위원회</td>
                       <td className="border border-gray-300 px-4 py-2">국번없이 1833-6972</td>
                       <td className="border border-gray-300 px-4 py-2"><a href="https://www.kopico.go.kr" className="text-primary hover:underline" target="_blank" rel="noopener noreferrer">kopico.go.kr</a></td>
@@ -463,7 +463,7 @@ export default function PrivacyPolicy() {
                       <td className="border border-gray-300 px-4 py-2">국번없이 1301</td>
                       <td className="border border-gray-300 px-4 py-2"><a href="https://spo.go.kr" className="text-primary hover:underline" target="_blank" rel="noopener noreferrer">spo.go.kr</a></td>
                     </tr>
-                    <tr className="bg-gray-50">
+                    <tr className="bg-slate-50 dark:bg-slate-900">
                       <td className="border border-gray-300 px-4 py-2">경찰청 사이버안전국</td>
                       <td className="border border-gray-300 px-4 py-2">국번없이 182</td>
                       <td className="border border-gray-300 px-4 py-2"><a href="https://cyberbureau.police.go.kr" className="text-primary hover:underline" target="_blank" rel="noopener noreferrer">cyberbureau.police.go.kr</a></td>
@@ -483,7 +483,7 @@ export default function PrivacyPolicy() {
 
             {/* Footer */}
             <section className="border-t border-gray-300 pt-8">
-              <div className="bg-gray-50 rounded-lg p-6">
+              <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6">
                 <p className="text-muted-foreground mb-2">
                   <strong>공고일:</strong> 2026년 3월 7일
                 </p>

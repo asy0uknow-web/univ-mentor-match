@@ -16,7 +16,7 @@ export function MentorVerificationUSPSection() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             {/* 왼쪽: 멘토 프로필 카드 (컴팩트) */}
             <div className="flex justify-center">
-              <div className="bg-white rounded-3xl p-8 shadow-lg w-full max-w-sm">
+              <div className="bg-card dark:bg-card rounded-3xl p-8 shadow-lg w-full max-w-sm">
                 {/* 프로필 헤더 */}
                 <div className="flex items-start justify-between mb-6">
                   <div className="flex-1">
@@ -47,7 +47,7 @@ export function MentorVerificationUSPSection() {
                 </div>
 
                 {/* 간단한 정보 */}
-                <div className="space-y-3 pt-4 border-t border-gray-200">
+                <div className="space-y-3 pt-4 border-t border-gray-200 dark:border-slate-700 dark:border-slate-700">
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">학년</span>
                     <span className="font-semibold text-foreground">3학년</span>

@@ -215,7 +215,7 @@ export const FeaturedMentorsSlide = () => {
             {visibleMentors.map((mentor) => (
               <div
                 key={`${mentor.id}-${currentIndex}`}
-                className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden hover:scale-105 hover:-translate-y-2 cursor-pointer flex flex-col h-full group"
+                className="bg-card dark:bg-card rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden hover:scale-105 hover:-translate-y-2 cursor-pointer flex flex-col h-full group"
                 style={{ height: `${maxCardHeight}px` }}
               >
                 {/* Mentor Image Placeholder */}
@@ -306,7 +306,7 @@ export const FeaturedMentorsSlide = () => {
             <div className="flex justify-center items-center gap-4 mt-8 sm:mt-12">
               <button
                 onClick={handlePrev}
-                className="p-2 sm:p-3 rounded-full bg-white shadow-md hover:shadow-lg hover:bg-gray-50 transition-all"
+                className="p-2 sm:p-3 rounded-full bg-card dark:bg-card shadow-md dark:shadow-lg hover:shadow-lg hover:bg-slate-50 dark:bg-slate-900 transition-all"
                 aria-label="이전 멘토"
               >
                 <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6 text-foreground" />
@@ -349,7 +349,7 @@ export const FeaturedMentorsSlide = () => {
 
               <button
                 onClick={handleNext}
-                className="p-2 sm:p-3 rounded-full bg-white shadow-md hover:shadow-lg hover:bg-gray-50 transition-all"
+                className="p-2 sm:p-3 rounded-full bg-card dark:bg-card shadow-md dark:shadow-lg hover:shadow-lg hover:bg-slate-50 dark:bg-slate-900 transition-all"
                 aria-label="다음 멘토"
               >
                 <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 text-foreground" />

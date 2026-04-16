@@ -42,7 +42,7 @@ const TESTIMONIALS: Testimonial[] = [
 
 export const TestimonialsSection = () => {
   return (
-    <section className="py-16 sm:py-24 md:py-32 bg-white">
+    <section className="py-16 sm:py-24 md:py-32 bg-card dark:bg-card">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12 sm:mb-16">
           <span className="inline-block px-4 py-2 bg-green-100 text-green-700 rounded-full text-sm font-semibold mb-4">
@@ -60,7 +60,7 @@ export const TestimonialsSection = () => {
           {TESTIMONIALS.map((testimonial) => (
             <div
               key={testimonial.id}
-              className="bg-gradient-to-br from-gray-50 to-white rounded-2xl p-6 sm:p-8 shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100 hover:scale-105 hover:-translate-y-2 group"
+              className="bg-gradient-to-br from-gray-50 to-white rounded-2xl p-6 sm:p-8 shadow-md dark:shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-slate-700 dark:border-slate-700 hover:scale-105 hover:-translate-y-2 group"
             >
               <span className="inline-block px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-xs font-semibold mb-4 group-hover:bg-indigo-100 group-hover:text-indigo-700 transition-colors">
                 {testimonial.category}
@@ -83,7 +83,7 @@ export const TestimonialsSection = () => {
                 "{testimonial.content}"
               </p>
 
-              <div className="border-t border-gray-200 pt-4">
+              <div className="border-t border-gray-200 dark:border-slate-700 dark:border-slate-700 pt-4">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white font-bold text-sm">
                     {testimonial.name.charAt(0)}

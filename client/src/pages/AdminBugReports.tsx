@@ -29,7 +29,7 @@ const statusColors = {
   acknowledged: "bg-blue-50 text-blue-700 border border-blue-200",
   in_progress: "bg-purple-50 text-purple-700 border border-purple-200",
   resolved: "bg-green-50 text-green-700 border border-green-200",
-  wont_fix: "bg-gray-50 text-gray-700 border border-gray-200",
+  wont_fix: "bg-slate-50 dark:bg-slate-900 text-gray-700 border border-gray-200 dark:border-slate-700 dark:border-slate-700",
 };
 
 const statusIcons: Record<string, React.ReactNode> = {
@@ -116,7 +116,7 @@ export default function AdminBugReports() {
         <div className="space-y-4">
           {sortedReports && sortedReports.length > 0 ? (
             sortedReports.map((report: any) => (
-              <Card key={report.id} className="hover:shadow-md transition-shadow">
+              <Card key={report.id} className="hover:shadow-md dark:shadow-lg transition-shadow">
                 <CardHeader className="pb-3">
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1 min-w-0">

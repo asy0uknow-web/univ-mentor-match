@@ -310,10 +310,10 @@ export default function MentorProfile() {
     <PageLayout>
       <div className="min-h-screen bg-slate-50">
         {/* 헤더 */}
-        <div className="bg-white border-b">
+        <div className="bg-card dark:bg-card border-b">
           <div className="max-w-7xl mx-auto px-4 py-6">
             <h1 className="text-3xl font-bold text-gray-900">멘토 대시보드</h1>
-            <p className="text-gray-600 mt-2">프로필 정보를 관리하고 활동을 추적하세요.</p>
+            <p className="text-gray-600 dark:text-gray-300 dark:text-gray-300 mt-2">프로필 정보를 관리하고 활동을 추적하세요.</p>
           </div>
         </div>
 
@@ -324,7 +324,7 @@ export default function MentorProfile() {
             <div className="col-span-3">
               <div className="sticky top-6 space-y-4">
                 {/* 사용자 정보 카드 */}
-                <Card className="bg-white">
+                <Card className="bg-card dark:bg-card">
                   <CardContent className="pt-6">
                     <div className="flex items-center space-x-4 mb-4">
                       <div className="w-16 h-16 rounded-full bg-green-500 flex items-center justify-center text-white text-2xl font-bold">
@@ -332,18 +332,18 @@ export default function MentorProfile() {
                       </div>
                       <div>
                         <h3 className="font-semibold text-gray-900">{user.name}</h3>
-                        <p className="text-sm text-gray-600">{user.email}</p>
+                        <p className="text-sm text-gray-600 dark:text-gray-300 dark:text-gray-300">{user.email}</p>
                       </div>
                     </div>
 
                     {/* 활동 지표 */}
                     <div className="space-y-3 mb-6">
                       <div className="bg-blue-50 rounded-lg p-3">
-                        <p className="text-xs text-gray-600">총 상담 수</p>
+                        <p className="text-xs text-gray-600 dark:text-gray-300 dark:text-gray-300">총 상담 수</p>
                         <p className="text-2xl font-bold text-blue-600">{myReviews?.length || 0}</p>
                       </div>
                       <div className="bg-yellow-50 rounded-lg p-3">
-                        <p className="text-xs text-gray-600">평균 평점</p>
+                        <p className="text-xs text-gray-600 dark:text-gray-300 dark:text-gray-300">평균 평점</p>
                         <div className="flex items-center gap-1">
                           <p className="text-2xl font-bold text-yellow-600">
                             {myReviews && myReviews.length > 0
@@ -359,14 +359,14 @@ export default function MentorProfile() {
                     <div className="space-y-2">
                       <button
                         onClick={() => setIsPasswordModalOpen(true)}
-                        className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-900 rounded-lg transition"
+                        className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-gray-200 text-gray-900 rounded-lg transition"
                       >
                         <Lock className="w-4 h-4" />
                         비밀번호 변경
                       </button>
                       <button
                         onClick={() => logoutMutation.mutate()}
-                        className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-900 rounded-lg transition"
+                        className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-gray-200 text-gray-900 rounded-lg transition"
                       >
                         <LogOut className="w-4 h-4" />
                         로그아웃
@@ -380,11 +380,11 @@ export default function MentorProfile() {
             {/* 우측 콘텐츠 리스트 (Scrollable) */}
             <div className="col-span-9 space-y-6">
               {/* 그룹 1: 기본 설정 */}
-              <Card className="bg-white rounded-2xl p-6">
+              <Card className="bg-card dark:bg-card rounded-2xl p-6">
                 <div className="flex items-center justify-between mb-6">
                   <div>
                     <h2 className="text-2xl font-bold text-gray-900">기본 설정</h2>
-                    <p className="text-sm text-gray-600 mt-1">프로필 정보를 관리하세요</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-300 dark:text-gray-300 mt-1">프로필 정보를 관리하세요</p>
                   </div>
                   {!isEditingProfile && (
                     <button
@@ -481,7 +481,7 @@ export default function MentorProfile() {
                             className={`px-4 py-2 rounded-lg font-medium transition ${
                               consultationTypes.includes(key as any)
                                 ? "bg-green-600 text-white"
-                                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                                : "bg-slate-100 dark:bg-slate-800 text-gray-700 hover:bg-gray-200"
                             }`}
                           >
                             {label}
@@ -494,7 +494,7 @@ export default function MentorProfile() {
                       <button
                         type="button"
                         onClick={() => setIsEditingProfile(false)}
-                        className="flex-1 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-900 rounded-lg transition"
+                        className="flex-1 px-4 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-gray-200 text-gray-900 rounded-lg transition"
                       >
                         취소
                       </button>
@@ -538,30 +538,30 @@ export default function MentorProfile() {
                   <div className="space-y-3">
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <p className="text-sm text-gray-600">대학교</p>
+                        <p className="text-sm text-gray-600 dark:text-gray-300 dark:text-gray-300">대학교</p>
                         <p className="font-semibold text-gray-900">{profile?.university || "-"}</p>
                       </div>
                       <div>
-                        <p className="text-sm text-gray-600">전공</p>
+                        <p className="text-sm text-gray-600 dark:text-gray-300 dark:text-gray-300">전공</p>
                         <p className="font-semibold text-gray-900">{profile?.major || "-"}</p>
                       </div>
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <p className="text-sm text-gray-600">학년</p>
+                        <p className="text-sm text-gray-600 dark:text-gray-300 dark:text-gray-300">학년</p>
                         <p className="font-semibold text-gray-900">{profile?.grade || "-"}</p>
                       </div>
                     <div>
-                      <p className="text-sm text-gray-600">상담가능지역</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-300 dark:text-gray-300">상담가능지역</p>
                       <p className="font-semibold text-gray-900">{profile?.region ? REGION_LABELS[profile.region] || profile.region : "-"}</p>
                     </div>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-600">자기소개</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-300 dark:text-gray-300">자기소개</p>
                       <p className="font-semibold text-gray-900">{profile?.bio || "-"}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-600 mb-2">상담 유형</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-300 dark:text-gray-300 mb-2">상담 유형</p>
                       <div className="flex flex-wrap gap-2">
                         {myConsultationTypes?.map((type: any) => (
                           <Badge key={type.consultationType} className="bg-green-100 text-green-800">
@@ -575,11 +575,11 @@ export default function MentorProfile() {
               </Card>
 
               {/* 그룹 2: 칼럼 스튜디오 */}
-              <Card className="bg-white rounded-2xl p-6">
+              <Card className="bg-card dark:bg-card rounded-2xl p-6">
                 <div className="flex items-center justify-between mb-6">
                   <div>
                     <h2 className="text-2xl font-bold text-gray-900">칼럼 스튜디오</h2>
-                    <p className="text-sm text-gray-600 mt-1">작성한 칼럼 관리</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-300 dark:text-gray-300 mt-1">작성한 칼럼 관리</p>
                   </div>
                   <Link href="/columns/new">
                     <button className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition flex items-center gap-2">
@@ -593,9 +593,9 @@ export default function MentorProfile() {
                   <div className="space-y-3">
                     {myColumns.slice(0, 4).map((column: any) => (
                       <Link key={column.id} href={`/columns/${column.id}`}>
-                        <div className="p-3 border border-gray-200 rounded-lg hover:border-green-500 hover:bg-green-50 transition cursor-pointer">
+                        <div className="p-3 border border-gray-200 dark:border-slate-700 dark:border-slate-700 rounded-lg hover:border-green-500 hover:bg-green-50 transition cursor-pointer">
                           <h3 className="text-sm font-semibold text-gray-900">{column.title}</h3>
-                          <p className="text-sm text-gray-600 mt-1">
+                          <p className="text-sm text-gray-600 dark:text-gray-300 dark:text-gray-300 mt-1">
                             {new Date(column.createdAt).toLocaleDateString("ko-KR")}
                           </p>
                         </div>
@@ -603,36 +603,36 @@ export default function MentorProfile() {
                     ))}
                   </div>
                 ) : (
-                  <p className="text-gray-600">작성한 칼럼이 없습니다</p>
+                  <p className="text-gray-600 dark:text-gray-300 dark:text-gray-300">작성한 칼럼이 없습니다</p>
                 )}
               </Card>
 
               {/* 그룹 3: QnA 센터 */}
-              <Card className="bg-white rounded-2xl p-6">
+              <Card className="bg-card dark:bg-card rounded-2xl p-6">
                 <h2 className="text-2xl font-bold text-gray-900 mb-6">QnA 센터</h2>
                 {myAnswers && myAnswers.length > 0 ? (
                   <div className="space-y-3">
                     {myAnswers.slice(0, 5).map((answer: any) => (
-                      <div key={answer.id} className="p-3 border border-gray-200 rounded-lg">
+                      <div key={answer.id} className="p-3 border border-gray-200 dark:border-slate-700 dark:border-slate-700 rounded-lg">
                         <p className="font-semibold text-gray-900">{answer.question?.title || "질문"}</p>
-                        <p className="text-sm text-gray-600 mt-1">
+                        <p className="text-sm text-gray-600 dark:text-gray-300 dark:text-gray-300 mt-1">
                           {new Date(answer.createdAt).toLocaleDateString("ko-KR")}
                         </p>
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <p className="text-gray-600">답변한 질문이 없습니다</p>
+                  <p className="text-gray-600 dark:text-gray-300 dark:text-gray-300">답변한 질문이 없습니다</p>
                 )}
               </Card>
 
               {/* 그룹 4: 후기 관리 */}
-              <Card className="bg-white rounded-2xl p-6">
+              <Card className="bg-card dark:bg-card rounded-2xl p-6">
                 <h2 className="text-2xl font-bold text-gray-900 mb-6">후기 관리</h2>
                 {myReviews && myReviews.length > 0 ? (
                   <div className="space-y-4">
                     {myReviews.map((review: any) => (
-                      <div key={review.id} className="p-4 border border-gray-200 rounded-lg">
+                      <div key={review.id} className="p-4 border border-gray-200 dark:border-slate-700 dark:border-slate-700 rounded-lg">
                         <div className="flex items-center justify-between mb-2">
                           <div className="flex items-center gap-1">
                             {Array.from({ length: 5 }).map((_, i) => (
@@ -644,7 +644,7 @@ export default function MentorProfile() {
                               />
                             ))}
                           </div>
-                          <p className="text-sm text-gray-600">
+                          <p className="text-sm text-gray-600 dark:text-gray-300 dark:text-gray-300">
                             {new Date(review.createdAt).toLocaleDateString("ko-KR")}
                           </p>
                         </div>
@@ -653,16 +653,16 @@ export default function MentorProfile() {
                     ))}
                   </div>
                 ) : (
-                  <p className="text-gray-600">받은 후기가 없습니다</p>
+                  <p className="text-gray-600 dark:text-gray-300 dark:text-gray-300">받은 후기가 없습니다</p>
                 )}
               </Card>
 
               {/* 그룹 5: 갤러리 */}
-              <Card className="bg-white rounded-2xl p-6">
+              <Card className="bg-card dark:bg-card rounded-2xl p-6">
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-2xl font-bold text-gray-900">갤러리</h2>
                   {profile && (
-                    <span className="text-sm text-gray-600">{gallery?.length || 0}개 이미지</span>
+                    <span className="text-sm text-gray-600 dark:text-gray-300 dark:text-gray-300">{gallery?.length || 0}개 이미지</span>
                   )}
                 </div>
 
@@ -676,11 +676,11 @@ export default function MentorProfile() {
                       className={`border-2 border-dashed rounded-lg p-8 text-center transition ${
                         dragActive
                           ? "border-green-500 bg-green-50"
-                          : "border-gray-300 bg-gray-50 hover:border-gray-400"
+                          : "border-gray-300 bg-slate-50 dark:bg-slate-900 hover:border-gray-400"
                       }`}
                     >
                       <Upload className="w-8 h-8 mx-auto text-gray-400 mb-2" />
-                      <p className="text-gray-600 mb-2">이미지를 드래그하거나 클릭하여 업로드</p>
+                      <p className="text-gray-600 dark:text-gray-300 dark:text-gray-300 mb-2">이미지를 드래그하거나 클릭하여 업로드</p>
                       <p className="text-xs text-gray-500 mb-4">JPG, PNG 형식 (최대 5MB)</p>
                       <label className="inline-block">
                         <input
@@ -747,17 +747,17 @@ export default function MentorProfile() {
                               </button>
                             </div>
                             {image.caption && (
-                              <p className="text-xs text-gray-600 mt-2 truncate">{image.caption}</p>
+                              <p className="text-xs text-gray-600 dark:text-gray-300 dark:text-gray-300 mt-2 truncate">{image.caption}</p>
                             )}
                           </div>
                         ))}
                       </div>
                     ) : (
-                      <p className="text-gray-600 text-center py-8">아직 업로드된 이미지가 없습니다</p>
+                      <p className="text-gray-600 dark:text-gray-300 dark:text-gray-300 text-center py-8">아직 업로드된 이미지가 없습니다</p>
                     )}
                   </div>
                 ) : (
-                  <p className="text-gray-600">멘토 프로필을 먼저 등록해주세요</p>
+                  <p className="text-gray-600 dark:text-gray-300 dark:text-gray-300">멘토 프로필을 먼저 등록해주세요</p>
                 )}
               </Card>
             </div>
@@ -856,7 +856,7 @@ export default function MentorProfile() {
             <div className="flex gap-3 pt-4">
               <button
                 onClick={() => setIsPasswordModalOpen(false)}
-                className="flex-1 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-900 rounded-lg transition"
+                className="flex-1 px-4 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-gray-200 text-gray-900 rounded-lg transition"
               >
                 취소
               </button>

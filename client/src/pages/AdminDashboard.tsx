@@ -97,7 +97,7 @@ export default function AdminDashboard() {
         <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-12 flex items-center justify-center min-h-[60vh]">
           <div className="flex flex-col items-center gap-4">
             <Loader2 className="h-8 w-8 animate-spin text-green-600" />
-            <p className="text-gray-600">로딩 중...</p>
+            <p className="text-gray-600 dark:text-gray-300 dark:text-gray-300">로딩 중...</p>
           </div>
         </div>
       </PageLayout>
@@ -135,7 +135,7 @@ export default function AdminDashboard() {
 
   return (
     <PageLayout>
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
         <div className="container mx-auto px-4 py-10">
 
           {/* 헤더 */}
@@ -146,7 +146,7 @@ export default function AdminDashboard() {
 
           {/* 통계 카드 */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-            <Card className="border-0 shadow-sm bg-white">
+            <Card className="border-0 shadow-sm bg-card dark:bg-card">
               <CardContent className="pt-5 pb-5">
                 <div className="flex items-center justify-between">
                   <div>
@@ -161,7 +161,7 @@ export default function AdminDashboard() {
               </CardContent>
             </Card>
 
-            <Card className="border-0 shadow-sm bg-white">
+            <Card className="border-0 shadow-sm bg-card dark:bg-card">
               <CardContent className="pt-5 pb-5">
                 <div className="flex items-center justify-between">
                   <div>
@@ -177,7 +177,7 @@ export default function AdminDashboard() {
             </Card>
 
             <Link href="/admin/bug-reports">
-              <Card className="border-0 shadow-sm bg-white cursor-pointer hover:shadow-md transition-shadow">
+              <Card className="border-0 shadow-sm bg-card dark:bg-card cursor-pointer hover:shadow-md dark:shadow-lg transition-shadow">
                 <CardContent className="pt-5 pb-5">
                   <div className="flex items-center justify-between">
                     <div>
@@ -196,7 +196,7 @@ export default function AdminDashboard() {
 
           {/* 탭 */}
           <Tabs defaultValue="verifications" className="w-full">
-            <TabsList className="bg-white border border-gray-200 shadow-sm mb-6 p-1 rounded-xl h-auto">
+            <TabsList className="bg-card dark:bg-card border border-gray-200 dark:border-slate-700 dark:border-slate-700 shadow-sm mb-6 p-1 rounded-xl h-auto">
               <TabsTrigger
                 value="verifications"
                 className="rounded-lg data-[state=active]:bg-green-600 data-[state=active]:text-white flex items-center gap-2"
@@ -248,7 +248,7 @@ export default function AdminDashboard() {
                   {pendingVerifications && pendingVerifications.length > 0 ? (
                     <div className="space-y-4">
                       {pendingVerifications.map((verification: any) => (
-                        <div key={verification.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-sm transition-shadow">
+                        <div key={verification.id} className="border border-gray-200 dark:border-slate-700 dark:border-slate-700 rounded-lg p-4 hover:shadow-sm transition-shadow">
                           <div className="flex items-start justify-between mb-3">
                             <div>
                               <h3 className="font-semibold text-gray-900">{verification.user?.name}</h3>
@@ -347,7 +347,7 @@ export default function AdminDashboard() {
                   ) : (
                     <div className="text-center py-8">
                       <CheckCircle className="h-12 w-12 text-green-500 mx-auto mb-3" />
-                      <p className="text-gray-600">대기 중인 인증 요청이 없습니다.</p>
+                      <p className="text-gray-600 dark:text-gray-300 dark:text-gray-300">대기 중인 인증 요청이 없습니다.</p>
                     </div>
                   )}
                 </CardContent>
@@ -376,7 +376,7 @@ export default function AdminDashboard() {
                     <div className="space-y-3">
                       {filteredMentors.map((mentor: any) => (
                         <div key={mentor.id}>
-                          <div className="border border-gray-200 rounded-lg p-4 hover:shadow-sm transition-shadow">
+                          <div className="border border-gray-200 dark:border-slate-700 dark:border-slate-700 rounded-lg p-4 hover:shadow-sm transition-shadow">
                             <div className="flex items-start justify-between mb-2">
                               <div>
                                 <h3 className="font-semibold text-gray-900">{mentor.user?.name}</h3>
@@ -384,7 +384,7 @@ export default function AdminDashboard() {
                               </div>
                               <Badge className="bg-green-100 text-green-700 border-0">활성</Badge>
                             </div>
-                            <p className="text-sm text-gray-600 mb-3">{mentor.profile.bio}</p>
+                            <p className="text-sm text-gray-600 dark:text-gray-300 dark:text-gray-300 mb-3">{mentor.profile.bio}</p>
                             <div className="flex gap-2">
                               <Button
                                 size="sm"
@@ -476,7 +476,7 @@ export default function AdminDashboard() {
                   ) : (
                     <div className="text-center py-8">
                       <Users className="h-12 w-12 text-gray-300 mx-auto mb-3" />
-                      <p className="text-gray-600">검색 결과가 없습니다.</p>
+                      <p className="text-gray-600 dark:text-gray-300 dark:text-gray-300">검색 결과가 없습니다.</p>
                     </div>
                   )}
                 </CardContent>
@@ -494,7 +494,7 @@ export default function AdminDashboard() {
                   {allBookings && allBookings.length > 0 ? (
                     <div className="space-y-3">
                       {allBookings.map((item: any) => (
-                        <div key={item.booking.id} className="border border-gray-200 rounded-lg p-4">
+                        <div key={item.booking.id} className="border border-gray-200 dark:border-slate-700 dark:border-slate-700 rounded-lg p-4">
                           <div className="flex items-start justify-between mb-2">
                             <div>
                               <h3 className="font-semibold text-gray-900">{item.booking.mentee?.name} → {item.booking.mentor?.name}</h3>
@@ -504,21 +504,21 @@ export default function AdminDashboard() {
                               item.booking.status === "completed" ? "bg-green-100 text-green-700" :
                               item.booking.status === "in_progress" ? "bg-blue-100 text-blue-700" :
                               item.booking.status === "cancelled" ? "bg-red-100 text-red-700" :
-                              "bg-gray-100 text-gray-700"
+                              "bg-slate-100 dark:bg-slate-800 text-gray-700"
                             }>
                               {item.booking.status === "completed" ? "완료" :
                                item.booking.status === "in_progress" ? "진행 중" :
                                item.booking.status === "cancelled" ? "취소됨" : "예약됨"}
                             </Badge>
                           </div>
-                          <p className="text-sm text-gray-600">{item.booking.topic}</p>
+                          <p className="text-sm text-gray-600 dark:text-gray-300 dark:text-gray-300">{item.booking.topic}</p>
                         </div>
                       ))}
                     </div>
                   ) : (
                     <div className="text-center py-8">
                       <Calendar className="h-12 w-12 text-gray-300 mx-auto mb-3" />
-                      <p className="text-gray-600">상담 예약이 없습니다.</p>
+                      <p className="text-gray-600 dark:text-gray-300 dark:text-gray-300">상담 예약이 없습니다.</p>
                     </div>
                   )}
                 </CardContent>

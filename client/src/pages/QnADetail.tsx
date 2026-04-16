@@ -573,7 +573,7 @@ export default function QnADetail() {
                         size="sm"
                         onClick={() => handleToggleLike(answer.id)}
                         disabled={toggleLikeMutation.isPending}
-                        className={`text-xs h-7 px-2 gap-1 ${likedAnswers.has(answer.id) ? "text-blue-600 bg-blue-50 hover:bg-blue-100" : "text-muted-foreground hover:text-blue-600"}`}
+                        className={`text-xs h-7 px-2 gap-1 ${likedAnswers.has(answer.id) ? "text-blue-600 bg-blue-50 hover:bg-blue-100 dark:hover:bg-slate-800 dark:hover:bg-slate-800" : "text-muted-foreground hover:text-blue-600"}`}
                       >
                         <ThumbsUp className={`h-3 w-3 ${likedAnswers.has(answer.id) ? "fill-blue-600" : ""}`} />
                         <span>도움이 됐어요 {(likeCounts[answer.id] || 0) > 0 ? `(${likeCounts[answer.id]})` : ""}</span>
@@ -697,7 +697,7 @@ export default function QnADetail() {
 
           {/* 멘티에게 답변 작성 안내 (멘토가 아닌 경우) */}
           {isAuthenticated && user?.role !== "mentor" && (
-            <Card className="bg-gray-50 border-dashed">
+            <Card className="bg-slate-50 dark:bg-slate-900 border-dashed">
               <CardContent className="py-4 text-center">
                 <p className="text-xs sm:text-sm text-muted-foreground">
                   답변은 인증된 멘토만 작성할 수 있습니다.

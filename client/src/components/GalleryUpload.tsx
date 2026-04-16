@@ -270,7 +270,7 @@ export function GalleryUpload({
                   onDragStart={() => handleDragStart(index)}
                   onDragOver={() => handleDragOverItem(index)}
                   onDragEnd={() => setDraggedIndex(null)}
-                  className={`relative group cursor-move rounded-lg overflow-hidden bg-gray-100 aspect-square transition-opacity ${
+                  className={`relative group cursor-move rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-800 aspect-square transition-opacity ${
                     draggedIndex === index ? "opacity-50" : ""
                   }`}
                 >
@@ -306,7 +306,7 @@ export function GalleryUpload({
                 {images.map((image, index) => (
                   <div
                     key={index}
-                    className="relative group flex-shrink-0 w-24 h-24 rounded-lg overflow-hidden bg-gray-100"
+                    className="relative group flex-shrink-0 w-24 h-24 rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-800"
                   >
                     <img
                       src={image.preview}

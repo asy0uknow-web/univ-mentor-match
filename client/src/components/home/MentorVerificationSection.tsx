@@ -40,7 +40,7 @@ export const MentorVerificationSection = () => {
             {verificationSteps.map((item, idx) => (
               <div
                 key={idx}
-                className="bg-white rounded-2xl p-6 sm:p-8 shadow-md hover:shadow-lg transition-shadow duration-300 relative"
+                className="bg-card dark:bg-card rounded-2xl p-6 sm:p-8 shadow-md dark:shadow-lg hover:shadow-lg transition-shadow duration-300 relative"
               >
                 {/* Step Number Badge */}
                 <div className="absolute -top-4 -left-4 w-10 h-10 sm:w-12 sm:h-12 bg-primary rounded-full flex items-center justify-center text-white font-bold text-sm sm:text-base">

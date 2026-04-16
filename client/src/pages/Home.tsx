@@ -82,7 +82,7 @@ export default function Home() {
         <div className="flex items-center justify-center min-h-screen">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-4"></div>
-            <p className="text-gray-600">프로필 완성 페이지로 이동 중...</p>
+            <p className="text-gray-600 dark:text-gray-300 dark:text-gray-300">프로필 완성 페이지로 이동 중...</p>
           </div>
         </div>
       </PageLayout>
@@ -105,7 +105,7 @@ export default function Home() {
         }}
         aria-label="히어로 섹션"
       >
-        <div className="absolute inset-0 bg-white/60 backdrop-blur-sm"></div>
+        <div className="absolute inset-0 bg-card dark:bg-card/60 backdrop-blur-sm"></div>
         
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
@@ -185,7 +185,7 @@ export default function Home() {
               tabIndex={0}
               aria-label="전공 탐색 멘토 찾기"
             >
-              <div className="bg-white rounded-xl p-6 sm:p-8 shadow-sm hover:shadow-lg hover:scale-105 transition-all duration-300 border border-gray-100 hover:border-indigo-300 group-hover:-translate-y-2">
+              <div className="bg-card dark:bg-card rounded-xl p-6 sm:p-8 shadow-sm hover:shadow-lg hover:scale-105 transition-all duration-300 border border-gray-100 dark:border-slate-700 dark:border-slate-700 hover:border-indigo-300 group-hover:-translate-y-2">
                 <div className="mb-4 flex justify-center group-hover:scale-110 transition-transform duration-300">
                   <MajorIcon />
                 </div>
@@ -206,7 +206,7 @@ export default function Home() {
               tabIndex={0}
               aria-label="진로 상담 멘토 찾기"
             >
-              <div className="bg-white rounded-xl p-6 sm:p-8 shadow-sm hover:shadow-lg hover:scale-105 transition-all duration-300 border border-gray-100 hover:border-indigo-300 group-hover:-translate-y-2">
+              <div className="bg-card dark:bg-card rounded-xl p-6 sm:p-8 shadow-sm hover:shadow-lg hover:scale-105 transition-all duration-300 border border-gray-100 dark:border-slate-700 dark:border-slate-700 hover:border-indigo-300 group-hover:-translate-y-2">
                 <div className="mb-4 flex justify-center group-hover:scale-110 transition-transform duration-300">
                   <CareerIcon />
                 </div>
@@ -227,7 +227,7 @@ export default function Home() {
               tabIndex={0}
               aria-label="대학 생활 멘토 찾기"
             >
-              <div className="bg-white rounded-xl p-6 sm:p-8 shadow-sm hover:shadow-lg hover:scale-105 transition-all duration-300 border border-gray-100 hover:border-indigo-300 group-hover:-translate-y-2">
+              <div className="bg-card dark:bg-card rounded-xl p-6 sm:p-8 shadow-sm hover:shadow-lg hover:scale-105 transition-all duration-300 border border-gray-100 dark:border-slate-700 dark:border-slate-700 hover:border-indigo-300 group-hover:-translate-y-2">
                 <div className="mb-4 flex justify-center group-hover:scale-110 transition-transform duration-300">
                   <LifeIcon />
                 </div>
@@ -244,7 +244,7 @@ export default function Home() {
       </section>
 
       {/* How It Works Section - 실제 흐름 */}
-      <section id="how-it-works" role="region" className="py-16 sm:py-24 md:py-32 bg-white" aria-label="이용 방법">
+      <section id="how-it-works" role="region" className="py-16 sm:py-24 md:py-32 bg-card dark:bg-card" aria-label="이용 방법">
         <div className="container mx-auto px-4">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-12 sm:mb-16 text-foreground" id="how-heading">
             이용 방법
@@ -271,7 +271,7 @@ export default function Home() {
               ].map(({ title, desc, iconComponent: IconComponent }, idx) => (
                 <div
                   key={idx}
-                  className="bg-white rounded-2xl p-6 sm:p-8 shadow-md hover:shadow-lg transition-shadow duration-300 hover:scale-105 transition-transform"
+                  className="bg-card dark:bg-card rounded-2xl p-6 sm:p-8 shadow-md dark:shadow-lg hover:shadow-lg transition-shadow duration-300 hover:scale-105 transition-transform"
                 >
                   <div className="mb-6 sm:mb-8 flex justify-center">
                     <IconComponent />
@@ -292,7 +292,7 @@ export default function Home() {
       </section>
 
       {/* Featured Mentors Section - 중립적 제목 */}
-      <section id="featured-mentors" role="region" className="py-16 sm:py-24 md:py-32 bg-white" aria-label="멘토 탐색">
+      <section id="featured-mentors" role="region" className="py-16 sm:py-24 md:py-32 bg-card dark:bg-card" aria-label="멘토 탐색">
         <div className="container mx-auto px-4">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-12 sm:mb-16 text-foreground">
             지금 둘러보기 좋은 멘토들
@@ -302,7 +302,7 @@ export default function Home() {
       </section>
 
       {/* Testimonials Section */}
-      <section id="testimonials" role="region" className="py-16 sm:py-24 md:py-32 bg-white" aria-label="상담 후기">
+      <section id="testimonials" role="region" className="py-16 sm:py-24 md:py-32 bg-card dark:bg-card" aria-label="상담 후기">
         <div className="container mx-auto px-4">
           <TestimonialsSection />
         </div>
@@ -321,7 +321,7 @@ export default function Home() {
       <ZeroCommissionUSPSection />
 
       {/* FAQ Section */}
-      <section id="faq" role="region" className="py-16 sm:py-24 md:py-32 bg-white" aria-label="자주 묻는 질문">
+      <section id="faq" role="region" className="py-16 sm:py-24 md:py-32 bg-card dark:bg-card" aria-label="자주 묻는 질문">
         <div className="container mx-auto px-4">
           <IntegratedFAQSection />
         </div>
