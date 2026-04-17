@@ -302,7 +302,7 @@ export async function getAllActiveMentors() {
     .innerJoin(users, eq(mentorProfiles.userId, users.id))
     .leftJoin(
       mentorConsultationTypes,
-      eq(mentorProfiles.userId, mentorConsultationTypes.mentorId)
+      eq(users.id, mentorConsultationTypes.mentorId)
     )
     .where(
       and(
