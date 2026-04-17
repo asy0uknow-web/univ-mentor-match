@@ -1266,7 +1266,7 @@ getTopMentors: publicProcedure
       return await getMentorVerificationByUserId(ctx.user.id);
     }),
 
-    completeProfile: publicProcedure
+    completeProfile: protectedProcedure
       .input(z.object({
         name: z.string().min(1),
         phoneNumber: z.string().regex(/^01[0-9]-?\d{3,4}-?\d{4}$/),

@@ -2785,3 +2785,11 @@
 - [x] 모바일 뷰포트 (375px) 테스트: 홈페이지, 멘토 찾기, 회원가입, 로그인 모두 완벽
 - [x] 태블릿 뷰포트 (768px) 테스트: 모든 페이지 완벽 적용
 - [x] 모바일/태블릿 반응형 최종 검증 완료
+
+
+## /complete-profile 페이지 API 오류 수정 (완료)
+- [x] CompleteProfile.tsx 페이지 API 호출 코드 확인
+- [x] 서버 라우터에서 해당 엔드포인트 확인: routers.ts 1269줄
+- [x] 에러 원인 파악: publicProcedure 사용으로 인증 없이 동작
+- [x] API 엔드포인트 수정: publicProcedure to protectedProcedure
+- [x] 프로필 완성 플로우 테스트: 멘토 정보 입력 및 저장 성공 확인
