@@ -170,7 +170,7 @@ export default function Home() {
       </section>
 
       {/* Quick Entry Section - 빠른 진입 */}
-      <section id="quick-entry" role="region" className="py-12 sm:py-16 md:py-20 bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-background" aria-label="빠른 멘토 탐색">
+      <section id="quick-entry" role="region" className="py-12 sm:py-16 md:py-20 bg-white dark:bg-slate-950" aria-label="빠른 멘토 탐색">
         <div className="container mx-auto px-4">
           <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-center mb-8 sm:mb-12 text-foreground">
             어떤 상담이 필요하신가요?
@@ -244,7 +244,7 @@ export default function Home() {
       </section>
 
       {/* How It Works Section - 실제 흐름 */}
-      <section id="how-it-works" role="region" className="py-16 sm:py-24 md:py-32 bg-card " aria-label="이용 방법">
+      <section id="how-it-works" role="region" className="py-16 sm:py-24 md:py-32 bg-white dark:bg-slate-900" aria-label="이용 방법">
         <div className="container mx-auto px-4">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-12 sm:mb-16 text-foreground" id="how-heading">
             이용 방법
@@ -292,7 +292,7 @@ export default function Home() {
       </section>
 
       {/* Featured Mentors Section - 중립적 제목 */}
-      <section id="featured-mentors" role="region" className="py-16 sm:py-24 md:py-32 bg-card " aria-label="멘토 탐색">
+      <section id="featured-mentors" role="region" className="py-16 sm:py-24 md:py-32 bg-white dark:bg-slate-900" aria-label="멘토 탐색">
         <div className="container mx-auto px-4">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-12 sm:mb-16 text-foreground">
             지금 둘러보기 좋은 멘토들
@@ -302,7 +302,7 @@ export default function Home() {
       </section>
 
       {/* Testimonials Section */}
-      <section id="testimonials" role="region" className="py-16 sm:py-24 md:py-32 bg-card " aria-label="상담 후기">
+      <section id="testimonials" role="region" className="py-16 sm:py-24 md:py-32 bg-white dark:bg-slate-900" aria-label="상담 후기">
         <div className="container mx-auto px-4">
           <TestimonialsSection />
         </div>
@@ -321,7 +321,7 @@ export default function Home() {
       <ZeroCommissionUSPSection />
 
       {/* FAQ Section */}
-      <section id="faq" role="region" className="py-16 sm:py-24 md:py-32 bg-card " aria-label="자주 묻는 질문">
+      <section id="faq" role="region" className="py-16 sm:py-24 md:py-32 bg-white dark:bg-slate-900" aria-label="자주 묻는 질문">
         <div className="container mx-auto px-4">
           <IntegratedFAQSection />
         </div>
