@@ -456,9 +456,26 @@ export default function MentorDetail() {
                               const regions = typeof mentor.profile.availableRegions === 'string' 
                                 ? JSON.parse(mentor.profile.availableRegions) 
                                 : mentor.profile.availableRegions;
+                              const regionMap: Record<string, string> = {
+                                'seoul': '서울',
+                                'gyeonggi': '경기',
+                                'incheon': '인천',
+                                'gangwon': '강원',
+                                'chungbuk': '충북',
+                                'chungnam': '충남',
+                                'jeonbuk': '전북',
+                                'jeonnam': '전남',
+                                'gwangju': '광주',
+                                'daejeon': '대전',
+                                'ulsan': '울산',
+                                'busan': '부산',
+                                'daegu': '대구',
+                                'jeju': '제주',
+                                'chungcheong': '충청'
+                              };
                               return Array.isArray(regions) ? regions.map((region: string, idx: number) => (
                                 <span key={idx} className="px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded text-xs">
-                                  {region}
+                                  {regionMap[region] || region}
                                 </span>
                               )) : null;
                             } catch (e) {
