@@ -438,22 +438,50 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-html.dark,
-html.dark body,
-html.dark * {
-  background-color: #000000 !important;
-  background-image: none !important;
-}
-
+/* 다크 모드 기본 배경색 */
 html.dark,
 html.dark body {
+  background-color: #000000 !important;
   color: #ffffff !important;
   color-scheme: dark;
 }
 
+/* 다크 모드 기본 요소 배경색 */
+html.dark * {
+  background-image: none !important;
+}
+
+/* 다크 모드 섹션/컨테이너 배경색 */
+html.dark section,
+html.dark main {
+  background-color: #0a0a0a !important;
+}
+
+/* 다크 모드 카드 배경색 */
+html.dark [class*="card"],
+html.dark [class*="mentor"],
+html.dark [class*="testimonial"] {
+  background-color: #1a1a1a !important;
+  border: 1px solid #333333 !important;
+}
+
+/* 다크 모드 입력 필드 */
+html.dark input,
+html.dark textarea,
+html.dark select {
+  background-color: #1a1a1a !important;
+  color: #ffffff !important;
+  border-color: #333333 !important;
+}
+
+/* 다크 모드 버튼 */
+html.dark button {
+  background-image: none !important;
+}
+
 html.dark *::before,
 html.dark *::after {
-  background-color: #000000 !important;
+  background-color: transparent !important;
 }
 
 :is(.dark) body {
