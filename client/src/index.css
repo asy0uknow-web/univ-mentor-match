@@ -438,39 +438,22 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-html.dark body {
-  background-color: oklch(0.12 0.01 250) !important;
-  color: oklch(0.92 0.02 250) !important;
+html.dark,
+html.dark body,
+html.dark * {
+  background-color: #000000 !important;
+  background-image: none !important;
 }
 
-html.dark {
-  background-color: oklch(0.12 0.01 250) !important;
+html.dark,
+html.dark body {
+  color: #ffffff !important;
   color-scheme: dark;
 }
 
-html.dark * {
+html.dark *::before,
+html.dark *::after {
   background-color: #000000 !important;
-  color: inherit;
-}
-
-html.dark section,
-html.dark div {
-  background-color: #000000 !important;
-}
-
-html.dark div {
-  background-color: oklch(0.12 0.01 250) !important;
-}
-
-html.dark main {
-  background-color: oklch(0.12 0.01 250) !important;
-}
-
-html.dark section[id*="testimonial"],
-html.dark section[id*="featured"],
-html.dark section[id*="faq"],
-html.dark section[id*="column"] {
-  background-color: oklch(0.12 0.01 250) !important;
 }
 
 :is(.dark) body {
