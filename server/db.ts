@@ -283,7 +283,7 @@ export async function getAllActiveMentors() {
         university: mentorProfiles.university,
         major: mentorProfiles.major,
         grade: mentorProfiles.grade,
-        region: mentorProfiles.region,
+        availableRegions: mentorProfiles.availableRegions,
         bio: mentorProfiles.bio,
         hourlyRate: mentorProfiles.hourlyRate,
         availableSlots: mentorProfiles.availableSlots,

@@ -73,8 +73,8 @@ export const mentorProfiles = mysqlTable("mentor_profiles", {
   university: varchar("university", { length: 255 }).notNull(),
   major: varchar("major", { length: 255 }).notNull(),
 
-  // Region: 서울, 경기, 인천, 강원, 충청, 전라, 경상, 제주
-  region: mysqlEnum("region", ["seoul", "gyeonggi", "incheon", "gangwon", "chungcheong", "jeolla", "gyeongsang", "jeju"]),
+  // Available regions: 서울, 경기, 인천, 강원, 충청, 전라, 경상, 제주 (다중 선택 가능)
+  availableRegions: text("availableRegions"), // JSON array of regions
   grade: mysqlEnum("grade", ["1", "2", "3", "4", "graduate"]).notNull(),
 
   bio: text("bio"),

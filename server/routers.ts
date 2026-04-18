@@ -286,16 +286,20 @@ export const appRouter = router({
         bio: z.string().optional(),
         hourlyRate: z.string().min(1),
         field: z.enum(["engineering", "natural_science", "business", "humanities", "education", "liberal_arts", "medicine"]).optional(),
-        region: z.enum(["seoul", "gyeonggi", "incheon", "gangwon", "chungcheong", "jeolla", "gyeongsang", "jeju"]).optional(),
+        availableRegions: z.array(z.enum(["seoul", "gyeonggi", "incheon", "gangwon", "chungcheong", "jeolla", "gyeongsang", "jeju"])).optional(),
         availableSlots: z.string().optional(),
       }))
       .mutation(async ({ ctx, input }) => {
         await updateUserType(ctx.user.id, "university_student");
-        await createMentorProfile({
+        const profileData: any = {
           userId: ctx.user.id,
           ...input,
           uuid: require('crypto').randomUUID(),
-        });
+        };
+        if (input.availableRegions) {
+          profileData.availableRegions = JSON.stringify(input.availableRegions);
+        }
+        await createMentorProfile(profileData);
         // Always create a new verification request for (re-)registration
         await createMentorVerification({
           userId: ctx.user.id,
@@ -317,11 +321,15 @@ export const appRouter = router({
         bio: z.string().optional(),
         hourlyRate: z.string().optional(),
         field: z.enum(["engineering", "natural_science", "business", "humanities", "education", "liberal_arts", "medicine"]).optional(),
-        region: z.enum(["seoul", "gyeonggi", "incheon", "gangwon", "chungcheong", "jeolla", "gyeongsang", "jeju"]).optional(),
+        availableRegions: z.array(z.enum(["seoul", "gyeonggi", "incheon", "gangwon", "chungcheong", "jeolla", "gyeongsang", "jeju"])).optional(),
         availableSlots: z.string().optional(),
       }))
       .mutation(async ({ ctx, input }) => {
-        await updateMentorProfile(ctx.user.id, input);
+        const updateData: any = { ...input };
+        if (input.availableRegions) {
+          updateData.availableRegions = JSON.stringify(input.availableRegions);
+        }
+        await updateMentorProfile(ctx.user.id, updateData);
         return { success: true };
       }),
 
@@ -356,7 +364,7 @@ getTopMentors: publicProcedure
             university: mentorProfiles.university,
             major: mentorProfiles.major,
             grade: mentorProfiles.grade,
-            region: mentorProfiles.region,
+            availableRegions: mentorProfiles.availableRegions,
             bio: mentorProfiles.bio,
             hourlyRate: mentorProfiles.hourlyRate,
             availableSlots: mentorProfiles.availableSlots,
@@ -1307,10 +1315,9 @@ getTopMentors: publicProcedure
 
         // 멘토인 경우 멘토프로필도 자동으로 생성
         if (input.userRole === "mentor" && input.university && input.major && input.mentorRegion) {
-          // mentorRegion은 쉼표로 구분된 문자열이므로 첫 번째 지역만 추출
+          // mentorRegion은 쉬멀표로 구분된 문자열을 배열로 변환
           const regions = input.mentorRegion.split(",").map(r => r.trim()).filter(r => r);
-          const firstRegion = regions[0] || "seoul";
-          const regionValue = firstRegion as "seoul" | "gyeonggi" | "incheon" | "gangwon" | "chungcheong" | "jeolla" | "gyeongsang" | "jeju";
+          const availableRegionsValue = regions.length > 0 ? regions : ["seoul"];
           const gradeValue = (input.grade || "1") as "1" | "2" | "3" | "4" | "graduate";
           const existingProfile = await db
             .select()
@@ -1325,7 +1332,7 @@ getTopMentors: publicProcedure
               university: input.university,
               major: input.major,
               grade: gradeValue,
-              region: regionValue,
+              availableRegions: JSON.stringify(availableRegionsValue),
               uuid: randomUUID(),
               isDeleted: false,
               verificationStatus: "pending",
@@ -1340,7 +1347,7 @@ getTopMentors: publicProcedure
                 university: input.university,
                 major: input.major,
                 grade: gradeValue,
-                region: regionValue,
+                availableRegions: JSON.stringify(availableRegionsValue),
                 isDeleted: false,
                 updatedAt: new Date(),
               })
