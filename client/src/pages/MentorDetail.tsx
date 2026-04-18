@@ -411,7 +411,7 @@ export default function MentorDetail() {
                 {/* 기본 정보 카드 */}
                 <Card className="bg-card text-card-foreground flex flex-col gap-6 rounded-xl py-6 overflow-hidden border-0 shadow-md mt-6">
                   <CardHeader className="pb-3 px-6">
-                    <CardTitle className="text-base">기본 정보</CardTitle>
+                    <CardTitle className="text-base">멘토 정보</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-3 text-sm px-6">
                     {/* 이름 */}
