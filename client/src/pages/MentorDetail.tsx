@@ -131,9 +131,9 @@ export default function MentorDetail() {
 
   return (
     <PageLayout>
-      <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
+      <div className="min-h-screen bg-background">
         {/* 헤더 */}
-        <div className="bg-card  border-b border-gray-200 700 700">
+        <div className="bg-card border-b border-border">
           <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6">
             <Link href="/mentors">
               <Button variant="ghost" className="mb-3 sm:mb-4 px-2 sm:px-4 h-8 sm:h-10 text-xs sm:text-sm">
@@ -164,15 +164,15 @@ export default function MentorDetail() {
                       <div className="flex items-start justify-between mb-3 sm:mb-4">
                         <div>
                           <h1 className="text-2xl sm:text-3xl font-bold mb-1">{mentor.user.name}</h1>
-                          <div className="flex items-center gap-2 text-sm text-gray-600 300 300 mb-3">
+                          <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
                             <GraduationCap className="w-4 h-4" />
                             <span>{mentor.profile?.university}</span>
-                            <span className="text-gray-400">•</span>
+                            <span className="text-muted-foreground">•</span>
                             <span>{mentor.profile?.major}</span>
                           </div>
                         </div>
                         {mentor.profile?.verificationStatus === "approved" && (
-                          <div className="flex items-center gap-1 px-3 py-1 bg-green-50 text-green-700 rounded-full text-xs font-medium">
+                          <div className="flex items-center gap-1 px-3 py-1 bg-green-50 dark:bg-green-950/30 text-green-700 dark:text-green-400 rounded-full text-xs font-medium">
                             <CheckCircle className="w-4 h-4" />
                             검증완료
                           </div>
@@ -182,35 +182,35 @@ export default function MentorDetail() {
                       {/* 신뢰도 지표 */}
                       <div className="grid grid-cols-3 gap-3 sm:gap-4">
                         {avgRating && (
-                          <div className="bg-yellow-50 p-3 rounded-lg">
+                          <div className="bg-yellow-50 dark:bg-yellow-950/30 p-3 rounded-lg">
                             <div className="flex items-center gap-1 mb-1">
                               <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
                               <span className="text-lg font-bold">{avgRating}</span>
                             </div>
-                            <p className="text-xs text-gray-600 300 300">{reviews?.length || 0}개 리뷰</p>
+                            <p className="text-xs text-muted-foreground">{reviews?.length || 0}개 리뷰</p>
                           </div>
                         )}
-                        <div className="bg-blue-50 p-3 rounded-lg">
+                        <div className="bg-primary/5 p-3 rounded-lg">
                           <div className="flex items-center gap-1 mb-1">
                             <Users className="w-4 h-4 text-blue-600" />
                             <span className="text-lg font-bold">5+</span>
                           </div>
-                          <p className="text-xs text-gray-600 300 300">상담 경험</p>
+                          <p className="text-xs text-muted-foreground">상담 경험</p>
                         </div>
                         <div className={`p-3 rounded-lg ${
                           (mentor.profile?.answerCount || 0) >= 10
-                            ? "bg-purple-50"
-                            : "bg-green-50"
+                            ? "bg-purple-50 dark:bg-purple-950/30"
+                            : "bg-green-50 dark:bg-green-950/30"
                         }`}>
                           <div className="flex items-center gap-1 mb-1">
                             <MessageCircle className={`w-4 h-4 ${
                               (mentor.profile?.answerCount || 0) >= 10
                                 ? "text-purple-600"
-                                : "text-green-600"
+                                : "text-green-600 dark:text-green-400"
                             }`} />
                             <span className="text-lg font-bold">{mentor.profile?.answerCount || 0}</span>
                           </div>
-                          <p className="text-xs text-gray-600 300 300">답변 수</p>
+                          <p className="text-xs text-muted-foreground">답변 수</p>
                         </div>
                       </div>
                     </div>
@@ -225,7 +225,7 @@ export default function MentorDetail() {
                     <CardTitle className="text-lg sm:text-xl">소개</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sm sm:text-base leading-relaxed text-gray-700 whitespace-pre-wrap break-words">
+                    <p className="text-sm sm:text-base leading-relaxed text-foreground whitespace-pre-wrap break-words">
                       {mentor.profile.bio}
                     </p>
                   </CardContent>
@@ -285,13 +285,13 @@ export default function MentorDetail() {
                 <Card className="border-0 shadow-sm">
                   <CardHeader className="pb-3 sm:pb-4">
                     <CardTitle className="text-lg sm:text-xl flex items-center gap-2">
-                      <Sparkles className="w-5 h-5 text-green-600" />
+                      <Sparkles className="w-5 h-5 text-green-600 dark:text-green-400" />
                       상담 분야
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="flex flex-wrap gap-2">
-                      <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium">
+                      <span className="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full text-sm font-medium">
                         {mentor.profile.field}
                       </span>
                     </div>
@@ -313,7 +313,7 @@ export default function MentorDetail() {
                       <div className="space-y-3">
                         {filteredMentorColumns.slice(0, 3).map((column: any) => (
                           <Link key={column.id} href={`/columns/${column.id}`}>
-                            <a className="block p-3 bg-slate-50 hover:bg-slate-100 rounded-lg transition-colors">
+                            <a className="block p-3 bg-background hover:bg-muted rounded-lg transition-colors">
                               <h4 className="font-medium text-sm text-foreground line-clamp-1 mb-1">
                                 {column.title}
                               </h4>
@@ -321,7 +321,7 @@ export default function MentorDetail() {
                                 {column.excerpt || column.content.substring(0, 60)}
                               </p>
                               <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                                <span className="inline-block px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs">
+                                <span className="inline-block px-2 py-1 bg-primary/10 text-blue-700 rounded text-xs">
                                   {column.category}
                                 </span>
                                 <span>좋아요 {column.likesCount || 0}</span>
@@ -388,7 +388,7 @@ export default function MentorDetail() {
                             ))}
                           </div>
                         </div>
-                        <p className="text-sm text-gray-700 leading-relaxed break-words">
+                        <p className="text-sm text-foreground leading-relaxed break-words">
                           {review.review.comment || "리뷰 내용이 없습니다."}
                         </p>
                       </div>
@@ -415,22 +415,22 @@ export default function MentorDetail() {
                   </CardHeader>
                   <CardContent className="space-y-3 text-sm">
                     <div className="flex items-center gap-2">
-                      <Clock className="w-4 h-4 text-gray-500" />
-                      <span className="text-gray-700">회당 60분</span>
+                      <Clock className="w-4 h-4 text-muted-foreground" />
+                      <span className="text-foreground">회당 60분</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Users className="w-4 h-4 text-gray-500" />
-                      <span className="text-gray-700">1:1 대면 상담</span>
+                      <Users className="w-4 h-4 text-muted-foreground" />
+                      <span className="text-foreground">1:1 대면 상담</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Award className="w-4 h-4 text-gray-500" />
-                      <span className="text-gray-700">응답률 높음</span>
+                      <Award className="w-4 h-4 text-muted-foreground" />
+                      <span className="text-foreground">응답률 높음</span>
                     </div>
                   </CardContent>
                 </Card>
 
                 {/* 안내 메시지 */}
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-xs text-blue-700">
+                <div className="bg-primary/5 border border-blue-200 rounded-lg p-3 text-xs text-blue-700">
                   <p className="font-medium mb-1">💡 팁</p>
                   <p>메시지를 먼저 보내 멘토와 상담 시간을 조율한 후 예약하세요.</p>
                 </div>

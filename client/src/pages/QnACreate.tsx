@@ -169,18 +169,18 @@ export default function QnACreate() {
         </div>
 
         {/* 좋은 질문 예시 */}
-        <Card className="bg-gradient-to-br from-green-50 to-emerald-50 border-green-200 mb-6 hover:shadow-md  transition-shadow">
+        <Card className="bg-gradient-to-br from-green-50 to-emerald-50 border-green-200 dark:border-green-800/50 mb-6 hover:shadow-md  transition-shadow">
           <CardHeader className="pb-3">
             <div className="flex items-center gap-2">
-              <div className="p-2 bg-green-100 rounded-lg">
-                <Lightbulb className="h-5 w-5 text-green-600" />
+              <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
+                <Lightbulb className="h-5 w-5 text-green-600 dark:text-green-400" />
               </div>
               <CardTitle className="text-base">좋은 질문 예시</CardTitle>
             </div>
           </CardHeader>
           <CardContent className="space-y-2">
             {GOOD_EXAMPLES.map((example, idx) => (
-              <p key={idx} className="text-xs sm:text-sm text-green-900 hover:text-green-700 transition-colors cursor-pointer">
+              <p key={idx} className="text-xs sm:text-sm text-green-900 hover:text-green-700 dark:text-green-400 transition-colors cursor-pointer">
                 • {example}
               </p>
             ))}
@@ -188,10 +188,10 @@ export default function QnACreate() {
         </Card>
 
         {/* 금지 안내 */}
-        <Card className="bg-gradient-to-br from-red-50 to-rose-50 border-red-200 mb-6 hover:shadow-md  transition-shadow">
+        <Card className="bg-gradient-to-br from-red-50 to-rose-50 border-red-200 dark:border-red-800/50 mb-6 hover:shadow-md  transition-shadow">
           <CardHeader className="pb-3">
             <div className="flex items-center gap-2">
-              <div className="p-2 bg-red-100 rounded-lg">
+              <div className="p-2 bg-red-100 dark:bg-red-900/30 rounded-lg">
                 <AlertCircle className="h-5 w-5 text-red-600" />
               </div>
               <CardTitle className="text-base">금지 사항</CardTitle>
@@ -368,7 +368,7 @@ export default function QnACreate() {
               <Button
                 variant="outline"
                 onClick={() => setLocation('/qna')}
-                className="text-xs sm:text-sm h-9 sm:h-10 flex-1 hover:bg-slate-100 800 transition-colors"
+                className="text-xs sm:text-sm h-9 sm:h-10 flex-1 hover:bg-muted 800 transition-colors"
               >
                 취소
               </Button>

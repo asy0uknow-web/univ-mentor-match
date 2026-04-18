@@ -220,7 +220,7 @@ export function GalleryUpload({
           className={`border-2 border-dashed rounded-lg p-6 sm:p-8 text-center transition-colors ${
             isDragging
               ? "border-primary bg-primary/5"
-              : "border-gray-300 hover:border-primary/50"
+              : "border-border hover:border-primary/50"
           }`}
         >
           <input
@@ -233,12 +233,12 @@ export function GalleryUpload({
           />
 
           <div className="flex flex-col items-center gap-3">
-            <Upload className="w-8 h-8 text-gray-400" />
+            <Upload className="w-8 h-8 text-muted-foreground" />
             <div>
-              <p className="text-sm font-medium text-gray-700">
+              <p className="text-sm font-medium text-foreground">
                 이미지를 드래그하거나 클릭하여 업로드
               </p>
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs text-muted-foreground mt-1">
                 PNG, JPG, GIF (최대 10MB)
               </p>
             </div>
@@ -257,7 +257,7 @@ export function GalleryUpload({
         {/* 이미지 미리보기 */}
         {images.length > 0 && (
           <div className="space-y-3">
-            <p className="text-sm font-medium text-gray-700">
+            <p className="text-sm font-medium text-foreground">
               미리보기 ({images.length}개)
             </p>
 
@@ -270,7 +270,7 @@ export function GalleryUpload({
                   onDragStart={() => handleDragStart(index)}
                   onDragOver={() => handleDragOverItem(index)}
                   onDragEnd={() => setDraggedIndex(null)}
-                  className={`relative group cursor-move rounded-lg overflow-hidden bg-slate-100 800 aspect-square transition-opacity ${
+                  className={`relative group cursor-move rounded-lg overflow-hidden bg-muted 800 aspect-square transition-opacity ${
                     draggedIndex === index ? "opacity-50" : ""
                   }`}
                 >
@@ -306,7 +306,7 @@ export function GalleryUpload({
                 {images.map((image, index) => (
                   <div
                     key={index}
-                    className="relative group flex-shrink-0 w-24 h-24 rounded-lg overflow-hidden bg-slate-100 800"
+                    className="relative group flex-shrink-0 w-24 h-24 rounded-lg overflow-hidden bg-muted 800"
                   >
                     <img
                       src={image.preview}
@@ -352,7 +352,7 @@ export function GalleryUpload({
         )}
 
         {images.length === 0 && (
-          <p className="text-sm text-center text-gray-500 py-4">
+          <p className="text-sm text-center text-muted-foreground py-4">
             아직 갤러리 이미지가 없습니다.
           </p>
         )}

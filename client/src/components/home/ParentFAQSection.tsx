@@ -32,7 +32,7 @@ export const ParentFAQSection = () => {
   ];
 
   return (
-    <section id="parent-faq" role="region" className="py-16 sm:py-24 md:py-32 bg-gradient-to-b from-gray-50 to-white" aria-label="학부모 FAQ">
+    <section id="parent-faq" role="region" className="py-16 sm:py-24 md:py-32 bg-muted/30" aria-label="학부모 FAQ">
       <div className="container mx-auto px-4">
         {/* Section Header */}
         <div className="max-w-4xl mx-auto text-center mb-12 sm:mb-16">
@@ -50,12 +50,12 @@ export const ParentFAQSection = () => {
             {faqs.map((faq, idx) => (
               <div
                 key={idx}
-                className="bg-card  rounded-xl border border-gray-200 700 700 shadow-sm hover:shadow-md  transition-shadow duration-300"
+                className="bg-card  rounded-xl border border-border 700 700 shadow-sm hover:shadow-md  transition-shadow duration-300"
               >
                 {/* Question */}
                 <button
                   onClick={() => setExpandedIndex(expandedIndex === idx ? null : idx)}
-                  className="w-full px-6 sm:px-8 py-4 sm:py-5 text-left flex items-center justify-between hover:bg-slate-50 900 transition-colors"
+                  className="w-full px-6 sm:px-8 py-4 sm:py-5 text-left flex items-center justify-between hover:bg-background 900 transition-colors"
                   aria-expanded={expandedIndex === idx}
                   aria-controls={`faq-answer-${idx}`}
                 >
@@ -80,7 +80,7 @@ export const ParentFAQSection = () => {
                 {expandedIndex === idx && (
                   <div
                     id={`faq-answer-${idx}`}
-                    className="px-6 sm:px-8 py-4 sm:py-5 bg-slate-50 900 border-t border-gray-200 700 700"
+                    className="px-6 sm:px-8 py-4 sm:py-5 bg-background 900 border-t border-border 700 700"
                   >
                     <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
                       {faq.answer}

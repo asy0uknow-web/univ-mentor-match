@@ -82,7 +82,7 @@ export default function Home() {
         <div className="flex items-center justify-center min-h-screen">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-4"></div>
-            <p className="text-gray-600 300 300">프로필 완성 페이지로 이동 중...</p>
+            <p className="text-muted-foreground 300 300">프로필 완성 페이지로 이동 중...</p>
           </div>
         </div>
       </PageLayout>
@@ -105,7 +105,7 @@ export default function Home() {
         }}
         aria-label="히어로 섹션"
       >
-        <div className="absolute inset-0 bg-card /60 backdrop-blur-sm"></div>
+        <div className="absolute inset-0 bg-white/60 dark:bg-black/60 backdrop-blur-sm"></div>
         
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
@@ -134,7 +134,7 @@ export default function Home() {
               {/* Q&A 커뮤니티 */}
               <Button 
                 size="default" 
-                className="w-full sm:w-auto bg-slate-200 hover:bg-slate-300 text-slate-900 font-bold shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+                className="w-full sm:w-auto bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 text-foreground font-bold shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
                 onClick={() => navigate('/qna')}
                 aria-label="Q&A 커뮤니티로 이동"
               >
@@ -144,7 +144,7 @@ export default function Home() {
               {/* 멘토 칼럼 */}
               <Button 
                 size="default" 
-                className="w-full sm:w-auto bg-slate-200 hover:bg-slate-300 text-slate-900 font-bold shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+                className="w-full sm:w-auto bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 text-foreground font-bold shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
                 onClick={() => navigate('/columns')}
                 aria-label="멘토 칼럼으로 이동"
               >
@@ -170,7 +170,7 @@ export default function Home() {
       </section>
 
       {/* Quick Entry Section - 빠른 진입 */}
-      <section id="quick-entry" role="region" className="py-12 sm:py-16 md:py-20 bg-gradient-to-b from-slate-50 to-white" aria-label="빠른 멘토 탐색">
+      <section id="quick-entry" role="region" className="py-12 sm:py-16 md:py-20 bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-background" aria-label="빠른 멘토 탐색">
         <div className="container mx-auto px-4">
           <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-center mb-8 sm:mb-12 text-foreground">
             어떤 상담이 필요하신가요?
@@ -185,7 +185,7 @@ export default function Home() {
               tabIndex={0}
               aria-label="전공 탐색 멘토 찾기"
             >
-              <div className="bg-card  rounded-xl p-6 sm:p-8 shadow-sm hover:shadow-lg hover:scale-105 transition-all duration-300 border border-gray-100 700 700 hover:border-indigo-300 group-hover:-translate-y-2">
+              <div className="bg-card  rounded-xl p-6 sm:p-8 shadow-sm hover:shadow-lg hover:scale-105 transition-all duration-300 border border-border 700 700 hover:border-indigo-300 group-hover:-translate-y-2">
                 <div className="mb-4 flex justify-center group-hover:scale-110 transition-transform duration-300">
                   <MajorIcon />
                 </div>
@@ -206,7 +206,7 @@ export default function Home() {
               tabIndex={0}
               aria-label="진로 상담 멘토 찾기"
             >
-              <div className="bg-card  rounded-xl p-6 sm:p-8 shadow-sm hover:shadow-lg hover:scale-105 transition-all duration-300 border border-gray-100 700 700 hover:border-indigo-300 group-hover:-translate-y-2">
+              <div className="bg-card  rounded-xl p-6 sm:p-8 shadow-sm hover:shadow-lg hover:scale-105 transition-all duration-300 border border-border 700 700 hover:border-indigo-300 group-hover:-translate-y-2">
                 <div className="mb-4 flex justify-center group-hover:scale-110 transition-transform duration-300">
                   <CareerIcon />
                 </div>
@@ -227,7 +227,7 @@ export default function Home() {
               tabIndex={0}
               aria-label="대학 생활 멘토 찾기"
             >
-              <div className="bg-card  rounded-xl p-6 sm:p-8 shadow-sm hover:shadow-lg hover:scale-105 transition-all duration-300 border border-gray-100 700 700 hover:border-indigo-300 group-hover:-translate-y-2">
+              <div className="bg-card  rounded-xl p-6 sm:p-8 shadow-sm hover:shadow-lg hover:scale-105 transition-all duration-300 border border-border 700 700 hover:border-indigo-300 group-hover:-translate-y-2">
                 <div className="mb-4 flex justify-center group-hover:scale-110 transition-transform duration-300">
                   <LifeIcon />
                 </div>

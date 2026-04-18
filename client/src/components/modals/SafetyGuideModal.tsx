@@ -65,13 +65,13 @@ export default function SafetyGuideModal({ isOpen, onClose }: SafetyGuideModalPr
       >
         {/* Header */}
         <div className="bg-gradient-to-r from-blue-50 to-blue-100 px-6 sm:px-8 py-6 flex items-center justify-between border-b border-blue-200">
-          <h2 className="text-lg sm:text-xl font-bold text-gray-900 flex items-center gap-3">
+          <h2 className="text-lg sm:text-xl font-bold text-foreground flex items-center gap-3">
             <span className="text-2xl">🛡️</span>
             유니브매치 안전 가이드
           </h2>
           <button
             onClick={onClose}
-            className="text-gray-500 hover:text-gray-700 transition-colors p-1"
+            className="text-muted-foreground hover:text-foreground transition-colors p-1"
             aria-label="닫기"
           >
             <X size={24} />
@@ -86,13 +86,13 @@ export default function SafetyGuideModal({ isOpen, onClose }: SafetyGuideModalPr
                 <div className="flex items-start gap-3 mb-3">
                   <span className="text-3xl">{rule.icon}</span>
                   <div>
-                    <h3 className="text-lg font-bold text-gray-900">{rule.title}</h3>
+                    <h3 className="text-lg font-bold text-foreground">{rule.title}</h3>
                     <p className="text-sm text-blue-600 font-semibold">{rule.description}</p>
                   </div>
                 </div>
                 <ul className="space-y-2">
                   {rule.details.map((detail, detailIndex) => (
-                    <li key={detailIndex} className="text-sm text-gray-700 flex gap-3">
+                    <li key={detailIndex} className="text-sm text-foreground flex gap-3">
                       <span className="text-blue-500 font-bold">•</span>
                       <span>{detail}</span>
                     </li>
@@ -104,7 +104,7 @@ export default function SafetyGuideModal({ isOpen, onClose }: SafetyGuideModalPr
         </div>
 
         {/* Footer */}
-        <div className="bg-slate-50 900 px-6 sm:px-8 py-6 border-t border-gray-200 700 700 flex gap-3 justify-end items-center">
+        <div className="bg-background 900 px-6 sm:px-8 py-6 border-t border-border 700 700 flex gap-3 justify-end items-center">
           <button
             onClick={onClose}
             className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors text-sm sm:text-base flex items-center justify-center h-10"

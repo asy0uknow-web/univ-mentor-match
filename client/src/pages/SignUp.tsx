@@ -94,7 +94,7 @@ export default function SignUp() {
       <div className="min-h-screen bg-gradient-to-br from-cream-50 to-cream-100 flex items-center justify-center p-3 sm:p-4">
         <div className="w-full max-w-md bg-card  rounded-lg shadow-lg p-4 sm:p-8 max-h-[90vh] overflow-y-auto">
           <h1 className="text-2xl sm:text-3xl font-bold text-navy-900 mb-1 sm:mb-2">회원가입</h1>
-          <p className="text-xs sm:text-sm text-gray-600 300 300 mb-4 sm:mb-6">이메일 인증 후 가입하세요</p>
+          <p className="text-xs sm:text-sm text-muted-foreground 300 300 mb-4 sm:mb-6">이메일 인증 후 가입하세요</p>
 
           <div className="space-y-4">
             <div>
@@ -106,13 +106,13 @@ export default function SignUp() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="example@email.com"
-                className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-primary focus:outline-none text-sm"
+                className="w-full px-4 py-3 border-2 border-border rounded-lg focus:border-primary focus:outline-none text-sm"
               />
             </div>
             <EmailVerification email={email} onVerified={handleEmailVerified} />
           </div>
 
-          <p className="text-center text-xs sm:text-sm text-gray-600 300 300 mt-4">
+          <p className="text-center text-xs sm:text-sm text-muted-foreground 300 300 mt-4">
             이미 계정이 있으신가요?{" "}
             <button
               onClick={() => navigate("/login")}
@@ -130,7 +130,7 @@ export default function SignUp() {
     <div className="min-h-screen bg-gradient-to-br from-cream-50 to-cream-100 flex items-center justify-center p-3 sm:p-4">
       <div className="w-full max-w-md bg-card  rounded-lg shadow-lg p-4 sm:p-8 max-h-[90vh] overflow-y-auto">
         <h1 className="text-2xl sm:text-3xl font-bold text-navy-900 mb-1 sm:mb-2">회원가입</h1>
-        <p className="text-xs sm:text-sm text-gray-600 300 300 mb-4 sm:mb-6">UnivMatch에 가입하세요</p>
+        <p className="text-xs sm:text-sm text-muted-foreground 300 300 mb-4 sm:mb-6">UnivMatch에 가입하세요</p>
 
         <form onSubmit={handleSubmit} className="space-y-2.5 sm:space-y-3">
           {/* 이메일 */}
@@ -149,7 +149,7 @@ export default function SignUp() {
                   setErrors({ ...errors, email: "" });
                 }
               }}
-              className={`text-xs sm:text-sm border-2 ${errors.email ? "border-red-500" : "border-gray-300"} focus:border-gold-500 px-3 py-2`}
+              className={`text-xs sm:text-sm border-2 ${errors.email ? "border-red-500" : "border-border"} focus:border-gold-500 px-3 py-2`}
             />
             {errors.email && <p className="text-red-500 text-xs">{errors.email}</p>}
           </div>
@@ -170,7 +170,7 @@ export default function SignUp() {
                   setErrors({ ...errors, name: "" });
                 }
               }}
-              className={`text-xs sm:text-sm border-2 ${errors.name ? "border-red-500" : "border-gray-300"} focus:border-gold-500 px-3 py-2`}
+              className={`text-xs sm:text-sm border-2 ${errors.name ? "border-red-500" : "border-border"} focus:border-gold-500 px-3 py-2`}
             />
             {errors.name && <p className="text-red-500 text-xs">{errors.name}</p>}
           </div>
@@ -191,10 +191,10 @@ export default function SignUp() {
                   setErrors({ ...errors, password: "" });
                 }
               }}
-              className={`text-xs sm:text-sm border-2 ${errors.password ? "border-red-500" : "border-gray-300"} focus:border-gold-500 px-3 py-2`}
+              className={`text-xs sm:text-sm border-2 ${errors.password ? "border-red-500" : "border-border"} focus:border-gold-500 px-3 py-2`}
             />
             {errors.password && <p className="text-red-500 text-xs">{errors.password}</p>}
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-muted-foreground mt-1">
               • 최소 8자 이상 • 대문자, 소문자, 숫자 포함
             </p>
           </div>
@@ -215,7 +215,7 @@ export default function SignUp() {
                   setErrors({ ...errors, confirmPassword: "" });
                 }
               }}
-              className={`text-xs sm:text-sm border-2 ${errors.confirmPassword ? "border-red-500" : "border-gray-300"} focus:border-gold-500 px-3 py-2`}
+              className={`text-xs sm:text-sm border-2 ${errors.confirmPassword ? "border-red-500" : "border-border"} focus:border-gold-500 px-3 py-2`}
             />
             {errors.confirmPassword && <p className="text-red-500 text-xs">{errors.confirmPassword}</p>}
           </div>
@@ -231,7 +231,7 @@ export default function SignUp() {
         </form>
 
         {/* 로그인 링크 */}
-        <p className="text-center text-xs sm:text-sm text-gray-600 300 300 mt-3 sm:mt-4">
+        <p className="text-center text-xs sm:text-sm text-muted-foreground 300 300 mt-3 sm:mt-4">
           이미 계정이 있으신가요?{" "}
           <button
             onClick={() => navigate("/login")}

@@ -18,7 +18,7 @@ const VARIANT_CONFIG: Record<Variant, { className: string; icon: boolean }> = {
     icon: true,
   },
   secondary: {
-    className: "bg-slate-200 hover:bg-slate-300 text-slate-900 shadow-lg hover:shadow-xl hover:-translate-y-1",
+    className: "bg-slate-200 hover:bg-slate-300 text-foreground shadow-lg hover:shadow-xl hover:-translate-y-1",
     icon: true,
   },
   outline: {

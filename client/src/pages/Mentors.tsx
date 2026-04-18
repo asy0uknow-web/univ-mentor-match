@@ -235,15 +235,15 @@ export default function Mentors() {
 
   return (
     <PageLayout>
-      <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
+      <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-background">
         {/* 헤더 섹션 */}
-        <div className="bg-card  border-b border-gray-200 700 700 sticky top-16 z-40">
+        <div className="bg-card  border-b border-border 700 700 sticky top-16 z-40">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
             <div className="mb-6">
-              <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-2">
+              <h1 className="text-3xl sm:text-4xl font-bold text-foreground mb-2">
                 멘토 찾기
               </h1>
-              <p className="text-gray-600 300 300 text-sm sm:text-base">
+              <p className="text-muted-foreground 300 300 text-sm sm:text-base">
                 당신의 목표를 함께 이루어줄 멘토를 찾아보세요
               </p>
             </div>
@@ -251,15 +251,15 @@ export default function Mentors() {
             {/* 검색 및 필터 바 */}
             <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
               {/* 검색 바 */}
-              <div className="bg-card  border border-gray-200 700 700 rounded-full shadow-sm hover:shadow-md  transition-shadow duration-300 p-2 flex items-center gap-0 flex-1">
-                <Search className="h-4 sm:h-5 w-4 sm:w-5 text-gray-400 flex-shrink-0 ml-3 sm:ml-6" />
+              <div className="bg-card  border border-border 700 700 rounded-full shadow-sm hover:shadow-md  transition-shadow duration-300 p-2 flex items-center gap-0 flex-1">
+                <Search className="h-4 sm:h-5 w-4 sm:w-5 text-muted-foreground flex-shrink-0 ml-3 sm:ml-6" />
                 <input
                   type="text"
                   placeholder="대학, 전공, 이름"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   onKeyDown={handleKeyDown}
-                  className="flex-1 bg-transparent text-xs sm:text-sm placeholder-gray-400 focus:outline-none px-3 py-2 sm:px-6 sm:py-3"
+                  className="flex-1 bg-transparent text-xs sm:text-sm placeholder-muted-foreground focus:outline-none px-3 py-2 sm:px-6 sm:py-3"
                 />
               </div>
 
@@ -268,11 +268,11 @@ export default function Mentors() {
                 {/* 학과 필터 */}
                 <button
                   onClick={openMajorPanel}
-                  className="flex items-center justify-center gap-1 px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium text-gray-700 hover:bg-slate-50 900 transition-colors border border-gray-200 700 700"
+                  className="flex items-center justify-center gap-1 px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium text-foreground hover:bg-background 900 transition-colors border border-border 700 700"
                 >
                   <span>학과</span>
                   {selectedMajors.length > 0 && (
-                    <span className="bg-green-100 text-green-700 rounded-full px-1.5 py-0.5 text-xs font-semibold">
+                    <span className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full px-1.5 py-0.5 text-xs font-semibold">
                       {selectedMajors.length}
                     </span>
                   )}
@@ -281,11 +281,11 @@ export default function Mentors() {
                 {/* 상담 유형 필터 */}
                 <button
                   onClick={openConsultationTypePanel}
-                  className="flex items-center justify-center gap-1 px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium text-gray-700 hover:bg-slate-50 900 transition-colors border border-gray-200 700 700"
+                  className="flex items-center justify-center gap-1 px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium text-foreground hover:bg-background 900 transition-colors border border-border 700 700"
                 >
                   <span>상담 유형</span>
                   {selectedConsultationTypes.length > 0 && (
-                    <span className="bg-green-100 text-green-700 rounded-full px-1.5 py-0.5 text-xs font-semibold">
+                    <span className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full px-1.5 py-0.5 text-xs font-semibold">
                       {selectedConsultationTypes.length}
                     </span>
                   )}
@@ -294,11 +294,11 @@ export default function Mentors() {
                 {/* 지역 필터 */}
                 <button
                   onClick={openRegionPanel}
-                  className="flex items-center justify-center gap-1 px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium text-gray-700 hover:bg-slate-50 900 transition-colors border border-gray-200 700 700"
+                  className="flex items-center justify-center gap-1 px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium text-foreground hover:bg-background 900 transition-colors border border-border 700 700"
                 >
                   <span>지역</span>
                   {selectedRegions.length > 0 && (
-                    <span className="bg-green-100 text-green-700 rounded-full px-1.5 py-0.5 text-xs font-semibold">
+                    <span className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full px-1.5 py-0.5 text-xs font-semibold">
                       {selectedRegions.length}
                     </span>
                   )}
@@ -306,7 +306,7 @@ export default function Mentors() {
 
                 {/* 정렬 옵션 */}
                 <Select value={sortBy} onValueChange={setSortBy}>
-                  <SelectTrigger className="w-auto border-gray-200 700 700 text-xs sm:text-sm">
+                  <SelectTrigger className="w-auto border-border 700 700 text-xs sm:text-sm">
                     <TrendingUp className="h-4 w-4 mr-1" />
                     <SelectValue />
                   </SelectTrigger>
@@ -343,7 +343,7 @@ export default function Mentors() {
                   }}
                   variant="ghost"
                   size="sm"
-                  className="text-xs text-gray-500 hover:text-gray-700"
+                  className="text-xs text-muted-foreground hover:text-foreground"
                 >
                   <X className="h-3 w-3 mr-1" />
                   필터 초기화
@@ -387,7 +387,7 @@ export default function Mentors() {
                       type="checkbox"
                       checked={tempSelectedMajors.includes(major.id)}
                       onChange={() => toggleMajor(major.id)}
-                      className="w-4 h-4 rounded border-gray-300"
+                      className="w-4 h-4 rounded border-border"
                     />
                     <span className="text-xs sm:text-sm">{major.name}</span>
                   </label>
@@ -463,7 +463,7 @@ export default function Mentors() {
                       type="checkbox"
                       checked={tempSelectedConsultationTypes.includes(type.value)}
                       onChange={() => toggleConsultationType(type.value)}
-                      className="w-4 h-4 rounded border-gray-300"
+                      className="w-4 h-4 rounded border-border"
                     />
                     <span className="text-xs sm:text-sm">{type.label}</span>
                   </label>
@@ -479,7 +479,7 @@ export default function Mentors() {
                       return (
                         <div
                           key={typeValue}
-                          className="bg-green-100 text-green-700 rounded-full px-2 py-1 text-xs font-medium flex items-center gap-1"
+                          className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full px-2 py-1 text-xs font-medium flex items-center gap-1"
                         >
                           <span>{typeName}</span>
                           <button
@@ -549,7 +549,7 @@ export default function Mentors() {
                       type="checkbox"
                       checked={tempSelectedRegions.includes(region.value)}
                       onChange={() => toggleRegion(region.value)}
-                      className="w-4 h-4 rounded border-gray-300"
+                      className="w-4 h-4 rounded border-border"
                     />
                     <span className="text-xs sm:text-sm">{region.label}</span>
                   </label>
@@ -609,26 +609,26 @@ export default function Mentors() {
             </div>
           ) : filteredMentors.length === 0 ? (
             <div className="text-center py-12">
-              <p className="text-gray-600 300 300 text-sm sm:text-base">검색 결과가 없습니다</p>
+              <p className="text-muted-foreground 300 300 text-sm sm:text-base">검색 결과가 없습니다</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredMentors.map((mentor: any) => (
                 <Link key={mentor.uuid || mentor.id} href={`/mentor/${mentor.uuid}`} className="group">
-                  <div className="bg-card  border border-gray-200 700 700 rounded-xl overflow-hidden hover:shadow-lg hover:border-gray-300 transition-all duration-300 h-full flex flex-col cursor-pointer">
+                  <div className="bg-card  border border-border 700 700 rounded-xl overflow-hidden hover:shadow-lg hover:border-border transition-all duration-300 h-full flex flex-col cursor-pointer">
                       {/* 멘토 정보 헤더 */}
-                      <div className="p-4 sm:p-6 border-b border-gray-100 700 700">
+                      <div className="p-4 sm:p-6 border-b border-border 700 700">
                         <div className="flex items-start justify-between mb-3">
                           <div className="flex-1">
                             <div className="flex items-center gap-2 mb-1">
-                              <h3 className="text-base sm:text-lg font-bold text-gray-900 group-hover:text-green-600 transition-colors">
+                              <h3 className="text-base sm:text-lg font-bold text-foreground group-hover:text-green-600 dark:text-green-400 transition-colors">
                                 {mentor.name || mentor.user?.name}
                               </h3>
                               {mentor.verificationStatus === "approved" && (
-                                <BadgeCheck className="h-4 w-4 text-green-600 flex-shrink-0" />
+                                <BadgeCheck className="h-4 w-4 text-green-600 dark:text-green-400 flex-shrink-0" />
                               )}
                             </div>
-                            <div className="flex items-center gap-1 text-xs sm:text-sm text-gray-600 300 300 mb-2">
+                            <div className="flex items-center gap-1 text-xs sm:text-sm text-muted-foreground 300 300 mb-2">
                               {getUniversityLogo(mentor.university) && (
                                 <img
                                   src={getUniversityLogo(mentor.university)}
@@ -638,12 +638,12 @@ export default function Mentors() {
                               )}
                               <span>{mentor.university}</span>
                             </div>
-                            <p className="text-xs sm:text-sm text-gray-600 300 300">{mentor.major}</p>
+                            <p className="text-xs sm:text-sm text-muted-foreground 300 300">{mentor.major}</p>
                           </div>
                           {mentor.averageRating && mentor.averageRating > 0 && (
-                            <div className="flex items-center gap-1 bg-yellow-50 px-2 py-1 rounded-lg">
+                            <div className="flex items-center gap-1 bg-yellow-50 dark:bg-yellow-950/30 px-2 py-1 rounded-lg">
                               <Star className="h-4 w-4 text-yellow-400 fill-yellow-400" />
-                              <span className="text-sm font-semibold text-gray-900">
+                              <span className="text-sm font-semibold text-foreground">
                                 {mentor.averageRating ? Number(mentor.averageRating).toFixed(1) : "0.0"}
                               </span>
                             </div>
@@ -653,21 +653,21 @@ export default function Mentors() {
 
                       {/* 상담 유형 */}
                       {mentor.consultationTypes && mentor.consultationTypes.length > 0 && (
-                        <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-100 700 700">
+                        <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-border 700 700">
                           <div className="flex flex-wrap gap-2">
                             {mentor.consultationTypes.slice(0, 3).map((type: string) => {
                               const typeLabel = CONSULTATION_TYPES.find(t => t.value === type)?.label || type;
                               return (
                                 <span
                                   key={type}
-                                  className="inline-block bg-blue-50 text-blue-700 text-xs px-2 py-1 rounded-full"
+                                  className="inline-block bg-primary/5 text-blue-700 text-xs px-2 py-1 rounded-full"
                                 >
                                   {typeLabel}
                                 </span>
                               );
                             })}
                             {mentor.consultationTypes.length > 3 && (
-                              <span className="inline-block text-gray-500 text-xs px-2 py-1">
+                              <span className="inline-block text-muted-foreground text-xs px-2 py-1">
                                 +{mentor.consultationTypes.length - 3}
                               </span>
                             )}
@@ -676,14 +676,14 @@ export default function Mentors() {
                       )}
 
                       {/* 리뷰 정보 */}
-                      <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-100 700 700">
+                      <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-border 700 700">
                         {mentor.reviewCount > 0 && (
-                          <div className="text-xs text-gray-500">
+                          <div className="text-xs text-muted-foreground">
                             리뷰 {mentor.reviewCount}개
                           </div>
                         )}
                         {mentor.reviewCount === 0 && (
-                          <div className="text-xs text-gray-400">
+                          <div className="text-xs text-muted-foreground">
                             리뷰 준비 중
                           </div>
                         )}

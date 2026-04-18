@@ -25,11 +25,11 @@ const statusLabels = {
 };
 
 const statusColors = {
-  new: "bg-slate-50 text-slate-700 border border-slate-200",
-  acknowledged: "bg-blue-50 text-blue-700 border border-blue-200",
+  new: "bg-background text-foreground border border-border",
+  acknowledged: "bg-primary/5 text-blue-700 border border-blue-200",
   in_progress: "bg-purple-50 text-purple-700 border border-purple-200",
-  resolved: "bg-green-50 text-green-700 border border-green-200",
-  wont_fix: "bg-slate-50 900 text-gray-700 border border-gray-200 700 700",
+  resolved: "bg-green-50 dark:bg-green-950/30 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-800/50",
+  wont_fix: "bg-background 900 text-foreground border border-border 700 700",
 };
 
 const statusIcons: Record<string, React.ReactNode> = {
@@ -186,7 +186,7 @@ export default function AdminBugReports() {
                     </div>
                   </div>
                   {report.adminNotes && (
-                    <div className="bg-blue-50 border border-blue-200 p-3 rounded-md">
+                    <div className="bg-primary/5 border border-blue-200 p-3 rounded-md">
                       <p className="text-xs font-medium text-blue-900 mb-1">관리자 메모</p>
                       <p className="text-sm text-blue-800">{report.adminNotes}</p>
                     </div>

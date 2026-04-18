@@ -42,7 +42,7 @@ export default function QnAGuide() {
           <Card>
             <CardHeader>
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="h-5 w-5 text-green-600" />
+                <CheckCircle2 className="h-5 w-5 text-green-600 dark:text-green-400" />
                 <CardTitle>좋은 질문 만드는 법</CardTitle>
               </div>
             </CardHeader>
@@ -140,7 +140,7 @@ export default function QnAGuide() {
                 부적절한 질문, 답변, 댓글을 발견하면 신고해주세요. 신고는 익명으로 처리되며, 커뮤니티를 건강하게 유지하는 데 큰 도움이 됩니다.
               </p>
 
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <div className="bg-primary/5 border border-blue-200 rounded-lg p-4">
                 <h4 className="font-medium text-sm mb-3">신고 절차</h4>
                 <ol className="space-y-2 text-xs sm:text-sm">
                   <li className="flex gap-2">
@@ -257,7 +257,7 @@ export default function QnAGuide() {
           </Card>
 
           {/* 문의 */}
-          <Card className="bg-blue-50 border-blue-200">
+          <Card className="bg-primary/5 border-blue-200">
             <CardHeader>
               <div className="flex items-center gap-2">
                 <AlertCircle className="h-5 w-5 text-blue-600" />

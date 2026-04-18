@@ -74,7 +74,7 @@ export default function Login() {
     <div className="min-h-screen bg-gradient-to-br from-cream-50 to-cream-100 flex items-center justify-center p-3 sm:p-4">
       <div className="w-full max-w-md bg-card  rounded-lg shadow-lg p-4 sm:p-8">
         <h1 className="text-2xl sm:text-3xl font-bold text-navy-900 mb-1 sm:mb-2">로그인</h1>
-        <p className="text-xs sm:text-sm text-gray-600 300 300 mb-4 sm:mb-6">UnivMatch에 로그인하세요</p>
+        <p className="text-xs sm:text-sm text-muted-foreground 300 300 mb-4 sm:mb-6">UnivMatch에 로그인하세요</p>
 
         <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
           {/* 이메일 */}
@@ -93,7 +93,7 @@ export default function Login() {
                   setErrors({ ...errors, email: "" });
                 }
               }}
-              className={`text-xs sm:text-sm border-2 ${errors.email ? "border-red-500" : "border-gray-300"} focus:border-gold-500 px-3 py-2`}
+              className={`text-xs sm:text-sm border-2 ${errors.email ? "border-red-500" : "border-border"} focus:border-gold-500 px-3 py-2`}
             />
             {errors.email && <p className="text-red-500 text-xs">{errors.email}</p>}
           </div>
@@ -114,7 +114,7 @@ export default function Login() {
                   setErrors({ ...errors, password: "" });
                 }
               }}
-              className={`text-xs sm:text-sm border-2 ${errors.password ? "border-red-500" : "border-gray-300"} focus:border-gold-500 px-3 py-2`}
+              className={`text-xs sm:text-sm border-2 ${errors.password ? "border-red-500" : "border-border"} focus:border-gold-500 px-3 py-2`}
             />
             {errors.password && <p className="text-red-500 text-xs">{errors.password}</p>}
           </div>
@@ -130,7 +130,7 @@ export default function Login() {
         </form>
 
         {/* 회원가입 링크 */}
-        <p className="text-center text-xs sm:text-sm text-gray-600 300 300 mt-4 sm:mt-6">
+        <p className="text-center text-xs sm:text-sm text-muted-foreground 300 300 mt-4 sm:mt-6">
           계정이 없으신가요?{" "}
           <button
             onClick={() => navigate("/signup")}

@@ -26,23 +26,23 @@ export function PopularQnASection() {
 
   const getCategoryBadgeColor = (category: string) => {
     const colors: Record<string, string> = {
-      "입시 전략": "bg-blue-100 text-blue-700",
+      "입시 전략": "bg-primary/10 text-blue-700",
       "전공 선택": "bg-purple-100 text-purple-700",
-      "대학 생활": "bg-green-100 text-green-700",
+      "대학 생활": "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400",
       "학업 관리": "bg-orange-100 text-orange-700",
       "진로 상담": "bg-pink-100 text-pink-700",
-      "기타": "bg-slate-100 800 text-gray-700",
+      "기타": "bg-muted 800 text-foreground",
     };
-    return colors[category] || "bg-slate-100 800 text-gray-700";
+    return colors[category] || "bg-muted 800 text-foreground";
   };
 
   const getStatusBadgeColor = (status: string) => {
     const colors: Record<string, string> = {
-      awaiting_answer: "bg-amber-100 text-amber-700",
-      answered: "bg-blue-100 text-blue-700",
-      solved: "bg-green-100 text-green-700",
+      awaiting_answer: "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400",
+      answered: "bg-primary/10 text-blue-700",
+      solved: "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400",
     };
-    return colors[status] || "bg-slate-100 800 text-gray-700";
+    return colors[status] || "bg-muted 800 text-foreground";
   };
 
   const getStatusLabel = (status: string) => {
@@ -62,7 +62,7 @@ export function PopularQnASection() {
     <section
       id="popular-qna"
       role="region"
-      className="py-16 sm:py-24 md:py-32 bg-gradient-to-b from-slate-50 to-white"
+      className="py-16 sm:py-24 md:py-32 bg-background"
       aria-label="인기 Q&A"
     >
       <div className="container mx-auto px-4">
@@ -92,7 +92,7 @@ export function PopularQnASection() {
                 href={`/qna/${question.id}`}
                 className="group"
               >
-                <Card className="h-full hover:shadow-lg transition-all duration-300 border-gray-200 700 700 hover:border-blue-300 cursor-pointer hover:scale-105 hover:-translate-y-2 group">
+                <Card className="h-full hover:shadow-lg transition-all duration-300 border-border 700 700 hover:border-blue-300 cursor-pointer hover:scale-105 hover:-translate-y-2 group">
                   <CardHeader className="pb-3 sm:pb-4">
                     {/* 카테고리 및 상태 배지 */}
                     <div className="flex items-center gap-2 mb-3 flex-wrap">
@@ -127,13 +127,13 @@ export function PopularQnASection() {
                     </p>
 
                     {/* 답변 수 및 추가 정보 */}
-                    <div className="flex items-center justify-between pt-2 border-t border-gray-100 700 700">
-                      <div className="flex items-center gap-1 text-xs sm:text-sm text-gray-600 300 300">
+                    <div className="flex items-center justify-between pt-2 border-t border-border 700 700">
+                      <div className="flex items-center gap-1 text-xs sm:text-sm text-muted-foreground 300 300">
                         <MessageCircle className="h-4 w-4 text-blue-500" />
                         <span className="font-semibold">{question.answerCount || 0}</span>
                         <span>개의 답변</span>
                       </div>
-                      <span className="text-xs text-gray-500">
+                      <span className="text-xs text-muted-foreground">
                         {question.isAnonymous ? "익명" : "공개"}
                       </span>
                     </div>
@@ -144,7 +144,7 @@ export function PopularQnASection() {
           </div>
 
           {/* 하단 CTA */}
-          <div className="mt-12 sm:mt-16 p-6 sm:p-8 rounded-xl bg-blue-50 border border-blue-200 text-center">
+          <div className="mt-12 sm:mt-16 p-6 sm:p-8 rounded-xl bg-primary/5 border border-blue-200 text-center">
             <h3 className="text-lg sm:text-xl font-semibold text-foreground mb-2">
               당신의 고민을 멘토 커뮤니티에 물어보세요
             </h3>

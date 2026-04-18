@@ -110,7 +110,7 @@ export default function AdminColumnStats() {
             </div>
           </div>
 
-          <div className="bg-gradient-to-br from-red-50 to-red-100 rounded-lg p-6 shadow-md  border border-red-200">
+          <div className="bg-gradient-to-br from-red-50 to-red-100 rounded-lg p-6 shadow-md  border border-red-200 dark:border-red-800/50">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground mb-2">총 좋아요</p>
@@ -120,7 +120,7 @@ export default function AdminColumnStats() {
             </div>
           </div>
 
-          <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-6 shadow-md  border border-green-200">
+          <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-6 shadow-md  border border-green-200 dark:border-green-800/50">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground mb-2">총 댓글</p>
@@ -139,7 +139,7 @@ export default function AdminColumnStats() {
 
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-slate-50 border-b border-border">
+              <thead className="bg-background border-b border-border">
                 <tr>
                   <th className="px-6 py-3 text-left text-sm font-semibold text-foreground">카테고리</th>
                   <th className="px-6 py-3 text-center text-sm font-semibold text-foreground">칼럼 수</th>
@@ -172,19 +172,19 @@ export default function AdminColumnStats() {
               <tbody>
                 {sortedCategories.length > 0 ? (
                   sortedCategories.map(([category, stats]: any) => (
-                    <tr key={category} className="border-b border-border hover:bg-slate-50 transition-colors">
+                    <tr key={category} className="border-b border-border hover:bg-background transition-colors">
                       <td className="px-6 py-4 font-medium text-foreground">{category}</td>
                       <td className="px-6 py-4 text-center text-foreground font-semibold">{stats.count}</td>
                       <td className="px-6 py-4 text-center text-foreground">{stats.likes}</td>
                       <td className="px-6 py-4 text-center text-foreground">
-                        <span className="inline-flex items-center gap-1 px-2 py-1 bg-red-50 text-red-700 rounded-full text-sm">
+                        <span className="inline-flex items-center gap-1 px-2 py-1 bg-red-50 dark:bg-red-950/30 text-red-700 dark:text-red-400 rounded-full text-sm">
                           <TrendingUp className="w-3 h-3" />
                           {stats.avgLikes}
                         </span>
                       </td>
                       <td className="px-6 py-4 text-center text-foreground">{stats.comments}</td>
                       <td className="px-6 py-4 text-center text-foreground">
-                        <span className="inline-flex items-center gap-1 px-2 py-1 bg-green-50 text-green-700 rounded-full text-sm">
+                        <span className="inline-flex items-center gap-1 px-2 py-1 bg-green-50 dark:bg-green-950/30 text-green-700 dark:text-green-400 rounded-full text-sm">
                           <TrendingUp className="w-3 h-3" />
                           {stats.avgComments}
                         </span>

@@ -42,7 +42,7 @@ export const ConsultationSafetySection = () => {
             {safetyGuidelines.map((guideline, idx) => (
               <div
                 key={idx}
-                className="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-6 sm:p-8 shadow-md  hover:shadow-lg transition-shadow duration-300 border border-gray-100 700 700"
+                className="bg-card rounded-2xl p-6 sm:p-8 shadow-md  hover:shadow-lg transition-shadow duration-300 border border-border 700 700"
               >
                 {/* Icon */}
                 <div className="text-4xl sm:text-5xl mb-4 sm:mb-6">
@@ -63,14 +63,14 @@ export const ConsultationSafetySection = () => {
           </div>
 
           {/* Emergency Contact */}
-          <div className="mt-12 sm:mt-16 bg-amber-50 rounded-2xl p-6 sm:p-8 border-2 border-amber-200">
+          <div className="mt-12 sm:mt-16 bg-amber-50 dark:bg-amber-950/30 rounded-2xl p-6 sm:p-8 border-2 border-amber-200 dark:border-amber-800/50">
             <h3 className="text-lg sm:text-xl font-bold text-amber-900 mb-3 sm:mb-4">
               ℹ️ 문제가 발생하신가요?
             </h3>
             <p className="text-base sm:text-lg text-amber-800 mb-4">
               부적절한 상담이나 문제 상황이 발생하면 언제든 고객센터에 연락주세요. 우리는 24시간 대응 가능합니다.
             </p>
-            <p className="text-sm sm:text-base text-amber-700">
+            <p className="text-sm sm:text-base text-amber-700 dark:text-amber-400">
               <span className="font-bold">이메일:</span> support@univmatch.com
             </p>
           </div>

@@ -158,7 +158,7 @@ export default function MentorColumnDetail() {
                     variant="ghost"
                     size="sm"
                     onClick={handleDeleteColumn}
-                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                    className="text-red-600 hover:text-red-700 dark:text-red-400 hover:bg-red-50 dark:bg-red-950/30"
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>
@@ -280,7 +280,7 @@ export default function MentorColumnDetail() {
                     <div
                       key={comment.id}
                       className={`p-3 sm:p-4 rounded-lg ${
-                        comment.parentCommentId ? "bg-slate-50 900 ml-4 sm:ml-8" : "bg-slate-100 800"
+                        comment.parentCommentId ? "bg-background 900 ml-4 sm:ml-8" : "bg-muted 800"
                       }`}
                     >
                       <div className="flex items-start justify-between gap-2 mb-2">
@@ -301,13 +301,13 @@ export default function MentorColumnDetail() {
                             onClick={() => {
                               // 삭제 로직
                             }}
-                            className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                            className="text-red-600 hover:text-red-700 dark:text-red-400 hover:bg-red-50 dark:bg-red-950/30"
                           >
                             <Trash2 className="h-3 w-3" />
                           </Button>
                         )}
                       </div>
-                      <p className="text-xs sm:text-sm text-gray-700">{comment.content}</p>
+                      <p className="text-xs sm:text-sm text-foreground">{comment.content}</p>
                     </div>
                   ))}
                 </div>

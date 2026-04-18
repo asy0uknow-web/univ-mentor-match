@@ -132,7 +132,7 @@ export default function QnAList() {
           </div>
 
           {/* 안내 박스 */}
-          <Card className="bg-blue-50 border-blue-200 mb-6">
+          <Card className="bg-primary/5 border-blue-200 mb-6">
             <CardContent className="pt-4 px-4 pb-4">
               <div className="flex gap-3">
                 <AlertCircle className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />

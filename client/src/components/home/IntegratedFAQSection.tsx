@@ -102,13 +102,13 @@ export const IntegratedFAQSection = () => {
     <section
       id="faq-safety"
       role="region"
-      className="py-16 sm:py-24 md:py-32 bg-gradient-to-b from-gray-50 to-white"
+      className="py-16 sm:py-24 md:py-32 bg-muted/30"
       aria-label="FAQ 및 안전 가이드"
     >
       <div className="container mx-auto px-4">
         {/* Section Header */}
         <div className="max-w-4xl mx-auto text-center mb-12 sm:mb-16">
-          <span className="inline-block px-4 py-2 bg-blue-100 text-blue-700 rounded-full text-sm font-semibold mb-4">
+          <span className="inline-block px-4 py-2 bg-primary/10 text-blue-700 rounded-full text-sm font-semibold mb-4">
             🛡️ 안전하고 투명한 서비스
           </span>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-4">
@@ -124,7 +124,7 @@ export const IntegratedFAQSection = () => {
           {groupedFAQs.map((group, groupIdx) => (
             <div key={group.category} className="space-y-4">
               {/* Category Header */}
-              <div className="mb-6 pb-4 border-b-2 border-gray-200 700 700">
+              <div className="mb-6 pb-4 border-b-2 border-border 700 700">
                 <h3 className="text-xl sm:text-2xl font-bold text-foreground">
                   {group.label}
                 </h3>
@@ -135,12 +135,12 @@ export const IntegratedFAQSection = () => {
                 {group.items.map((faq, idx) => (
                   <div
                     key={`${group.category}-${idx}`}
-                    className="bg-card  rounded-lg border border-gray-200 700 700 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden hover:scale-102 hover:-translate-y-1"
+                    className="bg-card  rounded-lg border border-border 700 700 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden hover:scale-102 hover:-translate-y-1"
                   >
                     {/* Question */}
                     <button
                       onClick={() => setExpandedIndex(expandedIndex === `${group.category}-${idx}` ? null : `${group.category}-${idx}`)}
-                      className="w-full px-4 sm:px-6 md:px-8 py-4 sm:py-5 text-left hover:bg-blue-50 transition-all duration-200 flex items-start justify-between gap-4 group"
+                      className="w-full px-4 sm:px-6 md:px-8 py-4 sm:py-5 text-left hover:bg-primary/5 transition-all duration-200 flex items-start justify-between gap-4 group"
                       aria-expanded={expandedIndex === `${group.category}-${idx}`}
                       aria-controls={`faq-answer-${group.category}-${idx}`}
                     >
@@ -162,7 +162,7 @@ export const IntegratedFAQSection = () => {
                     {expandedIndex === `${group.category}-${idx}` && (
                       <div
                         id={`faq-answer-${group.category}-${idx}`}
-                        className="px-4 sm:px-6 md:px-8 py-4 sm:py-5 bg-gradient-to-r from-indigo-50 via-blue-50 to-transparent border-t border-gray-200 700 700 animate-in fade-in slide-in-from-top-2 duration-300"
+                        className="px-4 sm:px-6 md:px-8 py-4 sm:py-5 bg-gradient-to-r from-indigo-50 via-blue-50 to-transparent dark:from-indigo-950/50 dark:via-blue-950/50 dark:to-transparent border-t border-border animate-in fade-in slide-in-from-top-2 duration-300"
                       >
                         <p className="text-xs sm:text-sm md:text-base text-muted-foreground leading-relaxed whitespace-pre-wrap">
                           A. {faq.answer}
@@ -178,7 +178,7 @@ export const IntegratedFAQSection = () => {
 
         {/* More Questions - Email Contact Section */}
         <div className="mt-12 sm:mt-16 max-w-4xl mx-auto">
-          <div className="bg-gradient-to-r from-indigo-50 via-blue-50 to-blue-100 rounded-xl p-6 sm:p-8 md:p-10 border border-blue-200 hover:shadow-lg hover:scale-102 transition-all duration-300">
+          <div className="bg-gradient-to-r from-indigo-50 via-blue-50 to-blue-100 dark:from-indigo-950/50 dark:via-blue-950/50 dark:to-blue-950/70 rounded-xl p-6 sm:p-8 md:p-10 border border-blue-200 dark:border-blue-800/50 hover:shadow-lg hover:scale-102 transition-all duration-300">
             <p className="text-base sm:text-lg text-foreground font-semibold mb-4">
               더 궁금한 점이 있으신가요?
             </p>
@@ -186,7 +186,7 @@ export const IntegratedFAQSection = () => {
               아래 이메일로 문의해 주세요. 평일 기준 24시간 이내에 운영진이 직접 답변해 드립니다.
             </p>
             <div className="flex items-center gap-3 flex-wrap">
-              <span className="text-sm sm:text-base font-mono text-blue-600 font-semibold cursor-pointer hover:text-blue-700 hover:scale-105 transition-all" onClick={handleCopyEmail} title="클릭하여 복사">
+              <span className="text-sm sm:text-base font-mono text-blue-600 dark:text-blue-400 font-semibold cursor-pointer hover:text-blue-700 dark:hover:text-blue-300 hover:scale-105 transition-all" onClick={handleCopyEmail} title="클릭하여 복사">
                 2026univmatch@gmail.com
               </span>
               <button

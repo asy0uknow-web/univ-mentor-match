@@ -25,7 +25,7 @@ export const ContactSection = () => {
   ];
 
   return (
-    <section id="contact" role="region" className="py-16 sm:py-24 md:py-32 bg-gradient-to-b from-white to-gray-50" aria-label="문의 채널">
+    <section id="contact" role="region" className="py-16 sm:py-24 md:py-32 bg-background" aria-label="문의 채널">
       <div className="container mx-auto px-4">
         {/* Section Header */}
         <div className="max-w-4xl mx-auto text-center mb-12 sm:mb-16">
@@ -46,7 +46,7 @@ export const ContactSection = () => {
                 href={channel.link}
                 target={channel.link.startsWith("http") ? "_blank" : undefined}
                 rel={channel.link.startsWith("http") ? "noopener noreferrer" : undefined}
-                className="bg-card  rounded-2xl p-6 sm:p-8 shadow-md  hover:shadow-lg hover:scale-105 transition-all duration-300 border border-gray-100 700 700 text-center group"
+                className="bg-card  rounded-2xl p-6 sm:p-8 shadow-md  hover:shadow-lg hover:scale-105 transition-all duration-300 border border-border 700 700 text-center group"
               >
                 {/* Icon */}
                 <div className="text-4xl sm:text-5xl mb-4 group-hover:scale-110 transition-transform duration-300">

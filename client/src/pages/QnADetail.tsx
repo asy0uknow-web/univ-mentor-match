@@ -474,7 +474,7 @@ export default function QnADetail() {
                 .map((answer: any) => (
                 <Card
                   key={answer.id}
-                  className={`${answer.mentorProfile ? "border-l-4 border-l-blue-500" : ""} ${answer.isAccepted ? "ring-2 ring-green-400 bg-green-50/30" : ""}`}
+                  className={`${answer.mentorProfile ? "border-l-4 border-l-blue-500" : ""} ${answer.isAccepted ? "ring-2 ring-green-400 bg-green-50 dark:bg-green-950/30/30" : ""}`}
                 >
                   <CardHeader className="pb-2 sm:pb-3">
                     <div className="flex items-start justify-between gap-2">
@@ -482,8 +482,8 @@ export default function QnADetail() {
                         {/* 채택 배지 */}
                         {answer.isAccepted && (
                           <div className="flex items-center gap-1 mb-2">
-                            <Award className="h-4 w-4 text-green-600" />
-                            <span className="text-xs font-semibold text-green-700">채택된 답변</span>
+                            <Award className="h-4 w-4 text-green-600 dark:text-green-400" />
+                            <span className="text-xs font-semibold text-green-700 dark:text-green-400">채택된 답변</span>
                           </div>
                         )}
                         {/* 작성자 정보 */}
@@ -540,7 +540,7 @@ export default function QnADetail() {
                             size="sm"
                             onClick={() => handleAcceptAnswer(answer.id)}
                             disabled={acceptAnswerMutation.isPending}
-                            className={`text-xs h-8 whitespace-nowrap ${answer.isAccepted ? "bg-green-600 hover:bg-green-700" : "border-green-400 text-green-700 hover:bg-green-50"}`}
+                            className={`text-xs h-8 whitespace-nowrap ${answer.isAccepted ? "bg-green-600 hover:bg-green-700" : "border-green-400 text-green-700 dark:text-green-400 hover:bg-green-50 dark:bg-green-950/30"}`}
                           >
                             <Award className="h-3 w-3 mr-1" />
                             {answer.isAccepted ? "채택됨" : "채택"}
@@ -573,7 +573,7 @@ export default function QnADetail() {
                         size="sm"
                         onClick={() => handleToggleLike(answer.id)}
                         disabled={toggleLikeMutation.isPending}
-                        className={`text-xs h-7 px-2 gap-1 ${likedAnswers.has(answer.id) ? "text-blue-600 bg-blue-50 hover:bg-blue-100 :bg-slate-800 :bg-slate-800" : "text-muted-foreground hover:text-blue-600"}`}
+                        className={`text-xs h-7 px-2 gap-1 ${likedAnswers.has(answer.id) ? "text-blue-600 bg-primary/5 hover:bg-primary/10 :bg-slate-800 :bg-slate-800" : "text-muted-foreground hover:text-blue-600"}`}
                       >
                         <ThumbsUp className={`h-3 w-3 ${likedAnswers.has(answer.id) ? "fill-blue-600" : ""}`} />
                         <span>도움이 됐어요 {(likeCounts[answer.id] || 0) > 0 ? `(${likeCounts[answer.id]})` : ""}</span>
@@ -667,7 +667,7 @@ export default function QnADetail() {
 
           {/* 답변 작성 - 멘토만 가능 */}
           {isAuthenticated && user?.role === "mentor" && (
-            <Card className="border-green-200">
+            <Card className="border-green-200 dark:border-green-800/50">
               <CardHeader className="pb-3">
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 rounded-full bg-green-500"></div>
@@ -682,7 +682,7 @@ export default function QnADetail() {
                   value={answerContent}
                   onChange={(e) => setAnswerContent(e.target.value)}
                   placeholder="멘티의 실제 경험을 바탕으로 성실한 답변을 작성해주세요"
-                  className="text-xs sm:text-sm min-h-24 sm:min-h-32 resize-none border-green-200 focus:border-green-400"
+                  className="text-xs sm:text-sm min-h-24 sm:min-h-32 resize-none border-green-200 dark:border-green-800/50 focus:border-green-400"
                 />
                 <Button
                   onClick={handleCreateAnswer}
@@ -697,7 +697,7 @@ export default function QnADetail() {
 
           {/* 멘티에게 답변 작성 안내 (멘토가 아닌 경우) */}
           {isAuthenticated && user?.role !== "mentor" && (
-            <Card className="bg-slate-50 900 border-dashed">
+            <Card className="bg-background 900 border-dashed">
               <CardContent className="py-4 text-center">
                 <p className="text-xs sm:text-sm text-muted-foreground">
                   답변은 인증된 멘토만 작성할 수 있습니다.

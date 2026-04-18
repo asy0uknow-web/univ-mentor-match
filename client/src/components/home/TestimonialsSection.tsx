@@ -45,7 +45,7 @@ export const TestimonialsSection = () => {
     <section className="py-16 sm:py-24 md:py-32 bg-card ">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12 sm:mb-16">
-          <span className="inline-block px-4 py-2 bg-green-100 text-green-700 rounded-full text-sm font-semibold mb-4">
+          <span className="inline-block px-4 py-2 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full text-sm font-semibold mb-4">
             💬 학생과 학부모의 목소리
           </span>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-4">
@@ -60,9 +60,9 @@ export const TestimonialsSection = () => {
           {TESTIMONIALS.map((testimonial) => (
             <div
               key={testimonial.id}
-              className="bg-gradient-to-br from-gray-50 to-white rounded-2xl p-6 sm:p-8 shadow-md  hover:shadow-xl transition-all duration-300 border border-gray-100 700 700 hover:scale-105 hover:-translate-y-2 group"
+              className="bg-card rounded-2xl p-6 sm:p-8 shadow-md hover:shadow-xl transition-all duration-300 border border-border hover:scale-105 hover:-translate-y-2 group"
             >
-              <span className="inline-block px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-xs font-semibold mb-4 group-hover:bg-indigo-100 group-hover:text-indigo-700 transition-colors">
+              <span className="inline-block px-3 py-1 bg-primary/5 text-blue-600 rounded-full text-xs font-semibold mb-4 group-hover:bg-indigo-100 group-hover:text-indigo-700 transition-colors">
                 {testimonial.category}
               </span>
 
@@ -73,17 +73,17 @@ export const TestimonialsSection = () => {
                     className={`w-5 h-5 ${
                       i < testimonial.rating
                         ? "fill-yellow-400 text-yellow-400"
-                        : "text-gray-300"
+                        : "text-muted-foreground/40"
                     }`}
                   />
                 ))}
               </div>
 
-              <p className="text-base sm:text-lg text-foreground mb-6 leading-relaxed italic group-hover:text-indigo-900 transition-colors">
+              <p className="text-base sm:text-lg text-foreground mb-6 leading-relaxed italic transition-colors">
                 "{testimonial.content}"
               </p>
 
-              <div className="border-t border-gray-200 700 700 pt-4">
+              <div className="border-t border-border pt-4">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white font-bold text-sm">
                     {testimonial.name.charAt(0)}

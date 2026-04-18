@@ -88,13 +88,13 @@ export default function VerifyEmail() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
       <div className="bg-card  rounded-lg shadow-lg p-8 max-w-md w-full">
-        <h1 className="text-3xl font-bold text-center mb-2 text-gray-800">이메일 인증</h1>
-        <p className="text-center text-gray-600 300 300 mb-6">이메일로 발송된 6자리 코드를 입력해주세요</p>
+        <h1 className="text-3xl font-bold text-center mb-2 text-foreground">이메일 인증</h1>
+        <p className="text-center text-muted-foreground 300 300 mb-6">이메일로 발송된 6자리 코드를 입력해주세요</p>
 
         {success ? (
-          <div className="bg-green-50 border border-green-200 rounded-lg p-4 text-center">
-            <p className="text-green-700 font-semibold">✓ 이메일 인증 완료!</p>
-            <p className="text-green-600 text-sm mt-2">잠시 후 홈페이지로 이동합니다...</p>
+          <div className="bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800/50 rounded-lg p-4 text-center">
+            <p className="text-green-700 dark:text-green-400 font-semibold">✓ 이메일 인증 완료!</p>
+            <p className="text-green-600 dark:text-green-400 text-sm mt-2">잠시 후 홈페이지로 이동합니다...</p>
           </div>
         ) : (
           <>
@@ -102,7 +102,7 @@ export default function VerifyEmail() {
             {!email && (
               <form onSubmit={handleSendCode} className="space-y-4 mb-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-foreground mb-2">
                     이메일
                   </label>
                   <input
@@ -113,12 +113,12 @@ export default function VerifyEmail() {
                       setError("");
                     }}
                     placeholder="example@email.com"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
 
                 {error && (
-                  <div className="p-3 bg-red-50 border border-red-200 rounded text-red-700 text-sm">
+                  <div className="p-3 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800/50 rounded text-red-700 dark:text-red-400 text-sm">
                     {error}
                   </div>
                 )}
@@ -136,12 +136,12 @@ export default function VerifyEmail() {
             {/* 코드 입력 */}
             {email && (
               <form onSubmit={handleVerifyCode} className="space-y-4">
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm text-blue-800">
+                <div className="bg-primary/5 border border-blue-200 rounded-lg p-3 text-sm text-blue-800">
                   <strong>{email}</strong>로 발송된 6자리 코드를 입력해주세요
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-foreground mb-2">
                     인증 코드
                   </label>
                   <input
@@ -154,12 +154,12 @@ export default function VerifyEmail() {
                     }}
                     placeholder="6자리 코드"
                     maxLength={6}
-                    className="w-full px-4 py-3 text-center text-2xl tracking-widest border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono"
+                    className="w-full px-4 py-3 text-center text-2xl tracking-widest border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono"
                   />
                 </div>
 
                 {error && (
-                  <div className="p-3 bg-red-50 border border-red-200 rounded text-red-700 text-sm">
+                  <div className="p-3 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800/50 rounded text-red-700 dark:text-red-400 text-sm">
                     {error}
                   </div>
                 )}
@@ -180,7 +180,7 @@ export default function VerifyEmail() {
                     disabled={resendWaitTime > 0 || sendCodeMutation.isPending}
                     className={`text-sm font-semibold ${
                       resendWaitTime > 0
-                        ? "text-gray-400 cursor-not-allowed"
+                        ? "text-muted-foreground cursor-not-allowed"
                         : "text-blue-500 hover:text-blue-600 cursor-pointer"
                     }`}
                   >
@@ -199,7 +199,7 @@ export default function VerifyEmail() {
                     setError("");
                     setResendWaitTime(0);
                   }}
-                  className="w-full text-sm text-gray-500 hover:text-gray-700 py-2"
+                  className="w-full text-sm text-muted-foreground hover:text-foreground py-2"
                 >
                   다른 이메일 사용
                 </button>

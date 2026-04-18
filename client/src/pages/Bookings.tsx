@@ -60,9 +60,9 @@ function EndReasonModal({
   };
 
   const descMap = {
-    early: { bg: "bg-amber-50", border: "border-amber-200", text: "text-amber-700", msg: "예정된 상담 시간보다 일직 종료하려 합니다. 조기 완료 사유를 입력해주세요." },
-    late: { bg: "bg-blue-50", border: "border-blue-200", text: "text-blue-700", msg: "예정된 상담 시간보다 늘게 종료하려 합니다. 지연 완료 사유를 입력해주세요." },
-    normal: { bg: "bg-green-50", border: "border-green-200", text: "text-green-700", msg: "상담이 정상적으로 완료되었습니다." },
+    early: { bg: "bg-amber-50 dark:bg-amber-950/30", border: "border-amber-200 dark:border-amber-800/50", text: "text-amber-700 dark:text-amber-400", msg: "예정된 상담 시간보다 일직 종료하려 합니다. 조기 완료 사유를 입력해주세요." },
+    late: { bg: "bg-primary/5", border: "border-blue-200", text: "text-blue-700", msg: "예정된 상담 시간보다 늘게 종료하려 합니다. 지연 완료 사유를 입력해주세요." },
+    normal: { bg: "bg-green-50 dark:bg-green-950/30", border: "border-green-200 dark:border-green-800/50", text: "text-green-700 dark:text-green-400", msg: "상담이 정상적으로 완료되었습니다." },
   };
 
   const btnColorMap = {
@@ -268,7 +268,7 @@ export default function Bookings() {
     if (booking.status !== "confirmed" && booking.status !== "in_progress") return null;
 
     return (
-      <div className="mt-3 p-3 bg-blue-50 border border-blue-100 rounded-lg space-y-2">
+      <div className="mt-3 p-3 bg-primary/5 border border-blue-100 rounded-lg space-y-2">
         <p className="text-xs font-semibold text-blue-700 flex items-center gap-1">
           <Info className="h-3 w-3" />
           상담 진행 상태
@@ -276,12 +276,12 @@ export default function Bookings() {
         {booking.status === "confirmed" && (
           <div className="space-y-1 text-xs text-blue-600">
             <div className="flex items-center gap-2">
-              <span className={myStarted ? "text-green-600 font-medium" : "text-gray-400"}>
+              <span className={myStarted ? "text-green-600 dark:text-green-400 font-medium" : "text-muted-foreground"}>
                 {myStarted ? "✓" : "○"} 나의 시작 확인
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <span className={otherStarted ? "text-green-600 font-medium" : "text-gray-400"}>
+              <span className={otherStarted ? "text-green-600 dark:text-green-400 font-medium" : "text-muted-foreground"}>
                 {otherStarted ? "✓" : "○"} {isStudent ? "멘토" : "멘티"}의 시작 확인
               </span>
             </div>
@@ -294,14 +294,14 @@ export default function Bookings() {
         )}
         {booking.status === "in_progress" && (
           <div className="space-y-1 text-xs text-blue-600">
-            <p className="text-green-600 font-medium">✓ 상담 진행 중</p>
+            <p className="text-green-600 dark:text-green-400 font-medium">✓ 상담 진행 중</p>
             <div className="flex items-center gap-2">
-              <span className={myEnded ? "text-green-600 font-medium" : "text-gray-400"}>
+              <span className={myEnded ? "text-green-600 dark:text-green-400 font-medium" : "text-muted-foreground"}>
                 {myEnded ? "✓" : "○"} 나의 종료 확인
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <span className={otherEnded ? "text-green-600 font-medium" : "text-gray-400"}>
+              <span className={otherEnded ? "text-green-600 dark:text-green-400 font-medium" : "text-muted-foreground"}>
                 {otherEnded ? "✓" : "○"} {isStudent ? "멘토" : "멘티"}의 종료 확인
               </span>
             </div>
@@ -395,7 +395,7 @@ export default function Bookings() {
 
                       {/* 상담 시작 가능 시간 안내 */}
                       {item.booking.status === "confirmed" && (
-                        <div className="p-2 sm:p-3 bg-blue-50 rounded-lg border border-blue-100 mb-3">
+                        <div className="p-2 sm:p-3 bg-primary/5 rounded-lg border border-blue-100 mb-3">
                           <p className="text-xs font-semibold text-blue-700 mb-1">상담 시작 가능 시간</p>
                           <p className="text-xs sm:text-sm text-blue-600">
                             {format(new Date(scheduledAt.getTime() - fiveMinutesMs), "HH:mm", { locale: ko })} ~ {format(new Date(scheduledAt.getTime() + startWindowMs), "HH:mm", { locale: ko })}
@@ -447,7 +447,7 @@ export default function Bookings() {
                         )}
 
                         {alreadyStarted && (
-                          <div className="flex-1 flex items-center justify-center text-xs text-green-600 font-medium bg-green-50 rounded-md px-3 h-8 sm:h-9">
+                          <div className="flex-1 flex items-center justify-center text-xs text-green-600 dark:text-green-400 font-medium bg-green-50 dark:bg-green-950/30 rounded-md px-3 h-8 sm:h-9">
                             ✓ 시작 확인 완료 (멘토 대기중)
                           </div>
                         )}
@@ -464,7 +464,7 @@ export default function Bookings() {
                         )}
 
                         {alreadyEnded && (
-                          <div className="flex-1 flex items-center justify-center text-xs text-green-600 font-medium bg-green-50 rounded-md px-3 h-8 sm:h-9">
+                          <div className="flex-1 flex items-center justify-center text-xs text-green-600 dark:text-green-400 font-medium bg-green-50 dark:bg-green-950/30 rounded-md px-3 h-8 sm:h-9">
                             ✓ 종료 확인 완료 (멘토 대기중)
                           </div>
                         )}
@@ -553,7 +553,7 @@ export default function Bookings() {
                 item.booking.status === "in_progress" && now > new Date(scheduledEnd.getTime() + fiveMinutesMs) ? 'late' : 'normal';
 
               return (
-                <Card key={item.booking.id} className={`overflow-hidden ${item.booking.status === "pending" ? "border-amber-200 bg-amber-50/30" : ""}`}>
+                <Card key={item.booking.id} className={`overflow-hidden ${item.booking.status === "pending" ? "border-amber-200 dark:border-amber-800/50 bg-amber-50 dark:bg-amber-950/30/30" : ""}`}>
                   <CardHeader className="pb-2 sm:pb-4 px-3 sm:px-6">
                     <div className="flex items-start justify-between gap-2">
                       <div className="flex-1 min-w-0">
@@ -601,7 +601,7 @@ export default function Bookings() {
 
                       {/* 상담 시작 가능 시간 안내 */}
                       {item.booking.status === "confirmed" && (
-                        <div className="p-2 sm:p-3 bg-blue-50 rounded-lg border border-blue-100">
+                        <div className="p-2 sm:p-3 bg-primary/5 rounded-lg border border-blue-100">
                           <p className="text-xs font-semibold text-blue-700 mb-1">상담 시작 가능 시간</p>
                           <p className="text-xs sm:text-sm text-blue-600">
                             {format(new Date(scheduledAt.getTime() - fiveMinutesMs), "HH:mm", { locale: ko })} ~ {format(new Date(scheduledAt.getTime() + startWindowMs), "HH:mm", { locale: ko })}
@@ -672,7 +672,7 @@ export default function Bookings() {
                         )}
 
                         {alreadyStarted && (
-                          <div className="flex-1 flex items-center justify-center text-xs text-green-600 font-medium bg-green-50 rounded-md px-3 h-8 sm:h-9">
+                          <div className="flex-1 flex items-center justify-center text-xs text-green-600 dark:text-green-400 font-medium bg-green-50 dark:bg-green-950/30 rounded-md px-3 h-8 sm:h-9">
                             ✓ 시작 확인 완료 (멘티 대기중)
                           </div>
                         )}
@@ -689,7 +689,7 @@ export default function Bookings() {
                         )}
 
                         {alreadyEnded && (
-                          <div className="flex-1 flex items-center justify-center text-xs text-green-600 font-medium bg-green-50 rounded-md px-3 h-8 sm:h-9">
+                          <div className="flex-1 flex items-center justify-center text-xs text-green-600 dark:text-green-400 font-medium bg-green-50 dark:bg-green-950/30 rounded-md px-3 h-8 sm:h-9">
                             ✓ 종료 확인 완료 (멘티 대기중)
                           </div>
                         )}

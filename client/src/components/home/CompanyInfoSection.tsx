@@ -82,7 +82,7 @@ export const CompanyInfoSection = () => {
             {values.map((value, idx) => (
               <div
                 key={idx}
-                className="bg-card  rounded-2xl p-6 sm:p-8 shadow-md  hover:shadow-lg transition-shadow duration-300 border border-gray-100 700 700 text-center"
+                className="bg-card  rounded-2xl p-6 sm:p-8 shadow-md  hover:shadow-lg transition-shadow duration-300 border border-border 700 700 text-center"
               >
                 <div className="text-4xl sm:text-5xl mb-4">
                   {value.icon}
@@ -105,7 +105,7 @@ export const CompanyInfoSection = () => {
             {teamMembers.map((member, idx) => (
               <div
                 key={idx}
-                className="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-6 sm:p-8 shadow-md  hover:shadow-lg transition-shadow duration-300 border border-gray-100 700 700 text-center"
+                className="bg-card rounded-2xl p-6 sm:p-8 shadow-md  hover:shadow-lg transition-shadow duration-300 border border-border 700 700 text-center"
               >
                 <div className="text-5xl sm:text-6xl mb-4">
                   {member.icon}

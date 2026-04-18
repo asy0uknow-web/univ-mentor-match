@@ -127,7 +127,7 @@ export default function EmailVerification({ email, onVerified }: EmailVerificati
         </button>
 
         {Object.values(errors).length > 0 && (
-          <div className="p-3 bg-red-50 border border-red-200 rounded text-red-700 text-sm">
+          <div className="p-3 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800/50 rounded text-red-700 dark:text-red-400 text-sm">
             {Object.values(errors)[0]}
           </div>
         )}
@@ -158,7 +158,7 @@ export default function EmailVerification({ email, onVerified }: EmailVerificati
             }}
             maxLength={6}
             className={`text-center text-lg tracking-widest border-2 ${
-              errors.code ? "border-red-500" : "border-gray-300"
+              errors.code ? "border-red-500" : "border-border"
             } focus:border-primary px-3 py-3`}
           />
           {errors.code && <p className="text-red-500 text-xs">{errors.code}</p>}
@@ -181,7 +181,7 @@ export default function EmailVerification({ email, onVerified }: EmailVerificati
           disabled={resendWaitTime > 0 || sendCodeMutation.isPending}
           className={`text-sm font-semibold ${
             resendWaitTime > 0
-              ? "text-gray-400 cursor-not-allowed"
+              ? "text-muted-foreground cursor-not-allowed"
               : "text-primary hover:text-primary/80 cursor-pointer"
           }`}
         >

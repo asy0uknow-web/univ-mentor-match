@@ -10,19 +10,19 @@ interface StatusBadgeProps {
 const STATUS_CONFIG: Record<StatusType, { label: string; className: string }> = {
   pending: {
     label: "대기 중",
-    className: "bg-yellow-100 text-yellow-800 border-yellow-200",
+    className: "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 border-yellow-200",
   },
   accepted: {
     label: "진행 중",
-    className: "bg-blue-100 800 text-blue-800 border-blue-200",
+    className: "bg-primary/10 800 text-blue-800 border-blue-200",
   },
   rejected: {
     label: "거절됨",
-    className: "bg-red-100 text-red-800 border-red-200",
+    className: "bg-red-100 dark:bg-red-900/30 text-red-800 border-red-200 dark:border-red-800/50",
   },
   completed: {
     label: "완료됨",
-    className: "bg-green-100 text-green-800 border-green-200",
+    className: "bg-green-100 dark:bg-green-900/30 text-green-800 border-green-200 dark:border-green-800/50",
   },
   new: {
     label: "새로운",

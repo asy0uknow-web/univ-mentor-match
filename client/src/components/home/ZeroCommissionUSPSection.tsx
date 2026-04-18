@@ -36,7 +36,7 @@ export function ZeroCommissionUSPSection() {
               </div>
 
               {/* 가격 비교 */}
-              <div className="bg-blue-50 rounded-2xl p-6 border border-blue-200">
+              <div className="bg-primary/5 rounded-2xl p-6 border border-blue-200">
                 <p className="text-sm text-muted-foreground mb-4">기타 플랫폼 vs 유니브매치</p>
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">

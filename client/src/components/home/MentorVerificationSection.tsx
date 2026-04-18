@@ -22,7 +22,7 @@ export const MentorVerificationSection = () => {
   ];
 
   return (
-    <section id="mentor-verification" role="region" className="py-16 sm:py-24 md:py-32 bg-gradient-to-b from-white to-gray-50" aria-label="멘토 검증 방식">
+    <section id="mentor-verification" role="region" className="py-16 sm:py-24 md:py-32 bg-background" aria-label="멘토 검증 방식">
       <div className="container mx-auto px-4">
         {/* Section Header */}
         <div className="max-w-4xl mx-auto text-center mb-12 sm:mb-16">
@@ -66,7 +66,7 @@ export const MentorVerificationSection = () => {
           </div>
 
           {/* Additional Info */}
-            <div className="mt-12 sm:mt-16 bg-blue-50 rounded-2xl p-6 sm:p-8 border border-blue-100">
+            <div className="mt-12 sm:mt-16 bg-primary/5 rounded-2xl p-6 sm:p-8 border border-blue-100">
             <p className="text-base sm:text-lg text-foreground">
               <span className="font-bold">✓ 안심하세요:</span> 3단계 검증을 모두 통과한 멘토만 플랫폼에서 활동합니다. 모든 멘토 프로필에는 검증 배지가 표시되므로 안전하게 상담을 진행할 수 있습니다.
             </p>

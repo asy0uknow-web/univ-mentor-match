@@ -162,7 +162,7 @@ export default function StudentProfile() {
               <Link href="/delete-account">
                 <Button
                   variant="ghost"
-                  className="w-full justify-start text-xs sm:text-sm h-9 sm:h-10 text-red-600 hover:text-red-700 hover:bg-red-50"
+                  className="w-full justify-start text-xs sm:text-sm h-9 sm:h-10 text-red-600 hover:text-red-700 dark:text-red-400 hover:bg-red-50 dark:bg-red-950/30"
                 >
                   계정 삭제
                 </Button>

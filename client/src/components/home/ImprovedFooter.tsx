@@ -13,7 +13,7 @@ export const ImprovedFooter = () => {
             <p className="text-sm leading-relaxed mb-4">
               학생의 올바른 진로 선택을 돕는 교육 기술 회사입니다.
             </p>
-            <p className="text-xs text-gray-400">
+            <p className="text-xs text-muted-foreground">
               <span className="block">사업자등록번호: 123-45-67890</span>
               <span className="block">통신판매신고: 2024-서울강남-0001</span>
             </p>
@@ -56,7 +56,7 @@ export const ImprovedFooter = () => {
         <div className="border-t border-gray-700 mb-8"></div>
 
         {/* Bottom Footer */}
-        <div className="flex flex-col sm:flex-row justify-between items-center text-xs sm:text-sm text-gray-400">
+        <div className="flex flex-col sm:flex-row justify-between items-center text-xs sm:text-sm text-muted-foreground">
           <p>
             &copy; {currentYear} 유니브매치. All rights reserved.
           </p>
@@ -69,10 +69,10 @@ export const ImprovedFooter = () => {
 
         {/* Trust Badge */}
         <div className="mt-8 pt-8 border-t border-gray-700 text-center">
-          <p className="text-xs text-gray-400 mb-3">
+          <p className="text-xs text-muted-foreground mb-3">
             🛡️ 모든 멘토는 검증되었으며, 안전한 상담 환경을 보장합니다.
           </p>
-          <p className="text-xs text-gray-400">
+          <p className="text-xs text-muted-foreground">
             개인정보는 암호화되어 안전하게 보관되며, 상담 진행에만 사용됩니다.
           </p>
         </div>

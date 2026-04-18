@@ -1,9 +1,9 @@
 import { useAuth } from "@/_core/hooks/useAuth";
-
+import { useTheme } from "@/contexts/ThemeContext";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "wouter";
-import { LogOut, Trash2, ChevronDown, Bug } from "lucide-react";
+import { LogOut, Trash2, ChevronDown, Bug, Sun, Moon } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -42,6 +42,7 @@ const LOGO_URL = "/logonew.png";
 
 export default function Navbar({ onBugReport }: NavbarProps) {
   const { isAuthenticated, user } = useAuth();
+  const { theme, toggleTheme } = useTheme();
 
   const logoutMutation = trpc.auth.logout.useMutation({
     onSuccess: () => {
@@ -109,6 +110,22 @@ export default function Navbar({ onBugReport }: NavbarProps) {
 
           {/* 오른쪽: 다크 모드 토글 + 로그인 상태별 메뉴 */}
           <div className="flex items-center gap-2 sm:gap-4 ml-auto">
+            {/* 다크 모드 토글 버튼 */}
+            {toggleTheme && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={toggleTheme}
+                className="rounded-full w-9 h-9 p-0 hover:bg-muted"
+                aria-label={theme === 'dark' ? '라이트 모드로 전환' : '다크 모드로 전환'}
+              >
+                {theme === 'dark' ? (
+                  <Sun className="h-4 w-4 text-yellow-400" />
+                ) : (
+                  <Moon className="h-4 w-4 text-foreground" />
+                )}
+              </Button>
+            )}
 
             {isAuthenticated ? (
               <>
@@ -123,7 +140,7 @@ export default function Navbar({ onBugReport }: NavbarProps) {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="text-sm font-medium hover:bg-blue-100 hover:text-primary relative hover:scale-105 transition-transform duration-200 active:scale-95"
+                        className="text-sm font-medium hover:bg-muted hover:text-primary relative hover:scale-105 transition-transform duration-200 active:scale-95"
                       >
                         {item.label}
                         {item.href === "/qna" && unreadAnswerCount > 0 && (

@@ -31,11 +31,11 @@ const CONSULTATION_TYPES = {
 
 // ===== 제안 상태 정보 =====
 const PROPOSAL_STATUS = {
-  pending: { label: "수락 대기 중", color: "text-amber-600", bg: "bg-amber-50 border-amber-200", icon: Clock },
+  pending: { label: "수락 대기 중", color: "text-amber-600", bg: "bg-amber-50 dark:bg-amber-950/30 border-amber-200 dark:border-amber-800/50", icon: Clock },
   accepted: { label: "상담 확정됨", color: "text-emerald-600", bg: "bg-emerald-50 border-emerald-200", icon: CheckCircle2 },
-  rejected: { label: "거절됨", color: "text-red-500", bg: "bg-red-50 border-red-200", icon: XCircle },
-  counter_proposed: { label: "수정 제안됨", color: "text-blue-600", bg: "bg-blue-50 border-blue-200", icon: RefreshCw },
-  cancelled: { label: "취소됨", color: "text-gray-500", bg: "bg-slate-50 900 border-gray-200 700 700", icon: XCircle },
+  rejected: { label: "거절됨", color: "text-red-500", bg: "bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-800/50", icon: XCircle },
+  counter_proposed: { label: "수정 제안됨", color: "text-blue-600", bg: "bg-primary/5 border-blue-200", icon: RefreshCw },
+  cancelled: { label: "취소됨", color: "text-muted-foreground", bg: "bg-background 900 border-border 700 700", icon: XCircle },
   completed: { label: "상담 완료", color: "text-purple-600", bg: "bg-purple-50 border-purple-200", icon: Star },
 } as const;
 
@@ -208,7 +208,7 @@ function MessageActions({ isMe, onEdit, onDelete, onReact, isDeleted }: {
               {onDelete && (
                 <button
                   onClick={() => { onDelete(); setOpen(false); }}
-                  className="w-full flex items-center gap-2 px-3 py-1.5 text-sm text-red-500 hover:bg-red-50 transition-colors"
+                  className="w-full flex items-center gap-2 px-3 py-1.5 text-sm text-red-500 hover:bg-red-50 dark:bg-red-950/30 transition-colors"
                 >
                   <Trash2 className="h-3.5 w-3.5" /> 삭제
                 </button>
@@ -369,7 +369,7 @@ function ProposalCard({ proposalData, isMyMessage, currentUserId, onAccept, onRe
         <StatusIcon className={`h-4 w-4 ${statusInfo.color}`} />
         <span className={`text-sm font-semibold ${statusInfo.color}`}>{statusInfo.label}</span>
         {proposalData.isCounter && (
-          <span className="ml-auto text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">수정 제안</span>
+          <span className="ml-auto text-xs bg-primary/10 text-blue-700 px-2 py-0.5 rounded-full">수정 제안</span>
         )}
       </div>
       <div className="px-4 py-3 space-y-2 bg-card /80">
@@ -398,10 +398,10 @@ function ProposalCard({ proposalData, isMyMessage, currentUserId, onAccept, onRe
           <Button size="sm" className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white" onClick={() => onAccept(proposalData.proposalId)}>
             <ThumbsUp className="h-3 w-3 mr-1" /> 수락
           </Button>
-          <Button size="sm" variant="outline" className="flex-1 border-blue-300 text-blue-700 hover:bg-blue-50" onClick={() => onCounter(proposalData)}>
+          <Button size="sm" variant="outline" className="flex-1 border-blue-300 text-blue-700 hover:bg-primary/5" onClick={() => onCounter(proposalData)}>
             <RefreshCw className="h-3 w-3 mr-1" /> 수정 제안
           </Button>
-          <Button size="sm" variant="outline" className="flex-1 border-red-300 text-red-600 hover:bg-red-50" onClick={() => onReject(proposalData.proposalId)}>
+          <Button size="sm" variant="outline" className="flex-1 border-red-300 text-red-600 hover:bg-red-50 dark:bg-red-950/30" onClick={() => onReject(proposalData.proposalId)}>
             <ThumbsDown className="h-3 w-3 mr-1" /> 거절
           </Button>
         </div>
@@ -872,7 +872,7 @@ export function Messages() {
     if (msg.senderId === 0) {
       return (
         <div className="flex justify-center my-3">
-          <div className="bg-blue-50 border border-blue-200 rounded-lg px-4 py-2 text-center">
+          <div className="bg-primary/5 border border-blue-200 rounded-lg px-4 py-2 text-center">
             <p className="text-sm text-blue-700 font-medium">{msg.content}</p>
             <p className="text-xs text-blue-600 mt-1">{getRelativeTime(msg.createdAt)}</p>
           </div>
@@ -1092,7 +1092,7 @@ export function Messages() {
                           className={`w-full text-left p-3 sm:p-4 rounded-xl transition-all cursor-pointer group ${
                             isSelected 
                               ? "bg-primary text-primary-foreground shadow-md " 
-                              : "bg-card  hover:bg-slate-50 border border-slate-200 hover:border-slate-300 hover:shadow-sm"
+                              : "bg-card  hover:bg-background border border-border hover:border-slate-300 hover:shadow-sm"
                           }`}
                         >
                           <div className="flex items-start gap-3">
@@ -1202,7 +1202,7 @@ export function Messages() {
                           className={`w-full text-left p-3 sm:p-4 rounded-xl transition-all cursor-pointer group ${
                             isSelected 
                               ? "bg-primary text-primary-foreground shadow-md " 
-                              : "bg-card  hover:bg-slate-50 border border-slate-200 hover:border-slate-300 hover:shadow-sm"
+                              : "bg-card  hover:bg-background border border-border hover:border-slate-300 hover:shadow-sm"
                           }`}
                         >
                           <div className="flex items-start gap-3">
@@ -1351,7 +1351,7 @@ export function Messages() {
                       <Button
                         variant="outline"
                         size="sm"
-                        className="flex-1 gap-1.5 text-blue-600 border-blue-300 hover:bg-blue-50 text-xs sm:text-sm h-8 sm:h-9"
+                        className="flex-1 gap-1.5 text-blue-600 border-blue-300 hover:bg-primary/5 text-xs sm:text-sm h-8 sm:h-9"
                         onClick={() => setShowProposalForm(true)}
                       >
                         <RefreshCw className="h-3 w-3 sm:h-4 sm:w-4" />

@@ -14,13 +14,13 @@ import { ko } from "date-fns/locale";
 const getStatusBadge = (status: string) => {
   switch (status) {
     case "awaiting_answer":
-      return { label: "답변 대기 중", className: "bg-yellow-100 text-yellow-800" };
+      return { label: "답변 대기 중", className: "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800" };
     case "answered":
-      return { label: "답변 완료", className: "bg-blue-100 text-blue-800" };
+      return { label: "답변 완료", className: "bg-primary/10 text-blue-800" };
     case "solved":
-      return { label: "해결됨", className: "bg-green-100 text-green-800" };
+      return { label: "해결됨", className: "bg-green-100 dark:bg-green-900/30 text-green-800" };
     default:
-      return { label: status, className: "bg-slate-100 800 text-gray-800" };
+      return { label: status, className: "bg-muted 800 text-foreground" };
   }
 };
 
@@ -58,9 +58,9 @@ function MenteeDashboard() {
             <p className="text-xs text-muted-foreground mt-1">답변 완료</p>
           </CardContent>
         </Card>
-        <Card className="text-center border-green-200">
+        <Card className="text-center border-green-200 dark:border-green-800/50">
           <CardContent className="pt-4 pb-3">
-            <p className="text-2xl sm:text-3xl font-bold text-green-600">{stats.solved}</p>
+            <p className="text-2xl sm:text-3xl font-bold text-green-600 dark:text-green-400">{stats.solved}</p>
             <p className="text-xs text-muted-foreground mt-1">해결됨</p>
           </CardContent>
         </Card>
@@ -174,9 +174,9 @@ function MentorDashboard() {
             <p className="text-xs text-muted-foreground mt-1">전체 답변</p>
           </CardContent>
         </Card>
-        <Card className="text-center border-green-200">
+        <Card className="text-center border-green-200 dark:border-green-800/50">
           <CardContent className="pt-4 pb-3">
-            <p className="text-2xl sm:text-3xl font-bold text-green-600">{stats.accepted}</p>
+            <p className="text-2xl sm:text-3xl font-bold text-green-600 dark:text-green-400">{stats.accepted}</p>
             <p className="text-xs text-muted-foreground mt-1">채택된 답변</p>
           </CardContent>
         </Card>
@@ -232,7 +232,7 @@ function MentorDashboard() {
                               </Badge>
                             )}
                             {answer.isAccepted && (
-                              <Badge className="text-xs flex-shrink-0 bg-green-100 text-green-800">
+                              <Badge className="text-xs flex-shrink-0 bg-green-100 dark:bg-green-900/30 text-green-800">
                                 <Award className="h-3 w-3 mr-1" />
                                 채택됨
                               </Badge>

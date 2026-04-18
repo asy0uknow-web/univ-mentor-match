@@ -234,7 +234,7 @@ export default function MentorColumnCreate() {
         </Button>
 
         <div className="max-w-3xl mx-auto space-y-6">
-          <div className="bg-gradient-to-r from-indigo-50 to-blue-50 p-4 sm:p-6 rounded-lg border border-indigo-100">
+          <div className="bg-gradient-to-r from-indigo-50 to-blue-50 dark:from-indigo-950/50 dark:to-blue-950/50 p-4 sm:p-6 rounded-lg border border-indigo-100 dark:border-indigo-800/50">
             <div className="flex items-center gap-3 mb-2">
               <BookOpen className="h-6 w-6 text-indigo-600" />
               <h1 className="text-2xl sm:text-3xl font-bold">칼럼 작성</h1>
@@ -337,7 +337,7 @@ export default function MentorColumnCreate() {
                     className={`border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-all duration-300 hover:scale-102 ${
                       dragActive
                         ? 'border-indigo-500 bg-indigo-50 scale-105'
-                        : 'border-gray-300 bg-slate-50 900 hover:border-indigo-400'
+                        : 'border-border bg-background 900 hover:border-indigo-400'
                     }`}
                   >
                     <input
@@ -358,7 +358,7 @@ export default function MentorColumnCreate() {
                           <>
                             <p className="font-medium">이미지를 가져오거나</p>
                             <p className="text-xs mt-1">클릭하여 업로드</p>
-                            <p className="text-xs mt-2 text-gray-500">(JPEG, PNG, GIF, WebP - 최대 5MB)</p>
+                            <p className="text-xs mt-2 text-muted-foreground">(JPEG, PNG, GIF, WebP - 최대 5MB)</p>
                           </>
                         )}
                       </div>
@@ -369,7 +369,7 @@ export default function MentorColumnCreate() {
                   {coverImageUrl && (
                     <div className="mt-4">
                       <p className="text-xs sm:text-sm font-medium mb-2">미리보기</p>
-                      <div className="relative w-full h-40 bg-slate-100 800 rounded-lg overflow-hidden">
+                      <div className="relative w-full h-40 bg-muted 800 rounded-lg overflow-hidden">
                         <img
                           src={coverImageUrl}
                           alt="Cover preview"
