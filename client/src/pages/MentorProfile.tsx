@@ -95,7 +95,7 @@ export default function MentorProfile() {
       setMajor(profile.major || "");
       setGrade(profile.grade || "");
       setBio(profile.bio || "");
-      setRegions(profile.region ? [profile.region] : []);
+      setRegions(profile.availableRegions ? JSON.parse(profile.availableRegions) : []);
     }
   }, [profile]);
 
@@ -115,7 +115,7 @@ export default function MentorProfile() {
       setMajor(profile.major || "");
       setGrade(profile.grade || "");
       setBio(profile.bio || "");
-      setRegions(profile.region ? [profile.region] : []);
+      setRegions(profile.availableRegions ? JSON.parse(profile.availableRegions) : []);
       // 상담 유형은 myConsultationTypes에서 가져옴
       if (myConsultationTypes && myConsultationTypes.length > 0) {
         setConsultationTypes(myConsultationTypes.map((t: any) => t.consultationType));
@@ -446,17 +446,34 @@ export default function MentorProfile() {
                         </Select>
                       </div>
                       <div>
-                        <Label>상담 가능 지역 *</Label>
-                        <Select value={regions[0] || ""} onValueChange={(value) => setRegions([value as any])}>
-                          <SelectTrigger className="mt-2">
-                            <SelectValue placeholder="지역 선택" />
-                          </SelectTrigger>
-                          <SelectContent>
+                        <Label>상담 가능 지역 * (1개 이상 선택)</Label>
+                        <div className="mt-2 p-3 border rounded-md bg-card">
+                          <div className="grid grid-cols-2 gap-3">
                             {Object.entries(REGION_LABELS).map(([key, label]) => (
-                              <SelectItem key={key} value={key}>{label}</SelectItem>
+                              <div key={key} className="flex items-center space-x-2">
+                                <input
+                                  type="checkbox"
+                                  id={`region-${key}`}
+                                  checked={regions.includes(key as any)}
+                                  onChange={(e) => {
+                                    if (e.target.checked) {
+                                      setRegions([...regions, key as any]);
+                                    } else {
+                                      setRegions(regions.filter(r => r !== key));
+                                    }
+                                  }}
+                                  className="rounded border-input"
+                                />
+                                <label htmlFor={`region-${key}`} className="text-sm cursor-pointer">{label}</label>
+                              </div>
                             ))}
-                          </SelectContent>
-                        </Select>
+                          </div>
+                          {regions.length > 0 && (
+                            <div className="mt-3 text-sm text-muted-foreground">
+                              선택된 지역: {regions.map(r => REGION_LABELS[r]).join(", ")}
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </div>
 
@@ -501,8 +518,11 @@ export default function MentorProfile() {
                       <button
                         type="button"
                         onClick={() => {
-                          // 1. regions 배열이 비어있으면 기본값 사용
-                          const selectedRegion = regions[0] || "seoul";
+                          // 1. regions 배열 검증
+                          if (regions.length === 0) {
+                            toast.error("남 1개 이상의 지역을 선택해주세요");
+                            return;
+                          }
                           
                           // 2. 공통 페이로드(전송할 데이터) 구성
                           const payload = {
@@ -510,7 +530,7 @@ export default function MentorProfile() {
                             major,
                             grade: (grade || "1") as "1" | "2" | "3" | "4" | "graduate",
                             bio,
-                            region: selectedRegion as "seoul" | "gyeonggi" | "incheon" | "gangwon" | "chungcheong" | "jeolla" | "gyeongsang" | "jeju",
+                            availableRegions: regions as any,
                             hourlyRate: "50000",
                           };
 
@@ -553,7 +573,7 @@ export default function MentorProfile() {
                       </div>
                     <div>
                       <p className="text-sm text-muted-foreground 300 300">상담가능지역</p>
-                      <p className="font-semibold text-foreground">{profile?.region ? REGION_LABELS[profile.region] || profile.region : "-"}</p>
+                      <p className="font-semibold text-foreground">{profile?.availableRegions ? JSON.parse(profile.availableRegions).map((r: string) => REGION_LABELS[r] || r).join(", ") : "-"}</p>
                     </div>
                     </div>
                     <div>
