@@ -408,6 +408,69 @@ export default function MentorDetail() {
                   상담 신청하기
                 </Button>
 
+                {/* 기본 정보 카드 */}
+                <Card className="bg-card text-card-foreground flex flex-col gap-6 rounded-xl py-6 overflow-hidden border-0 shadow-md mt-6">
+                  <CardHeader className="pb-3 px-6">
+                    <CardTitle className="text-base">기본 정보</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3 text-sm px-6">
+                    {/* 이름 */}
+                    <div>
+                      <p className="text-xs text-muted-foreground font-medium mb-1">이름</p>
+                      <p className="text-foreground font-medium">{mentor.user.name}</p>
+                    </div>
+                    
+                    {/* 학교 */}
+                    {mentor.profile?.university && (
+                      <div>
+                        <p className="text-xs text-muted-foreground font-medium mb-1">학교</p>
+                        <p className="text-foreground font-medium">{mentor.profile.university}</p>
+                      </div>
+                    )}
+                    
+                    {/* 전공 */}
+                    {mentor.profile?.major && (
+                      <div>
+                        <p className="text-xs text-muted-foreground font-medium mb-1">전공</p>
+                        <p className="text-foreground font-medium">{mentor.profile.major}</p>
+                      </div>
+                    )}
+                    
+                    {/* 학년 */}
+                    {mentor.profile?.grade && (
+                      <div>
+                        <p className="text-xs text-muted-foreground font-medium mb-1">학년</p>
+                        <p className="text-foreground font-medium">
+                          {mentor.profile.grade === 'graduate' ? '대학원' : `${mentor.profile.grade}학년`}
+                        </p>
+                      </div>
+                    )}
+                    
+                    {/* 상담 가능 지역 */}
+                    {mentor.profile?.availableRegions && (
+                      <div>
+                        <p className="text-xs text-muted-foreground font-medium mb-1">상담 가능 지역</p>
+                        <div className="flex flex-wrap gap-1">
+                          {(() => {
+                            try {
+                              const regions = typeof mentor.profile.availableRegions === 'string' 
+                                ? JSON.parse(mentor.profile.availableRegions) 
+                                : mentor.profile.availableRegions;
+                              return Array.isArray(regions) ? regions.map((region: string, idx: number) => (
+                                <span key={idx} className="px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded text-xs">
+                                  {region}
+                                </span>
+                              )) : null;
+                            } catch (e) {
+                              return <span className="text-xs text-muted-foreground">지역 정보 없음</span>;
+                            }
+                          })()}
+                        </div>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+
                 {/* 상담 정보 카드 */}
                 <Card className="border-0 shadow-sm mt-6">
                   <CardHeader className="pb-3">
