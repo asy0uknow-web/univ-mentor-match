@@ -2827,6 +2827,7 @@
 - [x] 회원가입/로그인 페이지 다크 모드 검사
 - [x] CompleteProfile, VerifyMentor, MentorColumnCreate 다크 모드 적용
 - [x] 최종 브라우저 테스트 완료 (홈페이지 전체 스크롤 검증)
-- [x] 홈페이지 섹션 배경색 수정 (bg-background → bg-white dark:bg-slate-950/900)
+- [x] 홈페이지 섹션 배경색 수정 (bg-background → bg-white dark:bg-slate-950/900- [x] 모든 페이지 다크 모드 재검증 (메인, 멘토 찾기, Q&A, 칼럼 - 모두 정상)
 - [x] IntegratedFAQSection 배경색 수정 (dark:from-slate-800으로 변경)
 - [x] 모든 페이지 다크 모드 재검증 (메인, 멘토 찾기, Q&A, 칼럼 - 모두 정상)
+- [x] 멘토 섹션 배경색 변경 (bg-white → bg-black, 라이트/다크 모드 모두 검은색)
