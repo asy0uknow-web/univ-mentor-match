@@ -244,7 +244,7 @@ export default function Home() {
       </section>
 
       {/* How It Works Section - 실제 흐름 */}
-      <section id="how-it-works" role="region" className="py-16 sm:py-24 md:py-32 bg-white dark:bg-slate-900" aria-label="이용 방법">
+      <section id="how-it-works" role="region" className="py-16 sm:py-24 md:py-32 bg-white dark:!bg-slate-900" aria-label="이용 방법">
         <div className="container mx-auto px-4">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-12 sm:mb-16 text-foreground" id="how-heading">
             이용 방법
@@ -292,7 +292,7 @@ export default function Home() {
       </section>
 
       {/* Featured Mentors Section - 중립적 제목 */}
-      <section id="featured-mentors" role="region" className="py-16 sm:py-24 md:py-32 bg-black dark:bg-black" aria-label="멘토 탐색">
+      <section id="featured-mentors" role="region" className="py-16 sm:py-24 md:py-32 !bg-black dark:!bg-black" aria-label="멘토 탐색">
         <div className="container mx-auto px-4">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-12 sm:mb-16 text-foreground">
             지금 둘러보기 좋은 멘토들
