@@ -612,7 +612,7 @@ export default function Mentors() {
               <p className="text-muted-foreground 300 300 text-sm sm:text-base">검색 결과가 없습니다</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
               {filteredMentors.map((mentor: any) => (
                 <Link key={mentor.uuid || mentor.id} href={`/mentor/${mentor.uuid}`} className="group">
                   <div className="bg-card  border border-border 700 700 rounded-xl overflow-hidden hover:shadow-lg hover:border-border transition-all duration-300 h-full flex flex-col cursor-pointer">

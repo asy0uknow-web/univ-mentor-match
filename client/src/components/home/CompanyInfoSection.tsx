@@ -78,7 +78,7 @@ export const CompanyInfoSection = () => {
         {/* Core Values */}
         <div className="max-w-5xl mx-auto mb-16 sm:mb-20">
           <h3 className="text-2xl sm:text-3xl font-bold text-center text-foreground mb-12">핵심 가치</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6 lg:gap-8">
             {values.map((value, idx) => (
               <div
                 key={idx}
@@ -101,7 +101,7 @@ export const CompanyInfoSection = () => {
         {/* Team */}
         <div className="max-w-5xl mx-auto">
           <h3 className="text-2xl sm:text-3xl font-bold text-center text-foreground mb-12">팀 소개</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6 lg:gap-8">
             {teamMembers.map((member, idx) => (
               <div
                 key={idx}

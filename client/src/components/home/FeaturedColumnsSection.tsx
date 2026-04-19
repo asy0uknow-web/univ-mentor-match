@@ -20,7 +20,7 @@ export function FeaturedColumnsSection() {
           <p className="text-center text-muted-foreground mb-12 sm:mb-16">
             멘토들의 경험과 조언을 담은 칼럼을 읽어보세요
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6 lg:gap-8">
             {[1, 2, 3].map((idx) => (
               <div key={idx} className="rounded-2xl overflow-hidden bg-card  shadow-md ">
                 <Skeleton className="w-full h-48" />
@@ -53,7 +53,7 @@ export function FeaturedColumnsSection() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 mb-12">
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6 lg:gap-8 mb-12">
           {columns.map((column: any) => (
             <Link key={column.id} href={`/columns/${column.id}`}>
               <div className="group rounded-2xl overflow-hidden bg-card  shadow-md  hover:shadow-xl transition-all duration-300 h-full flex flex-col cursor-pointer hover:scale-105 hover:-translate-y-2">
