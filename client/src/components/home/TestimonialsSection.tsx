@@ -60,17 +60,17 @@ export const TestimonialsSection = () => {
           {TESTIMONIALS.map((testimonial) => (
             <div
               key={testimonial.id}
-              className="bg-card rounded-2xl p-6 sm:p-8 shadow-md hover:shadow-xl transition-all duration-300 border border-border hover:scale-105 hover:-translate-y-2 group"
+              className="bg-card rounded-2xl p-3 sm:p-4 md:p-6 lg:p-8 shadow-md hover:shadow-xl transition-all duration-300 border border-border hover:scale-105 hover:-translate-y-2 group"
             >
               <span className="inline-block px-3 py-1 bg-primary/5 text-blue-600 rounded-full text-xs font-semibold mb-4 group-hover:bg-indigo-100 group-hover:text-indigo-700 transition-colors">
                 {testimonial.category}
               </span>
 
-              <div className="flex gap-1 mb-4">
+              <div className="flex gap-1 mb-3 sm:mb-4">
                 {[...Array(5)].map((_, i) => (
                   <Star
                     key={i}
-                    className={`w-5 h-5 ${
+                    className={`w-4 sm:w-5 h-4 sm:h-5 ${
                       i < testimonial.rating
                         ? "fill-yellow-400 text-yellow-400"
                         : "text-muted-foreground/40"
@@ -79,20 +79,20 @@ export const TestimonialsSection = () => {
                 ))}
               </div>
 
-              <p className="text-base sm:text-lg text-foreground mb-6 leading-relaxed italic transition-colors">
+              <p className="text-xs sm:text-sm md:text-base text-foreground mb-6 leading-relaxed italic transition-colors line-clamp-3 sm:line-clamp-4">
                 "{testimonial.content}"
               </p>
 
-              <div className="border-t border-border pt-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white font-bold text-sm">
+              <div className="border-t border-border pt-3 sm:pt-4">
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <div className="w-8 sm:w-10 h-8 sm:h-10 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white font-bold text-xs sm:text-sm flex-shrink-0">
                     {testimonial.name.charAt(0)}
                   </div>
-                  <div>
-                    <p className="font-semibold text-foreground text-sm sm:text-base">
+                  <div className="min-w-0">
+                    <p className="font-semibold text-foreground text-xs sm:text-sm truncate">
                       {testimonial.name}
                     </p>
-                    <p className="text-xs sm:text-sm text-muted-foreground">
+                    <p className="text-xs text-muted-foreground truncate">
                       {testimonial.role}
                     </p>
                   </div>
