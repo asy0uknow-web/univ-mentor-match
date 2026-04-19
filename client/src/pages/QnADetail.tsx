@@ -148,6 +148,39 @@ export default function QnADetail() {
     },
   });
 
+  // 질문 삭제 뮤테이션
+  const deleteQuestionMutation = trpc.qna.deleteQuestion.useMutation({
+    onSuccess: () => {
+      alert("질문이 삭제되었습니다");
+      setLocation('/qna');
+    },
+    onError: (error: any) => {
+      alert("오류: " + error.message);
+    },
+  });
+
+  // 답변 삭제 뮤테이션
+  const deleteAnswerMutation = trpc.qnaAnswer.delete.useMutation({
+    onSuccess: () => {
+      alert("답변이 삭제되었습니다");
+      refetch();
+    },
+    onError: (error: any) => {
+      alert("오류: " + error.message);
+    },
+  });
+
+  // 답글 삭제 뮤테이션
+  const deleteReplyMutation = trpc.qnaReply.delete.useMutation({
+    onSuccess: () => {
+      alert("답글이 삭제되었습니다");
+      refetch();
+    },
+    onError: (error: any) => {
+      alert("오류: " + error.message);
+    },
+  });
+
   // 답글 작성 뮤테이션
   const createReplyMutation = trpc.qnaReply.create.useMutation({
     onSuccess: () => {
@@ -220,6 +253,24 @@ export default function QnADetail() {
       answerId,
       content,
     });
+  };
+
+  const handleDeleteQuestion = async () => {
+    if (confirm("질문을 삭제하시겠습니까? 삭제 시 복구할 수 없습니다.")) {
+      await deleteQuestionMutation.mutateAsync({ questionId });
+    }
+  };
+
+  const handleDeleteAnswer = async (answerId: number) => {
+    if (confirm("답변을 삭제하시겠습니까?")) {
+      await deleteAnswerMutation.mutateAsync({ answerId });
+    }
+  };
+
+  const handleDeleteReply = async (replyId: number) => {
+    if (confirm("답글을 삭제하시겠습니까?")) {
+      await deleteReplyMutation.mutateAsync({ replyId });
+    }
   };
 
   if (!questionId) {
@@ -437,9 +488,9 @@ export default function QnADetail() {
               )}
 
               {/* 질문자 액션 */}
-              {isQuestionAuthor && question.status !== "solved" && (
-                <div className="flex gap-2 pt-3 border-t">
-                  {question.status === "answered" && (
+              {isQuestionAuthor && (
+                <div className="flex gap-2 pt-3 border-t flex-wrap">
+                  {question.status === "answered" && question.status !== "solved" && (
                     <Button
                       variant="outline"
                       size="sm"
@@ -451,6 +502,32 @@ export default function QnADetail() {
                       해결됨으로 표시
                     </Button>
                   )}
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={handleDeleteQuestion}
+                    disabled={deleteQuestionMutation.isPending}
+                    className="text-xs h-8"
+                  >
+                    삭제
+                  </Button>
+                </div>
+              )}
+              {/* 신고 버튼 (질문자가 아닌 경우) */}
+              {!isQuestionAuthor && (
+                <div className="flex gap-2 pt-3 border-t">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      setReportTarget({ type: "question", id: question.id });
+                      setReportDialogOpen(true);
+                    }}
+                    className="text-xs h-8"
+                  >
+                    <Flag className="h-3 w-3 mr-1" />
+                    신고
+                  </Button>
                 </div>
               )}
             </CardContent>
@@ -546,6 +623,18 @@ export default function QnADetail() {
                             {answer.isAccepted ? "채택됨" : "채택"}
                           </Button>
                         )}
+                        {/* 답변 삭제 버튼 */}
+                        {user?.id === answer.authorId && (
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            onClick={() => handleDeleteAnswer(answer.id)}
+                            disabled={deleteAnswerMutation.isPending}
+                            className="text-xs h-8"
+                          >
+                            삭제
+                          </Button>
+                        )}
                         {/* 신고 버튼 */}
                         <Button
                           variant="ghost"
@@ -589,17 +678,30 @@ export default function QnADetail() {
                               <p className="font-semibold text-muted-foreground">
                                 {reply.author?.name || "사용자"}
                               </p>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => {
-                                  setReportTarget({ type: "reply", id: reply.id });
-                                  setReportDialogOpen(true);
-                                }}
-                                className="text-xs h-6 p-0"
-                              >
-                                <Flag className="h-2.5 w-2.5" />
-                              </Button>
+                              <div className="flex gap-1">
+                                {user?.id === reply.authorId && (
+                                  <Button
+                                    variant="destructive"
+                                    size="sm"
+                                    onClick={() => handleDeleteReply(reply.id)}
+                                    disabled={deleteReplyMutation.isPending}
+                                    className="text-xs h-6 px-2"
+                                  >
+                                    삭제
+                                  </Button>
+                                )}
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => {
+                                    setReportTarget({ type: "reply", id: reply.id });
+                                    setReportDialogOpen(true);
+                                  }}
+                                  className="text-xs h-6 p-0"
+                                >
+                                  <Flag className="h-2.5 w-2.5" />
+                                </Button>
+                              </div>
                             </div>
                             <p className="text-muted-foreground whitespace-pre-wrap">
                               {reply.content}

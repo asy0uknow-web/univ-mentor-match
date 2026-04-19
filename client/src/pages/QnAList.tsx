@@ -255,8 +255,8 @@ export default function QnAList() {
                   <CardHeader className="pb-2 sm:pb-3 px-3 sm:px-6">
                     <div className="flex items-start justify-between gap-2">
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1">
-                          <CardTitle className="text-base sm:text-lg truncate group-hover:text-indigo-600 transition-colors">
+                        <div className="flex items-center gap-2 mb-1 flex-wrap">
+                          <CardTitle className="text-base sm:text-lg truncate group-hover:text-indigo-600 transition-colors break-words">
                             {question.title}
                           </CardTitle>
                           <StatusBadge status={mapStatusToStatusBadge(question.status)} />
