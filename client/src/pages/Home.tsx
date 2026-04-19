@@ -176,7 +176,7 @@ export default function Home() {
             어떤 상담이 필요하신가요?
           </h2>
           
-          <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+          <div className="max-w-4xl mx-auto grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6">
             <div 
               className="group cursor-pointer"
               onClick={() => navigate('/mentors?types=생기부컨설팅,학업관리')}
@@ -251,7 +251,7 @@ export default function Home() {
           </h2>
 
           <div className="max-w-6xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6 lg:gap-8">
               {[
                 { 
                   title: "멘토 찾기", 

@@ -2842,10 +2842,11 @@
 - [x] 기본 정보 섹션 구성 - 이름, 학교, 전공, 상담 가능 지역, 학년 등 표시
 - [x] 데이터 바인등 - 메른토 프로필에서 저장한 기본 설정 데이터 표시
 - [x] 기능 테스트 및 검증 - 메른토 프로필 페이지에서 기본 정보 정상 표시
-## 모바일 반응형 디자인 개선 (진행 중)
+## 모바일 반응형 디자인 개선 (완료)
 - [x] ContactSection 모바일 크기 조정 - grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4
 - [x] MentorVerificationSection 모바일 크기 조정 - grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4
 - [x] CompanyInfoSection 핵심 가치 및 팀 소개 모바일 크기 조정 - grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4
-- [ ] 홈페이지 섹션 모바일 레이아웃 최적화 (나머지 섹션)
-- [ ] 멘토 찾기 필터 모바일 UI 개선
-- [ ] 모바일 디바이스에서 가로 배치 검증 및 테스트
+- [x] Home.tsx Quick Entry Section 모바일 레이아웃 최적화
+- [x] Home.tsx How It Works Section 모바일 레이아웃 최적화
+- [x] Mentors.tsx 필터 바 모바일 UI 개선 (수직 스택 레이아웃)
+- [x] 모바일 디바이스에서 가로 배치 검증 (데스크톱 렌더링 스크린샷 초래)

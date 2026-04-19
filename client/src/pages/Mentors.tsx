@@ -249,9 +249,9 @@ export default function Mentors() {
             </div>
 
             {/* 검색 및 필터 바 */}
-            <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
+            <div className="flex flex-col gap-3">
               {/* 검색 바 */}
-              <div className="bg-card  border border-border 700 700 rounded-full shadow-sm hover:shadow-md  transition-shadow duration-300 p-2 flex items-center gap-0 flex-1">
+              <div className="bg-card  border border-border 700 700 rounded-full shadow-sm hover:shadow-md  transition-shadow duration-300 p-2 flex items-center gap-0 w-full">
                 <Search className="h-4 sm:h-5 w-4 sm:w-5 text-muted-foreground flex-shrink-0 ml-3 sm:ml-6" />
                 <input
                   type="text"
@@ -264,7 +264,7 @@ export default function Mentors() {
               </div>
 
               {/* 필터 및 정렬 버튼 그룹 */}
-              <div className="flex flex-wrap items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2 sm:gap-3">
                 {/* 학과 필터 */}
                 <button
                   onClick={openMajorPanel}
