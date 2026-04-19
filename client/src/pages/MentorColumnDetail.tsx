@@ -63,6 +63,17 @@ export default function MentorColumnDetail() {
     },
   });
 
+  const deleteCommentMutation = trpc.mentorColumns.deleteComment.useMutation({
+    onSuccess: () => {
+      toast.success("댓글이 삭제되었습니다");
+      // 댓글 목록 재조회
+      window.location.reload();
+    },
+    onError: (error: any) => {
+      toast.error("오류: " + error.message);
+    },
+  });
+
   const handleToggleLike = () => {
     toggleLikeMutation.mutate({ columnId });
   };
@@ -77,6 +88,12 @@ export default function MentorColumnDetail() {
       columnId,
       content: replyContent,
     });
+  };
+
+  const handleDeleteComment = (commentId: number) => {
+    if (confirm("댓글을 삭제하시겠습니까?")) {
+      deleteCommentMutation.mutate({ commentId });
+    }
   };
 
   const handleDeleteColumn = () => {
@@ -298,9 +315,8 @@ export default function MentorColumnDetail() {
                           <Button
                             variant="ghost"
                             size="sm"
-                            onClick={() => {
-                              // 삭제 로직
-                            }}
+                            onClick={() => handleDeleteComment(comment.id)}
+                            disabled={deleteCommentMutation.isPending}
                             className="text-red-600 hover:text-red-700 dark:text-red-400 hover:bg-red-50 dark:bg-red-950/30"
                           >
                             <Trash2 className="h-3 w-3" />

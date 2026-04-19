@@ -2304,6 +2304,20 @@ getTopMentors: publicProcedure
       .query(async ({ ctx }) => {
         return await getMyQuestions(ctx.user.id);
       }),
+
+    // 관리자 Q&A 삭제
+    adminDeleteQuestion: protectedProcedure
+      .input(z.object({ questionId: z.number() }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user?.role !== "admin") {
+          throw new Error("Only admins can delete questions");
+        }
+        const question = await getQuestionById(input.questionId);
+        if (!question) throw new Error("Question not found");
+
+        await deleteQuestion(input.questionId);
+        return { success: true };
+      }),
   }),
 
   qnaAnswer: router({
@@ -2375,6 +2389,20 @@ getTopMentors: publicProcedure
         return await toggleAnswerLike(input.answerId, ctx.user.id);
       }),
 
+    // 관리자 답변 삭제
+    adminDelete: protectedProcedure
+      .input(z.object({ answerId: z.number() }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user?.role !== "admin") {
+          throw new Error("Only admins can delete answers");
+        }
+        const answer = await getAnswerById(input.answerId);
+        if (!answer) throw new Error("Answer not found");
+
+        await deleteAnswer(input.answerId);
+        return { success: true };
+      }),
+
     getUserLikes: protectedProcedure
       .input(z.object({ answerIds: z.array(z.number()) }))
       .query(async ({ ctx, input }) => {
@@ -2435,6 +2463,20 @@ getTopMentors: publicProcedure
       .input(z.object({ answerId: z.number() }))
       .query(async ({ input }) => {
         return await getRepliesByAnswerId(input.answerId);
+      }),
+
+    // 관리자 답글 삭제
+    adminDelete: protectedProcedure
+      .input(z.object({ replyId: z.number() }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user?.role !== "admin") {
+          throw new Error("Only admins can delete replies");
+        }
+        const reply = await getReplyById(input.replyId);
+        if (!reply) throw new Error("Reply not found");
+
+        await deleteReply(input.replyId);
+        return { success: true };
       }),
   }),
 

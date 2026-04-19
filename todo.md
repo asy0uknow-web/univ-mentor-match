@@ -2872,3 +2872,24 @@
 - [ ] 관리자 칼럼 삭제 기능 구현
 - [ ] 관리자 댓글 삭제 기능 구현
 - [ ] 관리자 Q&A 글 삭제 기능 구현
+
+## Q&A 상태 탭 통합 (완료)
+- [x] QnAList.tsx 상태 탭 수정 - 답변완료와 해결됨를 하나로 통합
+- [x] 답변완료 내에서 answered와 solved 모두 필터링
+## 멘토 칼럼 카테고리 중복 선택 (완료)
+- [x] MentorColumnCreate.tsx 파일 수정
+- [x] 단일 선택 → 다중 선택으로 변경
+- [x] 카테고리 버튼 그룹 UI 구현
+- [x] 다중 선택 카운트 디스플레이
+
+## 관리자 Q&A 삭제 기능 (완료)
+- [x] 백엔드 라우터에 admin.deleteQuestion, admin.deleteAnswer, admin.deleteReply 추가
+- [x] 권한 검증 로직 추가
+- [x] QnADetail.tsx 프론트엔드 UI 업데이트 - 관리자용 삭제 버튼 추가
+- [x] 질문/답변/답글 단단 삭제 기능
+
+## 멘토 칼럼 댓글 삭제 (완료)
+- [x] MentorColumnDetail.tsx 파일 수정
+- [x] deleteComment API 존재 확인
+- [x] 댓글 작성자 삭제 버튼 UI 구현
+- [x] 댓글 삭제 로직 추가

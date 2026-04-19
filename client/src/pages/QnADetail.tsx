@@ -181,6 +181,39 @@ export default function QnADetail() {
     },
   });
 
+  // 관리자 질문 삭제 뮤테이션
+  const adminDeleteQuestionMutation = trpc.qna.adminDeleteQuestion.useMutation({
+    onSuccess: () => {
+      alert("질문이 삭제되었습니다");
+      setLocation('/qna');
+    },
+    onError: (error: any) => {
+      alert("오류: " + error.message);
+    },
+  });
+
+  // 관리자 답변 삭제 뮤테이션
+  const adminDeleteAnswerMutation = trpc.qnaAnswer.adminDelete.useMutation({
+    onSuccess: () => {
+      alert("답변이 삭제되었습니다");
+      refetch();
+    },
+    onError: (error: any) => {
+      alert("오류: " + error.message);
+    },
+  });
+
+  // 관리자 답글 삭제 뮤테이션
+  const adminDeleteReplyMutation = trpc.qnaReply.adminDelete.useMutation({
+    onSuccess: () => {
+      alert("답글이 삭제되었습니다");
+      refetch();
+    },
+    onError: (error: any) => {
+      alert("오류: " + error.message);
+    },
+  });
+
   // 답글 작성 뮤테이션
   const createReplyMutation = trpc.qnaReply.create.useMutation({
     onSuccess: () => {
@@ -270,6 +303,24 @@ export default function QnADetail() {
   const handleDeleteReply = async (replyId: number) => {
     if (confirm("답글을 삭제하시겠습니까?")) {
       await deleteReplyMutation.mutateAsync({ replyId });
+    }
+  };
+
+  const handleAdminDeleteQuestion = async () => {
+    if (confirm("이 질문을 삭제하시겠습니까? (관리자 기능)")) {
+      await adminDeleteQuestionMutation.mutateAsync({ questionId });
+    }
+  };
+
+  const handleAdminDeleteAnswer = async (answerId: number) => {
+    if (confirm("이 답변를 삭제하시겠습니까? (관리자 기능)")) {
+      await adminDeleteAnswerMutation.mutateAsync({ answerId });
+    }
+  };
+
+  const handleAdminDeleteReply = async (replyId: number) => {
+    if (confirm("이 답글을 삭제하시겠습니까? (관리자 기능)")) {
+      await adminDeleteReplyMutation.mutateAsync({ replyId });
     }
   };
 
@@ -513,8 +564,22 @@ export default function QnADetail() {
                   </Button>
                 </div>
               )}
+              {/* 관리자 삭제 버튼 */}
+              {user?.role === "admin" && (
+                <div className="flex gap-2 pt-3 border-t">
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={handleAdminDeleteQuestion}
+                    disabled={adminDeleteQuestionMutation.isPending}
+                    className="text-xs h-8"
+                  >
+                    관리자 삭제
+                  </Button>
+                </div>
+              )}
               {/* 신고 버튼 (질문자가 아닌 경우) */}
-              {!isQuestionAuthor && (
+              {!isQuestionAuthor && user?.role !== "admin" && (
                 <div className="flex gap-2 pt-3 border-t">
                   <Button
                     variant="ghost"
@@ -635,18 +700,32 @@ export default function QnADetail() {
                             삭제
                           </Button>
                         )}
+                        {/* 관리자 답변 삭제 버튼 */}
+                        {user?.role === "admin" && user?.id !== answer.authorId && (
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            onClick={() => handleAdminDeleteAnswer(answer.id)}
+                            disabled={adminDeleteAnswerMutation.isPending}
+                            className="text-xs h-8"
+                          >
+                            관리자 삭제
+                          </Button>
+                        )}
                         {/* 신고 버튼 */}
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => {
-                            setReportTarget({ type: "answer", id: answer.id });
-                            setReportDialogOpen(true);
-                          }}
-                          className="text-xs h-8"
-                        >
-                          <Flag className="h-3 w-3" />
-                        </Button>
+                        {user?.role !== "admin" && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => {
+                              setReportTarget({ type: "answer", id: answer.id });
+                              setReportDialogOpen(true);
+                              }}
+                            className="text-xs h-8"
+                          >
+                            <Flag className="h-3 w-3" />
+                          </Button>
+                        )}
                       </div>
                     </div>
                   </CardHeader>
@@ -690,17 +769,30 @@ export default function QnADetail() {
                                     삭제
                                   </Button>
                                 )}
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  onClick={() => {
-                                    setReportTarget({ type: "reply", id: reply.id });
-                                    setReportDialogOpen(true);
-                                  }}
-                                  className="text-xs h-6 p-0"
-                                >
-                                  <Flag className="h-2.5 w-2.5" />
-                                </Button>
+                                {user?.role === "admin" && user?.id !== reply.authorId && (
+                                  <Button
+                                    variant="destructive"
+                                    size="sm"
+                                    onClick={() => handleAdminDeleteReply(reply.id)}
+                                    disabled={adminDeleteReplyMutation.isPending}
+                                    className="text-xs h-6 px-2"
+                                  >
+                                    관리자 삭제
+                                  </Button>
+                                )}
+                                {user?.role !== "admin" && (
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => {
+                                      setReportTarget({ type: "reply", id: reply.id });
+                                      setReportDialogOpen(true);
+                                    }}
+                                    className="text-xs h-6 p-0"
+                                  >
+                                    <Flag className="h-2.5 w-2.5" />
+                                  </Button>
+                                )}
                               </div>
                             </div>
                             <p className="text-muted-foreground whitespace-pre-wrap">

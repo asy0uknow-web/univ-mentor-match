@@ -39,8 +39,7 @@ const SORT_OPTIONS = [
 const STATUS_TABS = [
   { value: "all", label: "전체" },
   { value: "awaiting_answer", label: "답변대기" },
-  { value: "answered", label: "답변완료" },
-  { value: "solved", label: "해결됨" },
+  { value: "answered_or_solved", label: "답변완료" },
 ];
 
 const mapStatusToStatusBadge = (status: string) => {
@@ -48,9 +47,8 @@ const mapStatusToStatusBadge = (status: string) => {
     case "awaiting_answer":
       return "pending";
     case "answered":
-      return "accepted";
     case "solved":
-      return "completed";
+      return "accepted";
     default:
       return "new";
   }
@@ -88,8 +86,13 @@ export default function QnAList() {
     searchQuery: debouncedSearch,
     category: selectedCategory === "all" ? undefined : selectedCategory,
     sortBy: sortBy as any,
-    status: selectedStatus === "all" ? undefined : selectedStatus,
+    status: selectedStatus === "all" ? undefined : selectedStatus === "answered_or_solved" ? undefined : selectedStatus,
   });
+
+  // 답변완료 내에서 answered와 solved 모두 필터링
+  const filteredQuestions = selectedStatus === "answered_or_solved" && questions
+    ? questions.filter((q: any) => q.status === "answered" || q.status === "solved")
+    : questions;
 
   return (
     <PageLayout>
@@ -242,10 +245,10 @@ export default function QnAList() {
 
         {/* 질문 목록 */}
         {isLoading ? (
-          <p className="text-xs sm:text-sm text-muted-foreground">로딩 중...</p>
-        ) : questions && questions.length > 0 ? (
+          <p className="text-xs sm:text-sm text-muted-foreground">로드 중...</p>
+        ) : filteredQuestions && filteredQuestions.length > 0 ? (
           <div className="space-y-3 sm:space-y-4">
-            {questions.map((question: any) => {
+            {filteredQuestions.map((question: any) => {
               return (
                 <Card
                   key={question.id}

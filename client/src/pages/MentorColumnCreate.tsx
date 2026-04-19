@@ -38,7 +38,7 @@ export default function MentorColumnCreate() {
   const { user, isAuthenticated } = useAuth();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [category, setCategory] = useState("");
+  const [categories, setCategories] = useState<string[]>([]);
   const [excerpt, setExcerpt] = useState("");
   const [coverImageUrl, setCoverImageUrl] = useState("");
   const [status, setStatus] = useState<"draft" | "published">("draft");
@@ -198,8 +198,8 @@ export default function MentorColumnCreate() {
       toast.error("내용을 입력해주세요");
       return;
     }
-    if (!category) {
-      toast.error("카테고리를 선택해주세요");
+    if (categories.length === 0) {
+      toast.error("카테고리를 적어도 하나 이상 선택해주세요");
       return;
     }
     if (title.length < 5) {
@@ -214,7 +214,7 @@ export default function MentorColumnCreate() {
     createMutation.mutate({
       title,
       content,
-      category,
+      category: categories.join(", "),
       excerpt: excerpt || content.substring(0, 200),
       coverImageUrl: coverImageUrl || undefined,
       status: submitStatus,
@@ -250,9 +250,13 @@ export default function MentorColumnCreate() {
               <CardHeader className="pb-3 sm:pb-4">
                 <div className="flex items-start justify-between gap-2 mb-3">
                   <div className="flex-1">
-                    <Badge variant="secondary" className="mb-2 text-xs">
-                      {category}
-                    </Badge>
+                    <div className="flex flex-wrap gap-2 mb-2">
+                      {categories.map((cat) => (
+                        <Badge key={cat} variant="secondary" className="text-xs">
+                          {cat}
+                        </Badge>
+                      ))}
+                    </div>
                     <h2 className="text-xl sm:text-2xl font-bold">{title}</h2>
                   </div>
                 </div>
@@ -308,18 +312,31 @@ export default function MentorColumnCreate() {
                   <label className="block text-xs sm:text-sm font-medium mb-2">
                     카테고리 <span className="text-red-500">*</span>
                   </label>
-                  <Select value={category} onValueChange={setCategory}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="카테고리를 선택해주세요" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {COLUMN_CATEGORIES.map((cat) => (
-                        <SelectItem key={cat} value={cat}>
-                          {cat}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <div className="flex flex-wrap gap-2">
+                    {COLUMN_CATEGORIES.map((cat) => (
+                      <button
+                        key={cat}
+                        type="button"
+                        onClick={() => {
+                          if (categories.includes(cat)) {
+                            setCategories(categories.filter(c => c !== cat));
+                          } else {
+                            setCategories([...categories, cat]);
+                          }
+                        }}
+                        className={`px-3 py-2 rounded-full text-xs sm:text-sm font-medium transition-all ${
+                          categories.includes(cat)
+                            ? "bg-indigo-600 text-white border border-indigo-600"
+                            : "bg-background border border-input text-foreground hover:border-indigo-400"
+                        }`}
+                      >
+                        {cat}
+                      </button>
+                    ))}
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-2">
+                    {categories.length > 0 ? `${categories.length}개 선택됨` : "카테고리를 선택해주세요"}
+                  </p>
                 </div>
 
                 {/* 커버 이미지 업로드 */}
