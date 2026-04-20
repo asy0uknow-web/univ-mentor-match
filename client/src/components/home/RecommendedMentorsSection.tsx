@@ -49,8 +49,9 @@ export function RecommendedMentorsSection() {
 
         <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
           {recommendedMentors.map((mentor: any) => (
-            <Link key={mentor.uuid || mentor.id} href={`/mentor/${mentor.uuid || mentor.id}`}>
-              <Card className="group overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer h-full">
+            <div key={mentor.uuid || mentor.id}>
+              <Link href={`/mentor/${mentor.uuid || mentor.id}`}>
+                <Card className="group overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer h-full">
                 <div className="relative h-40 sm:h-48 bg-gradient-to-br from-purple-400 to-pink-400 overflow-hidden">
                   {mentor.profileImage ? (
                     <img
@@ -92,8 +93,9 @@ export function RecommendedMentorsSection() {
                     </span>
                   </div>
                 </div>
-              </Card>
-            </Link>
+                </Card>
+              </Link>
+            </div>
           ))}
         </div>
 
