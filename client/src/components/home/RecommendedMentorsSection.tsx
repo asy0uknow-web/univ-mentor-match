@@ -20,10 +20,8 @@ export function RecommendedMentorsSection() {
             추천 멘토
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
-            {[...Array(6)].map((_, i) => (
-              <div key={`skeleton-${i}`}>
-                <Skeleton className="h-64 rounded-lg" />
-              </div>
+            {Array.from({ length: 6 }).map((_, i) => (
+              <Skeleton key={`skeleton-${i}`} className="h-64 rounded-lg" />
             ))}
           </div>
         </div>
@@ -48,55 +46,58 @@ export function RecommendedMentorsSection() {
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
-          {recommendedMentors.map((mentor: any) => (
-            <div key={mentor.uuid || mentor.id}>
-              <Link href={`/mentor/${mentor.uuid || mentor.id}`}>
+          {recommendedMentors.map((mentor: any, index: number) => {
+            const mentorId = mentor.uuid || mentor.id;
+            const mentorKey = `mentor-${index}-${mentorId}`;
+            
+            return (
+              <Link key={mentorKey} href={`/mentor/${mentorId}`}>
                 <Card className="group overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer h-full">
-                <div className="relative h-40 sm:h-48 bg-gradient-to-br from-purple-400 to-pink-400 overflow-hidden">
-                  {mentor.profileImage ? (
-                    <img
-                      src={mentor.profileImage}
-                      alt={mentor.name}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-purple-500 to-pink-500 text-white text-3xl font-bold">
-                      {mentor.name?.[0]}
+                  <div className="relative h-40 sm:h-48 bg-gradient-to-br from-purple-400 to-pink-400 overflow-hidden">
+                    {mentor.profileImage ? (
+                      <img
+                        src={mentor.profileImage}
+                        alt={mentor.name}
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-purple-500 to-pink-500 text-white text-3xl font-bold">
+                        {mentor.name?.[0]}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="p-4 sm:p-5">
+                    <h3 className="font-bold text-base sm:text-lg line-clamp-1 mb-1 group-hover:text-purple-600 transition-colors">
+                      {mentor.name}
+                    </h3>
+
+                    <div className="flex items-center gap-1 text-xs sm:text-sm text-muted-foreground mb-3 line-clamp-1">
+                      <MapPin className="w-3 h-3 flex-shrink-0" />
+                      <span className="line-clamp-1">{mentor.university}</span>
                     </div>
-                  )}
-                </div>
 
-                <div className="p-4 sm:p-5">
-                  <h3 className="font-bold text-base sm:text-lg line-clamp-1 mb-1 group-hover:text-purple-600 transition-colors">
-                    {mentor.name}
-                  </h3>
+                    <div className="flex items-center gap-1 text-xs sm:text-sm text-muted-foreground mb-3 line-clamp-1">
+                      <BookOpen className="w-3 h-3 flex-shrink-0" />
+                      <span className="line-clamp-1">{mentor.major}</span>
+                    </div>
 
-                  <div className="flex items-center gap-1 text-xs sm:text-sm text-muted-foreground mb-3 line-clamp-1">
-                    <MapPin className="w-3 h-3 flex-shrink-0" />
-                    <span className="line-clamp-1">{mentor.university}</span>
-                  </div>
-
-                  <div className="flex items-center gap-1 text-xs sm:text-sm text-muted-foreground mb-3 line-clamp-1">
-                    <BookOpen className="w-3 h-3 flex-shrink-0" />
-                    <span className="line-clamp-1">{mentor.major}</span>
-                  </div>
-
-                  <div className="flex items-center justify-between pt-3 border-t">
-                    <div className="flex items-center gap-1">
-                      <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                      <span className="font-semibold text-sm">
-                        {(mentor.averageRating || 0).toFixed(1)}
+                    <div className="flex items-center justify-between pt-3 border-t">
+                      <div className="flex items-center gap-1">
+                        <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                        <span className="font-semibold text-sm">
+                          {(mentor.averageRating || 0).toFixed(1)}
+                        </span>
+                      </div>
+                      <span className="text-xs text-muted-foreground">
+                        {mentor.reviewCount || 0}명
                       </span>
                     </div>
-                    <span className="text-xs text-muted-foreground">
-                      {mentor.reviewCount || 0}명
-                    </span>
                   </div>
-                </div>
                 </Card>
               </Link>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         <div className="text-center mt-10 sm:mt-12">
