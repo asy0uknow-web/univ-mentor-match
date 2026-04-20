@@ -15,7 +15,7 @@ import * as Select from "@radix-ui/react-select";
 import * as Tabs from "@radix-ui/react-tabs";
 import { StatusBadge } from "@/components/StatusBadge";
 import { ConsultationCTAButton } from "@/components/ConsultationCTAButton";
-import { TrendingAnswerPopup } from "@/components/qna/TrendingAnswerPopup";
+import { TrendingContentPopup } from "@/components/home/TrendingContentPopup";
 
 const CATEGORIES = [
   { value: "all", label: "전체" },
@@ -325,8 +325,8 @@ export default function QnAList() {
         )}
       </div>
 
-      {/* Trending Answer Popup */}
-      <TrendingAnswerPopup />
+      {/* Trending Content Popup */}
+      <TrendingContentPopup />
     </PageLayout>
   );
 }

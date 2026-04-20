@@ -14,7 +14,7 @@ import { TestimonialsSection } from "@/components/home/TestimonialsSection";
 import { IntegratedFAQSection } from "@/components/home/IntegratedFAQSection";
 import { PopularQnASection } from "@/components/home/PopularQnASection";
 import { FeaturedColumnsSection } from "@/components/home/FeaturedColumnsSection";
-import { TrendingColumnPopup } from "@/components/home/TrendingColumnPopup";
+import { TrendingContentPopup } from "@/components/home/TrendingContentPopup";
 
 // Quick Entry Icons
 const MajorIcon = () => (
@@ -328,8 +328,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Trending Column Popup */}
-      <TrendingColumnPopup />
+      {/* Trending Content Popup */}
+      <TrendingContentPopup />
     </PageLayout>
   );
 }
