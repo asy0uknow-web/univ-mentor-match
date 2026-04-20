@@ -54,9 +54,9 @@ function EndReasonModal({
   const reasons = endType === 'early' ? earlyReasons : endType === 'late' ? lateReasons : normalReasons;
 
   const titleMap = {
-    early: "⚠️ 조기 완료 사유 입력",
-    late: "⏰ 지연 완료 사유 입력",
-    normal: "✅ 상담 종료 확인",
+    early: "조기 완료 사유 입력",
+    late: "지연 완료 사유 입력",
+    normal: "상담 종료 확인",
   };
 
   const descMap = {

@@ -62,7 +62,7 @@ export function PopularQnASection() {
     <section
       id="popular-qna"
       role="region"
-      className="py-16 sm:py-24 md:py-32 bg-background"
+      className="py-16 sm:py-24 md:py-32 bg-slate-50 dark:bg-slate-900"
       aria-label="인기 Q&A"
     >
       <div className="container mx-auto px-4">

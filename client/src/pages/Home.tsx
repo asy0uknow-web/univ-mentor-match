@@ -155,7 +155,7 @@ export default function Home() {
               {/* Q&A 커뮤니티 */}
               <Button 
                 size="lg" 
-                className="w-full sm:w-auto px-8 py-6 text-lg bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 text-foreground font-bold shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+                className="w-full sm:w-auto px-8 py-6 text-lg bg-white hover:bg-slate-50 dark:bg-slate-800 dark:hover:bg-slate-700 text-foreground font-semibold shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-slate-200 dark:border-slate-700"
                 onClick={() => navigate('/qna')}
                 aria-label="Q&A 커뮤니티로 이동"
               >
@@ -165,7 +165,7 @@ export default function Home() {
               {/* 멘토 칼럼 */}
               <Button 
                 size="lg" 
-                className="w-full sm:w-auto px-8 py-6 text-lg bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 text-foreground font-bold shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+                className="w-full sm:w-auto px-8 py-6 text-lg bg-white hover:bg-slate-50 dark:bg-slate-800 dark:hover:bg-slate-700 text-foreground font-semibold shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-slate-200 dark:border-slate-700"
                 onClick={() => navigate('/columns')}
                 aria-label="멘토 칼럼으로 이동"
               >

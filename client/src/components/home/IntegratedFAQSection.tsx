@@ -16,14 +16,14 @@ const FAQ_ITEMS: FAQItem[] = [
     answer:
       "유니브매치는 상담 유형에 따라 단계로 정해진 금액을 제시하고 있습니다. 서비스는 멘토와 멘티를 연결하는 플랫폼으로서 별도의 중개 수수료를 받지 않습니다. 안전한 거래를 위해 대면 거래를 원칙으로 하고 있습니다. (이용약관 제7조)",
     category: "cost",
-    categoryLabel: "💰 [비용] 투명하고 정직한 운영",
+    categoryLabel: " [비용] 투명하고 정직한 운영",
   },
   {
     question: "환불은 어떻게 되나요?",
     answer:
       "환불은 취소 시점에 따라 차등 적용됩니다.\n\n100% 환불: 상담 확정 후 24시간 이내이면서 상담 예정 시간 12시간 전인 경우\n\n50% 환불: 상담 예정 시간 12시간 전까지 (확정 후 24시간 경과 시)\n\n환불 불가: 상담 예정 시간 12시간 이내 또는 상담이 이미 시작된 경우\n\n특별 환불: 멘토의 노쇼, 허위 정보 제공 등 멘토 귀책 사유가 확인될 경우 시점과 관계없이 100% 환불됩니다. (환불 정책)",
     category: "cost",
-    categoryLabel: "💰 [비용] 투명하고 정직한 운영",
+    categoryLabel: " [비용] 투명하고 정직한 운영",
   },
 
   // 검증 관련
@@ -41,14 +41,14 @@ const FAQ_ITEMS: FAQItem[] = [
     answer:
       "유니브매치는 개인정보 보호법에 따라 SSL/TLS 암호화 및 접근 통제 등 기술적·관리적 보호 조치를 수행하고 있습니다. 상담 매칭 시 원활한 연락을 위해 성함, 휴대전화번호, 이메일, 소속 학교 정보가 상대방에게 제공되며, 이 정보는 상담 종료 시까지만 보유함을 원칙으로 합니다. (개인정보처리방침 제4조, 제9조)",
     category: "safety",
-    categoryLabel: "🛡️ [안전] 안심하고 이용하는 환경",
+    categoryLabel: "️ [안전] 안심하고 이용하는 환경",
   },
   {
     question: "상담 중 문제가 발생하면 어떻게 되나요?",
     answer:
       "운영진은 이용자 간의 분쟁 발생 시 중재 역할을 수행할 수 있습니다. 멘토의 부적절한 언행이나 허위 정보 제공으로 문제가 생긴 경우, 증빙 자료와 함께 2026univmatch@gmail.com으로 문의해 주시면 사실 확인 후 환불 및 이용 제한 등 단호한 조치를 취합니다. (이용약관 제8조, 환불 정책)",
     category: "safety",
-    categoryLabel: "🛡️ [안전] 안심하고 이용하는 환경",
+    categoryLabel: "️ [안전] 안심하고 이용하는 환경",
   },
 
   // 일반 질문
@@ -69,8 +69,8 @@ const FAQ_ITEMS: FAQItem[] = [
 ];
 
 const CATEGORY_LABELS: Record<string, string> = {
-  cost: "💰 비용",
-  safety: "🛡️ 안전",
+  cost: " 비용",
+  safety: "️ 안전",
   verification: "✅ 검증",
   general: "❓ 일반",
 };
@@ -109,7 +109,7 @@ export const IntegratedFAQSection = () => {
         {/* Section Header */}
         <div className="max-w-4xl mx-auto text-center mb-12 sm:mb-16">
           <span className="inline-block px-4 py-2 bg-primary/10 text-blue-700 rounded-full text-sm font-semibold mb-4">
-            🛡️ 안전하고 투명한 서비스
+            ️ 안전하고 투명한 서비스
           </span>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-4">
             자주 묻는 질문
