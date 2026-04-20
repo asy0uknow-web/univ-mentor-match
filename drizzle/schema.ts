@@ -506,6 +506,23 @@ export const qnaReports = mysqlTable("qna_reports", {
 export type QnaReport = typeof qnaReports.$inferSelect;
 export type InsertQnaReport = typeof qnaReports.$inferInsert;
 
+/**
+ * Column Reports - 칼럼 신고
+ */
+export const columnReports = mysqlTable("column_reports", {
+  id: int("id").autoincrement().primaryKey(),
+  reporterId: int("reporterId").notNull(), // References users.id
+  columnId: int("columnId").notNull(), // References mentor_columns.id
+  reason: varchar("reason", { length: 100 }).notNull(), // e.g., "부적절한 콘텐츠", "스팸"
+  description: text("description"),
+  status: mysqlEnum("status", ["pending", "reviewed", "approved", "rejected"]).default("pending").notNull(),
+  adminNotes: text("adminNotes"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type ColumnReport = typeof columnReports.$inferSelect;
+export type InsertColumnReport = typeof columnReports.$inferInsert;
 
 /**
  * Mentor Columns - 멘토 칼럼 게시판

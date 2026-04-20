@@ -2597,6 +2597,24 @@ getTopMentors: publicProcedure
         return await deleteComment(input.commentId, ctx.user.id);
       }),
 
+    adminDeleteColumn: protectedProcedure
+      .input(z.object({ columnId: z.number() }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== "admin") {
+          throw new Error("관리자만 칼럼을 삭제할 수 있습니다");
+        }
+        return await deleteColumn(input.columnId, ctx.user.id);
+      }),
+
+    adminDeleteComment: protectedProcedure
+      .input(z.object({ commentId: z.number() }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== "admin") {
+          throw new Error("관리자만 댓글을 삭제할 수 있습니다");
+        }
+        return await deleteComment(input.commentId, ctx.user.id);
+      }),
+
     getMyColumns: protectedProcedure
       .query(async ({ ctx }) => {
         return await getMyColumns(ctx.user.id);

@@ -63,6 +63,26 @@ export default function MentorColumnDetail() {
     },
   });
 
+  const adminDeleteColumnMutation = trpc.mentorColumns.adminDeleteColumn.useMutation({
+    onSuccess: () => {
+      toast.success("칼럼이 삭제되었습니다");
+      setLocation("/columns");
+    },
+    onError: (error: any) => {
+      toast.error("오류: " + error.message);
+    },
+  });
+
+  const adminDeleteCommentMutation = trpc.mentorColumns.adminDeleteComment.useMutation({
+    onSuccess: () => {
+      toast.success("댓글이 삭제되었습니다");
+      window.location.reload();
+    },
+    onError: (error: any) => {
+      toast.error("오류: " + error.message);
+    },
+  });
+
   const deleteCommentMutation = trpc.mentorColumns.deleteComment.useMutation({
     onSuccess: () => {
       toast.success("댓글이 삭제되었습니다");
@@ -99,6 +119,18 @@ export default function MentorColumnDetail() {
   const handleDeleteColumn = () => {
     if (confirm("정말 삭제하시겠습니까?")) {
       deleteColumnMutation.mutate({ columnId });
+    }
+  };
+
+  const handleAdminDeleteColumn = () => {
+    if (confirm("질문을 삭제하시겠습니까?")) {
+      adminDeleteColumnMutation.mutate({ columnId });
+    }
+  };
+
+  const handleAdminDeleteComment = (commentId: number) => {
+    if (confirm("댓글을 삭제하시겠습니까?")) {
+      adminDeleteCommentMutation.mutate({ commentId });
     }
   };
 
@@ -170,16 +202,29 @@ export default function MentorColumnDetail() {
                   </Badge>
                   <h1 className="text-xl sm:text-3xl font-bold mb-2">{column.title}</h1>
                 </div>
-                {isAuthor && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={handleDeleteColumn}
-                    className="text-red-600 hover:text-red-700 dark:text-red-400 hover:bg-red-50 dark:bg-red-950/30"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                )}
+                <div className="flex gap-1">
+                  {isAuthor && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={handleDeleteColumn}
+                      className="text-red-600 hover:text-red-700 dark:text-red-400 hover:bg-red-50 dark:bg-red-950/30"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  )}
+                  {user?.role === "admin" && !isAuthor && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={handleAdminDeleteColumn}
+                      disabled={adminDeleteColumnMutation.isPending}
+                      className="text-red-600 hover:text-red-700 dark:text-red-400 hover:bg-red-50 dark:bg-red-950/30"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  )}
+                </div>
               </div>
 
               {/* 멘토 정보 */}
@@ -317,6 +362,17 @@ export default function MentorColumnDetail() {
                             size="sm"
                             onClick={() => handleDeleteComment(comment.id)}
                             disabled={deleteCommentMutation.isPending}
+                            className="text-red-600 hover:text-red-700 dark:text-red-400 hover:bg-red-50 dark:bg-red-950/30"
+                          >
+                            <Trash2 className="h-3 w-3" />
+                          </Button>
+                        )}
+                        {user?.role === "admin" && user?.id !== comment.author.id && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleAdminDeleteComment(comment.id)}
+                            disabled={adminDeleteCommentMutation.isPending}
                             className="text-red-600 hover:text-red-700 dark:text-red-400 hover:bg-red-50 dark:bg-red-950/30"
                           >
                             <Trash2 className="h-3 w-3" />
