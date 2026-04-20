@@ -2,13 +2,14 @@ import { Link } from "wouter";
 import { trpc } from "@/lib/trpc";
 import { Heart, MessageCircle, Eye, X, ChevronRight } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 type TabType = "qna" | "column" | "mentor";
 
 export function TrendingContentPopup() {
   const [activeTab, setActiveTab] = useState<TabType>("qna");
   const [isVisible, setIsVisible] = useState(true);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
     const stored = localStorage.getItem("trendingPopupHideUntil");
@@ -23,17 +24,35 @@ export function TrendingContentPopup() {
     }
   }, []);
 
-  const { data: questions, isLoading: qnaLoading } = trpc.qna.getQuestions.useQuery({
-    limit: 10,
-    sortBy: "latest",
-  });
+  // 5분마다 자동 갱신
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setRefreshKey((prev) => prev + 1);
+    }, 5 * 60 * 1000); // 5분
 
-  const { data: columns, isLoading: columnLoading } = trpc.mentorColumns.getList.useQuery({
-    limit: 10,
-    sortBy: "latest",
-  });
+    return () => clearInterval(interval);
+  }, []);
 
-  const { data: mentors, isLoading: mentorLoading } = trpc.mentor.listAll.useQuery();
+  const { data: questions, isLoading: qnaLoading } = trpc.qna.getQuestions.useQuery(
+    {
+      limit: 10,
+      sortBy: "latest",
+    },
+    { enabled: isVisible }
+  );
+
+  const { data: columns, isLoading: columnLoading } = trpc.mentorColumns.getList.useQuery(
+    {
+      limit: 10,
+      sortBy: "latest",
+    },
+    { enabled: isVisible }
+  );
+
+  const { data: mentors, isLoading: mentorLoading } = trpc.mentor.listAll.useQuery(
+    undefined,
+    { enabled: isVisible }
+  );
 
   const getTrendingQnA = () => {
     return questions?.sort((a: any, b: any) => {
@@ -99,7 +118,7 @@ export function TrendingContentPopup() {
   const isLoading = qnaLoading || columnLoading || mentorLoading;
 
   return (
-    <div className="fixed top-20 left-1/2 -translate-x-1/2 w-96 bg-gradient-to-br from-purple-600 via-pink-500 to-red-500 rounded-3xl shadow-2xl p-0 border-4 border-white dark:border-slate-800 animate-in slide-in-from-top-4 duration-500 z-50 group hover:shadow-3xl transition-all">
+    <div className="fixed top-16 left-1/2 -translate-x-1/2 w-full max-w-md sm:max-w-lg bg-gradient-to-br from-purple-600 via-pink-500 to-red-500 rounded-3xl shadow-2xl p-0 border-4 border-white dark:border-slate-800 animate-in slide-in-from-top-4 duration-500 z-50 group hover:shadow-3xl transition-all mx-4 sm:mx-0">
       {/* 헤더 */}
       <div className="relative bg-gradient-to-r from-purple-600 to-pink-500 rounded-t-3xl p-6 text-white">
         <div className="absolute inset-0 opacity-20">
@@ -109,9 +128,8 @@ export function TrendingContentPopup() {
 
         <div className="relative flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="text-3xl animate-bounce">🔥</span>
             <div>
-              <h3 className="text-xl font-black">오늘의 핫 콘텐츠</h3>
+              <h3 className="text-lg sm:text-xl font-black">오늘의 핫 콘텐츠</h3>
               <p className="text-xs text-purple-100">지금 가장 인기있는 글을 확인하세요</p>
             </div>
           </div>
@@ -128,20 +146,19 @@ export function TrendingContentPopup() {
       {/* 탭 */}
       <div className="flex gap-1 bg-white dark:bg-slate-900 px-4 pt-4 border-b border-gray-200 dark:border-slate-700">
         {[
-          { id: "qna", label: "Q&A", icon: "💬" },
-          { id: "column", label: "칼럼", icon: "📝" },
-          { id: "mentor", label: "멘토", icon: "👨‍🏫" },
+          { id: "qna", label: "Q&A" },
+          { id: "column", label: "칼럼" },
+          { id: "mentor", label: "멘토" },
         ].map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id as TabType)}
-            className={`flex items-center gap-1 px-4 py-3 font-bold text-sm transition-all ${
+            className={`flex-1 px-3 sm:px-4 py-3 font-bold text-xs sm:text-sm transition-all text-center ${
               activeTab === tab.id
                 ? "text-purple-600 border-b-4 border-purple-600"
                 : "text-gray-500 hover:text-gray-700 dark:text-gray-400"
             }`}
           >
-            <span>{tab.icon}</span>
             {tab.label}
           </button>
         ))}
@@ -159,7 +176,7 @@ export function TrendingContentPopup() {
           <Link href={`/qna/${trendingQnA.id}`}>
             <div className="group/card cursor-pointer">
               <div className="flex items-start gap-3">
-                <div className="text-2xl">💬</div>
+                <div className="text-3xl">💬</div>
                 <div className="flex-1">
                   <h4 className="font-bold text-foreground mb-1 line-clamp-2 group-hover/card:text-purple-600 transition-colors">
                     {trendingQnA.title}
@@ -190,7 +207,7 @@ export function TrendingContentPopup() {
           <Link href={`/columns/${trendingColumn.id}`}>
             <div className="group/card cursor-pointer">
               <div className="flex items-start gap-3">
-                <div className="text-2xl">📝</div>
+                <div className="text-3xl">📝</div>
                 <div className="flex-1">
                   <h4 className="font-bold text-foreground mb-1 line-clamp-2 group-hover/card:text-pink-600 transition-colors">
                     {trendingColumn.title}
@@ -218,10 +235,10 @@ export function TrendingContentPopup() {
             </div>
           </Link>
         ) : activeTab === "mentor" && trendingMentor ? (
-          <Link href={`/mentors/${trendingMentor.id}`}>
+          <Link href={`/mentor/${trendingMentor.uuid || trendingMentor.id}`}>
             <div className="group/card cursor-pointer">
               <div className="flex items-start gap-3">
-                <div className="text-2xl">👨‍🏫</div>
+                <div className="text-3xl">👨‍🏫</div>
                 <div className="flex-1">
                   <h4 className="font-bold text-foreground mb-1 line-clamp-2 group-hover/card:text-red-600 transition-colors">
                     {trendingMentor.name}
