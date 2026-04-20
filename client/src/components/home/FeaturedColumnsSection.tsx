@@ -49,7 +49,7 @@ export function FeaturedColumnsSection() {
             멘토 칼럼
           </h2>
           <p className="text-center text-muted-foreground max-w-2xl mx-auto">
-            멘토들의 경험과 조언을 담은 칼럼을 읽어보세요. 진로, 학업, 대학 생활에 대한 실질적인 인사이트를 얻을 수 있습니다.
+            멘토들의 다양한 경험을 담은 칼럼을 동료 나누세요.
           </p>
         </div>
 

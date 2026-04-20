@@ -30,7 +30,7 @@ export function ZeroCommissionUSPSection() {
                   중개 수수료나 숨겨진 비용 없이 순수한 상담료만 지불하면 됩니다.
                 </p>
                 <p className="text-lg text-muted-foreground leading-relaxed">
-                  멘토는 더 많은 수익을 얻고, 멘티는 더 저렴한 가격에 상담받을 수 있습니다. 
+                  멘토와 멘티 모두 공정한 거래를 할 수 있습니다. 
                   양쪽 모두 만족하는 정직한 플랫폼입니다.
                 </p>
               </div>

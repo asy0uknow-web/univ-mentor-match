@@ -68,7 +68,7 @@ export const ConsultationSafetySection = () => {
               ℹ️ 문제가 발생하신가요?
             </h3>
             <p className="text-base sm:text-lg text-amber-800 mb-4">
-              부적절한 상담이나 문제 상황이 발생하면 언제든 고객센터에 연락주세요. 우리는 24시간 대응 가능합니다.
+              부적절한 상담이나 문제 상황이 발생하면 언제든 고객센터에 연락주세요. 고객센터에서 신속하게 처리해드립니다.
             </p>
             <p className="text-sm sm:text-base text-amber-700 dark:text-amber-400">
               <span className="font-bold">이메일:</span> support@univmatch.com

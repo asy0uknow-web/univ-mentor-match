@@ -41,7 +41,7 @@ export function RecommendedMentorsSection() {
             추천 멘토
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            많은 학생들이 선택한 경험 많은 멘토들을 만나보세요
+            다양한 전공과 경험을 가진 멘토들과 상담하세요
           </p>
         </div>
 

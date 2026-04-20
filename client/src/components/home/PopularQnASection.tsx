@@ -76,11 +76,11 @@ export function PopularQnASection() {
               </span>
             </div>
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-4">
-              지금 많은 멘티들이 묻고 있는 질문
+              커뮤니티 Q&A
             </h2>
             <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto">
-              멘토들의 성실한 답변으로 해결되는 실제 고민들을 살펴보세요.
-              당신의 질문도 멘토 커뮤니티에서 답변받을 수 있습니다.
+              다양한 질문과 멘토들의 실질적인 답변을 확인해보세요.
+              당신의 고민도 멘토 커뮤니티에서 해결할 수 있습니다.
             </p>
           </div>
 
