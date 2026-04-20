@@ -14,6 +14,7 @@ import { TestimonialsSection } from "@/components/home/TestimonialsSection";
 import { IntegratedFAQSection } from "@/components/home/IntegratedFAQSection";
 import { PopularQnASection } from "@/components/home/PopularQnASection";
 import { FeaturedColumnsSection } from "@/components/home/FeaturedColumnsSection";
+import { RecommendedMentorsSection } from "@/components/home/RecommendedMentorsSection";
 
 
 // Quick Entry Icons
@@ -291,6 +292,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Recommended Mentors Section */}
+      <RecommendedMentorsSection />
 
       {/* Featured Mentors Section - 중립적 제목 */}
       <section id="featured-mentors" role="region" className="py-16 sm:py-24 md:py-32 !bg-black dark:!bg-black" aria-label="멘토 탐색">
