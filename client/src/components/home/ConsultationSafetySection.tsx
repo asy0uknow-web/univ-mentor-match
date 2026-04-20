@@ -18,7 +18,7 @@ export const ConsultationSafetySection = () => {
     },
     {
       title: "결제 안전",
-      description: "모든 결제는 안전한 결제 시스템을 통해 진행되며, 직거래는 절대 금지입니다.",
+      description: "대면 거래를 원칙으로 하여 안전한 상담 환경을 보장합니다.",
       icon: "💳"
     }
   ];

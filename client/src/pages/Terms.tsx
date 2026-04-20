@@ -80,7 +80,7 @@ export default function Terms() {
             <section>
               <h2 className="text-xl font-bold text-foreground mb-3">제7조 (상담 및 결제)</h2>
               <p className="text-muted-foreground 300 300 leading-relaxed">
-                상담료는 멘토가 직접 설정하며, 유니브매치는 별도의 중개 수수료를 받지 않습니다. 결제는 서비스 내 안전한 결제 시스템을 통해서만 진행되며, 플랫폼 외부에서의 직거래는 금지됩니다. 환불 정책은 별도의 환불 정책 페이지를 참고하시기 바랍니다.
+                상담료는 상담 유형에 따라 정해진 금액을 제시하며, 유니브매치는 별도의 중개 수수료를 받지 않습니다. 안전한 거래를 위해 대면 거래를 원칙으로 합니다. 환불 정책은 별도의 환불 정책 페이지를 참고하시기 바랍니다.
               </p>
             </section>
 

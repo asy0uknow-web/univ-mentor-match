@@ -34,8 +34,8 @@ const DROPDOWN_MENU = [
 // 홈페이지 메뉴 (스크롤 이동)
 const HOME_MENU = [
   { id: "hero", label: "멘토 찾기" },
-  { id: "quick-entry", label: "서비스 소개" },
-  { id: "how-it-works", label: "이용 방법" },
+  { href: "/qna", label: "Q&A" },
+  { href: "/columns", label: "멘토 칼럼" },
 ] as const;
 
 const LOGO_URL = "/logonew.png";
@@ -94,17 +94,36 @@ export default function Navbar({ onBugReport }: NavbarProps) {
           {/* 중앙: 홈페이지 메뉴 (홈페이지에서만, md 이상에서만) */}
           {isHomePage && (
             <div className="hidden md:flex items-center gap-8 flex-1 justify-center">
-              {HOME_MENU.map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => handleSmoothScroll(item.id)}
-                  className="text-sm font-medium text-foreground hover:text-primary transition-all duration-200 hover:scale-105 active:scale-95 relative group"
-                  aria-label={`${item.label} 섹션으로 이동`}
-                >
-                  {item.label}
-                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-300"></span>
-                </button>
-              ))}
+              {HOME_MENU.map((item) => {
+                const isLink = 'href' in item;
+                const key = isLink ? item.href : item.id;
+                
+                if (isLink) {
+                  return (
+                    <Link
+                      key={key}
+                      href={item.href}
+                      className="text-sm font-medium text-foreground hover:text-primary transition-all duration-200 hover:scale-105 active:scale-95 relative group"
+                      aria-label={`${item.label} 페이지로 이동`}
+                    >
+                      {item.label}
+                      <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-300"></span>
+                    </Link>
+                  );
+                }
+                
+                return (
+                  <button
+                    key={key}
+                    onClick={() => handleSmoothScroll(item.id)}
+                    className="text-sm font-medium text-foreground hover:text-primary transition-all duration-200 hover:scale-105 active:scale-95 relative group"
+                    aria-label={`${item.label} 섹션으로 이동`}
+                  >
+                    {item.label}
+                    <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-300"></span>
+                  </button>
+                );
+              })}
             </div>
           )}
 
