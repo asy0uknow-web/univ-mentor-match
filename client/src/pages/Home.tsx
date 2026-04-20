@@ -15,32 +15,51 @@ import { IntegratedFAQSection } from "@/components/home/IntegratedFAQSection";
 import { PopularQnASection } from "@/components/home/PopularQnASection";
 import { FeaturedColumnsSection } from "@/components/home/FeaturedColumnsSection";
 import { RecommendedMentorsSection } from "@/components/home/RecommendedMentorsSection";
+import { BookOpen, Compass, Users } from "lucide-react";
 
 
 // Quick Entry Icons
 const MajorIcon = () => (
-  <div className="text-4xl sm:text-5xl">🎓</div>
+  <div className="text-4xl sm:text-5xl text-indigo-600">
+    <BookOpen className="w-12 h-12 sm:w-16 sm:h-16" />
+  </div>
 );
 
 const CareerIcon = () => (
-  <div className="text-4xl sm:text-5xl">🚀</div>
+  <div className="text-4xl sm:text-5xl text-indigo-600">
+    <Compass className="w-12 h-12 sm:w-16 sm:h-16" />
+  </div>
 );
 
 const LifeIcon = () => (
-  <div className="text-4xl sm:text-5xl">🏫</div>
+  <div className="text-4xl sm:text-5xl text-indigo-600">
+    <Users className="w-12 h-12 sm:w-16 sm:h-16" />
+  </div>
 );
 
 // Line Art Icons Component - How It Works Section
 const SearchIcon = () => (
-  <div className="text-5xl sm:text-6xl md:text-7xl">🔍</div>
+  <div className="text-5xl sm:text-6xl md:text-7xl text-indigo-600">
+    <svg className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+    </svg>
+  </div>
 );
 
 const CalendarIcon = () => (
-  <div className="text-5xl sm:text-6xl md:text-7xl">📅</div>
+  <div className="text-5xl sm:text-6xl md:text-7xl text-indigo-600">
+    <svg className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+    </svg>
+  </div>
 );
 
 const ConsultationIcon = () => (
-  <div className="text-5xl sm:text-6xl md:text-7xl">👨‍👩‍💼</div>
+  <div className="text-5xl sm:text-6xl md:text-7xl text-indigo-600">
+    <svg className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.856-1.487M15 10a3 3 0 11-6 0 3 3 0 016 0zM15 20H9m6-4v2m0 0v2m0-2h2m-2 0h-2" />
+    </svg>
+  </div>
 );
 
 // Organic Blob Background Component
@@ -84,7 +103,7 @@ export default function Home() {
         <div className="flex items-center justify-center min-h-screen">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-4"></div>
-            <p className="text-muted-foreground 300 300">프로필 완성 페이지로 이동 중...</p>
+            <p className="text-muted-foreground">프로필 완성 페이지로 이동 중...</p>
           </div>
         </div>
       </PageLayout>
@@ -93,7 +112,7 @@ export default function Home() {
 
   return (
     <PageLayout showFooter>
-      {/* Hero Section - 강한 가치 제안 */}
+      {/* Hero Section */}
       <section 
         id="hero" 
         role="banner"
@@ -171,7 +190,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Quick Entry Section - 빠른 진입 */}
+      {/* Quick Entry Section */}
       <section id="quick-entry" role="region" className="py-12 sm:py-16 md:py-20 bg-white dark:bg-slate-950" aria-label="빠른 멘토 탐색">
         <div className="container mx-auto px-4">
           <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-center mb-8 sm:mb-12 text-foreground">
@@ -187,7 +206,7 @@ export default function Home() {
               tabIndex={0}
               aria-label="전공 탐색 멘토 찾기"
             >
-              <div className="bg-card  rounded-xl p-6 sm:p-8 shadow-sm hover:shadow-lg hover:scale-105 transition-all duration-300 border border-border 700 700 hover:border-indigo-300 group-hover:-translate-y-2">
+              <div className="bg-card rounded-xl p-6 sm:p-8 shadow-sm hover:shadow-lg hover:scale-105 transition-all duration-300 border border-border hover:border-indigo-300 group-hover:-translate-y-2">
                 <div className="mb-4 flex justify-center group-hover:scale-110 transition-transform duration-300">
                   <MajorIcon />
                 </div>
@@ -208,7 +227,7 @@ export default function Home() {
               tabIndex={0}
               aria-label="진로 상담 멘토 찾기"
             >
-              <div className="bg-card  rounded-xl p-6 sm:p-8 shadow-sm hover:shadow-lg hover:scale-105 transition-all duration-300 border border-border 700 700 hover:border-indigo-300 group-hover:-translate-y-2">
+              <div className="bg-card rounded-xl p-6 sm:p-8 shadow-sm hover:shadow-lg hover:scale-105 transition-all duration-300 border border-border hover:border-indigo-300 group-hover:-translate-y-2">
                 <div className="mb-4 flex justify-center group-hover:scale-110 transition-transform duration-300">
                   <CareerIcon />
                 </div>
@@ -229,7 +248,7 @@ export default function Home() {
               tabIndex={0}
               aria-label="대학 생활 멘토 찾기"
             >
-              <div className="bg-card  rounded-xl p-6 sm:p-8 shadow-sm hover:shadow-lg hover:scale-105 transition-all duration-300 border border-border 700 700 hover:border-indigo-300 group-hover:-translate-y-2">
+              <div className="bg-card rounded-xl p-6 sm:p-8 shadow-sm hover:shadow-lg hover:scale-105 transition-all duration-300 border border-border hover:border-indigo-300 group-hover:-translate-y-2">
                 <div className="mb-4 flex justify-center group-hover:scale-110 transition-transform duration-300">
                   <LifeIcon />
                 </div>
@@ -245,94 +264,80 @@ export default function Home() {
         </div>
       </section>
 
-      {/* How It Works Section - 실제 흐름 */}
-      <section id="how-it-works" role="region" className="py-16 sm:py-24 md:py-32 bg-white dark:!bg-slate-900" aria-label="이용 방법">
+      {/* How It Works Section */}
+      <section id="how-it-works" role="region" className="py-16 sm:py-24 md:py-32 bg-white dark:bg-slate-900" aria-label="이용 방법">
         <div className="container mx-auto px-4">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-12 sm:mb-16 text-foreground" id="how-heading">
-            이용 방법
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-center mb-12 sm:mb-16 text-foreground">
+            3단계로 시작하세요
           </h2>
+          
+          <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
+            {/* Step 1 */}
+            <div className="text-center">
+              <div className="mb-6 flex justify-center">
+                <SearchIcon />
+              </div>
+              <h3 className="text-lg sm:text-xl font-semibold mb-3 text-foreground">
+                1. 멘토 검색
+              </h3>
+              <p className="text-sm sm:text-base text-muted-foreground">
+                대학, 전공, 분야로 원하는 멘토를 찾아보세요
+              </p>
+            </div>
 
-          <div className="max-w-6xl mx-auto">
-            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6 lg:gap-8">
-              {[
-                { 
-                  title: "멘토 찾기", 
-                  desc: "대학, 전공, 상담 분야로 필터링하여 나에게 맞는 멘토를 찾으세요",
-                  iconComponent: SearchIcon
-                },
-                { 
-                  title: "상담 조율", 
-                  desc: "멘토와 메시지로 일정, 장소, 상담 내용을 함께 정하세요",
-                  iconComponent: CalendarIcon
-                },
-                { 
-                  title: "대면 상담", 
-                  desc: "약속한 시간에 만나 진로, 학업, 대학 생활에 대해 솔직하게 이야기하세요",
-                  iconComponent: ConsultationIcon
-                }
-              ].map(({ title, desc, iconComponent: IconComponent }, idx) => (
-                <div
-                  key={idx}
-                  className="bg-card  rounded-2xl p-6 sm:p-8 shadow-md  hover:shadow-lg transition-shadow duration-300 hover:scale-105 transition-transform"
-                >
-                  <div className="mb-6 sm:mb-8 flex justify-center">
-                    <IconComponent />
-                  </div>
-                  
-                  <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-foreground mb-3 sm:mb-4 text-center">
-                    {title}
-                  </h3>
-                  
-                  <p className="text-sm sm:text-base text-muted-foreground leading-relaxed text-center">
-                    {desc}
-                  </p>
-                </div>
-              ))}
+            {/* Step 2 */}
+            <div className="text-center">
+              <div className="mb-6 flex justify-center">
+                <CalendarIcon />
+              </div>
+              <h3 className="text-lg sm:text-xl font-semibold mb-3 text-foreground">
+                2. 상담 신청
+              </h3>
+              <p className="text-sm sm:text-base text-muted-foreground">
+                원하는 날짜와 시간을 선택하여 상담을 신청하세요
+              </p>
+            </div>
+
+            {/* Step 3 */}
+            <div className="text-center">
+              <div className="mb-6 flex justify-center">
+                <ConsultationIcon />
+              </div>
+              <h3 className="text-lg sm:text-xl font-semibold mb-3 text-foreground">
+                3. 상담 진행
+              </h3>
+              <p className="text-sm sm:text-base text-muted-foreground">
+                멘토와 함께 대면으로 상담을 진행하세요
+              </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Recommended Mentors Section */}
-      <RecommendedMentorsSection />
+      {/* Mentor Verification Section */}
+      <MentorVerificationSection />
 
-      {/* Featured Mentors Section - 중립적 제목 */}
-      <section id="featured-mentors" role="region" className="py-16 sm:py-24 md:py-32 !bg-black dark:!bg-black" aria-label="멘토 탐색">
-        <div className="container mx-auto px-4">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-12 sm:mb-16 text-foreground">
-            지금 둘러보기 좋은 멘토들
-          </h2>
-          <FeaturedMentorsSlide />
-        </div>
-      </section>
-
-      {/* Testimonials Section */}
-      <section id="testimonials" role="region" className="py-16 sm:py-24 md:py-32 bg-white dark:bg-slate-900" aria-label="상담 후기">
-        <div className="container mx-auto px-4">
-          <TestimonialsSection />
-        </div>
-      </section>
-
-      {/* Popular Q&A Section */}
-      <PopularQnASection />
-
-      {/* Featured Columns Section */}
-      <FeaturedColumnsSection />
-
-      {/* Zig-Zag USP Section #1: Mentor Verification */}
+      {/* USP Sections */}
       <MentorVerificationUSPSection />
-
-      {/* Zig-Zag USP Section #2: Zero Commission */}
       <ZeroCommissionUSPSection />
 
-      {/* FAQ Section */}
-      <section id="faq" role="region" className="py-16 sm:py-24 md:py-32 bg-white dark:bg-slate-900" aria-label="자주 묻는 질문">
-        <div className="container mx-auto px-4">
-          <IntegratedFAQSection />
-        </div>
-      </section>
+      {/* Featured Mentors */}
+      <FeaturedMentorsSlide />
 
+      {/* Recommended Mentors */}
+      <RecommendedMentorsSection />
 
+      {/* Testimonials */}
+      <TestimonialsSection />
+
+      {/* Popular Q&A */}
+      <PopularQnASection />
+
+      {/* Featured Columns */}
+      <FeaturedColumnsSection />
+
+      {/* FAQ */}
+      <IntegratedFAQSection />
     </PageLayout>
   );
 }
