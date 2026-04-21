@@ -1,7 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { trpc } from "@/lib/trpc";
 import { Link, useParams, useLocation } from "wouter";
-import { GraduationCap, Star, ArrowLeft, MessageCircle, CheckCircle, Sparkles, Users, Clock, Award } from "lucide-react";
+import { GraduationCap, Star, ArrowLeft, MessageCircle, CheckCircle, Sparkles, Users, Clock, Award, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { getLoginUrl } from "@/const";
@@ -150,7 +150,7 @@ export default function MentorDetail() {
             {/* 메인 콘텐츠 */}
             <div className="lg:col-span-2 space-y-6 sm:space-y-8">
               {/* 멘토 프로필 카드 */}
-              <Card className="overflow-hidden border-0 shadow-md ">
+              <div className="card-premium-lg overflow-hidden p-6 sm:p-8">
                 <CardContent className="p-4 sm:p-8">
                   <div className="flex flex-col sm:flex-row gap-4 sm:gap-8">
                     <div className="flex-shrink-0">
@@ -217,11 +217,11 @@ export default function MentorDetail() {
                     </div>
                   </div>
                 </CardContent>
-              </Card>
+              </div>
 
               {/* 소개 */}
               {mentor.profile?.bio && (
-                <Card className="border-0 shadow-sm">
+                <div className="card-premium p-6 sm:p-8">
                   <CardHeader className="pb-3 sm:pb-4">
                     <CardTitle className="text-lg sm:text-xl">소개</CardTitle>
                   </CardHeader>
@@ -230,10 +230,10 @@ export default function MentorDetail() {
                       {mentor.profile.bio}
                     </p>
                   </CardContent>
-                </Card>
+                </div>
               )}
 
-              {/* 갤러리 */}
+              {/* 갤러리 업로드 */}
               {mentor.profile?.id && user?.id === mentor.profile.userId && (
                 <GalleryUpload
                   mentorId={mentor.profile.id}
@@ -247,7 +247,7 @@ export default function MentorDetail() {
 
               {/* 갤러리 읽기 전용 */}
               {gallery && gallery.length > 0 && user?.id !== mentor.profile.userId && (
-                <Card className="border-0 shadow-sm">
+                <div className="card-premium p-6 sm:p-8">
                   <CardHeader className="pb-3 sm:pb-4">
                     <CardTitle className="text-lg sm:text-xl">갤러리</CardTitle>
                   </CardHeader>
@@ -278,12 +278,12 @@ export default function MentorDetail() {
                       </div>
                     </div>
                   </CardContent>
-                </Card>
+                </div>
               )}
 
               {/* 상담 분야 */}
               {mentor.profile?.field && (
-                <Card className="border-0 shadow-sm">
+                <div className="card-premium p-6 sm:p-8">
                   <CardHeader className="pb-3 sm:pb-4">
                     <CardTitle className="text-lg sm:text-xl flex items-center gap-2">
                       <Sparkles className="w-5 h-5 text-green-600 dark:text-green-400" />
@@ -297,11 +297,11 @@ export default function MentorDetail() {
                       </span>
                     </div>
                   </CardContent>
-                </Card>
+                </div>
               )}
 
               {/* 칼럼 */}
-              <Card className="border-0 shadow-sm">
+              <div className="card-premium p-6 sm:p-8">
                 <CardHeader className="pb-3 sm:pb-4">
                   <CardTitle className="text-lg sm:text-xl flex items-center gap-2">
                     <Sparkles className="w-5 h-5 text-blue-600" />
@@ -346,11 +346,11 @@ export default function MentorDetail() {
                     </p>
                   )}
                 </CardContent>
-              </Card>
+              </div>
 
               {/* 갤러리 */}
               {gallery && gallery.length > 0 && (
-                <Card className="border-0 shadow-sm">
+                <div className="card-premium p-6 sm:p-8">
                   <CardHeader className="pb-3 sm:pb-4">
                     <CardTitle className="text-lg sm:text-xl">갤러리</CardTitle>
                   </CardHeader>
@@ -366,12 +366,12 @@ export default function MentorDetail() {
                       ))}
                     </div>
                   </CardContent>
-                </Card>
+                </div>
               )}
 
               {/* 후기 */}
               {reviews && reviews.length > 0 && (
-                <Card className="border-0 shadow-sm">
+                <div className="card-premium p-6 sm:p-8">
                   <CardHeader className="pb-3 sm:pb-4">
                     <CardTitle className="text-lg sm:text-xl">상담 후기</CardTitle>
                   </CardHeader>
@@ -395,7 +395,7 @@ export default function MentorDetail() {
                       </div>
                     ))}
                   </CardContent>
-                </Card>
+                </div>
               )}
             </div>
 
@@ -404,13 +404,14 @@ export default function MentorDetail() {
               <div className="sticky top-20 space-y-3">
                 <Button
                   onClick={handleBookingClick}
-                  className="w-full h-12 text-base font-semibold bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors"
+                  className="w-full h-12 text-base font-semibold bg-primary hover:bg-primary/90 text-white rounded-md shadow-premium-md hover:shadow-premium-lg transition-all duration-200 flex items-center justify-center gap-2"
                 >
                   상담 신청하기
+                  <ArrowRight className="w-4 h-4" />
                 </Button>
 
                 {/* 기본 정보 카드 */}
-                <Card className="bg-card text-card-foreground flex flex-col gap-6 rounded-xl py-6 overflow-hidden border-0 shadow-md mt-6">
+                <div className="card-premium-lg flex flex-col gap-6 p-6 mt-6">
                   <CardHeader className="pb-3 px-6">
                     <CardTitle className="text-base">멘토 정보</CardTitle>
                   </CardHeader>
@@ -487,10 +488,10 @@ export default function MentorDetail() {
                       </div>
                     )}
                   </CardContent>
-                </Card>
+                </div>
 
                 {/* 상담 정보 카드 */}
-                <Card className="border-0 shadow-sm mt-6">
+                <div className="card-premium p-6 mt-6">
                   <CardHeader className="pb-3">
                     <CardTitle className="text-base">상담 정보</CardTitle>
                   </CardHeader>
@@ -508,12 +509,12 @@ export default function MentorDetail() {
                       <span className="text-foreground">응답률 높음</span>
                     </div>
                   </CardContent>
-                </Card>
+                </div>
 
                 {/* 안내 메시지 */}
-                <div className="bg-primary/5 border border-blue-200 rounded-lg p-3 text-xs text-blue-700">
-                  <p className="font-medium mb-1">💡 팁</p>
-                  <p>메시지를 먼저 보내 멘토와 상담 시간을 조율한 후 예약하세요.</p>
+                <div className="card-premium p-4 bg-primary/5 border border-primary/20">
+                  <p className="font-medium mb-1 text-sm">💡 팁</p>
+                  <p className="text-xs text-foreground">메시지를 먼저 보내 멘토와 상담 시간을 조율한 후 예약하세요.</p>
                 </div>
               </div>
             </div>

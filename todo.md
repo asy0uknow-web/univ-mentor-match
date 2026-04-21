@@ -3028,3 +3028,31 @@
   - [x] 디자인 시스템 검증 (색상, 카드, 버튼, 그림자)
   - [x] 다크 모드 지원 확인
   - [x] 애니메이션 및 호버 효과 검증
+
+
+## 전체 UI/UX 리디자인 (프리미엄 입시 플랫폼 감성) - 완료
+- [x] CSS 색상 시스템 개선 (Deep Indigo + Gray 팔레트)
+- [x] 그림자 시스템 추가 (shadow-premium-sm/md/lg/xl)
+- [x] 카드 컴포넌트 스타일 정의 (card-premium, card-premium-lg)
+- [x] 버튼 스타일 통일 (btn-primary, btn-secondary, btn-outline)
+- [x] Navbar 리디자인 (rounded-md, shadow-premium-sm)
+- [x] Home.tsx 히어로 섹션 리디자인
+- [x] Mentors.tsx 멘토 카드 리디자인 (card-premium-lg, 호버 효과)
+- [x] QnAList.tsx Q&A 카드 리디자인
+- [x] MentorColumns.tsx 칼럼 카드 리디자인
+- [x] Login.tsx 로그인 페이지 리디자인
+- [x] SignUp.tsx 회원가입 페이지 리디자인
+- [x] StudentProfile.tsx 학생 프로필 리디자인
+- [x] Notifications.tsx 알림 페이지 리디자인
+- [x] MentorDetail.tsx 멘토 상세 페이지 리디자인
+- [x] 모든 32개 페이지 프리미엄 디자인 적용 (병렬 처리)
+- [x] 일관된 색상 팔레트 (Deep Indigo, Gray, Purple accent)
+- [x] 통일된 카드 스타일 (card-premium, card-premium-lg)
+- [x] 프리미엄 그림자 시스템 (shadow-premium-sm/md/lg/xl)
+- [x] 호버 효과 및 애니메이션 추가
+- [x] 아이콘 박스 스타일 (w-10 h-10 rounded-lg bg-primary/10)
+- [x] 버튼 스타일 통일 (primary, secondary, outline)
+- [x] 다크 모드 완전 지원
+- [x] 반응형 디자인 최적화
+- [x] 모든 페이지 TypeScript 오류 없음
+- [x] 개발 서버 정상 작동

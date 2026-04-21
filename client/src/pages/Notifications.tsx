@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { trpc } from "@/lib/trpc";
 import { Link } from "wouter";
-import { GraduationCap, Bell, Check, Trash2, ChevronDown } from "lucide-react";
+import { GraduationCap, Bell, Check, Trash2, ChevronDown, ArrowRight } from "lucide-react";
 import BugReportModal from "@/components/BugReportModal";
 import { useState, useEffect } from "react";
 import { getLoginUrl } from "@/const";
@@ -39,18 +39,17 @@ export default function Notifications() {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen flex items-center justify-center px-3 sm:px-4">
-        <Card className="max-w-md w-full">
-          <CardHeader className="px-3 sm:px-6 py-4 sm:py-6">
-            <CardTitle className="text-lg sm:text-xl">로그인이 필요합니다</CardTitle>
-            <CardDescription className="text-xs sm:text-sm">알림을 보려면 로그인해주세요.</CardDescription>
-          </CardHeader>
-          <CardContent className="px-3 sm:px-6 pb-4 sm:pb-6">
-            <a href={getLoginUrl()}>
-              <Button className="w-full text-xs sm:text-sm h-8 sm:h-10">로그인</Button>
-            </a>
-          </CardContent>
-        </Card>
+      <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted flex items-center justify-center px-3 sm:px-4">
+        <div className="card-premium-lg max-w-md w-full p-6 sm:p-8">
+          <h2 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">로그인이 필요합니다</h2>
+          <p className="text-sm text-muted-foreground mb-6">알림을 보려면 로그인해주세요.</p>
+          <a href={getLoginUrl()}>
+            <Button className="w-full text-sm font-semibold py-3 rounded-md bg-primary hover:bg-primary/90 text-white shadow-premium-md hover:shadow-premium-lg transition-all duration-200 flex items-center justify-center gap-2">
+              로그인
+              <ArrowRight className="w-4 h-4" />
+            </Button>
+          </a>
+        </div>
       </div>
     );
   }
@@ -66,80 +65,74 @@ export default function Notifications() {
 
   return (
     <PageLayout>
-      <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-12 max-w-2xl">
-        <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-8">
-          <Bell className="h-6 w-6 sm:h-8 sm:w-8 text-primary flex-shrink-0" />
-          <h1 className="text-2xl sm:text-4xl font-bold">알림</h1>
+      <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-12 max-w-2xl">
+        <div className="flex items-center gap-3 mb-2">
+          <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+            <Bell className="h-6 w-6 text-primary" />
+          </div>
+          <h1 className="text-3xl sm:text-4xl font-bold text-foreground">알림</h1>
+        </div>
+        <p className="text-muted-foreground mb-8">새로운 알림을 확인하세요</p>
+
+        <div className="card-premium-lg p-4 sm:p-6 mb-6">
+          <Input
+            placeholder="알림 검색..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full text-sm border border-border px-4 py-2.5 rounded-md focus:border-primary transition-colors"
+          />
         </div>
 
-        <Card className="mb-4 sm:mb-6 shadow-sm sm:shadow-md ">
-          <CardContent className="pt-3 sm:pt-6 px-3 sm:px-6 pb-3 sm:pb-6">
-            <Input
-              placeholder="알림 검색..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full text-xs sm:text-sm h-8 sm:h-10"
-            />
-          </CardContent>
-        </Card>
-
         {isLoading ? (
-          <p className="text-xs sm:text-sm text-muted-foreground text-center py-8">로딩 중...</p>
+          <div className="card-premium-lg p-8 text-center">
+            <p className="text-sm text-muted-foreground">로딩 중...</p>
+          </div>
         ) : filteredNotifications.length > 0 ? (
-          <div className="space-y-2 sm:space-y-3">
+          <div className="space-y-3">
             {filteredNotifications.map((notification) => (
-              <Card
+              <div
                 key={notification.id}
-                className={`transition-colors shadow-sm sm:shadow-md  ${
+                className={`card-premium-lg p-4 sm:p-6 transition-all duration-200 ${
                   notification.isRead ? "bg-card" : "bg-primary/5 border-primary/20"
                 }`}
               >
-                <CardHeader className="px-3 sm:px-6 py-3 sm:py-4">
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1 flex-wrap">
-                        <CardTitle className="text-sm sm:text-lg break-words">
-                          {notification.title}
-                        </CardTitle>
-                        {!notification.isRead && (
-                          <Badge variant="default" className="text-xs flex-shrink-0">NEW</Badge>
-                        )}
-                      </div>
-                      <CardDescription className="text-xs sm:text-sm">
-                        {format(new Date(notification.createdAt), "PPP p", { locale: ko })}
-                      </CardDescription>
-                    </div>
-                    <div className="flex gap-1 sm:gap-2 flex-shrink-0">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-2 flex-wrap">
+                      <h3 className="text-base sm:text-lg font-semibold text-foreground break-words">
+                        {notification.title}
+                      </h3>
                       {!notification.isRead && (
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={() => handleMarkAsRead(notification.id)}
-                          disabled={markAsReadMutation.isPending}
-                          className="text-xs h-7 sm:h-9 px-2 sm:px-3"
-                        >
-                          <Check className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
-                          <span className="hidden sm:inline">읽음</span>
-                        </Button>
+                        <Badge className="text-xs bg-primary text-white flex-shrink-0">NEW</Badge>
                       )}
                     </div>
+                    <p className="text-xs sm:text-sm text-muted-foreground mb-2">
+                      {format(new Date(notification.createdAt), "PPP p", { locale: ko })}
+                    </p>
+                    <p className="text-sm text-muted-foreground break-words">
+                      {notification.message}
+                    </p>
                   </div>
-                </CardHeader>
-                <CardContent className="px-3 sm:px-6 pb-3 sm:pb-4">
-                  <p className="text-xs sm:text-sm text-muted-foreground break-words">
-                    {notification.message}
-                  </p>
-                </CardContent>
-              </Card>
+                  {!notification.isRead && (
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => handleMarkAsRead(notification.id)}
+                      disabled={markAsReadMutation.isPending}
+                      className="text-xs h-9 px-3 flex-shrink-0 rounded-md hover:bg-muted transition-colors"
+                    >
+                      <Check className="h-4 w-4" />
+                    </Button>
+                  )}
+                </div>
+              </div>
             ))}
           </div>
         ) : (
-          <Card className="shadow-sm sm:shadow-md ">
-            <CardContent className="py-8 sm:py-12 px-3 sm:px-6 text-center">
-              <Bell className="h-8 w-8 sm:h-12 sm:w-12 text-muted-foreground mx-auto mb-3 sm:mb-4" />
-              <p className="text-xs sm:text-sm text-muted-foreground">알림이 없습니다.</p>
-            </CardContent>
-          </Card>
+          <div className="card-premium-lg p-12 text-center">
+            <Bell className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+            <p className="text-sm text-muted-foreground">알림이 없습니다.</p>
+          </div>
         )}
       </div>
     </PageLayout>
