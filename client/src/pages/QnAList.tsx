@@ -102,8 +102,8 @@ export default function QnAList() {
         <div className="mb-8 sm:mb-12">
           <div className="flex items-center justify-between gap-2 mb-4 sm:mb-6">
             <div>
-              <h1 className="text-2xl sm:text-4xl font-bold mb-2">재학생에게 직접 묻기</h1>
-              <p className="text-sm sm:text-base text-muted-foreground">
+              <h1 className="text-2xl sm:text-4xl font-bold mb-2 text-[var(--color-text-primary)]">재학생에게 직접 묻기</h1>
+              <p className="text-sm sm:text-base text-[var(--color-text-secondary)]">
                 입시, 전공 선택, 학교 분위기, 대학생활까지<br className="sm:hidden" />
                 재학생 멘토에게 자유롭게 질문해보세요.
               </p>
@@ -116,7 +116,7 @@ export default function QnAList() {
                     setSelectedStatus('awaiting_answer');
                     window.scrollTo({ top: 400, behavior: 'smooth' });
                   }}
-                  className="text-xs sm:text-sm h-8 sm:h-10 flex-shrink-0 bg-green-600 hover:bg-green-700"
+                  className="text-xs sm:text-sm h-8 sm:h-10 flex-shrink-0 bg-[var(--color-cta-primary-bg)] hover:bg-[var(--color-cta-primary-bg-hover)]"
                 >
                   <MessageCircle className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                   <span className="hidden sm:inline">답변하기</span>
@@ -125,7 +125,7 @@ export default function QnAList() {
               ) : (
                 <Button
                   onClick={() => setLocation('/qna/new')}
-                  className="text-xs sm:text-sm h-8 sm:h-10 flex-shrink-0"
+                  className="text-xs sm:text-sm h-8 sm:h-10 flex-shrink-0 bg-[var(--color-cta-primary-bg)] hover:bg-[var(--color-cta-primary-bg-hover)]"
                 >
                   <Plus className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                   <span className="hidden sm:inline">질문하기</span>
@@ -136,11 +136,11 @@ export default function QnAList() {
           </div>
 
           {/* 안내 박스 */}
-          <Card className="bg-primary/5 border-blue-200 mb-6">
+          <Card className="bg-[var(--brand-primary-50)] border-[var(--color-border-default)] mb-6">
             <CardContent className="pt-4 px-4 pb-4">
               <div className="flex gap-3">
-                <AlertCircle className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
-                <div className="text-xs sm:text-sm text-blue-900 space-y-1">
+                <AlertCircle className="h-5 w-5 text-[var(--brand-primary-700)] flex-shrink-0 mt-0.5" />
+                <div className="text-xs sm:text-sm text-[var(--brand-primary-700)] space-y-1">
                   <p className="font-medium">좋은 질문 팁</p>
                   <ul className="text-xs space-y-0.5 opacity-90">
                     <li>• 한 질문에 한 가지 핵심 고민만 적기</li>
@@ -157,7 +157,7 @@ export default function QnAList() {
             <Button 
               variant="outline" 
               size="sm"
-              className="text-xs sm:text-sm"
+              className="text-xs sm:text-sm bg-[var(--color-cta-secondary-bg)] hover:bg-[var(--color-cta-secondary-bg-hover)]"
               onClick={() => setLocation('/mentors')}
             >
               멘토 찾기
@@ -166,7 +166,7 @@ export default function QnAList() {
               <Button 
                 variant="outline" 
                 size="sm"
-                className="text-xs sm:text-sm"
+                className="text-xs sm:text-sm bg-[var(--color-cta-secondary-bg)] hover:bg-[var(--color-cta-secondary-bg-hover)]"
                 onClick={() => setLocation('/qna/dashboard')}
               >
                 {isMentor ? '내 답변 관리' : '내 질문 관리'}
@@ -178,12 +178,12 @@ export default function QnAList() {
         {/* 검색 및 필터 바 */}
         <div className="mb-6 sm:mb-8 space-y-3 sm:space-y-4">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-[var(--color-text-secondary)]" />
             <Input
               placeholder="질문을 검색해보세요..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 text-xs sm:text-sm h-9 sm:h-10"
+              className="pl-10 text-xs sm:text-sm h-9 sm:h-10 border-[var(--color-border-default)]"
             />
           </div>
 
@@ -191,13 +191,13 @@ export default function QnAList() {
           <div className="flex gap-2 flex-wrap">
             {/* 카테고리 필터 */}
             <Select.Root value={selectedCategory} onValueChange={setSelectedCategory}>
-              <Select.Trigger className="inline-flex items-center justify-between px-3 py-2 text-xs sm:text-sm border border-input rounded-md bg-background hover:bg-accent h-9 sm:h-10 min-w-[110px]">
+              <Select.Trigger className="inline-flex items-center justify-between px-3 py-2 text-xs sm:text-sm border border-[var(--color-border-default)] rounded-md bg-white hover:bg-accent h-9 sm:h-10 min-w-[110px]">
                 <Select.Value />
                 <Select.Icon className="ml-2">
                   <ChevronDown className="h-3 w-3 sm:h-4 sm:w-4" />
                 </Select.Icon>
               </Select.Trigger>
-              <Select.Content className="bg-background border border-input rounded-md shadow-md  z-50">
+              <Select.Content className="bg-white border border-[var(--color-border-default)] rounded-md shadow-md  z-50">
                 <Select.Viewport className="p-1">
                   {CATEGORIES.map((cat) => (
                     <Select.Item key={cat.value} value={cat.value} className="px-3 py-2 text-xs sm:text-sm cursor-pointer hover:bg-accent rounded">
@@ -210,13 +210,13 @@ export default function QnAList() {
 
             {/* 정렬 옵션 */}
             <Select.Root value={sortBy} onValueChange={setSortBy}>
-              <Select.Trigger className="inline-flex items-center justify-between px-3 py-2 text-xs sm:text-sm border border-input rounded-md bg-background hover:bg-accent h-9 sm:h-10 min-w-[110px]">
+              <Select.Trigger className="inline-flex items-center justify-between px-3 py-2 text-xs sm:text-sm border border-[var(--color-border-default)] rounded-md bg-white hover:bg-accent h-9 sm:h-10 min-w-[110px]">
                 <Select.Value />
                 <Select.Icon className="ml-2">
                   <ChevronDown className="h-3 w-3 sm:h-4 sm:w-4" />
                 </Select.Icon>
               </Select.Trigger>
-              <Select.Content className="bg-background border border-input rounded-md shadow-md  z-50">
+              <Select.Content className="bg-white border border-[var(--color-border-default)] rounded-md shadow-md  z-50">
                 <Select.Viewport className="p-1">
                   {SORT_OPTIONS.map((opt) => (
                     <Select.Item key={opt.value} value={opt.value} className="px-3 py-2 text-xs sm:text-sm cursor-pointer hover:bg-accent rounded">
@@ -231,12 +231,12 @@ export default function QnAList() {
 
         {/* 상태 탭 */}
         <Tabs.Root value={selectedStatus} onValueChange={setSelectedStatus} className="mb-6">
-          <Tabs.List className="flex gap-1 border-b border-border overflow-x-auto pb-0">
+          <Tabs.List className="flex gap-1 border-b border-[var(--color-border-default)] overflow-x-auto pb-0">
             {STATUS_TABS.map((tab) => (
               <Tabs.Trigger
                 key={tab.value}
                 value={tab.value}
-                className="px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium text-muted-foreground hover:text-foreground data-[state=active]:text-foreground data-[state=active]:border-b-2 data-[state=active]:border-foreground whitespace-nowrap"
+                className="px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] data-[state=active]:text-[var(--color-text-primary)] data-[state=active]:border-b-2 data-[state=active]:border-[var(--color-text-primary)] whitespace-nowrap"
               >
                 {tab.label}
               </Tabs.Trigger>
@@ -246,43 +246,38 @@ export default function QnAList() {
 
         {/* 질문 목록 */}
         {isLoading ? (
-          <p className="text-xs sm:text-sm text-muted-foreground">로드 중...</p>
+          <p className="text-xs sm:text-sm text-[var(--color-text-secondary)]">로드 중...</p>
         ) : filteredQuestions && filteredQuestions.length > 0 ? (
           <div className="space-y-3 sm:space-y-4">
             {filteredQuestions.map((question: any) => {
               return (
                 <Card
                   key={question.id}
-                  className="card-premium overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer group group-hover:-translate-y-1"
+                  className="card-premium overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer group group-hover:-translate-y-1 bg-white border-[var(--color-border-default)]"
                   onClick={() => setLocation(`/qna/${question.id}`)}
                 >
                   <CardHeader className="pb-2 sm:pb-3 px-3 sm:px-6">
                     <div className="flex items-start justify-between gap-2">
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1 flex-wrap">
-                          <CardTitle className="text-base sm:text-lg truncate group-hover:text-primary transition-colors break-words">
+                          <CardTitle className="text-base sm:text-lg truncate group-hover:text-[var(--brand-primary-700)] transition-colors break-words text-[var(--color-text-primary)]">
                             {question.title}
                           </CardTitle>
                           <StatusBadge status={mapStatusToStatusBadge(question.status)} />
                         </div>
-                        <CardDescription className="text-xs sm:text-sm">
+                        <CardDescription className="text-xs sm:text-sm text-[var(--color-text-secondary)]">
                           {question.isAnonymous ? "익명" : question.author?.name || "사용자"} • {format(new Date(question.createdAt), "MMM dd", { locale: ko })}
                           {question.interestUniversity && ` • ${question.interestUniversity}`}
                           {question.interestMajor && ` • ${question.interestMajor}`}
                         </CardDescription>
                       </div>
-                      {question.category && (
-                        <Badge className="text-xs flex-shrink-0 bg-primary/10 text-primary border-0">
-                          {question.category}
-                        </Badge>
-                      )}
                     </div>
                   </CardHeader>
                   <CardContent className="px-3 sm:px-6 pb-3 sm:pb-4">
-                    <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2 mb-3">
+                    <p className="text-xs sm:text-sm text-[var(--color-text-secondary)] line-clamp-2 mb-3">
                       {question.content}
                     </p>
-                    <div className="flex items-center justify-between text-xs text-muted-foreground">
+                    <div className="flex items-center justify-between text-xs text-[var(--color-text-secondary)]">
                       <div className="flex gap-3">
                         {question.answerCount > 0 && (
                           <div className="flex items-center gap-1">
@@ -302,18 +297,18 @@ export default function QnAList() {
             })}
           </div>
         ) : (
-          <Card>
+          <Card className="bg-white border-[var(--color-border-default)]">
             <CardContent className="py-8 sm:py-12 text-center px-4">
-              <p className="text-xs sm:text-sm text-muted-foreground mb-4">
+              <p className="text-xs sm:text-sm text-[var(--color-text-secondary)] mb-4">
                 {searchQuery ? "검색 결과가 없습니다" : "질문이 없습니다"}
               </p>
               {!searchQuery && isAuthenticated && (
                 isMentor ? (
-                  <p className="text-xs text-muted-foreground">아직 답변을 기다리는 질문이 없습니다.</p>
+                  <p className="text-xs text-[var(--color-text-secondary)]">아직 답변을 기다리는 질문이 없습니다.</p>
                 ) : (
                   <Button
                     onClick={() => setLocation('/qna/new')}
-                    className="text-xs sm:text-sm h-8 sm:h-10"
+                    className="text-xs sm:text-sm h-8 sm:h-10 bg-[var(--color-cta-primary-bg)] hover:bg-[var(--color-cta-primary-bg-hover)]"
                   >
                     <Plus className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                     첫 번째 질문 작성하기

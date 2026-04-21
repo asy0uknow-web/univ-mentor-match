@@ -60,15 +60,15 @@ function EndReasonModal({
   };
 
   const descMap = {
-    early: { bg: "bg-amber-50 dark:bg-amber-950/30", border: "border-amber-200 dark:border-amber-800/50", text: "text-amber-700 dark:text-amber-400", msg: "예정된 상담 시간보다 일직 종료하려 합니다. 조기 완료 사유를 입력해주세요." },
-    late: { bg: "bg-primary/5", border: "border-blue-200", text: "text-blue-700", msg: "예정된 상담 시간보다 늘게 종료하려 합니다. 지연 완료 사유를 입력해주세요." },
-    normal: { bg: "bg-green-50 dark:bg-green-950/30", border: "border-green-200 dark:border-green-800/50", text: "text-green-700 dark:text-green-400", msg: "상담이 정상적으로 완료되었습니다." },
+    early: { bg: "bg-[var(--brand-accent-50)]", border: "border-[var(--color-border-default)]", text: "text-[var(--brand-accent-700)]", msg: "예정된 상담 시간보다 일직 종료하려 합니다. 조기 완료 사유를 입력해주세요." },
+    late: { bg: "bg-[var(--brand-primary-50)]", border: "border-[var(--color-border-default)]", text: "text-[var(--brand-primary-700)]", msg: "예정된 상담 시간보다 늘게 종료하려 합니다. 지연 완료 사유를 입력해주세요." },
+    normal: { bg: "bg-[var(--brand-secondary-50)]", border: "border-[var(--color-border-default)]", text: "text-[var(--brand-secondary-700)]", msg: "상담이 정상적으로 완료되었습니다." },
   };
 
   const btnColorMap = {
-    early: "bg-amber-500 hover:bg-amber-600",
-    late: "bg-blue-500 hover:bg-blue-600",
-    normal: "bg-green-500 hover:bg-green-600",
+    early: "bg-[var(--brand-accent-500)] hover:bg-[var(--brand-accent-600)]",
+    late: "bg-[var(--brand-primary-500)] hover:bg-[var(--brand-primary-600)]",
+    normal: "bg-[var(--brand-secondary-500)] hover:bg-[var(--brand-secondary-600)]",
   };
 
   const btnLabelMap = {
@@ -242,14 +242,14 @@ export default function Bookings() {
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen flex items-center justify-center px-4">
-        <Card className="w-full max-w-md">
+        <Card className="w-full max-w-md bg-white">
           <CardHeader>
-            <CardTitle className="text-lg sm:text-xl">로그인이 필요합니다</CardTitle>
-            <CardDescription className="text-xs sm:text-sm">예약 내역을 보려면 로그인해주세요.</CardDescription>
+            <CardTitle className="text-lg sm:text-xl text-[var(--color-text-primary)]">로그인이 필요합니다</CardTitle>
+            <CardDescription className="text-xs sm:text-sm text-[var(--color-text-secondary)]">예약 내역을 보려면 로그인해주세요.</CardDescription>
           </CardHeader>
           <CardContent>
             <a href={getLoginUrl()}>
-              <Button className="w-full text-xs sm:text-sm h-9 sm:h-10">로그인</Button>
+              <Button className="w-full text-xs sm:text-sm h-9 sm:h-10 bg-[var(--color-cta-primary-bg)] hover:bg-[var(--color-cta-primary-bg-hover)]">로그인</Button>
             </a>
           </CardContent>
         </Card>
@@ -268,45 +268,43 @@ export default function Bookings() {
     if (booking.status !== "confirmed" && booking.status !== "in_progress") return null;
 
     return (
-      <div className="mt-3 p-3 bg-primary/5 border border-blue-100 rounded-lg space-y-2">
-        <p className="text-xs font-semibold text-blue-700 flex items-center gap-1">
+      <div className="mt-3 p-3 bg-[var(--brand-primary-50)] border border-[var(--color-border-default)] rounded-lg space-y-2">
+        <p className="text-xs font-semibold text-[var(--brand-primary-700)] flex items-center gap-1">
           <Info className="h-3 w-3" />
           상담 진행 상태
         </p>
         {booking.status === "confirmed" && (
-          <div className="space-y-1 text-xs text-blue-600">
+          <div className="space-y-1 text-xs text-[var(--brand-primary-700)]">
             <div className="flex items-center gap-2">
-              <span className={myStarted ? "text-green-600 dark:text-green-400 font-medium" : "text-muted-foreground"}>
+              <span className={myStarted ? "text-[var(--brand-secondary-700)] font-medium" : "text-[var(--color-text-secondary)]"}>
                 {myStarted ? "✓" : "○"} 나의 시작 확인
               </span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className={otherStarted ? "text-green-600 dark:text-green-400 font-medium" : "text-muted-foreground"}>
+              <span className={otherStarted ? "text-[var(--brand-secondary-700)] font-medium" : "text-[var(--color-text-secondary)]"}>
                 {otherStarted ? "✓" : "○"} {isStudent ? "멘토" : "멘티"}의 시작 확인
               </span>
             </div>
             {myStarted && !otherStarted && (
-              <p className="text-amber-600 text-xs mt-1">
+              <p className="text-[var(--brand-accent-700)] text-xs mt-1">
                 ⏳ {isStudent ? "멘토" : "멘티"}가 시작 버튼을 누르면 상담이 시작됩니다.
               </p>
             )}
           </div>
         )}
         {booking.status === "in_progress" && (
-          <div className="space-y-1 text-xs text-blue-600">
-            <p className="text-green-600 dark:text-green-400 font-medium">✓ 상담 진행 중</p>
+          <div className="space-y-1 text-xs text-[var(--brand-primary-700)]">
+            <p className="text-[var(--brand-secondary-700)] font-medium">✓ 상담 진행 중</p>
             <div className="flex items-center gap-2">
-              <span className={myEnded ? "text-green-600 dark:text-green-400 font-medium" : "text-muted-foreground"}>
+              <span className={myEnded ? "text-[var(--brand-secondary-700)] font-medium" : "text-[var(--color-text-secondary)]"}>
                 {myEnded ? "✓" : "○"} 나의 종료 확인
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <span className={otherEnded ? "text-green-600 dark:text-green-400 font-medium" : "text-muted-foreground"}>
+              <span className={otherEnded ? "text-[var(--brand-secondary-700)] font-medium" : "text-[var(--color-text-secondary)]"}>
                 {otherEnded ? "✓" : "○"} {isStudent ? "멘토" : "멘티"}의 종료 확인
               </span>
             </div>
             {myEnded && !otherEnded && (
-              <p className="text-amber-600 text-xs mt-1">
+              <p className="text-[var(--brand-accent-700)] text-xs mt-1">
                 ⏳ {isStudent ? "멘토" : "멘티"}가 종료 버튼을 누르면 상담이 완료됩니다.
               </p>
             )}
@@ -321,13 +319,13 @@ export default function Bookings() {
     return (
       <PageLayout>
         <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-12">
-          <h1 className="text-2xl sm:text-4xl font-bold mb-2 sm:mb-4">예약 내역</h1>
-          <p className="text-sm text-muted-foreground mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-4xl font-bold mb-2 sm:mb-4 text-[var(--color-text-primary)]">예약 내역</h1>
+          <p className="text-sm text-[var(--color-text-secondary)] mb-6 sm:mb-8">
             상담이 확정되면 예정 시간 5분 전후에 시작 버튼을 눌러주세요. 멘토와 멘티 모두 시작 버튼을 눌러야 상담이 시작됩니다.
           </p>
 
           {bookingsLoading ? (
-            <p className="text-xs sm:text-sm text-muted-foreground">로딩 중...</p>
+            <p className="text-xs sm:text-sm text-[var(--color-text-secondary)]">로딩 중...</p>
           ) : bookings && bookings.length > 0 ? (
             <div className="space-y-3 sm:space-y-4">
               {bookings.map((item) => {
@@ -354,14 +352,14 @@ export default function Bookings() {
                 const canReview = item.booking.status === "completed";
 
                 return (
-                  <Card key={item.booking.id} className="overflow-hidden">
+                  <Card key={item.booking.id} className="overflow-hidden bg-white">
                     <CardHeader className="pb-2 sm:pb-4 px-3 sm:px-6">
                       <div className="flex items-start justify-between gap-2">
                         <div className="flex-1 min-w-0">
-                          <CardTitle className="text-base sm:text-xl truncate">
+                          <CardTitle className="text-base sm:text-xl truncate text-[var(--color-text-primary)]">
                             {item.mentor.name || "멘토"}
                           </CardTitle>
-                          <CardDescription className="text-xs sm:text-sm truncate">
+                          <CardDescription className="text-xs sm:text-sm truncate text-[var(--color-text-secondary)]">
                             {item.mentorProfile?.university} · {item.mentorProfile?.major}
                           </CardDescription>
                         </div>
@@ -370,34 +368,34 @@ export default function Bookings() {
                     </CardHeader>
                     <CardContent className="px-3 sm:px-6 pb-3 sm:pb-4">
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4 mb-3 sm:mb-4">
-                        <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground">
+                        <div className="flex items-center gap-2 text-xs sm:text-sm text-[var(--color-text-secondary)]">
                           <Calendar className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
                           <span className="truncate">
                             {format(scheduledAt, "M월 d일 HH:mm", { locale: ko })}
                           </span>
                         </div>
-                        <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground">
+                        <div className="flex items-center gap-2 text-xs sm:text-sm text-[var(--color-text-secondary)]">
                           <Clock className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
                           <span>{item.booking.duration}시간</span>
                         </div>
-                        <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground col-span-1 sm:col-span-2">
+                        <div className="flex items-center gap-2 text-xs sm:text-sm text-[var(--color-text-secondary)] col-span-1 sm:col-span-2">
                           <BookOpen className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
                           <span className="truncate">{getConsultationTypeName(item.booking.consultationType)}</span>
                         </div>
                       </div>
 
                       {item.booking.studentMessage && (
-                        <div className="mt-3 p-2 sm:p-3 bg-muted rounded-lg mb-3">
-                          <p className="text-xs text-muted-foreground mb-1">전달 메시지</p>
-                          <p className="text-xs sm:text-sm whitespace-pre-wrap line-clamp-3">{item.booking.studentMessage}</p>
+                        <div className="mt-3 p-2 sm:p-3 bg-[var(--brand-primary-50)] rounded-lg mb-3">
+                          <p className="text-xs text-[var(--brand-primary-700)] mb-1">전달 메시지</p>
+                          <p className="text-xs sm:text-sm whitespace-pre-wrap line-clamp-3 text-[var(--color-text-primary)]">{item.booking.studentMessage}</p>
                         </div>
                       )}
 
                       {/* 상담 시작 가능 시간 안내 */}
                       {item.booking.status === "confirmed" && (
-                        <div className="p-2 sm:p-3 bg-primary/5 rounded-lg border border-blue-100 mb-3">
-                          <p className="text-xs font-semibold text-blue-700 mb-1">상담 시작 가능 시간</p>
-                          <p className="text-xs sm:text-sm text-blue-600">
+                        <div className="p-2 sm:p-3 bg-[var(--brand-primary-50)] rounded-lg border border-[var(--color-border-default)] mb-3">
+                          <p className="text-xs font-semibold text-[var(--brand-primary-700)] mb-1">상담 시작 가능 시간</p>
+                          <p className="text-xs sm:text-sm text-[var(--brand-primary-700)]">
                             {format(new Date(scheduledAt.getTime() - fiveMinutesMs), "HH:mm", { locale: ko })} ~ {format(new Date(scheduledAt.getTime() + startWindowMs), "HH:mm", { locale: ko })}
                           </p>
                         </div>
@@ -408,9 +406,9 @@ export default function Bookings() {
 
                       {/* 상담 완료 정보 */}
                       {item.booking.status === "completed" && (
-                        <div className="mt-3 p-2 sm:p-3 bg-purple-50 rounded-lg mb-3">
-                          <p className="text-xs font-semibold text-purple-700 mb-2">상담 완료 정보</p>
-                          <div className="space-y-1 text-xs text-purple-600">
+                        <div className="mt-3 p-2 sm:p-3 bg-[var(--brand-secondary-50)] rounded-lg mb-3">
+                          <p className="text-xs font-semibold text-[var(--brand-secondary-700)] mb-2">상담 완료 정보</p>
+                          <div className="space-y-1 text-xs text-[var(--brand-secondary-700)]">
                             <p>예정: {format(scheduledAt, "M월 d일 HH:mm", { locale: ko })}</p>
                             {item.booking.consultationStartedAt && (
                               <p>실제 시작: {format(new Date(item.booking.consultationStartedAt), "HH:mm", { locale: ko })}</p>
@@ -429,7 +427,7 @@ export default function Bookings() {
                       <div className="flex flex-col sm:flex-row gap-2 pt-3 sm:pt-4">
                         <Button
                           onClick={() => setLocation(`/messages?mentorUUID=${item.mentorProfile?.uuid || 0}`)}
-                          className="flex-1 text-xs sm:text-sm h-8 sm:h-9"
+                          className="flex-1 text-xs sm:text-sm h-8 sm:h-9 bg-[var(--color-cta-secondary-bg)] hover:bg-[var(--color-cta-secondary-bg-hover)]"
                         >
                           <MessageCircle className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                           메시지
@@ -439,7 +437,7 @@ export default function Bookings() {
                           <Button
                             onClick={() => handleStartClick(item.booking.id)}
                             disabled={recordUserStartMutation.isPending}
-                            className="flex-1 text-xs sm:text-sm h-8 sm:h-9 bg-blue-500 hover:bg-blue-600"
+                            className="flex-1 text-xs sm:text-sm h-8 sm:h-9 bg-[var(--brand-primary-500)] hover:bg-[var(--brand-primary-600)]"
                           >
                             <Play className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                             상담 시작
@@ -447,7 +445,7 @@ export default function Bookings() {
                         )}
 
                         {alreadyStarted && (
-                          <div className="flex-1 flex items-center justify-center text-xs text-green-600 dark:text-green-400 font-medium bg-green-50 dark:bg-green-950/30 rounded-md px-3 h-8 sm:h-9">
+                          <div className="flex-1 flex items-center justify-center text-xs text-[var(--brand-secondary-700)] font-medium bg-[var(--brand-secondary-50)] rounded-md px-3 h-8 sm:h-9">
                             ✓ 시작 확인 완료 (멘토 대기중)
                           </div>
                         )}
@@ -456,7 +454,7 @@ export default function Bookings() {
                           <Button
                             onClick={() => handleEndClick(item.booking.id, currentEndType)}
                             disabled={recordUserEndMutation.isPending}
-                            className={`flex-1 text-xs sm:text-sm h-8 sm:h-9 ${currentEndType === 'early' ? "bg-amber-500 hover:bg-amber-600" : currentEndType === 'late' ? "bg-blue-500 hover:bg-blue-600" : "bg-green-500 hover:bg-green-600"}`}
+                            className={`flex-1 text-xs sm:text-sm h-8 sm:h-9 ${currentEndType === 'early' ? "bg-[var(--brand-accent-500)] hover:bg-[var(--brand-accent-600)]" : currentEndType === 'late' ? "bg-[var(--brand-primary-500)] hover:bg-[var(--brand-primary-600)]" : "bg-[var(--brand-secondary-500)] hover:bg-[var(--brand-secondary-600)]"}`}
                           >
                             <Square className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                             {currentEndType === 'early' ? "조기 완료" : currentEndType === 'late' ? "지연 완료" : "상담 종료"}
@@ -464,7 +462,7 @@ export default function Bookings() {
                         )}
 
                         {alreadyEnded && (
-                          <div className="flex-1 flex items-center justify-center text-xs text-green-600 dark:text-green-400 font-medium bg-green-50 dark:bg-green-950/30 rounded-md px-3 h-8 sm:h-9">
+                          <div className="flex-1 flex items-center justify-center text-xs text-[var(--brand-secondary-700)] font-medium bg-[var(--brand-secondary-50)] rounded-md px-3 h-8 sm:h-9">
                             ✓ 종료 확인 완료 (멘토 대기중)
                           </div>
                         )}
@@ -472,7 +470,7 @@ export default function Bookings() {
                         {canReview && (
                           <Button
                             onClick={() => setLocation(`/reviews/new?bookingId=${item.booking.id}`)}
-                            className="flex-1 text-xs sm:text-sm h-8 sm:h-9 bg-yellow-500 hover:bg-yellow-600"
+                            className="flex-1 text-xs sm:text-sm h-8 sm:h-9 bg-[var(--brand-accent-500)] hover:bg-[var(--brand-accent-600)]"
                           >
                             <Star className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                             후기 작성
@@ -485,13 +483,13 @@ export default function Bookings() {
               })}
             </div>
           ) : (
-            <Card>
+            <Card className="bg-white">
               <CardContent className="py-8 sm:py-12 text-center px-4">
-                <p className="text-xs sm:text-sm text-muted-foreground mb-6">예약 내역이 존재하지 않습니다.</p>
-                <p className="text-xs sm:text-sm text-muted-foreground mb-6">멘토를 찾아 상담을 시작해보세요!</p>
+                <p className="text-xs sm:text-sm text-[var(--color-text-secondary)] mb-6">예약 내역이 존재하지 않습니다.</p>
+                <p className="text-xs sm:text-sm text-[var(--color-text-secondary)] mb-6">멘토를 찾아 상담을 시작해보세요!</p>
                 <div className="flex flex-col sm:flex-row gap-3 justify-center">
                   <Link href="/mentors">
-                    <Button className="text-xs sm:text-sm h-8 sm:h-10">멘토 찾아보기</Button>
+                    <Button className="text-xs sm:text-sm h-8 sm:h-10 bg-[var(--color-cta-primary-bg)] hover:bg-[var(--color-cta-primary-bg-hover)]">멘토 찾아보기</Button>
                   </Link>
                   <Button
                     variant="outline"
@@ -521,13 +519,13 @@ export default function Bookings() {
   return (
     <PageLayout>
       <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-12">
-        <h1 className="text-2xl sm:text-4xl font-bold mb-2 sm:mb-4">상담 예약 내역</h1>
-        <p className="text-sm text-muted-foreground mb-6 sm:mb-8">
+        <h1 className="text-2xl sm:text-4xl font-bold mb-2 sm:mb-4 text-[var(--color-text-primary)]">상담 예약 내역</h1>
+        <p className="text-sm text-[var(--color-text-secondary)] mb-6 sm:mb-8">
           상담 시간이 되면 시작 버튼을 눌러주세요. 멘티와 멘토 모두 시작 버튼을 눌러야 상담이 시작됩니다.
         </p>
 
         {mentorBookingsLoading ? (
-          <p className="text-xs sm:text-sm text-muted-foreground">로딩 중...</p>
+          <p className="text-xs sm:text-sm text-[var(--color-text-secondary)]">로딩 중...</p>
         ) : mentorBookings && mentorBookings.length > 0 ? (
           <div className="space-y-3 sm:space-y-4">
             {mentorBookings.map((item: any) => {
@@ -553,17 +551,17 @@ export default function Bookings() {
                 item.booking.status === "in_progress" && now > new Date(scheduledEnd.getTime() + fiveMinutesMs) ? 'late' : 'normal';
 
               return (
-                <Card key={item.booking.id} className={`overflow-hidden ${item.booking.status === "pending" ? "border-amber-200 dark:border-amber-800/50 bg-amber-50 dark:bg-amber-950/30/30" : ""}`}>
+                <Card key={item.booking.id} className={`overflow-hidden bg-white ${item.booking.status === "pending" ? "border-[var(--color-border-default)] bg-[var(--brand-accent-50)]" : ""}`}>
                   <CardHeader className="pb-2 sm:pb-4 px-3 sm:px-6">
                     <div className="flex items-start justify-between gap-2">
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1 sm:mb-2">
-                          <User className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground flex-shrink-0" />
-                          <CardTitle className="text-base sm:text-xl truncate">
+                          <User className="h-3 w-3 sm:h-4 sm:w-4 text-[var(--color-text-secondary)] flex-shrink-0" />
+                          <CardTitle className="text-base sm:text-xl truncate text-[var(--color-text-primary)]">
                             {item.student?.name || "학생"}
                           </CardTitle>
                         </div>
-                        <CardDescription className="text-xs sm:text-sm truncate">
+                        <CardDescription className="text-xs sm:text-sm truncate text-[var(--color-text-secondary)]">
                           {item.student?.email}
                         </CardDescription>
                       </div>
@@ -573,37 +571,37 @@ export default function Bookings() {
                   <CardContent className="px-3 sm:px-6 pb-3 sm:pb-4">
                     <div className="space-y-3 sm:space-y-4">
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4">
-                        <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground">
+                        <div className="flex items-center gap-2 text-xs sm:text-sm text-[var(--color-text-secondary)]">
                           <Calendar className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
                           <span className="truncate">
                             {format(scheduledAt, "M월 d일 HH:mm", { locale: ko })}
                           </span>
                         </div>
-                        <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground">
+                        <div className="flex items-center gap-2 text-xs sm:text-sm text-[var(--color-text-secondary)]">
                           <Clock className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
                           <span>{item.booking.duration}시간</span>
                         </div>
-                        <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground">
+                        <div className="flex items-center gap-2 text-xs sm:text-sm text-[var(--color-text-secondary)]">
                           <BookOpen className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
                           <span className="truncate">{getConsultationTypeName(item.booking.consultationType)}</span>
                         </div>
                         <div className="flex items-center gap-2 text-xs sm:text-sm font-semibold">
-                          <span className="text-primary">₩{parseInt(item.booking.totalAmount).toLocaleString()}</span>
+                          <span className="text-[var(--brand-primary-700)]">₩{parseInt(item.booking.totalAmount).toLocaleString()}</span>
                         </div>
                       </div>
 
                       {item.booking.studentMessage && (
-                        <div className="p-2 sm:p-3 bg-muted rounded-lg">
-                          <p className="text-xs text-muted-foreground mb-1">멘티 메시지</p>
-                          <p className="text-xs sm:text-sm whitespace-pre-wrap line-clamp-3">{item.booking.studentMessage}</p>
+                        <div className="p-2 sm:p-3 bg-[var(--brand-primary-50)] rounded-lg">
+                          <p className="text-xs text-[var(--brand-primary-700)] mb-1">멘티 메시지</p>
+                          <p className="text-xs sm:text-sm whitespace-pre-wrap line-clamp-3 text-[var(--color-text-primary)]">{item.booking.studentMessage}</p>
                         </div>
                       )}
 
                       {/* 상담 시작 가능 시간 안내 */}
                       {item.booking.status === "confirmed" && (
-                        <div className="p-2 sm:p-3 bg-primary/5 rounded-lg border border-blue-100">
-                          <p className="text-xs font-semibold text-blue-700 mb-1">상담 시작 가능 시간</p>
-                          <p className="text-xs sm:text-sm text-blue-600">
+                        <div className="p-2 sm:p-3 bg-[var(--brand-primary-50)] rounded-lg border border-[var(--color-border-default)]">
+                          <p className="text-xs font-semibold text-[var(--brand-primary-700)] mb-1">상담 시작 가능 시간</p>
+                          <p className="text-xs sm:text-sm text-[var(--brand-primary-700)]">
                             {format(new Date(scheduledAt.getTime() - fiveMinutesMs), "HH:mm", { locale: ko })} ~ {format(new Date(scheduledAt.getTime() + startWindowMs), "HH:mm", { locale: ko })}
                           </p>
                         </div>
@@ -614,9 +612,9 @@ export default function Bookings() {
 
                       {/* 상담 완료 정보 */}
                       {item.booking.status === "completed" && (
-                        <div className="p-2 sm:p-3 bg-purple-50 rounded-lg">
-                          <p className="text-xs font-semibold text-purple-700 mb-2">상담 완료 정보</p>
-                          <div className="space-y-1 text-xs text-purple-600">
+                        <div className="p-2 sm:p-3 bg-[var(--brand-secondary-50)] rounded-lg">
+                          <p className="text-xs font-semibold text-[var(--brand-secondary-700)] mb-2">상담 완료 정보</p>
+                          <div className="space-y-1 text-xs text-[var(--brand-secondary-700)]">
                             <p>예정: {format(scheduledAt, "M월 d일 HH:mm", { locale: ko })}</p>
                             {item.booking.consultationStartedAt && (
                               <p>실제 시작: {format(new Date(item.booking.consultationStartedAt), "HH:mm", { locale: ko })}</p>
@@ -635,7 +633,7 @@ export default function Bookings() {
                       <div className="flex flex-col sm:flex-row gap-2 pt-2 sm:pt-3">
                         <Button
                           onClick={() => setLocation(`/messages?studentId=${item.student?.id}`)}
-                          className="flex-1 text-xs sm:text-sm h-8 sm:h-9"
+                          className="flex-1 text-xs sm:text-sm h-8 sm:h-9 bg-[var(--color-cta-secondary-bg)] hover:bg-[var(--color-cta-secondary-bg-hover)]"
                         >
                           <MessageCircle className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                           메시지
@@ -645,7 +643,7 @@ export default function Bookings() {
                           <>
                             <Button
                               onClick={() => setLocation(`/messages?studentId=${item.student?.id}`)}
-                              className="flex-1 text-xs sm:text-sm h-8 sm:h-9 bg-green-500 hover:bg-green-600"
+                              className="flex-1 text-xs sm:text-sm h-8 sm:h-9 bg-[var(--brand-secondary-500)] hover:bg-[var(--brand-secondary-600)]"
                             >
                               <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                               수락
@@ -664,7 +662,7 @@ export default function Bookings() {
                           <Button
                             onClick={() => handleStartClick(item.booking.id)}
                             disabled={recordUserStartMutation.isPending}
-                            className="flex-1 text-xs sm:text-sm h-8 sm:h-9 bg-blue-500 hover:bg-blue-600"
+                            className="flex-1 text-xs sm:text-sm h-8 sm:h-9 bg-[var(--brand-primary-500)] hover:bg-[var(--brand-primary-600)]"
                           >
                             <Play className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                             상담 시작
@@ -672,7 +670,7 @@ export default function Bookings() {
                         )}
 
                         {alreadyStarted && (
-                          <div className="flex-1 flex items-center justify-center text-xs text-green-600 dark:text-green-400 font-medium bg-green-50 dark:bg-green-950/30 rounded-md px-3 h-8 sm:h-9">
+                          <div className="flex-1 flex items-center justify-center text-xs text-[var(--brand-secondary-700)] font-medium bg-[var(--brand-secondary-50)] rounded-md px-3 h-8 sm:h-9">
                             ✓ 시작 확인 완료 (멘티 대기중)
                           </div>
                         )}
@@ -681,7 +679,7 @@ export default function Bookings() {
                           <Button
                             onClick={() => handleEndClick(item.booking.id, currentMentorEndType)}
                             disabled={recordUserEndMutation.isPending}
-                            className={`flex-1 text-xs sm:text-sm h-8 sm:h-9 ${currentMentorEndType === 'early' ? "bg-amber-500 hover:bg-amber-600" : currentMentorEndType === 'late' ? "bg-blue-500 hover:bg-blue-600" : "bg-green-500 hover:bg-green-600"}`}
+                            className={`flex-1 text-xs sm:text-sm h-8 sm:h-9 ${currentMentorEndType === 'early' ? "bg-[var(--brand-accent-500)] hover:bg-[var(--brand-accent-600)]" : currentMentorEndType === 'late' ? "bg-[var(--brand-primary-500)] hover:bg-[var(--brand-primary-600)]" : "bg-[var(--brand-secondary-500)] hover:bg-[var(--brand-secondary-600)]"}`}
                           >
                             <Square className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                             {currentMentorEndType === 'early' ? "조기 완료" : currentMentorEndType === 'late' ? "지연 완료" : "상담 종료"}
@@ -689,7 +687,7 @@ export default function Bookings() {
                         )}
 
                         {alreadyEnded && (
-                          <div className="flex-1 flex items-center justify-center text-xs text-green-600 dark:text-green-400 font-medium bg-green-50 dark:bg-green-950/30 rounded-md px-3 h-8 sm:h-9">
+                          <div className="flex-1 flex items-center justify-center text-xs text-[var(--brand-secondary-700)] font-medium bg-[var(--brand-secondary-50)] rounded-md px-3 h-8 sm:h-9">
                             ✓ 종료 확인 완료 (멘티 대기중)
                           </div>
                         )}
@@ -701,9 +699,9 @@ export default function Bookings() {
             })}
           </div>
         ) : (
-          <Card>
+          <Card className="bg-white">
             <CardContent className="py-8 sm:py-12 text-center px-4">
-              <p className="text-xs sm:text-sm text-muted-foreground">상담 예약이 없습니다.</p>
+              <p className="text-xs sm:text-sm text-[var(--color-text-secondary)]">상담 예약이 없습니다.</p>
             </CardContent>
           </Card>
         )}

@@ -3120,3 +3120,22 @@
   - [ ] Bookings 페이지 - 상태 카드, 버튼
 - [ ] Phase 6: 접근성 검증 및 모바일 테스트
 - [ ] Phase 7: 최종 체크포인트 저장
+
+
+## 브랜드 컬러 토큰 시스템 정립 (완료)
+- [x] Phase 1: 현재 색상 사용 현황 감사 및 분석
+- [x] Phase 2: 브랜드 팔레트 정의 (Primary Blue, Secondary Teal, Accent Amber, Neutral Gray)
+- [x] Phase 3: CSS 변수 시스템 구축 (brandTokens.css)
+- [x] Phase 4: StatusBadge 컴포넌트 리팩토링
+- [x] Phase 5: 주요 페이지별 색상 적용 (Home, Mentors, QnA, Columns, Messages, Bookings)
+- [x] Phase 6: 접근성 검증 및 모바일 테스트
+  - [x] 색상 대비: WCAG AAA 기준 충족
+  - [x] Focus 상태: 명확한 3-5px 파란색 링
+  - [x] 상태 표현: 색상 + 텍스트 + 아이콘
+  - [x] Disabled 상태: 명확히 구분
+  - [x] 모바일 반응형: 44x44px 터치 타겟
+  - [x] 다크 모드: 완전 지원
+  - [x] 키보드 네비게이션: Tab/Shift+Tab 가능
+  - [x] 스크린 리더: ARIA 속성 완전 구현
+  - [x] 색상 사용 규칙: 모두 준수
+- [x] Phase 7: 최종 체크포인트 저장

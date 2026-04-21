@@ -31,12 +31,12 @@ const CONSULTATION_TYPES = {
 
 // ===== 제안 상태 정보 =====
 const PROPOSAL_STATUS = {
-  pending: { label: "수락 대기 중", color: "text-amber-600", bg: "bg-amber-50 dark:bg-amber-950/30 border-amber-200 dark:border-amber-800/50", icon: Clock },
-  accepted: { label: "상담 확정됨", color: "text-emerald-600", bg: "bg-emerald-50 border-emerald-200", icon: CheckCircle2 },
-  rejected: { label: "거절됨", color: "text-red-500", bg: "bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-800/50", icon: XCircle },
-  counter_proposed: { label: "수정 제안됨", color: "text-blue-600", bg: "bg-primary/5 border-blue-200", icon: RefreshCw },
-  cancelled: { label: "취소됨", color: "text-muted-foreground", bg: "bg-background 900 border-border 700 700", icon: XCircle },
-  completed: { label: "상담 완료", color: "text-purple-600", bg: "bg-purple-50 border-purple-200", icon: Star },
+  pending: { label: "수락 대기 중", color: "text-[var(--brand-accent-700)]", bg: "bg-[var(--brand-accent-50)] border-[var(--color-border-default)]", icon: Clock },
+  accepted: { label: "상담 확정됨", color: "text-[var(--brand-secondary-700)]", bg: "bg-[var(--brand-secondary-50)] border-[var(--color-border-default)]", icon: CheckCircle2 },
+  rejected: { label: "거절됨", color: "text-red-700", bg: "bg-red-50 border-[var(--color-border-default)]", icon: XCircle },
+  counter_proposed: { label: "수정 제안됨", color: "text-[var(--brand-primary-700)]", bg: "bg-[var(--brand-primary-50)] border-[var(--color-border-default)]", icon: RefreshCw },
+  cancelled: { label: "취소됨", color: "text-[var(--color-text-secondary)]", bg: "bg-[var(--color-bg-card)] border-[var(--color-border-default)]", icon: XCircle },
+  completed: { label: "상담 완료", color: "text-[var(--brand-secondary-700)]", bg: "bg-[var(--brand-secondary-50)] border-[var(--color-border-default)]", icon: Star },
 } as const;
 
 // 이모지 반응 목록
@@ -69,9 +69,9 @@ function ReadReceipt({ isRead, isMe }: { isRead: boolean; isMe: boolean }) {
   return (
     <span className="inline-flex items-center ml-1">
       {isRead ? (
-        <CheckCheck className="h-3 w-3 text-blue-400" />
+        <CheckCheck className="h-3 w-3 text-[var(--brand-primary-700)]" />
       ) : (
-        <Check className="h-3 w-3 text-muted-foreground/60" />
+        <Check className="h-3 w-3 text-[var(--color-text-secondary)]/60" />
       )}
     </span>
   );
@@ -81,13 +81,13 @@ function ReadReceipt({ isRead, isMe }: { isRead: boolean; isMe: boolean }) {
 function TypingIndicator({ name }: { name: string }) {
   return (
     <div className="flex items-center gap-2 px-4 py-2">
-      <div className="flex gap-1 items-center bg-muted rounded-2xl px-3 py-2">
-        <span className="text-xs text-muted-foreground mr-1">{name}님이 입력 중</span>
+      <div className="flex gap-1 items-center bg-[var(--color-bg-card)] rounded-2xl px-3 py-2 border border-[var(--color-border-default)]">
+        <span className="text-xs text-[var(--color-text-secondary)] mr-1">{name}님이 입력 중</span>
         <span className="flex gap-0.5">
           {[0, 1, 2].map(i => (
             <span
               key={i}
-              className="w-1.5 h-1.5 bg-muted-foreground/60 rounded-full animate-bounce"
+              className="w-1.5 h-1.5 bg-[var(--color-text-secondary)]/60 rounded-full animate-bounce"
               style={{ animationDelay: `${i * 0.15}s` }}
             />
           ))}
@@ -106,9 +106,9 @@ function DateDivider({ date }: { date: Date }) {
 
   return (
     <div className="flex items-center gap-3 my-4">
-      <div className="flex-1 h-px bg-border" />
-      <span className="text-xs text-muted-foreground bg-background px-2 whitespace-nowrap">{label}</span>
-      <div className="flex-1 h-px bg-border" />
+      <div className="flex-1 h-px bg-[var(--color-border-default)]" />
+      <span className="text-xs text-[var(--color-text-secondary)] bg-[var(--color-bg-card)] px-2 whitespace-nowrap">{label}</span>
+      <div className="flex-1 h-px bg-[var(--color-border-default)]" />
     </div>
   );
 }
@@ -139,8 +139,8 @@ function ReactionBubbles({ reactions, currentUserId, messageId, onToggle }: {
             onClick={() => onToggle(emoji)}
             className={`flex items-center gap-0.5 px-2 py-0.5 rounded-full text-xs border transition-all ${
               isMyReaction
-                ? "bg-primary/10 border-primary/30 text-primary"
-                : "bg-muted/60 border-border hover:bg-muted"
+                ? "bg-[var(--brand-primary-50)] border-[var(--brand-primary-700)]/30 text-[var(--brand-primary-700)]"
+                : "bg-[var(--color-bg-card)] border-[var(--color-border-default)] hover:bg-[var(--color-bg-card)]"
             }`}
           >
             <span>{emoji}</span>
@@ -155,7 +155,7 @@ function ReactionBubbles({ reactions, currentUserId, messageId, onToggle }: {
 // ===== 이모지 피커 =====
 function EmojiPicker({ onSelect, onClose }: { onSelect: (emoji: string) => void; onClose: () => void }) {
   return (
-    <div className="absolute bottom-full mb-1 bg-background border rounded-xl shadow-lg p-2 flex gap-1 z-50">
+    <div className="absolute bottom-full mb-1 bg-[var(--color-bg-card)] border border-[var(--color-border-default)] rounded-xl shadow-lg p-2 flex gap-1 z-50">
       {REACTION_EMOJIS.map(emoji => (
         <button
           key={emoji}
@@ -182,7 +182,7 @@ function MessageActions({ isMe, onEdit, onDelete, onReact, isDeleted }: {
     <div className={`flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity ${isMe ? "flex-row-reverse" : "flex-row"}`}>
       <button
         onClick={onReact}
-        className="p-1 rounded hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
+        className="p-1 rounded hover:bg-[var(--color-bg-card)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors"
         title="반응 추가"
       >
         <Smile className="h-3.5 w-3.5" />
@@ -191,16 +191,16 @@ function MessageActions({ isMe, onEdit, onDelete, onReact, isDeleted }: {
         <div className="relative">
           <button
             onClick={() => setOpen(!open)}
-            className="p-1 rounded hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
+            className="p-1 rounded hover:bg-[var(--color-bg-card)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors"
           >
             <MoreHorizontal className="h-3.5 w-3.5" />
           </button>
           {open && (
-            <div className={`absolute bottom-full mb-1 bg-background border rounded-xl shadow-lg py-1 z-50 min-w-[100px] ${isMe ? "right-0" : "left-0"}`}>
+            <div className={`absolute bottom-full mb-1 bg-[var(--color-bg-card)] border border-[var(--color-border-default)] rounded-xl shadow-lg py-1 z-50 min-w-[100px] ${isMe ? "right-0" : "left-0"}`}>
               {onEdit && (
                 <button
                   onClick={() => { onEdit(); setOpen(false); }}
-                  className="w-full flex items-center gap-2 px-3 py-1.5 text-sm hover:bg-muted transition-colors"
+                  className="w-full flex items-center gap-2 px-3 py-1.5 text-sm hover:bg-[var(--color-bg-card)] transition-colors"
                 >
                   <Pencil className="h-3.5 w-3.5" /> 수정
                 </button>
@@ -208,7 +208,7 @@ function MessageActions({ isMe, onEdit, onDelete, onReact, isDeleted }: {
               {onDelete && (
                 <button
                   onClick={() => { onDelete(); setOpen(false); }}
-                  className="w-full flex items-center gap-2 px-3 py-1.5 text-sm text-red-500 hover:bg-red-50 dark:bg-red-950/30 transition-colors"
+                  className="w-full flex items-center gap-2 px-3 py-1.5 text-sm text-red-700 hover:bg-red-50 transition-colors"
                 >
                   <Trash2 className="h-3.5 w-3.5" /> 삭제
                 </button>
@@ -248,7 +248,7 @@ function ProposalFormDialog({
       <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Calendar className="h-5 w-5 text-primary" />
+            <Calendar className="h-5 w-5 text-[var(--brand-primary-700)]" />
             {isCounter 
               ? "상담 일정 수정 제안"
               : userRole === "mentor"
@@ -265,7 +265,7 @@ function ProposalFormDialog({
                 min={format(new Date(), "yyyy-MM-dd")}
                 value={scheduledDate} 
                 onChange={(e) => setScheduledDate(e.target.value)}
-                className="w-full px-3 py-2 border border-input rounded-md bg-background text-sm"
+                className="w-full px-3 py-2 border border-[var(--color-border-default)] rounded-md bg-[var(--color-bg-card)] text-sm"
               />
             </div>
             <div className="space-y-1">
@@ -273,7 +273,7 @@ function ProposalFormDialog({
               <select 
                 value={scheduledTime} 
                 onChange={(e) => setScheduledTime(e.target.value)}
-                className="w-full px-3 py-2 border border-input rounded-md bg-background text-sm"
+                className="w-full px-3 py-2 border border-[var(--color-border-default)] rounded-md bg-[var(--color-bg-card)] text-sm"
               >
                 <option value="">시간 선택</option>
                 {Array.from({ length: 144 }, (_, i) => {
@@ -289,10 +289,10 @@ function ProposalFormDialog({
           <div className="space-y-1">
             <Label>상담 방식</Label>
             <div className="flex gap-2">
-              <button type="button" onClick={() => setMode("online")} className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg border-2 text-sm font-medium transition-all ${mode === "online" ? "border-primary bg-primary/10 text-primary" : "border-muted hover:border-primary/40"}`}>
+              <button type="button" onClick={() => setMode("online")} className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg border-2 text-sm font-medium transition-all ${mode === "online" ? "border-[var(--brand-primary-700)] bg-[var(--brand-primary-50)] text-[var(--brand-primary-700)]" : "border-[var(--color-border-default)] hover:border-[var(--brand-primary-700)]/40"}`}>
                 <Video className="h-4 w-4" /> 온라인
               </button>
-              <button type="button" onClick={() => setMode("offline")} className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg border-2 text-sm font-medium transition-all ${mode === "offline" ? "border-primary bg-primary/10 text-primary" : "border-muted hover:border-primary/40"}`}>
+              <button type="button" onClick={() => setMode("offline")} className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg border-2 text-sm font-medium transition-all ${mode === "offline" ? "border-[var(--brand-primary-700)] bg-[var(--brand-primary-50)] text-[var(--brand-primary-700)]" : "border-[var(--color-border-default)] hover:border-[var(--brand-primary-700)]/40"}`}>
                 <Users className="h-4 w-4" /> 오프라인
               </button>
             </div>
@@ -336,7 +336,7 @@ function ProposalFormDialog({
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={onClose}>취소</Button>
-          <Button onClick={handleSubmit}>
+          <Button onClick={handleSubmit} className="bg-[var(--color-cta-primary-bg)] hover:bg-[var(--color-cta-primary-bg-hover)]">
             <Calendar className="h-4 w-4 mr-2" />
             {isCounter ? "수정 제안 보내기" : "제안 보내기"}
           </Button>
@@ -347,7 +347,9 @@ function ProposalFormDialog({
 }
 
 // ===== 상담 제안 카드 컴포넌트 =====
-function ProposalCard({ proposalData, isMyMessage, currentUserId, onAccept, onReject, onCounter, onComplete }: {
+function ProposalCard({
+  proposalData, isMyMessage, currentUserId, onAccept, onReject, onCounter, onComplete
+}: {
   proposalData: any; isMyMessage: boolean; currentUserId: number;
   onAccept: (id: number) => void; onReject: (id: number) => void;
   onCounter: (proposal: any) => void; onComplete: (id: number) => void;
@@ -369,56 +371,56 @@ function ProposalCard({ proposalData, isMyMessage, currentUserId, onAccept, onRe
         <StatusIcon className={`h-4 w-4 ${statusInfo.color}`} />
         <span className={`text-sm font-semibold ${statusInfo.color}`}>{statusInfo.label}</span>
         {proposalData.isCounter && (
-          <span className="ml-auto text-xs bg-primary/10 text-blue-700 px-2 py-0.5 rounded-full">수정 제안</span>
+          <span className="ml-auto text-xs bg-[var(--brand-primary-50)] text-[var(--brand-primary-700)] px-2 py-0.5 rounded-full">수정 제안</span>
         )}
       </div>
-      <div className="px-4 py-3 space-y-2 bg-card /80">
+      <div className="px-4 py-3 space-y-2 bg-[var(--color-bg-card)]/80">
         <div className="flex items-center gap-2 text-sm">
-          <Calendar className="h-4 w-4 text-primary shrink-0" />
+          <Calendar className="h-4 w-4 text-[var(--brand-primary-700)] shrink-0" />
           <span className="font-medium">{formattedDate}</span>
         </div>
         <div className="flex items-center gap-2 text-sm">
           {proposalData.consultationMode === "online" ? (
-            <Video className="h-4 w-4 text-blue-500 shrink-0" />
+            <Video className="h-4 w-4 text-[var(--brand-primary-700)] shrink-0" />
           ) : (
-            <MapPin className="h-4 w-4 text-orange-500 shrink-0" />
+            <MapPin className="h-4 w-4 text-[var(--brand-accent-700)] shrink-0" />
           )}
           <span>{proposalData.consultationMode === "online" ? "온라인" : `오프라인${proposalData.location ? ` · ${proposalData.location}` : ""}`}</span>
         </div>
-        <div className="flex items-center gap-4 text-xs text-muted-foreground">
+        <div className="flex items-center gap-4 text-xs text-[var(--color-text-secondary)]">
           <span className="flex items-center gap-1"><Clock className="h-3 w-3" /> {durationLabel}</span>
           <span className="flex items-center gap-1"><ChevronRight className="h-3 w-3" /> {typeLabel}</span>
         </div>
         {proposalData.note && (
-          <p className="text-xs text-muted-foreground bg-muted/50 rounded-lg px-3 py-2 mt-1">💬 {proposalData.note}</p>
+          <p className="text-xs text-[var(--color-text-secondary)] bg-[var(--color-bg-card)] rounded-lg px-3 py-2 mt-1 border border-[var(--color-border-default)]">💬 {proposalData.note}</p>
         )}
       </div>
       {canAct && (
-        <div className="px-4 py-3 flex gap-2 border-t bg-card /60">
-          <Button size="sm" className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white" onClick={() => onAccept(proposalData.proposalId)}>
+        <div className="px-4 py-3 flex gap-2 border-t border-[var(--color-border-default)] bg-[var(--color-bg-card)]/60">
+          <Button size="sm" className="flex-1 bg-[var(--brand-secondary-700)] hover:bg-[var(--brand-secondary-700)]/90 text-white" onClick={() => onAccept(proposalData.proposalId)}>
             <ThumbsUp className="h-3 w-3 mr-1" /> 수락
           </Button>
-          <Button size="sm" variant="outline" className="flex-1 border-blue-300 text-blue-700 hover:bg-primary/5" onClick={() => onCounter(proposalData)}>
+          <Button size="sm" variant="outline" className="flex-1 border-[var(--brand-primary-700)]/30 text-[var(--brand-primary-700)] hover:bg-[var(--brand-primary-50)]" onClick={() => onCounter(proposalData)}>
             <RefreshCw className="h-3 w-3 mr-1" /> 수정 제안
           </Button>
-          <Button size="sm" variant="outline" className="flex-1 border-red-300 text-red-600 hover:bg-red-50 dark:bg-red-950/30" onClick={() => onReject(proposalData.proposalId)}>
+          <Button size="sm" variant="outline" className="flex-1 border-red-300 text-red-700 hover:bg-red-50" onClick={() => onReject(proposalData.proposalId)}>
             <ThumbsDown className="h-3 w-3 mr-1" /> 거절
           </Button>
         </div>
       )}
       {canComplete && (
-        <div className="px-4 py-3 border-t bg-card /60 space-y-3">
-          <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-lg">
-            <p className="text-xs font-semibold text-emerald-700 mb-1">🎉 상담이 확정되었습니다!</p>
-            <p className="text-xs text-emerald-600 leading-relaxed">
+        <div className="px-4 py-3 border-t border-[var(--color-border-default)] bg-[var(--color-bg-card)]/60 space-y-3">
+          <div className="p-3 bg-[var(--brand-secondary-50)] border border-[var(--brand-secondary-700)]/20 rounded-lg">
+            <p className="text-xs font-semibold text-[var(--brand-secondary-700)] mb-1">🎉 상담이 확정되었습니다!</p>
+            <p className="text-xs text-[var(--brand-secondary-700)] leading-relaxed">
               예약 내역 페이지에서 상담 시간 <strong>5분 전후</strong>에 시작 버튼을 눌러주세요.
               멘토와 멘티 <strong>모두</strong> 시작 버튼을 눌러야 상담이 시작됩니다.
             </p>
-            <p className="text-xs text-emerald-600 mt-1 leading-relaxed">
+            <p className="text-xs text-[var(--brand-secondary-700)] mt-1 leading-relaxed">
               상담 종료 시에도 양쪽 모두 종료 버튼을 눌러야 상담이 완료 처리됩니다.
             </p>
           </div>
-          <Button size="sm" className="w-full bg-purple-600 hover:bg-purple-700 text-white" onClick={() => onComplete(proposalData.proposalId)}>
+          <Button size="sm" className="w-full bg-[var(--brand-secondary-700)] hover:bg-[var(--brand-secondary-700)]/90 text-white" onClick={() => onComplete(proposalData.proposalId)}>
             <Star className="h-3 w-3 mr-1" /> 상담 완료 처리
           </Button>
         </div>
@@ -448,55 +450,31 @@ export function Messages() {
   const [messageContent, setMessageContent] = useState("");
   const [selectedConversation, setSelectedConversation] = useState<number | null>(null);
   const [mentorProfileId, setMentorProfileId] = useState<string | null>(null);
+  const [studentProfileId, setStudentProfileId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [messageSearch, setMessageSearch] = useState("");
+  const [showMessageSearch, setShowMessageSearch] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [showProposalForm, setShowProposalForm] = useState(false);
-  const [counterProposalData, setCounterProposalData] = useState<any>(null);
   const [showCounterForm, setShowCounterForm] = useState(false);
+  const [counterProposalData, setCounterProposalData] = useState<any>(null);
   const [editingMessageId, setEditingMessageId] = useState<number | null>(null);
   const [editContent, setEditContent] = useState("");
   const [emojiPickerMessageId, setEmojiPickerMessageId] = useState<number | null>(null);
-  const [messageSearch, setMessageSearch] = useState("");
-  const [showMessageSearch, setShowMessageSearch] = useState(false);
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const utils = trpc.useUtils();
+  const utils = trpc.useContext();
 
-  const adjustTextareaHeight = useCallback(() => {
-    if (textareaRef.current) {
-      textareaRef.current.style.height = "auto";
-      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 120)}px`;
-    }
-  }, []);
-
+  // URL 쿼리 파라미터에서 mentorId 또는 studentId 가져오기
   useEffect(() => {
-    // URL 쿼리 파라미터에서 mentorId, studentUUID, mentorUUID 추출
-    const params = new URLSearchParams(window.location.search);
-    const mentorUuid = params.get('mentorId');
-    const studentUuid = params.get('studentUUID');
-    const mentorUuidParam = params.get('mentorUUID');
-    
-    if (mentorUuid) {
-      setMentorProfileId(mentorUuid);
-    } else if (studentUuid) {
-      // 학생 UUID: 멘토가 학생과 대화
-      setStudentProfileId(studentUuid);
-    } else if (mentorUuidParam) {
-      // 멘토 UUID: 멘티가 멘토와 대화
-      setMentorProfileId(mentorUuidParam);
-    } else {
-      // 없으면 기존 로직 (sessionStorage 확인)
-      const storedId = sessionStorage.getItem("openConversationId");
-      if (storedId) {
-        setSelectedConversation(parseInt(storedId));
-        sessionStorage.removeItem("openConversationId");
-      }
-    }
-  }, []);
-  
-  // 상태 변수 추가
-  const [studentProfileId, setStudentProfileId] = useState<string | null>(null);
-  
+    const searchParams = new URLSearchParams(window.location.search);
+    const mId = searchParams.get('mentorId');
+    const sId = searchParams.get('studentId');
+    if (mId) setMentorProfileId(mId);
+    if (sId) setStudentProfileId(sId);
+  }, [location]);
+
   // 멘토 프로필 UUID가 있으면 해당 멘토의 사용자 ID 조회
   const { data: mentorData } = trpc.mentor.getById.useQuery(
     { mentorId: mentorProfileId || '' },
@@ -713,7 +691,7 @@ export function Messages() {
     // 1. 먼저 conversations[userId]에서 상대방 이름 찾기
     const msgs: any[] = conversations[userId] || [];
     if (msgs.length > 0) {
-      const msg = msgs[0]; // 첫 번째 메시지 사용
+      const msg = msgs[0];
       // 현재 사용자가 발신자면 recipientName 반환
       if (msg.senderId === user?.id && msg.recipientName) {
         return msg.recipientName;
@@ -872,9 +850,9 @@ export function Messages() {
     if (msg.senderId === 0) {
       return (
         <div className="flex justify-center my-3">
-          <div className="bg-primary/5 border border-blue-200 rounded-lg px-4 py-2 text-center">
-            <p className="text-sm text-blue-700 font-medium">{msg.content}</p>
-            <p className="text-xs text-blue-600 mt-1">{getRelativeTime(msg.createdAt)}</p>
+          <div className="bg-[var(--brand-primary-50)] border border-[var(--brand-primary-700)]/20 rounded-lg px-4 py-2 text-center">
+            <p className="text-sm text-[var(--brand-primary-700)] font-medium">{msg.content}</p>
+            <p className="text-xs text-[var(--brand-primary-700)]/70 mt-1">{getRelativeTime(msg.createdAt)}</p>
           </div>
         </div>
       );
@@ -889,7 +867,7 @@ export function Messages() {
         return (
           <div className={`flex ${isMe ? "justify-end" : "justify-start"} group`}>
             <div className="max-w-sm w-full">
-              <p className={`text-xs mb-1 ${isMe ? "text-right" : "text-left"} text-muted-foreground`}>
+              <p className={`text-xs mb-1 ${isMe ? "text-right" : "text-left"} text-[var(--color-text-secondary)]`}>
                 {isMe ? "상담 일정 제안을 보냈어요" : "상담 일정 제안이 도착했어요"}
               </p>
               <ProposalCard
@@ -899,7 +877,7 @@ export function Messages() {
                 onCounter={(data) => { setCounterProposalData(data); setShowCounterForm(true); }}
                 onComplete={(id) => completeProposalMutation.mutate({ proposalId: id })}
               />
-              <p className={`text-xs mt-1 ${isMe ? "text-right" : "text-left"} text-muted-foreground`}>
+              <p className={`text-xs mt-1 ${isMe ? "text-right" : "text-left"} text-[var(--color-text-secondary)]`}>
                 {getRelativeTime(msg.createdAt)}
               </p>
             </div>
@@ -929,7 +907,7 @@ export function Messages() {
         <div className={`flex flex-col ${isMe ? "items-end" : "items-start"} max-w-[70%]`}>
           {/* 발신자 이름 (그룹화되지 않은 첫 메시지에만 표시) */}
           {!isMe && !msg.isGrouped && (
-            <p className="text-xs text-muted-foreground mb-1 px-1">{msg.senderName}</p>
+            <p className="text-xs text-[var(--color-text-secondary)] mb-1 px-1">{msg.senderName}</p>
           )}
 
           <div className={`flex items-end gap-1 ${isMe ? "flex-row-reverse" : "flex-row"}`}>
@@ -953,7 +931,7 @@ export function Messages() {
             <div className="flex flex-col">
               {/* 메시지 버블 */}
               {isEditing ? (
-                <div className="flex flex-col gap-2 min-w-[200px]">
+                <div className="flex flex-col gap-2 bg-[var(--color-bg-card)] p-2 rounded-lg border border-[var(--color-border-default)]">
                   <Textarea
                     value={editContent}
                     onChange={e => setEditContent(e.target.value)}
@@ -963,7 +941,7 @@ export function Messages() {
                   />
                   <div className="flex gap-1 justify-end">
                     <Button size="sm" variant="outline" onClick={() => setEditingMessageId(null)}>취소</Button>
-                    <Button size="sm" onClick={() => handleEditSubmit(msg.id)}>저장</Button>
+                    <Button size="sm" onClick={() => handleEditSubmit(msg.id)} className="bg-[var(--color-cta-primary-bg)] hover:bg-[var(--color-cta-primary-bg-hover)]">저장</Button>
                   </div>
                 </div>
               ) : (
@@ -974,18 +952,18 @@ export function Messages() {
                       : isMe ? "rounded-2xl rounded-br-sm" : "rounded-2xl rounded-bl-sm"
                   } ${
                     msg.isDeleted
-                      ? "bg-muted/50 border border-dashed border-muted-foreground/30"
+                      ? "bg-[var(--color-bg-card)] border border-dashed border-[var(--color-border-default)]"
                       : isMe
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-muted"
+                      ? "bg-[var(--brand-primary-700)] text-white"
+                      : "bg-[var(--color-bg-card)] border border-[var(--color-border-default)]"
                   }`}
                   title={getFullTime(msg.createdAt)}
                 >
-                  <p className={`text-sm whitespace-pre-wrap break-words leading-relaxed ${msg.isDeleted ? "text-muted-foreground italic" : ""}`}>
+                  <p className={`text-sm whitespace-pre-wrap break-words leading-relaxed ${msg.isDeleted ? "text-[var(--color-text-secondary)] italic" : ""}`}>
                     {msg.content}
                   </p>
                   {msg.isEdited && !msg.isDeleted && (
-                    <span className={`text-[10px] ${isMe ? "text-primary-foreground/60" : "text-muted-foreground/60"}`}> (수정됨)</span>
+                    <span className={`text-[10px] ${isMe ? "text-white/60" : "text-[var(--color-text-secondary)]/60"}`}> (수정됨)</span>
                   )}
                 </div>
               )}
@@ -1004,7 +982,7 @@ export function Messages() {
             {/* 시간 + 읽음 표시 (마지막 메시지에만) */}
             {msg.isLast && (
               <div className={`flex items-center gap-0.5 mb-1 ${isMe ? "flex-row-reverse" : "flex-row"}`}>
-                <span className="text-[10px] text-muted-foreground whitespace-nowrap">{getRelativeTime(msg.createdAt)}</span>
+                <span className="text-[10px] text-[var(--color-text-secondary)] whitespace-nowrap">{getRelativeTime(msg.createdAt)}</span>
                 <ReadReceipt isRead={msg.isRead} isMe={isMe} />
               </div>
             )}
@@ -1017,16 +995,23 @@ export function Messages() {
   if (!isAuthenticated) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <Card className="w-full max-w-md">
+        <Card className="w-full max-w-md bg-[var(--color-bg-card)] border-[var(--color-border-default)]">
           <CardHeader><CardTitle>로그인 필요</CardTitle></CardHeader>
           <CardContent>
-            <p className="text-muted-foreground mb-4">상담을 조율하려면 로그인이 필요합니다.</p>
-            <a href={getLoginUrl()}><Button className="w-full">로그인</Button></a>
+            <p className="text-[var(--color-text-secondary)] mb-4">상담을 조율하려면 로그인이 필요합니다.</p>
+            <a href={getLoginUrl()}><Button className="w-full bg-[var(--color-cta-primary-bg)] hover:bg-[var(--color-cta-primary-bg-hover)]">로그인</Button></a>
           </CardContent>
         </Card>
       </div>
     );
   }
+
+  const adjustTextareaHeight = () => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+    }
+  };
 
   return (
     <PageLayout>
@@ -1035,10 +1020,10 @@ export function Messages() {
         <div className="hidden md:flex flex-col h-full overflow-hidden gap-4">
           {/* 제목 영역 */}
           <div className="shrink-0">
-            <h1 className="text-2xl sm:text-3xl font-bold">
+            <h1 className="text-2xl sm:text-3xl font-bold text-[var(--color-text-primary)]">
               {user?.role === "mentor" ? "상담 요청" : "상담 신청"}
             </h1>
-            <p className="text-xs sm:text-sm text-muted-foreground mt-1">
+            <p className="text-xs sm:text-sm text-[var(--color-text-secondary)] mt-1">
               {user?.role === "mentor" 
                 ? "멘티로부터 받은 상담 요청을 확인하고 상담을 확정하세요"
                 : "메시지로 멘토에게 상담을 신청하고 상담을 확정하세요"}
@@ -1047,7 +1032,7 @@ export function Messages() {
 
           {/* 대화 목록 */}
           <div className="flex-1 overflow-hidden">
-            <Card className="h-full flex flex-col">
+            <Card className="h-full flex flex-col bg-[var(--color-bg-card)] border-[var(--color-border-default)]">
               <CardHeader className="pb-2 sm:pb-3">
                 <CardTitle className="flex items-center gap-2 text-sm sm:text-base">
                   <MessageSquare className="h-4 w-4" /> 대화 목록
@@ -1055,7 +1040,7 @@ export function Messages() {
               </CardHeader>
               <CardContent className="pb-2 sm:pb-3 px-3 sm:px-4">
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--color-text-secondary)]" />
                   <Input
                     placeholder="대화 검색..."
                     value={searchQuery}
@@ -1091,8 +1076,8 @@ export function Messages() {
                           }}
                           className={`w-full text-left p-3 sm:p-4 rounded-xl transition-all cursor-pointer group ${
                             isSelected 
-                              ? "bg-primary text-primary-foreground shadow-md " 
-                              : "bg-card  hover:bg-background border border-border hover:border-slate-300 hover:shadow-sm"
+                              ? "bg-[var(--brand-primary-700)] text-white shadow-md " 
+                              : "bg-[var(--color-bg-card)] hover:bg-[var(--brand-primary-50)] border border-[var(--color-border-default)] hover:border-[var(--brand-primary-700)]/30 hover:shadow-sm"
                           }`}
                         >
                           <div className="flex items-start gap-3">
@@ -1100,12 +1085,12 @@ export function Messages() {
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center justify-between gap-2 mb-1.5">
                                 <p className={`font-semibold truncate ${
-                                  isSelected ? "text-primary-foreground" : unreadCount > 0 ? "text-foreground font-bold" : "text-foreground"
+                                  isSelected ? "text-white" : unreadCount > 0 ? "text-[var(--color-text-primary)] font-bold" : "text-[var(--color-text-primary)]"
                                 }`}>
                                   {name}
                                 </p>
                                 <span className={`text-xs shrink-0 ${
-                                  isSelected ? "text-primary-foreground/70" : "text-muted-foreground"
+                                  isSelected ? "text-white/70" : "text-[var(--color-text-secondary)]"
                                 }`}>
                                   {getRelativeTime(lastMsg.createdAt)}
                                 </span>
@@ -1113,10 +1098,10 @@ export function Messages() {
                               
                               <p className={`text-sm truncate mb-2 ${
                                 isSelected 
-                                  ? "text-primary-foreground/90" 
+                                  ? "text-white/90" 
                                   : unreadCount > 0 
-                                    ? "text-foreground font-medium" 
-                                    : "text-muted-foreground"
+                                    ? "text-[var(--color-text-primary)] font-medium" 
+                                    : "text-[var(--color-text-secondary)]"
                               }`}>
                                 {preview}
                               </p>
@@ -1125,8 +1110,8 @@ export function Messages() {
                                 {unreadCount > 0 && (
                                   <span className={`inline-flex items-center justify-center px-2 py-1 text-xs font-bold rounded-full ${
                                     isSelected 
-                                      ? "bg-primary-foreground/20 text-primary-foreground" 
-                                      : "bg-primary text-primary-foreground"
+                                      ? "bg-white/20 text-white" 
+                                      : "bg-[var(--brand-primary-700)] text-white"
                                   }`}>
                                     {unreadCount > 99 ? "99+" : unreadCount}개 미확인
                                   </span>
@@ -1139,25 +1124,25 @@ export function Messages() {
                     })}
                   </div>
                 ) : (
-                  <p className="text-sm text-muted-foreground text-center py-8">아직 대화가 없습니다.</p>
+                  <p className="text-sm text-[var(--color-text-secondary)] text-center py-8">아직 대화가 없습니다.</p>
                 )}
               </CardContent>
             </Card>
           </div>
         </div>
 
-        {/* 우츧0 채팅 영역 */}
+        {/* 우측 채팅 영역 */}
         <div className="flex flex-col overflow-hidden h-full" style={{ minHeight: 0 }}>
           {/* 모바일 토글 버튼 */}
           <div className="mb-2 sm:mb-3 flex items-center gap-2 md:hidden">
-            <Button variant="outline" size="sm" onClick={() => setSidebarOpen(!sidebarOpen)} className="h-8 w-8 p-0">
+            <Button variant="outline" size="sm" onClick={() => setSidebarOpen(!sidebarOpen)} className="h-8 w-8 p-0 border-[var(--color-border-default)]">
               {sidebarOpen ? <XIcon className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
             </Button>
           </div>
 
           {/* 모바일 사이드바 */}
           <div className={`${sidebarOpen ? "w-full" : "w-0"} md:hidden transition-all duration-300 overflow-hidden flex flex-col shrink-0 mb-2 sm:mb-3`}>
-            <Card className="h-80 flex flex-col">
+            <Card className="h-80 flex flex-col bg-[var(--color-bg-card)] border-[var(--color-border-default)]">
               <CardHeader className="pb-2 sm:pb-3">
                 <CardTitle className="flex items-center gap-2 text-sm sm:text-base">
                   <MessageSquare className="h-4 w-4" /> 대화 목록
@@ -1165,7 +1150,7 @@ export function Messages() {
               </CardHeader>
               <CardContent className="pb-2 sm:pb-3 px-3 sm:px-4">
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--color-text-secondary)]" />
                   <Input
                     placeholder="대화 검색..."
                     value={searchQuery}
@@ -1178,7 +1163,6 @@ export function Messages() {
                 {filteredConversations.length > 0 ? (
                   <div className="space-y-1">
                     {filteredConversations.map(([userId, msgs]: [string, any]) => {
-                      // 시스템 메시지(senderId === 0)를 제외하고 마지막 일반 메시지 찾기
                       const lastMsg = msgs.find((m: any) => m.senderId !== 0) || msgs[0];
                       const isSelected = parseInt(userId) === selectedConversation;
                       const unreadCount = getUnreadCount(parseInt(userId));
@@ -1201,8 +1185,8 @@ export function Messages() {
                           }}
                           className={`w-full text-left p-3 sm:p-4 rounded-xl transition-all cursor-pointer group ${
                             isSelected 
-                              ? "bg-primary text-primary-foreground shadow-md " 
-                              : "bg-card  hover:bg-background border border-border hover:border-slate-300 hover:shadow-sm"
+                              ? "bg-[var(--brand-primary-700)] text-white shadow-md " 
+                              : "bg-[var(--color-bg-card)] hover:bg-[var(--brand-primary-50)] border border-[var(--color-border-default)] hover:border-[var(--brand-primary-700)]/30 hover:shadow-sm"
                           }`}
                         >
                           <div className="flex items-start gap-3">
@@ -1210,38 +1194,25 @@ export function Messages() {
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center justify-between gap-2 mb-1.5">
                                 <p className={`font-semibold truncate ${
-                                  isSelected ? "text-primary-foreground" : unreadCount > 0 ? "text-foreground font-bold" : "text-foreground"
+                                  isSelected ? "text-white" : unreadCount > 0 ? "text-[var(--color-text-primary)] font-bold" : "text-[var(--color-text-primary)]"
                                 }`}>
                                   {name}
                                 </p>
                                 <span className={`text-xs shrink-0 ${
-                                  isSelected ? "text-primary-foreground/70" : "text-muted-foreground"
+                                  isSelected ? "text-white/70" : "text-[var(--color-text-secondary)]"
                                 }`}>
                                   {getRelativeTime(lastMsg.createdAt)}
                                 </span>
                               </div>
-                              
                               <p className={`text-sm truncate mb-2 ${
                                 isSelected 
-                                  ? "text-primary-foreground/90" 
+                                  ? "text-white/90" 
                                   : unreadCount > 0 
-                                    ? "text-foreground font-medium" 
-                                    : "text-muted-foreground"
+                                    ? "text-[var(--color-text-primary)] font-medium" 
+                                    : "text-[var(--color-text-secondary)]"
                               }`}>
                                 {preview}
                               </p>
-                              
-                              <div className="flex items-center gap-2">
-                                {unreadCount > 0 && (
-                                  <span className={`inline-flex items-center justify-center px-2 py-1 text-xs font-bold rounded-full ${
-                                    isSelected 
-                                      ? "bg-primary-foreground/20 text-primary-foreground" 
-                                      : "bg-primary text-primary-foreground"
-                                  }`}>
-                                    {unreadCount > 99 ? "99+" : unreadCount}개 미확인
-                                  </span>
-                                )}
-                              </div>
                             </div>
                           </div>
                         </div>
@@ -1249,7 +1220,7 @@ export function Messages() {
                     })}
                   </div>
                 ) : (
-                  <p className="text-sm text-muted-foreground text-center py-8">아직 대화가 없습니다.</p>
+                  <p className="text-sm text-[var(--color-text-secondary)] text-center py-8">아직 대화가 없습니다.</p>
                 )}
               </CardContent>
             </Card>
@@ -1258,16 +1229,16 @@ export function Messages() {
           {/* 데스크톱 채팅 영역 */}
           <div className="hidden md:flex flex-col flex-1 overflow-hidden">
             {selectedConversation ? (
-              <Card className="flex flex-col overflow-hidden flex-1 h-full" style={{ minHeight: 0 }}>
+              <Card className="flex flex-col overflow-hidden flex-1 h-full bg-[var(--color-bg-card)] border-[var(--color-border-default)]" style={{ minHeight: 0 }}>
                 {/* 채팅 헤더 */}
-                <CardHeader className="border-b shrink-0 py-2 sm:py-3">
+                <CardHeader className="border-b border-[var(--color-border-default)] shrink-0 py-2 sm:py-3">
                   <div className="flex items-center justify-between gap-2">
                     <div className="flex items-center gap-2 sm:gap-3">
                       <Avatar name={getOtherUserName(selectedConversation || 0)} size="sm" />
                       <div>
-                        <CardTitle className="text-sm sm:text-base">{otherUserName}</CardTitle>
+                        <CardTitle className="text-sm sm:text-base text-[var(--color-text-primary)]">{otherUserName}</CardTitle>
                         {typingStatus?.isTyping && (
-                          <p className="text-xs text-muted-foreground">입력 중...</p>
+                          <p className="text-xs text-[var(--color-text-secondary)]">입력 중...</p>
                         )}
                       </div>
                     </div>
@@ -1276,19 +1247,19 @@ export function Messages() {
                         variant="ghost"
                         size="sm"
                         onClick={() => setShowMessageSearch(!showMessageSearch)}
-                        className={`h-8 w-8 p-0 ${showMessageSearch ? "bg-muted" : ""}`}
+                        className={`h-8 w-8 p-0 ${showMessageSearch ? "bg-[var(--brand-primary-50)]" : ""}`}
                       >
                         <Search className="h-4 w-4" />
                       </Button>
                       <Link href="/mentors" className="hidden sm:block">
-                        <Button variant="outline" size="sm" className="text-xs sm:text-sm h-8 sm:h-9">멘토 목록</Button>
+                        <Button variant="outline" size="sm" className="text-xs sm:text-sm h-8 sm:h-9 border-[var(--color-border-default)]">멘토 목록</Button>
                       </Link>
                     </div>
                   </div>
                   {/* 메시지 내 검색 */}
                   {showMessageSearch && (
                     <div className="mt-2 relative">
-                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--color-text-secondary)]" />
                       <Input
                         placeholder="대화 내 검색..."
                         value={messageSearch}
@@ -1325,8 +1296,8 @@ export function Messages() {
                   ) : (
                     <div className="flex items-center justify-center h-full">
                       <div className="text-center">
-                        <MessageSquare className="h-10 w-10 mx-auto text-muted-foreground/40 mb-3" />
-                        <p className="text-muted-foreground text-sm">
+                        <MessageSquare className="h-10 w-10 mx-auto text-[var(--color-text-secondary)]/40 mb-3" />
+                        <p className="text-[var(--color-text-secondary)] text-sm">
                           {messageSearch ? "검색 결과가 없습니다." : "아직 메시지가 없습니다.\n상담 일정을 제안해보세요!"}
                         </p>
                       </div>
@@ -1335,12 +1306,12 @@ export function Messages() {
                 </div>
 
                 {/* 입력 영역 */}
-                <CardContent className="border-t pt-2 sm:pt-3 pb-2 sm:pb-3 shrink-0 space-y-2 px-2 sm:px-4">
+                <CardContent className="border-t border-[var(--color-border-default)] pt-2 sm:pt-3 pb-2 sm:pb-3 shrink-0 space-y-2 px-2 sm:px-4">
                   {shouldShowProposalButton ? (
                     <Button
                       variant="outline"
                       size="sm"
-                      className="w-full gap-1.5 text-primary border-primary/30 hover:bg-primary/5 text-xs sm:text-sm h-8 sm:h-9"
+                      className="w-full gap-1.5 text-[var(--brand-primary-700)] border-[var(--brand-primary-700)]/30 hover:bg-[var(--brand-primary-50)] text-xs sm:text-sm h-8 sm:h-9"
                       onClick={() => setShowProposalForm(true)}
                     >
                       <Calendar className="h-3 w-3 sm:h-4 sm:w-4" />
@@ -1351,7 +1322,7 @@ export function Messages() {
                       <Button
                         variant="outline"
                         size="sm"
-                        className="flex-1 gap-1.5 text-blue-600 border-blue-300 hover:bg-primary/5 text-xs sm:text-sm h-8 sm:h-9"
+                        className="flex-1 gap-1.5 text-[var(--brand-primary-700)] border-[var(--brand-primary-700)]/30 hover:bg-[var(--brand-primary-50)] text-xs sm:text-sm h-8 sm:h-9"
                         onClick={() => setShowProposalForm(true)}
                       >
                         <RefreshCw className="h-3 w-3 sm:h-4 sm:w-4" />
@@ -1360,7 +1331,7 @@ export function Messages() {
                       <Button
                         variant="outline"
                         size="sm"
-                        className="flex-1 gap-1.5 text-emerald-600 border-emerald-300 hover:bg-emerald-50 text-xs sm:text-sm h-8 sm:h-9"
+                        className="flex-1 gap-1.5 text-[var(--brand-secondary-700)] border-[var(--brand-secondary-700)]/30 hover:bg-[var(--brand-secondary-50)] text-xs sm:text-sm h-8 sm:h-9"
                         onClick={() => setShowProposalForm(true)}
                       >
                         <Plus className="h-3 w-3 sm:h-4 sm:w-4" />
@@ -1379,14 +1350,14 @@ export function Messages() {
                         handleTyping();
                       }}
                       onKeyDown={e => { if (e.key === "Enter" && e.ctrlKey) handleSendMessage(); }}
-                      className="resize-none flex-1 px-2 sm:px-3 py-2 rounded-lg border text-xs sm:text-sm bg-background"
+                      className="resize-none flex-1 px-2 sm:px-3 py-2 rounded-lg border border-[var(--color-border-default)] text-xs sm:text-sm bg-[var(--color-bg-card)] text-[var(--color-text-primary)]"
                       style={{ minHeight: "36px", maxHeight: "120px" }}
                     />
                     <Button
                       onClick={handleSendMessage}
                       disabled={messageContent.trim() === "" || sendMessageMutation.isPending}
                       size="sm"
-                      className="h-9 w-9 sm:h-10 sm:w-10 p-0 flex-shrink-0"
+                      className="h-9 w-9 sm:h-10 sm:w-10 p-0 flex-shrink-0 bg-[var(--color-cta-primary-bg)] hover:bg-[var(--color-cta-primary-bg-hover)]"
                     >
                       <Send className="h-4 w-4" />
                     </Button>
@@ -1394,10 +1365,10 @@ export function Messages() {
                 </CardContent>
               </Card>
             ) : (
-              <Card className="flex-1 flex items-center justify-center">
+              <Card className="flex-1 flex items-center justify-center bg-[var(--color-bg-card)] border-[var(--color-border-default)]">
                 <div className="text-center">
-                  <MessageSquare className="h-12 w-12 mx-auto text-muted-foreground/40 mb-4" />
-                  <p className="text-muted-foreground">대화를 선택해주세요.</p>
+                  <MessageSquare className="h-12 w-12 mx-auto text-[var(--color-text-secondary)]/40 mb-4" />
+                  <p className="text-[var(--color-text-secondary)]">대화를 선택해주세요.</p>
                 </div>
               </Card>
             )}

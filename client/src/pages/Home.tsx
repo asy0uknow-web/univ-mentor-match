@@ -20,26 +20,26 @@ import { BookOpen, Compass, Users, ArrowRight } from "lucide-react";
 
 // Quick Entry Icons
 const MajorIcon = () => (
-  <div className="text-4xl sm:text-5xl text-primary">
+  <div className="text-4xl sm:text-5xl text-[var(--brand-primary-700)]">
     <BookOpen className="w-12 h-12 sm:w-16 sm:h-16" />
   </div>
 );
 
 const CareerIcon = () => (
-  <div className="text-4xl sm:text-5xl text-primary">
+  <div className="text-4xl sm:text-5xl text-[var(--brand-primary-700)]">
     <Compass className="w-12 h-12 sm:w-16 sm:h-16" />
   </div>
 );
 
 const LifeIcon = () => (
-  <div className="text-4xl sm:text-5xl text-primary">
+  <div className="text-4xl sm:text-5xl text-[var(--brand-primary-700)]">
     <Users className="w-12 h-12 sm:w-16 sm:h-16" />
   </div>
 );
 
 // Line Art Icons Component - How It Works Section
 const SearchIcon = () => (
-  <div className="text-5xl sm:text-6xl md:text-7xl text-primary">
+  <div className="text-5xl sm:text-6xl md:text-7xl text-[var(--brand-primary-700)]">
     <svg className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
     </svg>
@@ -47,7 +47,7 @@ const SearchIcon = () => (
 );
 
 const CalendarIcon = () => (
-  <div className="text-5xl sm:text-6xl md:text-7xl text-primary">
+  <div className="text-5xl sm:text-6xl md:text-7xl text-[var(--brand-primary-700)]">
     <svg className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
     </svg>
@@ -55,7 +55,7 @@ const CalendarIcon = () => (
 );
 
 const ConsultationIcon = () => (
-  <div className="text-5xl sm:text-6xl md:text-7xl text-primary">
+  <div className="text-5xl sm:text-6xl md:text-7xl text-[var(--brand-primary-700)]">
     <svg className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.856-1.487M15 10a3 3 0 11-6 0 3 3 0 016 0zM15 20H9m6-4v2m0 0v2m0-2h2m-2 0h-2" />
     </svg>
@@ -90,8 +90,8 @@ export default function Home() {
       <PageLayout showFooter>
         <div className="flex items-center justify-center min-h-screen">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-            <p className="text-muted-foreground">프로필 완성 페이지로 이동 중...</p>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--brand-primary-700)] mx-auto mb-4"></div>
+            <p className="text-[var(--color-text-secondary)]">프로필 완성 페이지로 이동 중...</p>
           </div>
         </div>
       </PageLayout>
@@ -119,11 +119,11 @@ export default function Home() {
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
             <div className="mb-6 sm:mb-8">
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-4 sm:mb-6 leading-tight" id="main-heading">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-[var(--color-text-primary)] mb-4 sm:mb-6 leading-tight" id="main-heading">
                 전공 선택, 재학생과 먼저 이야기하세요
               </h1>
               
-              <p className="text-base sm:text-lg md:text-xl text-muted-foreground font-normal mb-8 leading-relaxed">
+              <p className="text-base sm:text-lg md:text-xl text-[var(--color-text-secondary)] font-normal mb-8 leading-relaxed">
                 검색과 후기만으로는 알 수 없는 진짜 대학 생활, 지금 바로 경험해보세요
               </p>
             </div>
@@ -133,7 +133,7 @@ export default function Home() {
               {/* 멘토 찾기 */}
               <Button 
                 size="lg" 
-                className="w-full sm:w-auto px-8 py-3 text-base font-semibold bg-primary hover:bg-primary/90 text-white shadow-md hover:shadow-lg transition-all duration-200 rounded-md"
+                className="w-full sm:w-auto px-8 py-3 text-base font-semibold bg-[var(--color-cta-primary-bg)] hover:bg-[var(--color-cta-primary-bg-hover)] text-white shadow-md hover:shadow-lg transition-all duration-200 rounded-md"
                 onClick={() => navigate('/mentors')}
                 aria-label="멘토 찾기 페이지로 이동"
               >
@@ -144,7 +144,7 @@ export default function Home() {
               {/* Q&A 커뮤니티 */}
               <Button 
                 size="lg" 
-                className="w-full sm:w-auto px-8 py-3 text-base font-semibold bg-card hover:bg-muted text-foreground shadow-sm hover:shadow-md transition-all duration-200 border border-border rounded-md"
+                className="w-full sm:w-auto px-8 py-3 text-base font-semibold bg-[var(--color-cta-secondary-bg)] hover:bg-[var(--color-cta-secondary-bg-hover)] text-[var(--color-text-primary)] shadow-sm hover:shadow-md transition-all duration-200 border border-[var(--color-border-default)] rounded-md"
                 onClick={() => navigate('/qna')}
                 aria-label="Q&A 커뮤니티로 이동"
               >
@@ -154,7 +154,7 @@ export default function Home() {
               {/* 멘토 칼럼 */}
               <Button 
                 size="lg" 
-                className="w-full sm:w-auto px-8 py-3 text-base font-semibold bg-card hover:bg-muted text-foreground shadow-sm hover:shadow-md transition-all duration-200 border border-border rounded-md"
+                className="w-full sm:w-auto px-8 py-3 text-base font-semibold bg-[var(--color-cta-secondary-bg)] hover:bg-[var(--color-cta-secondary-bg-hover)] text-[var(--color-text-primary)] shadow-sm hover:shadow-md transition-all duration-200 border border-[var(--color-border-default)] rounded-md"
                 onClick={() => navigate('/columns')}
                 aria-label="멘토 칼럼으로 이동"
               >
@@ -164,7 +164,7 @@ export default function Home() {
               {isAuthenticated && (
                 <Button 
                   size="lg" 
-                  className="w-full sm:w-auto px-8 py-3 text-base font-semibold bg-accent hover:bg-accent/90 text-white shadow-md hover:shadow-lg transition-all duration-200 rounded-md"
+                  className="w-full sm:w-auto px-8 py-3 text-base font-semibold bg-[var(--brand-accent-50)] hover:bg-[var(--brand-accent-50)]/90 text-[var(--brand-accent-700)] shadow-md hover:shadow-lg transition-all duration-200 rounded-md"
                   onClick={() => navigate('/my-profile')}
                 >
                   멘토로 참여하기
@@ -172,7 +172,7 @@ export default function Home() {
               )}
             </div>
 
-            <p className="text-xs sm:text-sm text-muted-foreground font-medium">
+            <p className="text-xs sm:text-sm text-[var(--color-text-secondary)] font-medium">
               실제 재학생만 참여 · 홍보 목적 상담 없음
             </p>
           </div>
@@ -182,10 +182,10 @@ export default function Home() {
       {/* Quick Entry Section - 프리미엄 카드 디자인 */}
       <section id="quick-entry" role="region" className="py-16 sm:py-20 md:py-24 bg-background" aria-label="빠른 멘토 탐색">
         <div className="container mx-auto px-4">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-4 text-foreground">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-4 text-[var(--color-text-primary)]">
             어떤 상담이 필요하신가요?
           </h2>
-          <p className="text-center text-muted-foreground mb-12 sm:mb-16 max-w-2xl mx-auto">
+          <p className="text-center text-[var(--color-text-secondary)] mb-12 sm:mb-16 max-w-2xl mx-auto">
             당신의 필요에 맞는 멘토를 찾아보세요
           </p>
           
@@ -198,14 +198,14 @@ export default function Home() {
               tabIndex={0}
               aria-label="전공 탐색 멘토 찾기"
             >
-              <div className="card-premium-lg p-8 hover:shadow-lg transition-all duration-300 group-hover:-translate-y-1">
+              <div className="bg-white p-8 border border-[var(--color-border-default)] rounded-xl hover:shadow-lg transition-all duration-300 group-hover:-translate-y-1">
                 <div className="mb-4 flex justify-center group-hover:scale-110 transition-transform duration-300">
                   <MajorIcon />
                 </div>
-                <h3 className="text-lg sm:text-xl font-semibold text-center text-foreground group-hover:text-primary transition-colors">
+                <h3 className="text-lg sm:text-xl font-semibold text-center text-[var(--color-text-primary)] group-hover:text-[var(--brand-primary-700)] transition-colors">
                   전공 탐색
                 </h3>
-                <p className="text-sm sm:text-base text-muted-foreground text-center mt-3">
+                <p className="text-sm sm:text-base text-[var(--color-text-secondary)] text-center mt-3">
                   실제 전공 생활과 진로를 알고 싶어요
                 </p>
               </div>
@@ -219,14 +219,14 @@ export default function Home() {
               tabIndex={0}
               aria-label="진로 상담 멘토 찾기"
             >
-              <div className="card-premium-lg p-8 hover:shadow-lg transition-all duration-300 group-hover:-translate-y-1">
+              <div className="bg-white p-8 border border-[var(--color-border-default)] rounded-xl hover:shadow-lg transition-all duration-300 group-hover:-translate-y-1">
                 <div className="mb-4 flex justify-center group-hover:scale-110 transition-transform duration-300">
                   <CareerIcon />
                 </div>
-                <h3 className="text-lg sm:text-xl font-semibold text-center text-foreground group-hover:text-primary transition-colors">
+                <h3 className="text-lg sm:text-xl font-semibold text-center text-[var(--color-text-primary)] group-hover:text-[var(--brand-primary-700)] transition-colors">
                   진로 상담
                 </h3>
-                <p className="text-sm sm:text-base text-muted-foreground text-center mt-3">
+                <p className="text-sm sm:text-base text-[var(--color-text-secondary)] text-center mt-3">
                   대학에서 어떻게 준비해야 할까요?
                 </p>
               </div>
@@ -240,14 +240,14 @@ export default function Home() {
               tabIndex={0}
               aria-label="대학 생활 멘토 찾기"
             >
-              <div className="card-premium-lg p-8 hover:shadow-lg transition-all duration-300 group-hover:-translate-y-1">
+              <div className="bg-white p-8 border border-[var(--color-border-default)] rounded-xl hover:shadow-lg transition-all duration-300 group-hover:-translate-y-1">
                 <div className="mb-4 flex justify-center group-hover:scale-110 transition-transform duration-300">
                   <LifeIcon />
                 </div>
-                <h3 className="text-lg sm:text-xl font-semibold text-center text-foreground group-hover:text-primary transition-colors">
+                <h3 className="text-lg sm:text-xl font-semibold text-center text-[var(--color-text-primary)] group-hover:text-[var(--brand-primary-700)] transition-colors">
                   대학 생활
                 </h3>
-                <p className="text-sm sm:text-base text-muted-foreground text-center mt-3">
+                <p className="text-sm sm:text-base text-[var(--color-text-secondary)] text-center mt-3">
                   캠퍼스 생활과 학교 문화를 알고 싶어요
                 </p>
               </div>
@@ -259,52 +259,52 @@ export default function Home() {
       {/* How It Works Section - 프리미엄 스텝 디자인 */}
       <section id="how-it-works" role="region" className="py-16 sm:py-20 md:py-24 bg-muted" aria-label="이용 방법">
         <div className="container mx-auto px-4">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-4 text-foreground">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-4 text-[var(--color-text-primary)]">
             이용 방법
           </h2>
-          <p className="text-center text-muted-foreground mb-12 sm:mb-16 max-w-2xl mx-auto">
+          <p className="text-center text-[var(--color-text-secondary)] mb-12 sm:mb-16 max-w-2xl mx-auto">
             간단한 3단계로 멘토와 연결되세요
           </p>
 
           <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
             {/* Step 1 */}
             <div className="relative">
-              <div className="card-premium p-8 text-center">
-                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-primary text-white font-bold mb-4">
+              <div className="bg-white p-8 text-center border border-[var(--color-border-default)] rounded-xl">
+                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-[var(--brand-primary-700)] text-white font-bold mb-4">
                   1
                 </div>
-                <h3 className="text-lg font-semibold text-foreground mb-3">멘토 찾기</h3>
-                <p className="text-sm text-muted-foreground">
+                <h3 className="text-lg font-semibold text-[var(--color-text-primary)] mb-3">멘토 찾기</h3>
+                <p className="text-sm text-[var(--color-text-secondary)]">
                   대학, 전공, 상담 분야로 필터링하여 나에게 맞는 멘토를 찾으세요
                 </p>
               </div>
               {/* Connector line */}
-              <div className="hidden md:block absolute top-1/2 -right-4 w-8 h-0.5 bg-border"></div>
+              <div className="hidden md:block absolute top-1/2 -right-4 w-8 h-0.5 bg-[var(--color-border-default)]"></div>
             </div>
 
             {/* Step 2 */}
             <div className="relative">
-              <div className="card-premium p-8 text-center">
-                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-primary text-white font-bold mb-4">
+              <div className="bg-white p-8 text-center border border-[var(--color-border-default)] rounded-xl">
+                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-[var(--brand-primary-700)] text-white font-bold mb-4">
                   2
                 </div>
-                <h3 className="text-lg font-semibold text-foreground mb-3">상담 신청</h3>
-                <p className="text-sm text-muted-foreground">
+                <h3 className="text-lg font-semibold text-[var(--color-text-primary)] mb-3">상담 신청</h3>
+                <p className="text-sm text-[var(--color-text-secondary)]">
                   멘토와 메시지로 일정, 장소, 상담 내용을 함께 정하세요
                 </p>
               </div>
               {/* Connector line */}
-              <div className="hidden md:block absolute top-1/2 -right-4 w-8 h-0.5 bg-border"></div>
+              <div className="hidden md:block absolute top-1/2 -right-4 w-8 h-0.5 bg-[var(--color-border-default)]"></div>
             </div>
 
             {/* Step 3 */}
             <div className="relative">
-              <div className="card-premium p-8 text-center">
-                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-primary text-white font-bold mb-4">
+              <div className="bg-white p-8 text-center border border-[var(--color-border-default)] rounded-xl">
+                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-[var(--brand-primary-700)] text-white font-bold mb-4">
                   3
                 </div>
-                <h3 className="text-lg font-semibold text-foreground mb-3">대면 상담</h3>
-                <p className="text-sm text-muted-foreground">
+                <h3 className="text-lg font-semibold text-[var(--color-text-primary)] mb-3">대면 상담</h3>
+                <p className="text-sm text-[var(--color-text-secondary)]">
                   약속한 시간에 만나 진로, 학업, 대학 생활에 대해 솔직하게 이야기하세요
                 </p>
               </div>
