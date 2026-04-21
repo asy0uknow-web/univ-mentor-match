@@ -323,19 +323,536 @@
   @apply h-px bg-gradient-to-r from-transparent via-border to-transparent;
 }
 
-/* Premium shadow utilities */
-.shadow-premium-sm {
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+/* Premium shadow utilities - Using Tailwind's built-in shadow classes */
+
+
+/* Premium Form Input Styles */
+@layer components {
+  /* 기본 입력 필드 */
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  input[type="tel"],
+  input[type="url"],
+  input[type="date"],
+  input[type="time"],
+  input[type="datetime-local"],
+  textarea,
+  select {
+    @apply w-full px-4 py-2.5 border border-border rounded-md bg-input 
+           text-foreground placeholder-muted-foreground
+           focus:border-primary focus:ring-2 focus:ring-primary/20 
+           transition-all duration-200;
+  }
+
+  /* 텍스트 영역 */
+  textarea {
+    @apply resize-none font-normal;
+  }
+
+  /* 셀렉트 드롭다운 */
+  select {
+    @apply appearance-none cursor-pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    padding-right: 2.5rem;
+  }
+
+  /* 체크박스 */
+  input[type="checkbox"],
+  input[type="radio"] {
+    @apply w-4 h-4 border border-border rounded cursor-pointer
+           focus:ring-2 focus:ring-primary/20 transition-all duration-200;
+  }
+
+  input[type="checkbox"]:checked,
+  input[type="radio"]:checked {
+    @apply bg-primary border-primary;
+  }
+
+  /* 비활성 상태 */
+  input:disabled,
+  textarea:disabled,
+  select:disabled {
+    @apply bg-muted text-muted-foreground cursor-not-allowed opacity-50;
+  }
+
+  /* 에러 상태 */
+  input.error,
+  textarea.error,
+  select.error {
+    @apply border-destructive focus:ring-destructive/20;
+  }
+
+  /* 성공 상태 */
+  input.success,
+  textarea.success,
+  select.success {
+    @apply border-green-500 focus:ring-green-500/20;
+  }
+
+  /* 라벨 스타일 */
+  label {
+    @apply block text-sm font-medium text-foreground mb-1;
+  }
+
+  label.required::after {
+    @apply text-destructive ml-1;
+    content: "*";
+  }
+
+  /* 입력 필드 그룹 */
+  .input-group {
+    @apply space-y-2;
+  }
+
+  .input-group label {
+    @apply text-xs font-medium text-muted-foreground;
+  }
+
+  .input-group input,
+  .input-group textarea,
+  .input-group select {
+    @apply w-full;
+  }
+
+  /* 입력 필드 도움말 텍스트 */
+  .input-help {
+    @apply text-xs text-muted-foreground mt-1;
+  }
+
+  .input-error {
+    @apply text-xs text-destructive mt-1;
+  }
+
+  .input-success {
+    @apply text-xs text-green-600 dark:text-green-400 mt-1;
+  }
+
+  /* 입력 필드 접두사/접미사 */
+  .input-wrapper {
+    @apply relative flex items-center;
+  }
+
+  .input-prefix,
+  .input-suffix {
+    @apply absolute text-muted-foreground pointer-events-none;
+  }
+
+  .input-prefix {
+    @apply left-3;
+  }
+
+  .input-suffix {
+    @apply right-3;
+  }
+
+  .input-wrapper input {
+    @apply pl-9 pr-4;
+  }
+
+  .input-wrapper input.has-suffix {
+    @apply pr-9;
+  }
 }
 
-.shadow-premium-md {
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
+/* 포커스 상태 애니메이션 */
+@layer base {
+  input:focus,
+  textarea:focus,
+  select:focus {
+    @apply outline-none;
+  }
 }
 
-.shadow-premium-lg {
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+
+/* Enhanced Animations & Transitions */
+@layer components {
+  /* 페이지 로딩 애니메이션 */
+  .page-load {
+    @apply animate-in fade-in slide-in-from-bottom-4 duration-500;
+  }
+
+  /* 스켈레톤 로더 애니메이션 */
+  .skeleton-loader {
+    @apply bg-gradient-to-r from-muted via-background to-muted;
+    animation: skeleton-loading 2s infinite;
+  }
+
+  @keyframes skeleton-loading {
+    0% {
+      background-position: -1000px 0;
+    }
+    100% {
+      background-position: 1000px 0;
+    }
+  }
+
+  /* 스크롤 페이드 인 */
+  .scroll-fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  }
+
+  .scroll-fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* 스크롤 슬라이드 인 (좌측) */
+  .scroll-slide-in-left {
+    opacity: 0;
+    transform: translateX(-30px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  }
+
+  .scroll-slide-in-left.visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  /* 스크롤 슬라이드 인 (우측) */
+  .scroll-slide-in-right {
+    opacity: 0;
+    transform: translateX(30px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  }
+
+  .scroll-slide-in-right.visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  /* 스케일 인 애니메이션 */
+  .scale-in {
+    opacity: 0;
+    transform: scale(0.95);
+    transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+  }
+
+  .scale-in.visible {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  /* 모달 오픈 애니메이션 */
+  .modal-enter {
+    animation: modal-enter 0.3s ease-out;
+  }
+
+  @keyframes modal-enter {
+    from {
+      opacity: 0;
+      transform: scale(0.95) translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+
+  /* 모달 클로즈 애니메이션 */
+  .modal-exit {
+    animation: modal-exit 0.3s ease-in forwards;
+  }
+
+  @keyframes modal-exit {
+    from {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+    to {
+      opacity: 0;
+      transform: scale(0.95) translateY(-20px);
+    }
+  }
+
+  /* 드롭다운 오픈 애니메이션 */
+  .dropdown-enter {
+    animation: dropdown-enter 0.2s ease-out;
+  }
+
+  @keyframes dropdown-enter {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* 드롭다운 클로즈 애니메이션 */
+  .dropdown-exit {
+    animation: dropdown-exit 0.2s ease-in forwards;
+  }
+
+  @keyframes dropdown-exit {
+    from {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+  }
+
+  /* 토스트 알림 애니메이션 */
+  .toast-enter {
+    animation: toast-enter 0.3s ease-out;
+  }
+
+  @keyframes toast-enter {
+    from {
+      opacity: 0;
+      transform: translateX(100px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  .toast-exit {
+    animation: toast-exit 0.3s ease-in forwards;
+  }
+
+  @keyframes toast-exit {
+    from {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateX(100px);
+    }
+  }
+
+  /* 펄스 애니메이션 (강조) */
+  .pulse-emphasis {
+    animation: pulse-emphasis 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  @keyframes pulse-emphasis {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.7;
+    }
+  }
+
+  /* 흔들림 애니메이션 (에러) */
+  .shake {
+    animation: shake 0.5s ease-in-out;
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+    20%, 40%, 60%, 80% { transform: translateX(5px); }
+  }
+
+  /* 버튼 클릭 리플 효과 */
+  .ripple {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .ripple::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 5px;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.5);
+    opacity: 0;
+    border-radius: 100%;
+    transform: scale(1), translate(-50%, -50%);
+    transform-origin: 50% 50%;
+  }
+
+  .ripple:active::after {
+    animation: ripple-animation 0.6s ease-out;
+  }
+
+  @keyframes ripple-animation {
+    to {
+      transform: scale(40), translate(-50%, -50%);
+      opacity: 0;
+    }
+  }
+
+  /* 카드 호버 애니메이션 강화 */
+  .card-hover-lift {
+    @apply transition-all duration-300 ease-out;
+  }
+
+  .card-hover-lift:hover {
+    @apply -translate-y-2 shadow-lg;
+  }
+
+  /* 텍스트 페이드 인 */
+  .text-fade-in {
+    animation: text-fade-in 0.8s ease-out;
+  }
+
+  @keyframes text-fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* 배경 색상 전환 애니메이션 */
+  .bg-transition {
+    @apply transition-colors duration-300;
+  }
+
+  /* 부드러운 스크롤 */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* 로딩 스피너 */
+  .spinner {
+    @apply inline-block animate-spin;
+  }
+
+  .spinner-sm {
+    @apply w-4 h-4;
+  }
+
+  .spinner-md {
+    @apply w-6 h-6;
+  }
+
+  .spinner-lg {
+    @apply w-8 h-8;
+  }
+
+  /* 진행 바 애니메이션 */
+  .progress-bar {
+    @apply h-1 bg-muted rounded-full overflow-hidden;
+  }
+
+  .progress-bar-fill {
+    @apply h-full bg-primary transition-all duration-300 ease-out;
+  }
+
+  /* 체크마크 애니메이션 */
+  .checkmark-animate {
+    animation: checkmark-animate 0.6s ease-out;
+  }
+
+  @keyframes checkmark-animate {
+    0% {
+      stroke-dashoffset: 100;
+    }
+    100% {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  /* 배지 펄스 */
+  .badge-pulse {
+    animation: badge-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  @keyframes badge-pulse {
+    0%, 100% {
+      box-shadow: 0 0 0 0 rgba(var(--primary-rgb), 0.7);
+    }
+    50% {
+      box-shadow: 0 0 0 10px rgba(var(--primary-rgb), 0);
+    }
+  }
+
+  /* 슬라이드 업 애니메이션 */
+  .slide-up {
+    animation: slide-up 0.4s ease-out;
+  }
+
+  @keyframes slide-up {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* 슬라이드 다운 애니메이션 */
+  .slide-down {
+    animation: slide-down 0.4s ease-out;
+  }
+
+  @keyframes slide-down {
+    from {
+      opacity: 0;
+      transform: translateY(-30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* 플로팅 애니메이션 */
+  .float-animation {
+    animation: float-animation 3s ease-in-out infinite;
+  }
+
+  @keyframes float-animation {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  /* 글로우 효과 */
+  .glow {
+    @apply shadow-lg;
+    animation: glow 2s ease-in-out infinite;
+  }
+
+  @keyframes glow {
+    0%, 100% {
+      box-shadow: 0 0 5px rgba(var(--primary-rgb), 0.5);
+    }
+    50% {
+      box-shadow: 0 0 20px rgba(var(--primary-rgb), 0.8);
+    }
+  }
 }
 
-.shadow-premium-xl {
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.12);
+/* 트랜지션 타이밍 함수 */
+@layer utilities {
+  .ease-smooth {
+    @apply transition-all duration-300 ease-in-out;
+  }
+
+  .ease-bounce {
+    @apply transition-all duration-300;
+    transition-timing-function: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  }
+
+  .ease-elastic {
+    @apply transition-all duration-500;
+    transition-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
 }

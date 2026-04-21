@@ -404,7 +404,7 @@ export default function MentorDetail() {
               <div className="sticky top-20 space-y-3">
                 <Button
                   onClick={handleBookingClick}
-                  className="w-full h-12 text-base font-semibold bg-primary hover:bg-primary/90 text-white rounded-md shadow-premium-md hover:shadow-premium-lg transition-all duration-200 flex items-center justify-center gap-2"
+                  className="w-full h-12 text-base font-semibold bg-primary hover:bg-primary/90 text-white rounded-md shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2"
                 >
                   상담 신청하기
                   <ArrowRight className="w-4 h-4" />

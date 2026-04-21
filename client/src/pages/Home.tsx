@@ -133,7 +133,7 @@ export default function Home() {
               {/* 멘토 찾기 */}
               <Button 
                 size="lg" 
-                className="w-full sm:w-auto px-8 py-3 text-base font-semibold bg-primary hover:bg-primary/90 text-white shadow-premium-md hover:shadow-premium-lg transition-all duration-200 rounded-md"
+                className="w-full sm:w-auto px-8 py-3 text-base font-semibold bg-primary hover:bg-primary/90 text-white shadow-md hover:shadow-lg transition-all duration-200 rounded-md"
                 onClick={() => navigate('/mentors')}
                 aria-label="멘토 찾기 페이지로 이동"
               >
@@ -144,7 +144,7 @@ export default function Home() {
               {/* Q&A 커뮤니티 */}
               <Button 
                 size="lg" 
-                className="w-full sm:w-auto px-8 py-3 text-base font-semibold bg-card hover:bg-muted text-foreground shadow-premium-sm hover:shadow-premium-md transition-all duration-200 border border-border rounded-md"
+                className="w-full sm:w-auto px-8 py-3 text-base font-semibold bg-card hover:bg-muted text-foreground shadow-sm hover:shadow-md transition-all duration-200 border border-border rounded-md"
                 onClick={() => navigate('/qna')}
                 aria-label="Q&A 커뮤니티로 이동"
               >
@@ -154,7 +154,7 @@ export default function Home() {
               {/* 멘토 칼럼 */}
               <Button 
                 size="lg" 
-                className="w-full sm:w-auto px-8 py-3 text-base font-semibold bg-card hover:bg-muted text-foreground shadow-premium-sm hover:shadow-premium-md transition-all duration-200 border border-border rounded-md"
+                className="w-full sm:w-auto px-8 py-3 text-base font-semibold bg-card hover:bg-muted text-foreground shadow-sm hover:shadow-md transition-all duration-200 border border-border rounded-md"
                 onClick={() => navigate('/columns')}
                 aria-label="멘토 칼럼으로 이동"
               >
@@ -164,7 +164,7 @@ export default function Home() {
               {isAuthenticated && (
                 <Button 
                   size="lg" 
-                  className="w-full sm:w-auto px-8 py-3 text-base font-semibold bg-accent hover:bg-accent/90 text-white shadow-premium-md hover:shadow-premium-lg transition-all duration-200 rounded-md"
+                  className="w-full sm:w-auto px-8 py-3 text-base font-semibold bg-accent hover:bg-accent/90 text-white shadow-md hover:shadow-lg transition-all duration-200 rounded-md"
                   onClick={() => navigate('/my-profile')}
                 >
                   멘토로 참여하기
@@ -198,7 +198,7 @@ export default function Home() {
               tabIndex={0}
               aria-label="전공 탐색 멘토 찾기"
             >
-              <div className="card-premium-lg p-8 hover:shadow-premium-lg transition-all duration-300 group-hover:-translate-y-1">
+              <div className="card-premium-lg p-8 hover:shadow-lg transition-all duration-300 group-hover:-translate-y-1">
                 <div className="mb-4 flex justify-center group-hover:scale-110 transition-transform duration-300">
                   <MajorIcon />
                 </div>
@@ -219,7 +219,7 @@ export default function Home() {
               tabIndex={0}
               aria-label="진로 상담 멘토 찾기"
             >
-              <div className="card-premium-lg p-8 hover:shadow-premium-lg transition-all duration-300 group-hover:-translate-y-1">
+              <div className="card-premium-lg p-8 hover:shadow-lg transition-all duration-300 group-hover:-translate-y-1">
                 <div className="mb-4 flex justify-center group-hover:scale-110 transition-transform duration-300">
                   <CareerIcon />
                 </div>
@@ -240,7 +240,7 @@ export default function Home() {
               tabIndex={0}
               aria-label="대학 생활 멘토 찾기"
             >
-              <div className="card-premium-lg p-8 hover:shadow-premium-lg transition-all duration-300 group-hover:-translate-y-1">
+              <div className="card-premium-lg p-8 hover:shadow-lg transition-all duration-300 group-hover:-translate-y-1">
                 <div className="mb-4 flex justify-center group-hover:scale-110 transition-transform duration-300">
                   <LifeIcon />
                 </div>

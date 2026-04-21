@@ -44,7 +44,7 @@ export default function Notifications() {
           <h2 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">로그인이 필요합니다</h2>
           <p className="text-sm text-muted-foreground mb-6">알림을 보려면 로그인해주세요.</p>
           <a href={getLoginUrl()}>
-            <Button className="w-full text-sm font-semibold py-3 rounded-md bg-primary hover:bg-primary/90 text-white shadow-premium-md hover:shadow-premium-lg transition-all duration-200 flex items-center justify-center gap-2">
+            <Button className="w-full text-sm font-semibold py-3 rounded-md bg-primary hover:bg-primary/90 text-white shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2">
               로그인
               <ArrowRight className="w-4 h-4" />
             </Button>

@@ -137,7 +137,7 @@ export default function MentorColumns() {
             {columns.map((column: any) => (
               <Card
                 key={column.id}
-                className="card-premium-lg overflow-hidden hover:shadow-premium-lg transition-all duration-300 cursor-pointer group group-hover:-translate-y-1"
+                className="card-premium-lg overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer group group-hover:-translate-y-1"
                 onClick={() => setLocation(`/columns/${column.id}`)}
               >
                 {/* 커버 이미지 */}

@@ -615,7 +615,7 @@ export default function Mentors() {
             <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
               {filteredMentors.map((mentor: any) => (
                 <Link key={mentor.uuid || mentor.id} href={`/mentor/${mentor.uuid}`} className="group">
-                  <div className="card-premium-lg overflow-hidden hover:shadow-premium-lg transition-all duration-300 h-full flex flex-col cursor-pointer group-hover:-translate-y-1">
+                  <div className="card-premium-lg overflow-hidden hover:shadow-lg transition-all duration-300 h-full flex flex-col cursor-pointer group-hover:-translate-y-1">
                       {/* 멘토 정보 헤더 */}
                       <div className="p-4 sm:p-6 border-b border-border">
                         <div className="flex items-start justify-between mb-3">

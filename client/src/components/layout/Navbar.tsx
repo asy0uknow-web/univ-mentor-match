@@ -75,7 +75,7 @@ export default function Navbar({ onBugReport }: NavbarProps) {
 
   return (
     <nav
-      className="border-b border-border bg-background sticky top-0 z-50 shadow-premium-sm"
+      className="border-b border-border bg-background sticky top-0 z-50 shadow-sm"
       role="navigation"
       aria-label="메인 네비게이션"
     >
@@ -188,7 +188,7 @@ export default function Navbar({ onBugReport }: NavbarProps) {
                       <ChevronDown className="h-4 w-4" aria-hidden="true" />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" side="bottom" sideOffset={8} className="w-52 bg-card shadow-premium-lg">
+                  <DropdownMenuContent align="end" side="bottom" sideOffset={8} className="w-52 bg-card shadow-lg">
                     {/* 모바일: 인증 메뉴 */}
                     <div className="lg:hidden">
                       {AUTHENTICATED_MENU.map((item) => (
@@ -245,7 +245,7 @@ export default function Navbar({ onBugReport }: NavbarProps) {
                 <Link href="/login" aria-label="로그인 페이지로 이동">
                   <Button 
                     size="sm"
-                    className="rounded-md bg-primary hover:bg-primary/90 text-white font-medium px-4 sm:px-6 text-xs sm:text-sm shadow-premium-sm transition-all duration-200"
+                    className="rounded-md bg-primary hover:bg-primary/90 text-white font-medium px-4 sm:px-6 text-xs sm:text-sm shadow-sm transition-all duration-200"
                   >
                     로그인
                   </Button>

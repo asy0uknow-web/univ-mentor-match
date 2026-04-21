@@ -229,7 +229,7 @@ export default function SignUp() {
           <Button
             type="submit"
             disabled={isLoading || signupMutation.isPending}
-            className="w-full bg-primary hover:bg-primary/90 text-white text-base font-semibold py-3 rounded-md transition-all duration-200 shadow-premium-md hover:shadow-premium-lg mt-6 flex items-center justify-center gap-2"
+            className="w-full bg-primary hover:bg-primary/90 text-white text-base font-semibold py-3 rounded-md transition-all duration-200 shadow-md hover:shadow-lg mt-6 flex items-center justify-center gap-2"
           >
             {isLoading || signupMutation.isPending ? "가입 중..." : (
               <>

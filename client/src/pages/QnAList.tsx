@@ -253,7 +253,7 @@ export default function QnAList() {
               return (
                 <Card
                   key={question.id}
-                  className="card-premium overflow-hidden hover:shadow-premium-lg transition-all duration-300 cursor-pointer group group-hover:-translate-y-1"
+                  className="card-premium overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer group group-hover:-translate-y-1"
                   onClick={() => setLocation(`/qna/${question.id}`)}
                 >
                   <CardHeader className="pb-2 sm:pb-3 px-3 sm:px-6">
