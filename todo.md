@@ -3087,3 +3087,36 @@
 - [x] 글로우 효과
 - [x] 부드러운 스크롤
 - [x] 커스텀 트랜지션 타이밍 함수 (ease-smooth, ease-bounce, ease-elastic)
+
+
+## 브랜드 컬러 토큰 시스템 정립
+- [ ] Phase 1: 현재 색상 사용 현황 감사 및 분석
+- [ ] Phase 2: 브랜드 팔레트 및 시맨틱 토큰 정의
+- [ ] Phase 3: Tailwind/CSS 변수 시스템 구축
+- [ ] Phase 4: 공통 컴포넌트 색상 규칙 적용 (Button, Badge, Card, Input, Alert)
+- [ ] Phase 5: 주요 페이지별 색상 적용
+  - [ ] Home 페이지
+  - [ ] Mentors 페이지
+  - [ ] MentorDetail 페이지
+  - [ ] QnA 페이지
+  - [ ] Columns 페이지
+  - [ ] Messages 페이지
+  - [ ] Bookings 페이지
+- [ ] Phase 6: 접근성 검증 및 모바일 테스트
+- [ ] Phase 7: 최종 체크포인트 저장
+
+
+## 브랜드 컬러 토큰 시스템 정립 (진행 중)
+- [x] Phase 1: 현재 색상 사용 현황 감사 및 분석
+- [x] Phase 2: 브랜드 팔레트 정의
+- [x] Phase 3: CSS 변수 시스템 구축 (brandTokens.css)
+- [x] Phase 4: StatusBadge 컴포넌트 리팩토링
+- [ ] Phase 5: 주요 페이지별 색상 적용
+  - [ ] Home 페이지 - CTA, 카드, 배경
+  - [ ] Mentors 페이지 - 필터, 카드, 배지
+  - [ ] QnA 페이지 - 상태 배지, 질문/답변 카드
+  - [ ] Columns 페이지 - 카드, 배지, CTA
+  - [ ] Messages 페이지 - 상태 카드, 배지
+  - [ ] Bookings 페이지 - 상태 카드, 버튼
+- [ ] Phase 6: 접근성 검증 및 모바일 테스트
+- [ ] Phase 7: 최종 체크포인트 저장

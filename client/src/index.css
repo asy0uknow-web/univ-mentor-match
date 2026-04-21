@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;600;700&display=swap');
 @import "tw-animate-css";
+@import "./brandTokens.css";
 
 @custom-variant dark (&:is(.dark *));
 
