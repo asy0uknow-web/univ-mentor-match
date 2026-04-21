@@ -3003,3 +3003,28 @@
 - [ ] 데스크톱 반응형 테스트 (1280px, 1920px)
 - [ ] 크로스 브라우저 테스트 (Chrome, Safari, Firefox)
 - [ ] 접근성 테스트 (WCAG 2.1 AA)
+
+
+## 전체 UI/UX 리디자인 (프리미엄 입시 플랫폼 감성) - Phase 1-6 완료
+- [x] Phase 1: 디자인 분석 및 디자인 토큰 구축
+- [x] Phase 2: 디자인 시스템 및 기본 컴포넌트 구성
+  - [x] CSS 색상 팔레트 변경 (Blue → Premium Gray-Indigo)
+  - [x] 그림자 시스템 추가 (shadow-premium-sm/md/lg/xl)
+  - [x] 프리미엄 카드 스타일 정의 (.card-premium, .card-premium-lg)
+  - [x] 프리미엄 버튼 스타일 정의 (.btn-primary, .btn-secondary, .btn-outline)
+  - [x] Navbar 리디자인 (rounded-md, shadow-premium-sm)
+- [x] Phase 3: 메인 페이지 및 내비게이션 리디자인
+  - [x] Home.tsx 히어로 섹션 리디자인 (더 큰 제목, 명확한 CTA)
+  - [x] 빠른 멘토 탐색 섹션 개선 (card-premium-lg, 호버 효과)
+  - [x] 이용 방법 섹션 추가 (3단계 프로세스)
+- [x] Phase 4: 멘토 리스트, Q&A, 칼럼 리디자인
+  - [x] Mentors.tsx 카드 디자인 개선 (card-premium-lg)
+  - [x] QnAList.tsx 카드 디자인 개선 (card-premium, 배지 스타일)
+  - [x] MentorColumns.tsx 카드 디자인 개선 (card-premium-lg)
+- [x] Phase 5: 로그인/회원가입 페이지 리디자인
+  - [x] Login.tsx 프리미엄 감성 적용 (card-premium-lg, ArrowRight 아이콘)
+  - [x] SignUp.tsx 프리미엄 감성 적용 (동일한 디자인)
+- [x] Phase 6: 반응형 디자인 최적화 및 전체 테스트
+  - [x] 디자인 시스템 검증 (색상, 카드, 버튼, 그림자)
+  - [x] 다크 모드 지원 확인
+  - [x] 애니메이션 및 호버 효과 검증

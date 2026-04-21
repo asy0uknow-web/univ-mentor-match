@@ -609,15 +609,15 @@ export default function Mentors() {
             </div>
           ) : filteredMentors.length === 0 ? (
             <div className="text-center py-12">
-              <p className="text-muted-foreground 300 300 text-sm sm:text-base">검색 결과가 없습니다</p>
+              <p className="text-muted-foreground text-sm sm:text-base">검색 결과가 없습니다</p>
             </div>
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
               {filteredMentors.map((mentor: any) => (
                 <Link key={mentor.uuid || mentor.id} href={`/mentor/${mentor.uuid}`} className="group">
-                  <div className="bg-card  border border-border 700 700 rounded-xl overflow-hidden hover:shadow-lg hover:border-border transition-all duration-300 h-full flex flex-col cursor-pointer">
+                  <div className="card-premium-lg overflow-hidden hover:shadow-premium-lg transition-all duration-300 h-full flex flex-col cursor-pointer group-hover:-translate-y-1">
                       {/* 멘토 정보 헤더 */}
-                      <div className="p-4 sm:p-6 border-b border-border 700 700">
+                      <div className="p-4 sm:p-6 border-b border-border">
                         <div className="flex items-start justify-between mb-3">
                           <div className="flex-1">
                             <div className="flex items-center gap-2 mb-1">
@@ -628,7 +628,7 @@ export default function Mentors() {
                                 <BadgeCheck className="h-4 w-4 text-green-600 dark:text-green-400 flex-shrink-0" />
                               )}
                             </div>
-                            <div className="flex items-center gap-1 text-xs sm:text-sm text-muted-foreground 300 300 mb-2">
+                            <div className="flex items-center gap-1 text-xs sm:text-sm text-muted-foreground mb-2">
                               {getUniversityLogo(mentor.university) && (
                                 <img
                                   src={getUniversityLogo(mentor.university)}
@@ -638,7 +638,7 @@ export default function Mentors() {
                               )}
                               <span>{mentor.university}</span>
                             </div>
-                            <p className="text-xs sm:text-sm text-muted-foreground 300 300">{mentor.major}</p>
+                            <p className="text-xs sm:text-sm text-muted-foreground">{mentor.major}</p>
                           </div>
                           {mentor.averageRating && mentor.averageRating > 0 && (
                             <div className="flex items-center gap-1 bg-yellow-50 dark:bg-yellow-950/30 px-2 py-1 rounded-lg">

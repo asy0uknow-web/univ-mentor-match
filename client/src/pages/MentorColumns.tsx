@@ -137,7 +137,7 @@ export default function MentorColumns() {
             {columns.map((column: any) => (
               <Card
                 key={column.id}
-                className="hover:shadow-xl transition-all duration-300 cursor-pointer overflow-hidden group hover:scale-105 hover:-translate-y-2"
+                className="card-premium-lg overflow-hidden hover:shadow-premium-lg transition-all duration-300 cursor-pointer group group-hover:-translate-y-1"
                 onClick={() => setLocation(`/columns/${column.id}`)}
               >
                 {/* 커버 이미지 */}
@@ -153,14 +153,14 @@ export default function MentorColumns() {
 
                 <CardHeader className="pb-3">
                   <div className="flex items-start justify-between gap-2 mb-2">
-                    <Badge variant="secondary" className="text-xs">
+                    <Badge className="text-xs bg-primary/10 text-primary border-0">
                       {column.category}
                     </Badge>
                     <span className="text-xs text-muted-foreground">
                       {format(new Date(column.createdAt), "MMM d", { locale: ko })}
                     </span>
                   </div>
-                  <CardTitle className="line-clamp-2 text-base sm:text-lg group-hover:text-indigo-600 transition-colors">
+                  <CardTitle className="line-clamp-2 text-base sm:text-lg group-hover:text-primary transition-colors">
                     {column.title}
                   </CardTitle>
                   <CardDescription className="line-clamp-2 text-xs sm:text-sm">

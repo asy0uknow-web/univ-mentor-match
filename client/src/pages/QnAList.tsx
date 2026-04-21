@@ -253,14 +253,14 @@ export default function QnAList() {
               return (
                 <Card
                   key={question.id}
-                  className="overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer group hover:scale-[1.02]"
+                  className="card-premium overflow-hidden hover:shadow-premium-lg transition-all duration-300 cursor-pointer group group-hover:-translate-y-1"
                   onClick={() => setLocation(`/qna/${question.id}`)}
                 >
                   <CardHeader className="pb-2 sm:pb-3 px-3 sm:px-6">
                     <div className="flex items-start justify-between gap-2">
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1 flex-wrap">
-                          <CardTitle className="text-base sm:text-lg truncate group-hover:text-indigo-600 transition-colors break-words">
+                          <CardTitle className="text-base sm:text-lg truncate group-hover:text-primary transition-colors break-words">
                             {question.title}
                           </CardTitle>
                           <StatusBadge status={mapStatusToStatusBadge(question.status)} />
@@ -272,7 +272,7 @@ export default function QnAList() {
                         </CardDescription>
                       </div>
                       {question.category && (
-                        <Badge variant="outline" className="text-xs flex-shrink-0">
+                        <Badge className="text-xs flex-shrink-0 bg-primary/10 text-primary border-0">
                           {question.category}
                         </Badge>
                       )}
