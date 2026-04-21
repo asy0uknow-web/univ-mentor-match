@@ -3,7 +3,7 @@ import { useTheme } from "@/contexts/ThemeContext";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "wouter";
-import { LogOut, Trash2, ChevronDown, Bug, Sun, Moon } from "lucide-react";
+import { LogOut, Trash2, ChevronDown, Bug, Sun, Moon, Menu, X } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,6 +12,7 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { trpc } from "@/lib/trpc";
+import { useState } from "react";
 
 interface NavbarProps {
   onBugReport: () => void;
@@ -43,6 +44,7 @@ const LOGO_URL = "/logonew.png";
 export default function Navbar({ onBugReport }: NavbarProps) {
   const { isAuthenticated, user } = useAuth();
   const { theme, toggleTheme } = useTheme();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const logoutMutation = trpc.auth.logout.useMutation({
     onSuccess: () => {
@@ -68,11 +70,12 @@ export default function Navbar({ onBugReport }: NavbarProps) {
         behavior: "smooth"
       });
     }
+    setMobileMenuOpen(false);
   };
 
   return (
     <nav
-      className="border-b border-border bg-background sticky top-0 z-50 shadow-sm animate-in fade-in slide-in-from-top-4 duration-300"
+      className="border-b border-border bg-background sticky top-0 z-50 shadow-premium-sm"
       role="navigation"
       aria-label="메인 네비게이션"
     >
@@ -103,7 +106,7 @@ export default function Navbar({ onBugReport }: NavbarProps) {
                     <Link
                       key={key}
                       href={item.href}
-                      className="text-sm font-medium text-foreground hover:text-primary transition-all duration-200 hover:scale-105 active:scale-95 relative group"
+                      className="text-sm font-medium text-foreground hover:text-primary transition-all duration-200 relative group"
                       aria-label={`${item.label} 페이지로 이동`}
                     >
                       {item.label}
@@ -116,7 +119,7 @@ export default function Navbar({ onBugReport }: NavbarProps) {
                   <button
                     key={key}
                     onClick={() => handleSmoothScroll(item.id)}
-                    className="text-sm font-medium text-foreground hover:text-primary transition-all duration-200 hover:scale-105 active:scale-95 relative group"
+                    className="text-sm font-medium text-foreground hover:text-primary transition-all duration-200 relative group"
                     aria-label={`${item.label} 섹션으로 이동`}
                   >
                     {item.label}
@@ -149,7 +152,7 @@ export default function Navbar({ onBugReport }: NavbarProps) {
             {isAuthenticated ? (
               <>
                 {/* 데스크톱: 가로 메뉴 */}
-                <div className="hidden lg:flex items-center gap-2">
+                <div className="hidden lg:flex items-center gap-1">
                   {AUTHENTICATED_MENU.map((item) => (
                     <Link
                       key={item.href}
@@ -159,7 +162,7 @@ export default function Navbar({ onBugReport }: NavbarProps) {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="text-sm font-medium hover:bg-muted hover:text-primary relative hover:scale-105 transition-transform duration-200 active:scale-95"
+                        className="text-sm font-medium hover:bg-muted hover:text-primary transition-colors duration-200 relative"
                       >
                         {item.label}
                         {item.href === "/qna" && unreadAnswerCount > 0 && (
@@ -185,7 +188,7 @@ export default function Navbar({ onBugReport }: NavbarProps) {
                       <ChevronDown className="h-4 w-4" aria-hidden="true" />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" side="bottom" sideOffset={8} className="w-52 bg-card">
+                  <DropdownMenuContent align="end" side="bottom" sideOffset={8} className="w-52 bg-card shadow-premium-lg">
                     {/* 모바일: 인증 메뉴 */}
                     <div className="lg:hidden">
                       {AUTHENTICATED_MENU.map((item) => (
@@ -242,7 +245,7 @@ export default function Navbar({ onBugReport }: NavbarProps) {
                 <Link href="/login" aria-label="로그인 페이지로 이동">
                   <Button 
                     size="sm"
-                    className="rounded-full bg-primary hover:bg-primary/90 text-white font-semibold px-4 sm:px-6 text-xs sm:text-sm"
+                    className="rounded-md bg-primary hover:bg-primary/90 text-white font-medium px-4 sm:px-6 text-xs sm:text-sm shadow-premium-sm transition-all duration-200"
                   >
                     로그인
                   </Button>
@@ -252,7 +255,7 @@ export default function Navbar({ onBugReport }: NavbarProps) {
                   <Button 
                     size="sm"
                     variant="outline"
-                    className="rounded-full border-primary text-primary hover:bg-primary/10 font-semibold px-4 sm:px-6 text-xs sm:text-sm"
+                    className="rounded-md border border-border text-foreground hover:bg-muted font-medium px-4 sm:px-6 text-xs sm:text-sm transition-colors duration-200"
                   >
                     회원가입
                   </Button>
