@@ -10,6 +10,7 @@ import { PageLayout } from "@/components/layout";
 import { setPageMeta, PAGE_META } from "@/lib/seo";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { GalleryUpload } from "@/components/GalleryUpload";
+import { BookingModal } from "@/components/BookingModal";
 
 const OPEN_CONVERSATION_KEY = "univmatch:openConversationUserId";
 const DRAFT_MESSAGE_KEY = "univmatch:draftMessage";
@@ -52,6 +53,7 @@ export default function MentorDetail() {
   ) || [];
 
   const [, setLocation] = useLocation();
+  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
 
   if (!isValidMentorId) {
     return (
@@ -121,8 +123,7 @@ export default function MentorDetail() {
       setLocation('/login');
       return;
     }
-    const profileId = mentor?.profile?.uuid || id;
-    setLocation(`/messages?mentorId=${profileId}`);
+    setIsBookingModalOpen(true);
   };
 
   const avgRating = reviews && reviews.length > 0
@@ -519,6 +520,12 @@ export default function MentorDetail() {
           </div>
         </div>
       </div>
+      <BookingModal
+        isOpen={isBookingModalOpen}
+        onOpenChange={setIsBookingModalOpen}
+        mentorId={mentor?.profile?.uuid || id || ""}
+        mentorName={mentor?.user?.name || ""}
+      />
     </PageLayout>
   );
 }
