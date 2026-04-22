@@ -34,7 +34,7 @@ export function RecommendedMentorsSection() {
   }
 
   return (
-    <section className="py-16 sm:py-24 md:py-32 bg-white dark:bg-slate-950">
+    <section className="py-20 sm:py-28 md:py-36 bg-white dark:bg-slate-950">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12 sm:mb-16">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4">
@@ -67,25 +67,25 @@ export function RecommendedMentorsSection() {
                     )}
                   </div>
 
-                  <div className="p-4 sm:p-5">
-                    <h3 className="font-bold text-base sm:text-lg line-clamp-1 mb-1 group-hover:text-purple-600 transition-colors">
+                  <div className="p-3 sm:p-4 flex flex-col h-full">
+                    <h3 className="font-bold text-sm sm:text-base line-clamp-2 mb-2 group-hover:text-purple-600 transition-colors flex-shrink-0">
                       {mentor.name}
                     </h3>
 
-                    <div className="flex items-center gap-1 text-xs sm:text-sm text-muted-foreground mb-3 line-clamp-1">
+                    <div className="flex items-center gap-1 text-xs text-muted-foreground mb-2 line-clamp-1 flex-shrink-0">
                       <MapPin className="w-3 h-3 flex-shrink-0" />
                       <span className="line-clamp-1">{mentor.university}</span>
                     </div>
 
-                    <div className="flex items-center gap-1 text-xs sm:text-sm text-muted-foreground mb-3 line-clamp-1">
+                    <div className="flex items-center gap-1 text-xs text-muted-foreground mb-3 line-clamp-1 flex-shrink-0">
                       <BookOpen className="w-3 h-3 flex-shrink-0" />
                       <span className="line-clamp-1">{mentor.major}</span>
                     </div>
 
-                    <div className="flex items-center justify-between pt-3 border-t">
-                      <div className="flex items-center gap-1">
-                        <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                        <span className="font-semibold text-sm">
+                    <div className="flex items-center justify-between pt-2 border-t mt-auto">
+                      <div className="flex items-center gap-0.5">
+                        <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                        <span className="font-semibold text-xs">
                           {(mentor.averageRating || 0).toFixed(1)}
                         </span>
                       </div>
