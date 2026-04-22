@@ -136,13 +136,13 @@ export default function QnAList() {
           </div>
 
           {/* 안내 박스 */}
-          <Card className="bg-[var(--brand-primary-50)] border-[var(--color-border-default)] mb-6">
-            <CardContent className="pt-4 px-4 pb-4">
-              <div className="flex gap-3">
-                <AlertCircle className="h-5 w-5 text-[var(--brand-primary-700)] flex-shrink-0 mt-0.5" />
-                <div className="text-xs sm:text-sm text-[var(--brand-primary-700)] space-y-1">
-                  <p className="font-medium">좋은 질문 팁</p>
-                  <ul className="text-xs space-y-0.5 opacity-90">
+          <Card className="bg-[var(--brand-primary-50)] border-[var(--color-border-default)] border-2 mb-8 shadow-lg">
+            <CardContent className="pt-6 px-6 pb-6">
+              <div className="flex gap-4">
+                <AlertCircle className="h-7 w-7 text-[var(--brand-primary-700)] flex-shrink-0 mt-1" />
+                <div className="text-sm sm:text-base text-[var(--brand-primary-700)] space-y-2">
+                  <p className="font-bold text-lg">좋은 질문 팁</p>
+                  <ul className="text-sm sm:text-base space-y-1.5 opacity-95">
                     <li>• 한 질문에 한 가지 핵심 고민만 적기</li>
                     <li>• 학교/전공/학년/상황을 적으면 더 정확한 답변 가능</li>
                     <li>• 개인정보(전화번호, 카톡 ID, SNS)는 적지 않기</li>
