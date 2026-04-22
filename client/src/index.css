@@ -125,6 +125,17 @@
     font-family: 'Pretendard', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     font-weight: 400;
     letter-spacing: -0.01em;
+    word-break: keep-all;
+  }
+  
+  /* 한 단어는 같은 줄에 나오도록 설정 */
+  p, span, h1, h2, h3, h4, h5, h6, li, td, th, label, button, a {
+    word-break: keep-all;
+  }
+  
+  /* 긴 URL이나 이메일은 줄바꿈 허용 */
+  a[href], code, pre {
+    word-break: break-word;
   }
   button:not(:disabled),
   [role="button"]:not([aria-disabled="true"]),

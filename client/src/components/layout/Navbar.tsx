@@ -18,11 +18,9 @@ interface NavbarProps {
   onBugReport: () => void;
 }
 
-// 로그인 상태별 메뉴
+// 로그인 상태별 메뉴 (네비게이션바에 표시)
 const AUTHENTICATED_MENU = [
   { href: "/mentors", label: "멘토 찾기" },
-  { href: "/messages", label: "상담 신청" },
-  { href: "/bookings", label: "예약 내역" },
   { href: "/qna", label: "Q&A" },
   { href: "/columns", label: "멘토 칼럼" },
 ] as const;
@@ -34,7 +32,10 @@ const UNAUTHENTICATED_MENU = [
   { href: "/columns", label: "멘토 칼럼" },
 ] as const;
 
+// 드롭다운 메뉴 (상담신청, 예약내역 포함)
 const DROPDOWN_MENU = [
+  { href: "/messages", label: "상담 신청" },
+  { href: "/bookings", label: "예약 내역" },
   { href: "/my-profile", label: "내 프로필" },
   { href: "/notifications", label: "알림" },
 ] as const;

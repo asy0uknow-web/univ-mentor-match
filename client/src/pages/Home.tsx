@@ -252,6 +252,29 @@ export default function Home() {
                 </p>
               </div>
             </div>
+
+            <div 
+              className="group cursor-pointer"
+              onClick={() => navigate('/mentors?types=입시전략')}
+              onKeyDown={(e) => e.key === 'Enter' && navigate('/mentors?types=입시전략')}
+              role="button"
+              tabIndex={0}
+              aria-label="입시 전략 멘토 찾기"
+            >
+              <div className="bg-white p-8 border border-[var(--color-border-default)] rounded-xl hover:shadow-lg transition-all duration-300 group-hover:-translate-y-1">
+                <div className="mb-4 flex justify-center group-hover:scale-110 transition-transform duration-300">
+                  <svg className="w-10 h-10 sm:w-12 sm:h-12 text-[var(--brand-primary-600)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                </div>
+                <h3 className="text-lg sm:text-xl font-semibold text-center text-[var(--color-text-primary)] group-hover:text-[var(--brand-primary-700)] transition-colors">
+                  입시 전략
+                </h3>
+                <p className="text-sm sm:text-base text-[var(--color-text-secondary)] text-center mt-3">
+                  효과적인 입시 준비 방법을 배우고 싶어요
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </section>

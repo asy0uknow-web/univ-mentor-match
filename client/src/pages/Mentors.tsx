@@ -251,15 +251,15 @@ export default function Mentors() {
             {/* 검색 및 필터 바 */}
             <div className="flex flex-col gap-3">
               {/* 검색 바 */}
-              <div className="bg-[var(--color-bg-card)] border border-[var(--color-border-default)] rounded-full shadow-sm hover:shadow-md transition-shadow duration-300 p-2 flex items-center gap-0 w-full">
-                <Search className="h-4 sm:h-5 w-4 sm:w-5 text-[var(--color-text-secondary)] flex-shrink-0 ml-3 sm:ml-6" />
+              <div className="bg-[var(--color-bg-card)] border border-[var(--color-border-default)] rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 px-3 sm:px-4 py-2 flex items-center gap-2 w-full">
+                <Search className="h-4 sm:h-5 w-4 sm:w-5 text-[var(--color-text-secondary)] flex-shrink-0" />
                 <input
                   type="text"
                   placeholder="대학, 전공, 이름"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   onKeyDown={handleKeyDown}
-                  className="flex-1 bg-transparent text-xs sm:text-sm text-[var(--color-text-primary)] placeholder-[var(--color-text-secondary)] focus:outline-none px-3 py-2 sm:px-6 sm:py-3"
+                  className="flex-1 bg-transparent text-xs sm:text-sm text-[var(--color-text-primary)] placeholder-[var(--color-text-secondary)] focus:outline-none py-2"
                 />
               </div>
 

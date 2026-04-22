@@ -160,7 +160,7 @@ export default function MentorColumns() {
                       {column.category}
                     </Badge>
                     <span className="text-xs text-[var(--color-text-secondary)]">
-                      {format(new Date(column.createdAt), "MMM d", { locale: ko })}
+                      {format(new Date(column.createdAt), "MMM d'일'", { locale: ko })}
                     </span>
                   </div>
                   <CardTitle className="line-clamp-2 text-base sm:text-lg group-hover:text-[var(--brand-primary-700)] transition-colors text-[var(--color-text-primary)]">
