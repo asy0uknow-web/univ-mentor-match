@@ -95,7 +95,7 @@ export default function AdminColumnStats() {
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-2">칼럼 통계</h1>
-          <p className="text-muted-foreground">멘토 칼럼의 성과를 한눈에 확인하세요</p>
+          <p className="text-muted-foreground">칼럼 스튜디오의 성과를 한눈에 확인하세요</p>
         </div>
 
         {/* 전체 통계 카드 */}

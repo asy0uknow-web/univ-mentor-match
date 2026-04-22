@@ -22,14 +22,14 @@ interface NavbarProps {
 const AUTHENTICATED_MENU = [
   { href: "/mentors", label: "멘토 찾기" },
   { href: "/qna", label: "Q&A" },
-  { href: "/columns", label: "멘토 칼럼" },
+  { href: "/columns", label: "칼럼 스튜디오" },
 ] as const;
 
 // 로그인 전 메뉴 (항상 표시)
 const UNAUTHENTICATED_MENU = [
   { href: "/mentors", label: "멘토 찾기" },
   { href: "/qna", label: "Q&A" },
-  { href: "/columns", label: "멘토 칼럼" },
+  { href: "/columns", label: "칼럼 스튜디오" },
 ] as const;
 
 // 드롭다운 메뉴 (상담신청, 예약내역 포함)

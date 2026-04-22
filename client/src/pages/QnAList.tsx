@@ -67,7 +67,7 @@ export default function QnAList() {
 
   useEffect(() => {
     setPageMeta({ 
-      title: "Q&A - 재학생에게 직접 묻기", 
+      title: "QnA 센터 - 대학 생활 Q&A", 
       description: "입시, 전공 선택, 학교 분위기까지 재학생 멘토에게 자유롭게 질문해보세요" 
     });
   }, []);
@@ -102,7 +102,7 @@ export default function QnAList() {
         <div className="mb-8 sm:mb-12">
           <div className="flex items-center justify-between gap-2 mb-4 sm:mb-6">
             <div>
-              <h1 className="text-2xl sm:text-4xl font-bold mb-2 text-[var(--color-text-primary)]">재학생에게 직접 묻기</h1>
+              <h1 className="text-2xl sm:text-4xl font-bold mb-2 text-[var(--color-text-primary)]">🎓 QnA 센터</h1>
               <p className="text-sm sm:text-base text-[var(--color-text-secondary)]">
                 입시, 전공 선택, 학교 분위기, 대학생활까지<br className="sm:hidden" />
                 재학생 멘토에게 자유롭게 질문해보세요.

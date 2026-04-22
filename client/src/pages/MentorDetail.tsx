@@ -305,7 +305,7 @@ export default function MentorDetail() {
                 <CardHeader className="pb-3 sm:pb-4">
                   <CardTitle className="text-lg sm:text-xl flex items-center gap-2">
                     <Sparkles className="w-5 h-5 text-blue-600" />
-                    멘토 칼럼
+                    칼럼 스튜디오
                   </CardTitle>
                 </CardHeader>
                 <CardContent>

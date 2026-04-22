@@ -83,7 +83,7 @@ export default function MentorColumnCreate() {
 
   setPageMeta({
     title: "칼럼 작성 | 유니브매치",
-    description: "멘토 칼럼을 작성해보세요",
+    description: "칼럼 스튜디오을 작성해보세요",
   });
 
   // 조건부 렌더링 (return 제거)

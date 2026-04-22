@@ -15,7 +15,7 @@ export function FeaturedColumnsSection() {
       <section className="py-16 sm:py-24 md:py-32 bg-background">
         <div className="container mx-auto px-4">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-4 text-foreground">
-            멘토 칼럼
+            칼럼 스튜디오
           </h2>
           <p className="text-center text-muted-foreground mb-12 sm:mb-16">
             멘토들의 경험과 조언을 담은 칼럼을 읽어보세요
@@ -46,7 +46,7 @@ export function FeaturedColumnsSection() {
       <div className="container mx-auto px-4">
         <div className="text-center mb-12 sm:mb-16">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-4">
-            멘토 칼럼
+            칼럼 스튜디오
           </h2>
           <p className="text-center text-muted-foreground max-w-2xl mx-auto">
             멘토들의 다양한 경험을 담은 칼럼을 동료 나누세요.

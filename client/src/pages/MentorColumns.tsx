@@ -39,7 +39,7 @@ export default function MentorColumns() {
   const [sortBy, setSortBy] = useState<"latest" | "likes" | "comments">("latest");
 
   setPageMeta({
-    title: "멘토 칼럼 | 유니브매치",
+    title: "칼럼 스튜디오 | 유니브매치",
     description: "멘토들의 경험과 조언을 담은 칼럼을 읽어보세요",
   });
 
@@ -58,7 +58,7 @@ export default function MentorColumns() {
         <div className="mb-8 sm:mb-12">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
             <div>
-              <h1 className="text-2xl sm:text-3xl font-bold mb-2 text-[var(--color-text-primary)]">멘토 칼럼</h1>
+              <h1 className="text-2xl sm:text-3xl font-bold mb-2 text-[var(--color-text-primary)]">칼럼 스튜디오</h1>
               <p className="text-sm sm:text-base text-[var(--color-text-secondary)]">
                 멘토들의 경험과 조언을 담은 칼럼을 읽어보세요
               </p>

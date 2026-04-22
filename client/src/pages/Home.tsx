@@ -151,14 +151,14 @@ export default function Home() {
                 Q&A 커뮤니티
               </Button>
               
-              {/* 멘토 칼럼 */}
+              {/* 칼럼 스튜디오 */}
               <Button 
                 size="lg" 
                 className="w-full sm:w-auto px-8 py-3 text-base font-semibold bg-[var(--color-cta-secondary-bg)] hover:bg-[var(--color-cta-secondary-bg-hover)] text-[var(--color-text-primary)] shadow-sm hover:shadow-md transition-all duration-200 border border-[var(--color-border-default)] rounded-md"
                 onClick={() => navigate('/columns')}
-                aria-label="멘토 칼럼으로 이동"
+                aria-label="칼럼 스튜디오으로 이동"
               >
-                멘토 칼럼
+                칼럼 스튜디오
               </Button>
               
               {isAuthenticated && (
@@ -336,6 +336,12 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Mentor Verification Section */}
+      <MentorVerificationUSPSection />
+
+      {/* Zero Commission Section */}
+      <ZeroCommissionUSPSection />
+
       {/* Recommended Mentors Section */}
       <RecommendedMentorsSection />
 
@@ -344,12 +350,6 @@ export default function Home() {
 
       {/* Testimonials Section */}
       <TestimonialsSection />
-
-      {/* Mentor Verification Section */}
-      <MentorVerificationUSPSection />
-
-      {/* Zero Commission Section */}
-      <ZeroCommissionUSPSection />
 
       {/* FAQ Section */}
       <IntegratedFAQSection />
