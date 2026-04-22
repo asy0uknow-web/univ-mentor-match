@@ -230,18 +230,29 @@ export const FeaturedMentorsSlide = () => {
 
                 {/* Mentor Info */}
                 <div className="p-4 sm:p-6 md:p-8 flex flex-col flex-grow">
-                  {/* Name and Rating Row */}
-                  <div className="flex items-start justify-between gap-2 sm:gap-3 mb-3 sm:mb-4">
-                    <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-foreground flex-1 line-clamp-1 group-hover:text-indigo-600 transition-colors">
-                      {mentor.name}
-                    </h3>
-                    {/* Rating or New Badge */}
+                  {/* Name */}
+                  <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-foreground line-clamp-2 mb-2 group-hover:text-indigo-600 transition-colors">
+                    {mentor.name}
+                  </h3>
+                  
+                  {/* University */}
+                  <p className="text-xs sm:text-sm text-muted-foreground mb-1 line-clamp-1">
+                    {mentor.university}
+                  </p>
+                  
+                  {/* Major */}
+                  <p className="text-xs sm:text-sm font-semibold text-blue-600 mb-2 line-clamp-2">
+                    {mentor.major}
+                  </p>
+                  
+                  {/* Rating or New Badge */}
+                  <div className="mb-3 sm:mb-4">
                     {mentor.reviewCount === 0 ? (
-                      <div className="inline-flex items-center gap-1.5 px-2 py-1 rounded-lg bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 shadow-sm whitespace-nowrap flex-shrink-0">
+                      <div className="inline-flex items-center gap-1.5 px-2 py-1 rounded-lg bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 shadow-sm whitespace-nowrap">
                         <span className="text-xs font-bold tracking-wider text-emerald-700 uppercase">New</span>
                       </div>
                     ) : (
-                      <div className="flex items-center gap-1.5 flex-shrink-0">
+                      <div className="flex items-center gap-1.5">
                         <div className="flex items-center">
                           {[...Array(5)].map((_, i) => (
                             <span
@@ -262,13 +273,6 @@ export const FeaturedMentorsSlide = () => {
                       </div>
                     )}
                   </div>
-                  
-                  <p className="text-xs sm:text-sm text-muted-foreground mb-1 line-clamp-1">
-                    {mentor.university}
-                  </p>
-                  <p className="text-xs sm:text-sm font-semibold text-blue-600 mb-3 sm:mb-4 line-clamp-1">
-                    {mentor.major}
-                  </p>
 
                   {/* Professional Field Badge */}
                   {mentor.field && (
