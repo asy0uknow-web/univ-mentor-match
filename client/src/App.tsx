@@ -4,6 +4,7 @@ import NotFound from "@/pages/NotFound";
 import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
+import { NotificationToast } from "./components/NotificationToast";
 import { lazy, Suspense } from "react";
 
 // 주요 페이지는 즉시 로드, 나머지는 동적 로드
@@ -88,6 +89,7 @@ function App() {
       <ThemeProvider defaultTheme="light" switchable>
         <TooltipProvider>
           <Toaster />
+          <NotificationToast />
           <Router />
         </TooltipProvider>
       </ThemeProvider>

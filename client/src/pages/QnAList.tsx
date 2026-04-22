@@ -95,6 +95,13 @@ export default function QnAList() {
     ? questions.filter((q: any) => q.status === "answered" || q.status === "solved")
     : questions;
 
+  // 이번주 인기 질문 조회 (답변많은순, 최대 5개)
+  const { data: trendingQuestions } = trpc.qna.getQuestions.useQuery({
+    limit: 5,
+    offset: 0,
+    sortBy: "most_answers" as any,
+  });
+
   return (
     <PageLayout>
       <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-12">
@@ -116,7 +123,7 @@ export default function QnAList() {
                     setSelectedStatus('awaiting_answer');
                     window.scrollTo({ top: 400, behavior: 'smooth' });
                   }}
-                  className="text-xs sm:text-sm h-8 sm:h-10 flex-shrink-0 bg-[var(--color-cta-primary-bg)] hover:bg-[var(--color-cta-primary-bg-hover)]"
+                  className="text-xs sm:text-sm h-10 sm:h-10 flex-shrink-0 bg-[var(--color-cta-primary-bg)] hover:bg-[var(--color-cta-primary-bg-hover)]"
                 >
                   <MessageCircle className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                   <span className="hidden sm:inline">답변하기</span>
@@ -125,7 +132,7 @@ export default function QnAList() {
               ) : (
                 <Button
                   onClick={() => setLocation('/qna/new')}
-                  className="text-xs sm:text-sm h-8 sm:h-10 flex-shrink-0 bg-[var(--color-cta-primary-bg)] hover:bg-[var(--color-cta-primary-bg-hover)]"
+                  className="text-xs sm:text-sm h-10 sm:h-10 flex-shrink-0 bg-[var(--color-cta-primary-bg)] hover:bg-[var(--color-cta-primary-bg-hover)]"
                 >
                   <Plus className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                   <span className="hidden sm:inline">질문하기</span>
@@ -136,11 +143,11 @@ export default function QnAList() {
           </div>
 
           {/* 안내 박스 */}
-          <Card className="bg-[var(--brand-primary-50)] border-[var(--color-border-default)] border-2 mb-8 shadow-lg">
+          <Card className="bg-[var(--brand-primary-50)] dark:bg-[var(--brand-primary-900)] border-[var(--color-border-default)] border-2 mb-8 shadow-lg">
             <CardContent className="pt-6 px-6 pb-6">
               <div className="flex gap-4">
-                <AlertCircle className="h-7 w-7 text-[var(--brand-primary-700)] flex-shrink-0 mt-1" />
-                <div className="text-sm sm:text-base text-[var(--brand-primary-700)] space-y-2">
+                <AlertCircle className="h-7 w-7 text-[var(--brand-primary-700)] dark:text-[var(--brand-primary-300)] flex-shrink-0 mt-1" />
+                <div className="text-sm sm:text-base text-[var(--brand-primary-700)] dark:text-[var(--brand-primary-300)] space-y-2">
                   <p className="font-bold text-lg">좋은 질문 팁</p>
                   <ul className="text-sm sm:text-base space-y-1.5 opacity-95">
                     <li>• 한 질문에 한 가지 핵심 고민만 적기</li>
@@ -174,6 +181,45 @@ export default function QnAList() {
             )}
           </div>
         </div>
+
+        {/* 이번주 인기 질문 섹션 */}
+        {trendingQuestions && trendingQuestions.length > 0 && (
+          <div className="mb-12">
+            <div className="mb-6">
+              <h2 className="text-xl sm:text-2xl font-bold mb-2 text-[var(--color-text-primary)]">🔥 이번주 인기 질문</h2>
+              <p className="text-sm text-[var(--color-text-secondary)]">\uac00장 많은 답변을 받은 질문들을 만나보세요</p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
+              {trendingQuestions.map((question: any) => (
+                <Card
+                  key={question.id}
+                  className="card-premium overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer group group-hover:-translate-y-1 bg-[var(--color-background-card)] border-[var(--color-border-default)]"
+                  onClick={() => setLocation(`/qna/${question.id}`)}
+                >
+                  <CardHeader className="pb-2">
+                    <div className="flex items-start justify-between gap-2 mb-1">
+                      <StatusBadge status={mapStatusToStatusBadge(question.status)} />
+                    </div>
+                    <CardTitle className="line-clamp-2 text-sm group-hover:text-[var(--brand-primary-700)] transition-colors text-[var(--color-text-primary)]">
+                      {question.title}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="pb-2">
+                    <div className="flex items-center justify-between text-xs text-[var(--color-text-secondary)]">
+                      <div className="flex gap-2">
+                        <div className="flex items-center gap-0.5">
+                          <MessageCircle className="h-3 w-3" />
+                          <span>{question.answerCount}개</span>
+                        </div>
+                      </div>
+                      <ArrowRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* 검색 및 필터 바 */}
         <div className="mb-6 sm:mb-8 space-y-3 sm:space-y-4">
@@ -308,7 +354,7 @@ export default function QnAList() {
                 ) : (
                   <Button
                     onClick={() => setLocation('/qna/new')}
-                    className="text-xs sm:text-sm h-8 sm:h-10 bg-[var(--color-cta-primary-bg)] hover:bg-[var(--color-cta-primary-bg-hover)]"
+                    className="text-xs sm:text-sm h-10 sm:h-10 bg-[var(--color-cta-primary-bg)] hover:bg-[var(--color-cta-primary-bg-hover)]"
                   >
                     <Plus className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                     첫 번째 질문 작성하기

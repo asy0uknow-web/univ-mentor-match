@@ -51,6 +51,13 @@ export default function MentorColumns() {
     searchQuery: searchQuery || undefined,
   });
 
+  // 이번주 인기 칼럼 조회 (좋아요순, 최대 5개)
+  const { data: trendingColumns } = trpc.mentorColumns.getList.useQuery({
+    limit: 5,
+    offset: 0,
+    sortBy: "likes",
+  });
+
   return (
     <PageLayout>
       <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-12">
@@ -115,6 +122,57 @@ export default function MentorColumns() {
             </Select>
           </div>
         </div>
+
+        {/* 이번주 인기칼럼 섹션 */}
+        {trendingColumns && trendingColumns.length > 0 && (
+          <div className="mb-12">
+            <div className="mb-6">
+              <h2 className="text-xl sm:text-2xl font-bold mb-2 text-[var(--color-text-primary)]">🔥 이번주 인기칼럼</h2>
+              <p className="text-sm text-[var(--color-text-secondary)]">가장 많은 사랑을 받은 칼럼들을 만나보세요</p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
+              {trendingColumns.map((column: any) => (
+                <Card
+                  key={column.id}
+                  className="card-premium overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer group group-hover:-translate-y-1 bg-[var(--color-background-card)] border-[var(--color-border-default)]"
+                  onClick={() => setLocation(`/columns/${column.id}`)}
+                >
+                  {/* 커버 이미지 */}
+                  {column.coverImageUrl && (
+                    <div className="h-24 bg-[var(--brand-primary-50)] overflow-hidden group-hover:scale-110 transition-transform duration-300">
+                      <img
+                        src={column.coverImageUrl}
+                        alt={column.title}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  )}
+
+                  <CardHeader className="pb-2">
+                    <Badge className="text-xs bg-[var(--brand-primary-50)] text-[var(--brand-primary-700)] border-0 w-fit mb-1">
+                      {column.category}
+                    </Badge>
+                    <CardTitle className="line-clamp-2 text-sm group-hover:text-[var(--brand-primary-700)] transition-colors text-[var(--color-text-primary)]">
+                      {column.title}
+                    </CardTitle>
+                  </CardHeader>
+
+                  <CardContent className="pb-2">
+                    <div className="flex items-center justify-between text-xs text-[var(--color-text-secondary)]">
+                      <div className="flex gap-2">
+                        <div className="flex items-center gap-0.5">
+                          <Heart className="h-3 w-3" />
+                          <span>{column.likesCount}</span>
+                        </div>
+                      </div>
+                      <ArrowRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* 칼럼 목록 */}
         {isLoading ? (

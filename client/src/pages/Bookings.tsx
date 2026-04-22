@@ -249,7 +249,7 @@ export default function Bookings() {
           </CardHeader>
           <CardContent>
             <a href={getLoginUrl()}>
-              <Button className="w-full text-xs sm:text-sm h-9 sm:h-10 bg-[var(--color-cta-primary-bg)] hover:bg-[var(--color-cta-primary-bg-hover)]">로그인</Button>
+               <Button className="w-full text-xs sm:text-sm h-10 sm:h-10 bg-[var(--color-cta-primary-bg)] hover:bg-[var(--color-cta-primary-bg-hover)]">로그인</Button>
             </a>
           </CardContent>
         </Card>
@@ -489,11 +489,11 @@ export default function Bookings() {
                 <p className="text-xs sm:text-sm text-[var(--color-text-secondary)] mb-6">멘토를 찾아 상담을 시작해보세요!</p>
                 <div className="flex flex-col sm:flex-row gap-3 justify-center">
                   <Link href="/mentors">
-                    <Button className="text-xs sm:text-sm h-8 sm:h-10 bg-[var(--color-cta-primary-bg)] hover:bg-[var(--color-cta-primary-bg-hover)]">멘토 찾아보기</Button>
+                    <Button className="text-xs sm:text-sm h-10 sm:h-10 bg-[var(--color-cta-primary-bg)] hover:bg-[var(--color-cta-primary-bg-hover)]">멘토 찾아보기</Button>
                   </Link>
                   <Button
                     variant="outline"
-                    className="text-xs sm:text-sm h-8 sm:h-10"
+                    className="text-xs sm:text-sm h-10 sm:h-10"
                     onClick={() => mentorIdParam ? setLocation(`/messages?mentorId=${mentorIdParam}`) : setLocation('/messages')}
                   >
                     <MessageCircle className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
