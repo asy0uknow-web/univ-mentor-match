@@ -198,7 +198,7 @@ export default function Home() {
               tabIndex={0}
               aria-label="전공 탐색 멘토 찾기"
             >
-              <div className="bg-white p-8 border border-[var(--color-border-default)] rounded-xl hover:shadow-lg transition-all duration-300 group-hover:-translate-y-1">
+              <div className="bg-[var(--color-background-card)] p-8 border border-[var(--color-border-default)] rounded-xl hover:shadow-lg transition-all duration-300 group-hover:-translate-y-1">
                 <div className="mb-4 flex justify-center group-hover:scale-110 transition-transform duration-300">
                   <MajorIcon />
                 </div>
@@ -219,7 +219,7 @@ export default function Home() {
               tabIndex={0}
               aria-label="진로 상담 멘토 찾기"
             >
-              <div className="bg-white p-8 border border-[var(--color-border-default)] rounded-xl hover:shadow-lg transition-all duration-300 group-hover:-translate-y-1">
+              <div className="bg-[var(--color-background-card)] p-8 border border-[var(--color-border-default)] rounded-xl hover:shadow-lg transition-all duration-300 group-hover:-translate-y-1">
                 <div className="mb-4 flex justify-center group-hover:scale-110 transition-transform duration-300">
                   <CareerIcon />
                 </div>
@@ -240,7 +240,7 @@ export default function Home() {
               tabIndex={0}
               aria-label="대학 생활 멘토 찾기"
             >
-              <div className="bg-white p-8 border border-[var(--color-border-default)] rounded-xl hover:shadow-lg transition-all duration-300 group-hover:-translate-y-1">
+              <div className="bg-[var(--color-background-card)] p-8 border border-[var(--color-border-default)] rounded-xl hover:shadow-lg transition-all duration-300 group-hover:-translate-y-1">
                 <div className="mb-4 flex justify-center group-hover:scale-110 transition-transform duration-300">
                   <LifeIcon />
                 </div>
@@ -261,7 +261,7 @@ export default function Home() {
               tabIndex={0}
               aria-label="입시 전략 멘토 찾기"
             >
-              <div className="bg-white p-8 border border-[var(--color-border-default)] rounded-xl hover:shadow-lg transition-all duration-300 group-hover:-translate-y-1">
+              <div className="bg-[var(--color-background-card)] p-8 border border-[var(--color-border-default)] rounded-xl hover:shadow-lg transition-all duration-300 group-hover:-translate-y-1">
                 <div className="mb-4 flex justify-center group-hover:scale-110 transition-transform duration-300">
                   <svg className="w-10 h-10 sm:w-12 sm:h-12 text-[var(--brand-primary-600)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
@@ -292,7 +292,7 @@ export default function Home() {
           <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
             {/* Step 1 */}
             <div className="relative">
-              <div className="bg-white p-8 text-center border border-[var(--color-border-default)] rounded-xl">
+              <div className="bg-[var(--color-background-card)] p-8 text-center border border-[var(--color-border-default)] rounded-xl">
                 <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-[var(--brand-primary-700)] text-white font-bold mb-4">
                   1
                 </div>
@@ -307,7 +307,7 @@ export default function Home() {
 
             {/* Step 2 */}
             <div className="relative">
-              <div className="bg-white p-8 text-center border border-[var(--color-border-default)] rounded-xl">
+              <div className="bg-[var(--color-background-card)] p-8 text-center border border-[var(--color-border-default)] rounded-xl">
                 <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-[var(--brand-primary-700)] text-white font-bold mb-4">
                   2
                 </div>
@@ -322,7 +322,7 @@ export default function Home() {
 
             {/* Step 3 */}
             <div className="relative">
-              <div className="bg-white p-8 text-center border border-[var(--color-border-default)] rounded-xl">
+              <div className="bg-[var(--color-background-card)] p-8 text-center border border-[var(--color-border-default)] rounded-xl">
                 <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-[var(--brand-primary-700)] text-white font-bold mb-4">
                   3
                 </div>

@@ -242,7 +242,7 @@ export default function Bookings() {
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen flex items-center justify-center px-4">
-        <Card className="w-full max-w-md bg-white">
+        <Card className="w-full max-w-md bg-[var(--color-background-card)]">
           <CardHeader>
             <CardTitle className="text-lg sm:text-xl text-[var(--color-text-primary)]">로그인이 필요합니다</CardTitle>
             <CardDescription className="text-xs sm:text-sm text-[var(--color-text-secondary)]">예약 내역을 보려면 로그인해주세요.</CardDescription>
@@ -352,7 +352,7 @@ export default function Bookings() {
                 const canReview = item.booking.status === "completed";
 
                 return (
-                  <Card key={item.booking.id} className="overflow-hidden bg-white">
+                  <Card key={item.booking.id} className="overflow-hidden bg-[var(--color-background-card)]">
                     <CardHeader className="pb-2 sm:pb-4 px-3 sm:px-6">
                       <div className="flex items-start justify-between gap-2">
                         <div className="flex-1 min-w-0">
@@ -483,7 +483,7 @@ export default function Bookings() {
               })}
             </div>
           ) : (
-            <Card className="bg-white">
+            <Card className="bg-[var(--color-background-card)]">
               <CardContent className="py-8 sm:py-12 text-center px-4">
                 <p className="text-xs sm:text-sm text-[var(--color-text-secondary)] mb-6">예약 내역이 존재하지 않습니다.</p>
                 <p className="text-xs sm:text-sm text-[var(--color-text-secondary)] mb-6">멘토를 찾아 상담을 시작해보세요!</p>
@@ -551,7 +551,7 @@ export default function Bookings() {
                 item.booking.status === "in_progress" && now > new Date(scheduledEnd.getTime() + fiveMinutesMs) ? 'late' : 'normal';
 
               return (
-                <Card key={item.booking.id} className={`overflow-hidden bg-white ${item.booking.status === "pending" ? "border-[var(--color-border-default)] bg-[var(--brand-accent-50)]" : ""}`}>
+                <Card key={item.booking.id} className={`overflow-hidden bg-[var(--color-background-card)] ${item.booking.status === "pending" ? "border-[var(--color-border-default)] bg-[var(--brand-accent-50)]" : ""}`}>
                   <CardHeader className="pb-2 sm:pb-4 px-3 sm:px-6">
                     <div className="flex items-start justify-between gap-2">
                       <div className="flex-1 min-w-0">

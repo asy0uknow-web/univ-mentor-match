@@ -144,7 +144,7 @@ export function TrendingContentPopup() {
       </div>
 
       {/* 탭 */}
-      <div className="flex gap-1 bg-white dark:bg-slate-900 px-4 pt-4 border-b border-gray-200 dark:border-slate-700">
+      <div className="flex gap-1 bg-[var(--color-background-card)] px-4 pt-4 border-b border-[var(--color-border-default)]">
         {[
           { id: "qna", label: "Q&A" },
           { id: "column", label: "칼럼" },
@@ -165,7 +165,7 @@ export function TrendingContentPopup() {
       </div>
 
       {/* 콘텐츠 */}
-      <div className="bg-white dark:bg-slate-900 p-6 rounded-b-3xl">
+      <div className="bg-[var(--color-background-card)] p-6 rounded-b-3xl">
         {isLoading ? (
           <div className="space-y-3">
             <Skeleton className="h-6 w-3/4" />

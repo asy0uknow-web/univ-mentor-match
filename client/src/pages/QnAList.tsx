@@ -191,13 +191,13 @@ export default function QnAList() {
           <div className="flex gap-2 flex-wrap">
             {/* 카테고리 필터 */}
             <Select.Root value={selectedCategory} onValueChange={setSelectedCategory}>
-              <Select.Trigger className="inline-flex items-center justify-between px-3 py-2 text-xs sm:text-sm border border-[var(--color-border-default)] rounded-md bg-white hover:bg-accent h-9 sm:h-10 min-w-[110px]">
+              <Select.Trigger className="inline-flex items-center justify-between px-3 py-2 text-xs sm:text-sm border border-[var(--color-border-default)] rounded-md bg-[var(--color-background-card)] hover:bg-accent h-9 sm:h-10 min-w-[110px]">
                 <Select.Value />
                 <Select.Icon className="ml-2">
                   <ChevronDown className="h-3 w-3 sm:h-4 sm:w-4" />
                 </Select.Icon>
               </Select.Trigger>
-              <Select.Content className="bg-white border border-[var(--color-border-default)] rounded-md shadow-md  z-50">
+              <Select.Content className="bg-[var(--color-background-card)] border border-[var(--color-border-default)] rounded-md shadow-md  z-50">
                 <Select.Viewport className="p-1">
                   {CATEGORIES.map((cat) => (
                     <Select.Item key={cat.value} value={cat.value} className="px-3 py-2 text-xs sm:text-sm cursor-pointer hover:bg-accent rounded">
@@ -210,13 +210,13 @@ export default function QnAList() {
 
             {/* 정렬 옵션 */}
             <Select.Root value={sortBy} onValueChange={setSortBy}>
-              <Select.Trigger className="inline-flex items-center justify-between px-3 py-2 text-xs sm:text-sm border border-[var(--color-border-default)] rounded-md bg-white hover:bg-accent h-9 sm:h-10 min-w-[110px]">
+              <Select.Trigger className="inline-flex items-center justify-between px-3 py-2 text-xs sm:text-sm border border-[var(--color-border-default)] rounded-md bg-[var(--color-background-card)] hover:bg-accent h-9 sm:h-10 min-w-[110px]">
                 <Select.Value />
                 <Select.Icon className="ml-2">
                   <ChevronDown className="h-3 w-3 sm:h-4 sm:w-4" />
                 </Select.Icon>
               </Select.Trigger>
-              <Select.Content className="bg-white border border-[var(--color-border-default)] rounded-md shadow-md  z-50">
+              <Select.Content className="bg-[var(--color-background-card)] border border-[var(--color-border-default)] rounded-md shadow-md  z-50">
                 <Select.Viewport className="p-1">
                   {SORT_OPTIONS.map((opt) => (
                     <Select.Item key={opt.value} value={opt.value} className="px-3 py-2 text-xs sm:text-sm cursor-pointer hover:bg-accent rounded">
@@ -253,7 +253,7 @@ export default function QnAList() {
               return (
                 <Card
                   key={question.id}
-                  className="card-premium overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer group group-hover:-translate-y-1 bg-white border-[var(--color-border-default)]"
+                  className="card-premium overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer group group-hover:-translate-y-1 bg-[var(--color-background-card)] border-[var(--color-border-default)]"
                   onClick={() => setLocation(`/qna/${question.id}`)}
                 >
                   <CardHeader className="pb-2 sm:pb-3 px-3 sm:px-6">
@@ -297,7 +297,7 @@ export default function QnAList() {
             })}
           </div>
         ) : (
-          <Card className="bg-white border-[var(--color-border-default)]">
+          <Card className="bg-[var(--color-background-card)] border-[var(--color-border-default)]">
             <CardContent className="py-8 sm:py-12 text-center px-4">
               <p className="text-xs sm:text-sm text-[var(--color-text-secondary)] mb-4">
                 {searchQuery ? "검색 결과가 없습니다" : "질문이 없습니다"}
