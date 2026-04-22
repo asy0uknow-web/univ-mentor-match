@@ -27,16 +27,16 @@ const AUTHENTICATED_MENU = [
   { href: "/columns", label: "멘토 칼럼" },
 ] as const;
 
+// 로그인 전 메뉴 (항상 표시)
+const UNAUTHENTICATED_MENU = [
+  { href: "/mentors", label: "멘토 찾기" },
+  { href: "/qna", label: "Q&A" },
+  { href: "/columns", label: "멘토 칼럼" },
+] as const;
+
 const DROPDOWN_MENU = [
   { href: "/my-profile", label: "내 프로필" },
   { href: "/notifications", label: "알림" },
-] as const;
-
-// 홈페이지 메뉴 (스크롤 이동)
-const HOME_MENU = [
-  { id: "hero", label: "멘토 찾기" },
-  { href: "/qna", label: "Q&A" },
-  { href: "/columns", label: "멘토 칼럼" },
 ] as const;
 
 const LOGO_URL = "/logonew.png";
@@ -57,21 +57,6 @@ export default function Navbar({ onBugReport }: NavbarProps) {
   const unreadAnswerCount = 0; // 임시 값
 
   const isHomePage = typeof window !== "undefined" && window.location.pathname === "/";
-
-  const handleSmoothScroll = (elementId: string) => {
-    const element = document.getElementById(elementId);
-    if (element) {
-      const navHeight = 80;
-      const elementPosition = element.getBoundingClientRect().top + window.scrollY;
-      const offsetPosition = elementPosition - navHeight;
-      
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: "smooth"
-      });
-    }
-    setMobileMenuOpen(false);
-  };
 
   return (
     <nav
@@ -94,41 +79,20 @@ export default function Navbar({ onBugReport }: NavbarProps) {
             <span className="font-bold text-sm sm:text-lg lg:text-xl text-foreground">유니브매치</span>
           </Link>
 
-          {/* 중앙: 홈페이지 메뉴 (홈페이지에서만, md 이상에서만) */}
-          {isHomePage && (
-            <div className="hidden md:flex items-center gap-8 flex-1 justify-center">
-              {HOME_MENU.map((item) => {
-                const isLink = 'href' in item;
-                const key = isLink ? item.href : item.id;
-                
-                if (isLink) {
-                  return (
-                    <Link
-                      key={key}
-                      href={item.href}
-                      className="text-sm font-medium text-foreground hover:text-primary transition-all duration-200 relative group"
-                      aria-label={`${item.label} 페이지로 이동`}
-                    >
-                      {item.label}
-                      <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-300"></span>
-                    </Link>
-                  );
-                }
-                
-                return (
-                  <button
-                    key={key}
-                    onClick={() => handleSmoothScroll(item.id)}
-                    className="text-sm font-medium text-foreground hover:text-primary transition-all duration-200 relative group"
-                    aria-label={`${item.label} 섹션으로 이동`}
-                  >
-                    {item.label}
-                    <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-300"></span>
-                  </button>
-                );
-              })}
-            </div>
-          )}
+          {/* 중앙: 주요 네비게이션 메뉴 (md 이상에서만) */}
+          <div className="hidden md:flex items-center gap-8 flex-1 justify-center">
+            {(isAuthenticated ? AUTHENTICATED_MENU : UNAUTHENTICATED_MENU).map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="text-sm font-medium text-foreground hover:text-primary transition-all duration-200 relative group"
+                aria-label={`${item.label} 페이지로 이동`}
+              >
+                {item.label}
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-300"></span>
+              </Link>
+            ))}
+          </div>
 
           {/* 오른쪽: 다크 모드 토글 + 로그인 상태별 메뉴 */}
           <div className="flex items-center gap-2 sm:gap-4 ml-auto">
@@ -151,29 +115,7 @@ export default function Navbar({ onBugReport }: NavbarProps) {
 
             {isAuthenticated ? (
               <>
-                {/* 데스크톱: 가로 메뉴 */}
-                <div className="hidden lg:flex items-center gap-1">
-                  {AUTHENTICATED_MENU.map((item) => (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      aria-label={`${item.label} 페이지로 이동`}
-                    >
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="text-sm font-medium hover:bg-muted hover:text-primary transition-colors duration-200 relative"
-                      >
-                        {item.label}
-                        {item.href === "/qna" && unreadAnswerCount > 0 && (
-                          <Badge className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 text-xs bg-red-500">
-                            {unreadAnswerCount > 9 ? "9+" : unreadAnswerCount}
-                          </Badge>
-                        )}
-                      </Button>
-                    </Link>
-                  ))}
-                </div>
+                {/* 데스크톱: 가로 메뉴 (이미 중앙에 표시됨) */}
 
                 {/* 드롭다운 메뉴 (모든 화면에서) */}
                 <DropdownMenu>
@@ -190,7 +132,7 @@ export default function Navbar({ onBugReport }: NavbarProps) {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" side="bottom" sideOffset={8} className="w-52 bg-card shadow-lg">
                     {/* 모바일: 인증 메뉴 */}
-                    <div className="lg:hidden">
+                    <div className="md:hidden">
                       {AUTHENTICATED_MENU.map((item) => (
                         <DropdownMenuItem key={item.href} asChild>
                           <Link href={item.href} className="cursor-pointer">
@@ -241,6 +183,37 @@ export default function Navbar({ onBugReport }: NavbarProps) {
               </>
             ) : (
               <>
+                {/* 모바일: 드롭다운 메뉴 */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="md:hidden gap-1 px-2"
+                      aria-label="네비게이션 메뉴 열기"
+                    >
+                      <ChevronDown className="h-4 w-4" aria-hidden="true" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" side="bottom" sideOffset={8} className="w-52 bg-card shadow-lg">
+                    {UNAUTHENTICATED_MENU.map((item) => (
+                      <DropdownMenuItem key={item.href} asChild>
+                        <Link href={item.href} className="cursor-pointer">
+                          {item.label}
+                        </Link>
+                      </DropdownMenuItem>
+                    ))}
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      onClick={() => onBugReport()}
+                      className="hover:bg-primary/10 cursor-pointer"
+                    >
+                      <Bug className="h-4 w-4 mr-2" aria-hidden="true" />
+                      버그 신고
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
                 {/* 로그인 버튼 */}
                 <Link href="/login" aria-label="로그인 페이지로 이동">
                   <Button 
