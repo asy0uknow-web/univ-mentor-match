@@ -124,11 +124,12 @@ export default function Navbar({ onBugReport }: NavbarProps) {
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="gap-1 px-2 sm:px-3"
+                      className="gap-1 px-2 sm:px-3 h-10 sm:h-10"
                       aria-label="네비게이션 메뉴 열기"
                     >
+                      <Menu className="h-5 w-5 md:hidden" aria-hidden="true" />
                       <span className="hidden sm:inline text-sm font-medium">메뉴</span>
-                      <ChevronDown className="h-4 w-4" aria-hidden="true" />
+                      <ChevronDown className="hidden sm:inline h-4 w-4" aria-hidden="true" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" side="bottom" sideOffset={8} className="w-52 bg-card shadow-lg">
@@ -190,10 +191,10 @@ export default function Navbar({ onBugReport }: NavbarProps) {
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="md:hidden gap-1 px-2"
+                      className="md:hidden gap-1 px-2 h-10"
                       aria-label="네비게이션 메뉴 열기"
                     >
-                      <ChevronDown className="h-4 w-4" aria-hidden="true" />
+                      <Menu className="h-5 w-5" aria-hidden="true" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" side="bottom" sideOffset={8} className="w-52 bg-card shadow-lg">
@@ -219,7 +220,7 @@ export default function Navbar({ onBugReport }: NavbarProps) {
                 <Link href="/login" aria-label="로그인 페이지로 이동">
                   <Button 
                     size="sm"
-                    className="rounded-md bg-primary hover:bg-primary/90 text-white font-medium px-4 sm:px-6 text-xs sm:text-sm shadow-sm transition-all duration-200"
+                    className="rounded-md bg-primary hover:bg-primary/90 text-white font-medium px-3 sm:px-6 text-xs sm:text-sm shadow-sm transition-all duration-200 h-10"
                   >
                     로그인
                   </Button>
@@ -229,7 +230,7 @@ export default function Navbar({ onBugReport }: NavbarProps) {
                   <Button 
                     size="sm"
                     variant="outline"
-                    className="rounded-md border border-border text-foreground hover:bg-muted font-medium px-4 sm:px-6 text-xs sm:text-sm transition-colors duration-200"
+                    className="rounded-md border border-border text-foreground hover:bg-muted font-medium px-3 sm:px-6 text-xs sm:text-sm transition-colors duration-200 h-10"
                   >
                     회원가입
                   </Button>

@@ -64,6 +64,7 @@ export default function QnAList() {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedStatus, setSelectedStatus] = useState("all");
   const [sortBy, setSortBy] = useState("recent");
+  const [trendingPeriod, setTrendingPeriod] = useState<"week" | "month" | "all">("week");
 
   useEffect(() => {
     setPageMeta({ 
@@ -186,8 +187,31 @@ export default function QnAList() {
         {trendingQuestions && trendingQuestions.length > 0 && (
           <div className="mb-12">
             <div className="mb-6">
-              <h2 className="text-xl sm:text-2xl font-bold mb-2 text-[var(--color-text-primary)]">🔥 이번주 인기 질문</h2>
-              <p className="text-sm text-[var(--color-text-secondary)]">\uac00장 많은 답변을 받은 질문들을 만나보세요</p>
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
+                <div>
+                  <h2 className="text-xl sm:text-2xl font-bold mb-2 text-[var(--color-text-primary)]">🔥 인기 질문</h2>
+                  <p className="text-sm text-[var(--color-text-secondary)]">가장 많은 답변을 받은 질문들을 만나보세요</p>
+                </div>
+                <div className="flex gap-2">
+                  {[
+                    { label: "이번주", value: "week" },
+                    { label: "이번달", value: "month" },
+                    { label: "전체", value: "all" },
+                  ].map((period) => (
+                    <button
+                      key={period.value}
+                      onClick={() => setTrendingPeriod(period.value as any)}
+                      className={`px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium transition-all ${
+                        trendingPeriod === period.value
+                          ? "bg-[var(--brand-primary-600)] text-white"
+                          : "bg-[var(--color-background-card)] text-[var(--color-text-secondary)] border border-[var(--color-border-default)] hover:border-[var(--brand-primary-600)]"
+                      }`}
+                    >
+                      {period.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
               {trendingQuestions.map((question: any) => (
