@@ -439,22 +439,6 @@ export default function MentorColumnCreate() {
                   </p>
                 </div>
 
-                {/* 상태 */}
-                <div>
-                  <label className="block text-xs sm:text-sm font-medium mb-2">
-                    상태
-                  </label>
-                  <Select value={status} onValueChange={(v) => setStatus(v as any)}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="draft">임시 저장</SelectItem>
-                      <SelectItem value="published">발행</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
                 {/* 액션 버튼 */}
                 <div className="flex gap-2 pt-4">
                   <Button
@@ -471,6 +455,17 @@ export default function MentorColumnCreate() {
                   >
                     <Eye className="h-4 w-4" />
                     미리보기
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      handleSubmit("draft");
+                    }}
+                    disabled={createMutation.isPending}
+                    className="flex-1 gap-2"
+                  >
+                    <Save className="h-4 w-4" />
+                    {createMutation.isPending ? "저장 중..." : "임시 저장"}
                   </Button>
                   <Button
                     onClick={() => {
