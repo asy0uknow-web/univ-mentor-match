@@ -4,7 +4,7 @@ import { trpc } from "@/lib/trpc";
 import { PageLayout } from "@/components/layout";
 import { setPageMeta } from "@/lib/seo";
 import { useAuth } from "@/_core/hooks/useAuth";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,6 +19,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Save, Eye, Sparkles, BookOpen } from "lucide-react";
 import { toast } from "sonner";
+import { PublishChecklist } from "@/components/PublishChecklist";
 
 const COLUMN_CATEGORIES = [
   "전공 선택",
@@ -47,6 +48,10 @@ export default function MentorColumnCreate() {
   const [isLoading, setIsLoading] = useState(true);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
   const [dragActive, setDragActive] = useState(false);
+  const [autoSaveStatus, setAutoSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
+  const autoSaveTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const [columnId, setColumnId] = useState<number | null>(null);
+  const [showPublishChecklist, setShowPublishChecklist] = useState(false);
 
   // 멘토 프로필 조회
   const { data: profile } = trpc.mentor.getMyProfile.useQuery(undefined, {
@@ -74,6 +79,7 @@ export default function MentorColumnCreate() {
   const createMutation = trpc.mentorColumns.create.useMutation({
     onSuccess: (data: any) => {
       toast.success("칼럼이 작성되었습니다");
+      setColumnId(data.id);
       setLocation(`/columns/${data.id}`);
     },
     onError: (error: any) => {
@@ -81,10 +87,73 @@ export default function MentorColumnCreate() {
     },
   });
 
+  const updateMutation = trpc.mentorColumns.update.useMutation({
+    onSuccess: () => {
+      setAutoSaveStatus("saved");
+      setTimeout(() => setAutoSaveStatus("idle"), 2000);
+    },
+    onError: (error: any) => {
+      setAutoSaveStatus("idle");
+      console.error("자동 저장 실패:", error.message);
+    },
+  });
+
+  // 자동 저장 기능
+  useEffect(() => {
+    if (autoSaveTimerRef.current) {
+      clearTimeout(autoSaveTimerRef.current);
+    }
+
+    if (!title.trim() || !content.trim() || categories.length === 0) {
+      return;
+    }
+
+    setAutoSaveStatus("saving");
+
+    autoSaveTimerRef.current = setTimeout(() => {
+      if (columnId) {
+        // 기존 칼럼 업데이트
+        updateMutation.mutate({
+          columnId,
+          title,
+          content,
+          category: categories.join(", "),
+          excerpt: excerpt || content.substring(0, 200),
+          coverImageUrl: coverImageUrl || undefined,
+        });
+      } else {
+        // 새로운 칼럼 생성 (자동 저장)
+        createMutation.mutate({
+          title,
+          content,
+          category: categories.join(", "),
+          excerpt: excerpt || content.substring(0, 200),
+          coverImageUrl: coverImageUrl || undefined,
+          status: "draft",
+        });
+      }
+    }, 3000); // 3초 후 자동 저장
+
+    return () => {
+      if (autoSaveTimerRef.current) {
+        clearTimeout(autoSaveTimerRef.current);
+      }
+    };
+  }, [title, content, categories, excerpt, coverImageUrl]);
+
   setPageMeta({
     title: "칼럼 작성 | 유니브매치",
     description: "칼럼 스튜디오을 작성해보세요",
   });
+
+  // 컴포넌트 언마운트 시 타이머 정리
+  useEffect(() => {
+    return () => {
+      if (autoSaveTimerRef.current) {
+        clearTimeout(autoSaveTimerRef.current);
+      }
+    };
+  }, []);
 
   // 조건부 렌더링 (return 제거)
   if (!isAuthenticated) {
@@ -211,14 +280,44 @@ export default function MentorColumnCreate() {
       return;
     }
 
+    if (submitStatus === "published") {
+      // 발행 전 체크리스트 표시
+      setShowPublishChecklist(true);
+    } else {
+      // draft 저장
+      if (columnId) {
+        updateMutation.mutate({
+          columnId,
+          title,
+          content,
+          category: categories.join(", "),
+          excerpt: excerpt || content.substring(0, 200),
+          coverImageUrl: coverImageUrl || undefined,
+          status: submitStatus,
+        });
+      } else {
+        createMutation.mutate({
+          title,
+          content,
+          category: categories.join(", "),
+          excerpt: excerpt || content.substring(0, 200),
+          coverImageUrl: coverImageUrl || undefined,
+          status: submitStatus,
+        });
+      }
+    }
+  };
+
+  const handlePublishConfirm = () => {
     createMutation.mutate({
       title,
       content,
       category: categories.join(", "),
       excerpt: excerpt || content.substring(0, 200),
       coverImageUrl: coverImageUrl || undefined,
-      status: submitStatus,
+      status: "published",
     });
+    setShowPublishChecklist(false);
   };
 
   return (
@@ -275,8 +374,7 @@ export default function MentorColumnCreate() {
                   </Button>
                   <Button 
                     onClick={() => {
-                      setStatus("published");
-                      handleSubmit();
+                      handleSubmit("published");
                     }} 
                     disabled={createMutation.isPending}
                   >
@@ -425,9 +523,20 @@ export default function MentorColumnCreate() {
 
                 {/* 내용 */}
                 <div>
-                  <label className="block text-xs sm:text-sm font-medium mb-2">
-                    내용 <span className="text-red-500">*</span>
-                  </label>
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="block text-xs sm:text-sm font-medium">
+                      내용 <span className="text-red-500">*</span>
+                    </label>
+                    {autoSaveStatus !== "idle" && (
+                      <span className={`text-xs font-medium ${
+                        autoSaveStatus === "saving"
+                          ? "text-amber-600"
+                          : "text-green-600"
+                      }`}>
+                        {autoSaveStatus === "saving" ? "저장 중..." : "저장됨"}
+                      </span>
+                    )}
+                  </div>
                   <Textarea
                     placeholder="칼럼 내용을 입력해주세요"
                     value={content}
@@ -461,11 +570,11 @@ export default function MentorColumnCreate() {
                     onClick={() => {
                       handleSubmit("draft");
                     }}
-                    disabled={createMutation.isPending}
+                    disabled={createMutation.isPending || updateMutation.isPending}
                     className="flex-1 gap-2"
                   >
                     <Save className="h-4 w-4" />
-                    {createMutation.isPending ? "저장 중..." : "임시 저장"}
+                    {createMutation.isPending || updateMutation.isPending ? "저장 중..." : "임시 저장"}
                   </Button>
                   <Button
                     onClick={() => {
@@ -478,6 +587,20 @@ export default function MentorColumnCreate() {
                     {createMutation.isPending ? "발행 중..." : "발행"}
                   </Button>
                 </div>
+
+                {/* 발행 전 체크리스트 모달 */}
+                {showPublishChecklist && (
+                  <PublishChecklist
+                    title={title}
+                    content={content}
+                    excerpt={excerpt}
+                    coverImageUrl={coverImageUrl}
+                    categories={categories}
+                    onPublish={handlePublishConfirm}
+                    onClose={() => setShowPublishChecklist(false)}
+                    isPublishing={createMutation.isPending}
+                  />
+                )}
               </CardContent>
             </Card>
           )}

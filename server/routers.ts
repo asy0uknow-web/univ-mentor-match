@@ -66,9 +66,8 @@ import { sendConsultationReminders } from "./booking-notifications";
 import { getMonthlyConsultationStats, getOverallConsultationStats, getLast12MonthsStats } from "./booking-statistics";
 import { createQuestion, getQuestionById, getQuestions, updateQuestion, deleteQuestion, createAnswer, getAnswersByQuestionId, getAnswerById, updateAnswer, deleteAnswer, createAnswerReply, getRepliesByAnswerId, getReplyById, updateReply, deleteReply, getQuestionDetail, acceptAnswer, toggleAnswerLike, getUserAnswerLikes, notifyQuestionAuthorOnAnswer, getMyQuestions, getMyAnswers } from "./qna";
 import { getColumnsList, getColumnById, createColumn, updateColumn, deleteColumn, toggleColumnLike, getColumnComments, createComment, updateComment, deleteComment, getMyColumns, incrementViewCount } from "./columns";
-import { emailVerificationCodes } from "../drizzle/schema";
-import { mentorGallery, messages, notifications, bookings, reviews, mentorProfiles, mentorVerifications, users, bugReports, mentorConsultationTypes, consultationProposals, studentProfiles } from "../drizzle/schema";
-import { and, eq, eq as drizzleEq, or as drizzleOr, desc as drizzleDesc, count } from "drizzle-orm";
+import { mentorColumns, emailVerificationCodes, mentorGallery, messages, notifications, bookings, reviews, mentorProfiles, mentorVerifications, users, bugReports, mentorConsultationTypes, consultationProposals, studentProfiles } from "../drizzle/schema";
+import { eq, and, desc, isNull, eq as drizzleEq, or as drizzleOr, desc as drizzleDesc, count } from "drizzle-orm";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2025-12-15.clover",
@@ -2618,6 +2617,23 @@ getTopMentors: publicProcedure
     getMyColumns: protectedProcedure
       .query(async ({ ctx }) => {
         return await getMyColumns(ctx.user.id);
+      }),
+
+    getDraftColumns: protectedProcedure
+      .query(async ({ ctx }) => {
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+        return await db
+          .select()
+          .from(mentorColumns)
+          .where(
+            and(
+              eq(mentorColumns.authorId, ctx.user.id),
+              eq(mentorColumns.status, "draft"),
+              isNull(mentorColumns.deletedAt)
+            )
+          )
+          .orderBy(desc(mentorColumns.updatedAt));
       }),
 
     incrementViewCount: publicProcedure
