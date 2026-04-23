@@ -61,26 +61,37 @@ export default function MentorColumns() {
 
   return (
     <PageLayout>
-      <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-12">
-        {/* 헤더 */}
-        <div className="mb-8 sm:mb-12">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
-            <div>
-              <h1 className="text-2xl sm:text-3xl font-bold mb-2 text-[var(--color-text-primary)]">칼럼 스튜디오</h1>
-              <p className="text-sm sm:text-base text-[var(--color-text-secondary)]">
-                멘토들의 경험과 조언을 담은 칼럼을 읽어보세요
-              </p>
+      <div 
+        className="relative min-h-screen py-6 sm:py-12 overflow-hidden"
+        style={{
+          backgroundImage: 'url(https://d2xsxph8kpxj0f.cloudfront.net/310519663280786037/Gy6RaYwMhnXP5TJQbTpkxJ/column-studio-background-dKDyLVXWDn7TxpqfwudCbG.webp)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundAttachment: 'fixed',
+          backgroundClip: 'border-box'
+        }}
+      >
+        <div className="absolute inset-0 bg-white/70 dark:bg-black/70 backdrop-blur-sm"></div>
+        <div className="relative container mx-auto px-3 sm:px-4">
+          {/* 헤더 */}
+          <div className="mb-8 sm:mb-12">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+              <div>
+                <h1 className="text-2xl sm:text-3xl font-bold mb-2 text-[var(--color-text-primary)]">칼럼 스튜디오</h1>
+                <p className="text-sm sm:text-base text-[var(--color-text-secondary)]">
+                  멘토들의 경험과 조언을 담은 칼럼을 읽어보세요
+                </p>
+              </div>
+              {isAuthenticated && user?.role === "mentor" && (
+                <Button
+                  onClick={() => setLocation("/columns/new")}
+                  className="w-full sm:w-auto gap-2 bg-[var(--color-cta-primary-bg)] hover:bg-[var(--color-cta-primary-bg-hover)]"
+                >
+                  <Plus className="h-4 w-4" />
+                  칼럼 작성
+                </Button>
+              )}
             </div>
-            {isAuthenticated && user?.role === "mentor" && (
-              <Button
-                onClick={() => setLocation("/columns/new")}
-                className="w-full sm:w-auto gap-2 bg-[var(--color-cta-primary-bg)] hover:bg-[var(--color-cta-primary-bg-hover)]"
-              >
-                <Plus className="h-4 w-4" />
-                칼럼 작성
-              </Button>
-            )}
-          </div>
 
           {/* 필터 및 검색 */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
@@ -122,9 +133,9 @@ export default function MentorColumns() {
               </SelectContent>
             </Select>
           </div>
-        </div>
+          </div>
 
-        {/* 이번주 인기칼럼 섹션 */}
+        {/* 이번주 인기칼럼 센션 */}
         {trendingColumns && trendingColumns.length > 0 && (
           <div className="mb-12">
             <div className="mb-6">
@@ -294,6 +305,7 @@ export default function MentorColumns() {
             ))}
           </div>
         )}
+        </div>
       </div>
     </PageLayout>
   );

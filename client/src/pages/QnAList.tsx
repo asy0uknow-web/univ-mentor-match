@@ -105,7 +105,18 @@ export default function QnAList() {
 
   return (
     <PageLayout>
-      <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-12">
+      <div 
+        className="relative min-h-screen py-6 sm:py-12 overflow-hidden"
+        style={{
+          backgroundImage: 'url(https://d2xsxph8kpxj0f.cloudfront.net/310519663280786037/Gy6RaYwMhnXP5TJQbTpkxJ/qna-center-background-ZbDf6GwR78BgiZcKZxt7qe.webp)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundAttachment: 'fixed',
+          backgroundClip: 'border-box'
+        }}
+      >
+        <div className="absolute inset-0 bg-white/70 dark:bg-black/70 backdrop-blur-sm"></div>
+        <div className="relative container mx-auto px-3 sm:px-4">
         {/* 헤더 섹션 */}
         <div className="mb-8 sm:mb-12">
           <div className="flex items-center justify-between gap-2 mb-4 sm:mb-6">
@@ -388,9 +399,8 @@ export default function QnAList() {
             </CardContent>
           </Card>
         )}
+        </div>
       </div>
-
-
     </PageLayout>
   );
 }
