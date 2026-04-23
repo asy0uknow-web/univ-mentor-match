@@ -308,7 +308,18 @@ export default function MentorProfile() {
 
   return (
     <PageLayout>
-      <div className="min-h-screen bg-background">
+      <div 
+        className="relative min-h-screen py-6 sm:py-12 overflow-hidden"
+        style={{
+          backgroundImage: 'url(https://d2xsxph8kpxj0f.cloudfront.net/310519663280786037/Gy6RaYwMhnXP5TJQbTpkxJ/mentor-profile-background-3uNPYHuAt8wKCJ2cjuXhRx.webp)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundAttachment: 'fixed',
+          backgroundClip: 'border-box'
+        }}
+      >
+        <div className="absolute inset-0 bg-white/75 dark:bg-black/80 backdrop-blur-sm"></div>
+        <div className="relative min-h-screen bg-background">
         {/* 헤더 */}
         <div className="bg-card  border-b">
           <div className="max-w-7xl mx-auto px-4 py-6">
@@ -906,6 +917,7 @@ export default function MentorProfile() {
           </div>
         </DialogContent>
       </Dialog>
+      </div>
     </PageLayout>
   );
 }

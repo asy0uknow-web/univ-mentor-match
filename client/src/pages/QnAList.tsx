@@ -108,14 +108,14 @@ export default function QnAList() {
       <div 
         className="relative min-h-screen py-6 sm:py-12 overflow-hidden"
         style={{
-          backgroundImage: 'url(https://d2xsxph8kpxj0f.cloudfront.net/310519663280786037/Gy6RaYwMhnXP5TJQbTpkxJ/qna-center-background-ZbDf6GwR78BgiZcKZxt7qe.webp)',
+          backgroundImage: 'url(https://d2xsxph8kpxj0f.cloudfront.net/310519663280786037/Gy6RaYwMhnXP5TJQbTpkxJ/qna-center-background-v2-JVpKhRfA6vNwToNjTnLJMJ.webp)',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundAttachment: 'fixed',
           backgroundClip: 'border-box'
         }}
       >
-        <div className="absolute inset-0 bg-white/70 dark:bg-black/70 backdrop-blur-sm"></div>
+        <div className="absolute inset-0 bg-white/75 dark:bg-black/80 backdrop-blur-sm"></div>
         <div className="relative container mx-auto px-3 sm:px-4">
         {/* 헤더 섹션 */}
         <div className="mb-8 sm:mb-12">
