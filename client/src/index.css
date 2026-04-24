@@ -902,3 +902,28 @@
     @apply transition-opacity duration-400 ease-in-out;
   }
 }
+
+
+/* Lazy Loading Background Image Optimization */
+.bg-lazy {
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-color: #f5f5f5;
+}
+
+.bg-lazy.loading {
+  opacity: 0.7;
+}
+
+.bg-lazy.loaded {
+  opacity: 1;
+  transition: opacity 0.3s ease-in-out;
+}
+
+/* WebP Format Support with Fallback */
+@supports (background-image: url('data:image/webp;base64,')) {
+  .bg-webp {
+    background-image: url('data:image/webp;base64,UklGRiYAAABXRUJQVlA4IBIAAAAwAQCdASoBAAEAAUAcJaACdLoB/gAA/v8A/v8A');
+  }
+}

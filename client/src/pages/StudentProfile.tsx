@@ -56,7 +56,15 @@ export default function StudentProfile() {
 
   return (
     <PageLayout>
-      <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-12">
+      <div
+        className="fixed inset-0 bg-cover bg-center bg-fixed -z-10"
+        style={{
+          backgroundImage: 'url(https://d2xsxph8kpxj0f.cloudfront.net/310519663280786037/Gy6RaYwMhnXP5TJQbTpkxJ/student-profile-background-86NR9pzkuz6JK2dxLnWgnL.webp)',
+        }}
+      >
+        <div className="absolute inset-0 bg-white/75 dark:bg-slate-950/80 backdrop-blur-sm"></div>
+      </div>
+      <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-12 relative z-10">
         <div className="max-w-2xl mx-auto">
           <h1 className="text-3xl sm:text-4xl font-bold text-foreground mb-2">내 프로필</h1>
           <p className="text-muted-foreground mb-8">멘티 계정 정보 및 활동 관리</p>

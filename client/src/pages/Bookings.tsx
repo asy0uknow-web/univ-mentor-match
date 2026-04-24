@@ -318,7 +318,15 @@ export default function Bookings() {
   if (isStudentUser) {
     return (
       <PageLayout>
-        <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-12">
+        <div
+          className="fixed inset-0 bg-cover bg-center bg-fixed -z-10"
+          style={{
+            backgroundImage: 'url(https://d2xsxph8kpxj0f.cloudfront.net/310519663280786037/Gy6RaYwMhnXP5TJQbTpkxJ/booking-background-dLiQrZZikvgZaQmCKSTUWJ.webp)',
+          }}
+        >
+          <div className="absolute inset-0 bg-white/75 dark:bg-slate-950/80 backdrop-blur-sm"></div>
+        </div>
+        <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-12 relative z-10">
           <h1 className="text-2xl sm:text-4xl font-bold mb-2 sm:mb-4 text-[var(--color-text-primary)]">예약 내역</h1>
           <p className="text-sm text-[var(--color-text-secondary)] mb-6 sm:mb-8">
             상담이 확정되면 예정 시간 5분 전후에 시작 버튼을 눌러주세요. 멘토와 멘티 모두 시작 버튼을 눌러야 상담이 시작됩니다.
@@ -518,7 +526,15 @@ export default function Bookings() {
   // 멘토 역할
   return (
     <PageLayout>
-      <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-12">
+      <div
+        className="fixed inset-0 bg-cover bg-center bg-fixed -z-10"
+        style={{
+          backgroundImage: 'url(https://d2xsxph8kpxj0f.cloudfront.net/310519663280786037/Gy6RaYwMhnXP5TJQbTpkxJ/booking-background-dLiQrZZikvgZaQmCKSTUWJ.webp)',
+        }}
+      >
+        <div className="absolute inset-0 bg-white/75 dark:bg-slate-950/80 backdrop-blur-sm"></div>
+      </div>
+      <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-12 relative z-10">
         <h1 className="text-2xl sm:text-4xl font-bold mb-2 sm:mb-4 text-[var(--color-text-primary)]">상담 예약 내역</h1>
         <p className="text-sm text-[var(--color-text-secondary)] mb-6 sm:mb-8">
           상담 시간이 되면 시작 버튼을 눌러주세요. 멘티와 멘토 모두 시작 버튼을 눌러야 상담이 시작됩니다.
