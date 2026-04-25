@@ -30,6 +30,7 @@ export async function getColumnsList(options: {
         name: users.name,
       },
       mentorProfile: {
+        uuid: mentorProfiles.uuid,
         university: mentorProfiles.university,
         major: mentorProfiles.major,
         grade: mentorProfiles.grade,
@@ -92,6 +93,7 @@ export async function getColumnById(columnId: number, userId?: number) {
         name: users.name,
       },
       mentorProfile: {
+        uuid: mentorProfiles.uuid,
         university: mentorProfiles.university,
         major: mentorProfiles.major,
         grade: mentorProfiles.grade,

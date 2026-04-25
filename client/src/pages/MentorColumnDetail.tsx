@@ -251,14 +251,13 @@ export default function MentorColumnDetail() {
                   <div className="text-xs sm:text-sm text-muted-foreground">
                     {format(new Date(column.createdAt), "yyyy년 M월 d일", { locale: ko })}
                   </div>
-                  {column.mentorProfile && column.author.id && (
+                  {column.mentorProfile && column.mentorProfile.uuid && (
                     <ConsultationCTAButton
                       variant="primary"
                       size="sm"
                       onClick={() => {
-                        // 멘토와의 메시지 대화 시작 - 멘토 프로필 ID를 URL 파라미터로 전달
-                        const mentorProfileId = column.author.id;
-                        setLocation(`/messages?mentorId=${mentorProfileId}`);
+                        // 칼럼 작성자 멘토의 프로필 페이지로 이동
+                        setLocation(`/mentor/${column.mentorProfile!.uuid}`);
                       }}
                       className="ml-2 text-xs sm:text-sm h-8 sm:h-9"
                     >
