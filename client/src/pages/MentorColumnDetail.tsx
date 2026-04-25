@@ -262,7 +262,7 @@ export default function MentorColumnDetail() {
                       className="ml-2 text-xs sm:text-sm h-8 sm:h-9"
                     >
                       <MessageSquare className="h-3 w-3 mr-1" />
-                      상담 신청
+                      멘토 프로필
                     </ConsultationCTAButton>
                   )}
                 </div>

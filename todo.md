@@ -3337,5 +3337,6 @@
 ## 칼럼 상세 페이지 상담 버튼 개선 (완료)
 - [x] server/columns.ts - getColumnById, getColumnsList 함수에 mentorProfile.uuid 추가
 - [x] client/src/pages/MentorColumnDetail.tsx - 상담 신청 버튼 클릭 시 멘토 프로필로 이동
+- [x] 버튼 테스트 '상담 신청' 에서 '멘토 프로필'로 변경
 - [x] TypeScript 0 errors
 - [x] 개발 서버 정상 작동
