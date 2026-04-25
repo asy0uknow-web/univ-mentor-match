@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
+import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { X } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { useAuth } from "@/_core/hooks/useAuth";
-import { getLoginUrl } from "@/const";
 
 interface BugReportModalProps {
   isOpen: boolean;
@@ -14,6 +14,7 @@ interface BugReportModalProps {
 
 export default function BugReportModal({ isOpen, onClose }: BugReportModalProps) {
   const { isAuthenticated } = useAuth({ redirectOnUnauthenticated: false });
+  const [, setLocation] = useLocation();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [device, setDevice] = useState("");
@@ -26,9 +27,9 @@ export default function BugReportModal({ isOpen, onClose }: BugReportModalProps)
   useEffect(() => {
     if (isOpen && !isAuthenticated) {
       onClose();
-      window.location.href = getLoginUrl();
+      setLocation('/login');
     }
-  }, [isOpen, isAuthenticated, onClose]);
+  }, [isOpen, isAuthenticated, onClose, setLocation]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

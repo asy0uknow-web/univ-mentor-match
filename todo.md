@@ -3313,3 +3313,14 @@
 - [x] 21개 페이지 및 4개 컴포넌트에 useAuth 훅 redirectOnUnauthenticated: false 옵션 적용
 - [x] 비로그인 상태에서 보호된 페이지 접근 시 로그인 페이지로 정상 리다이렉트 확인
 - [x] 모든 라우트에서 마누스 로그인으로 리다이렉트되지 않음 확인
+
+
+## 마누스 로그인 리다이렉트 문제 최종 해결 (완료)
+- [x] window.location.href = getLoginUrl() 사용 부분 모두 찾기
+- [x] BugReportModal.tsx에서 setLocation('/login') 사용
+- [x] DashboardLayout.tsx에서 setLocation('/login') 사용
+- [x] MentorProfile.tsx에서 setLocation('/login') 사용 (2곳)
+- [x] main.tsx에서 window.location.href = '/login' 사용
+- [x] 모든 파일에서 getLoginUrl import 제거 (의도된 마누스 로그인 링크 제외)
+- [x] 프로젝트 빌드 성공 (0 errors)
+- [x] 비로그인 상태에서 모든 라우트 유니브매치 로그인 페이지로 리다이렉트 확인

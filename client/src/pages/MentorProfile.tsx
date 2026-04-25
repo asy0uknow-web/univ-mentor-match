@@ -10,7 +10,7 @@ import { Link, useLocation } from "wouter";
 import { GraduationCap, CheckCircle, AlertCircle, Clock, Upload, X, Loader2, Shield, ShieldCheck, ShieldAlert, ShieldOff, RefreshCw, User, Mail, LogOut, Lock, BookOpen, MessageSquare, Star, ArrowRight, Plus } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useState, useEffect } from "react";
-import { getLoginUrl } from "@/const";
+
 import { toast } from "sonner";
 import { PageLayout } from "@/components/layout";
 import { setPageMeta, PAGE_META } from "@/lib/seo";
@@ -145,7 +145,7 @@ export default function MentorProfile() {
       // 인증 실패 시 로그인 페이지로 리다이렉트
       if (error.data?.code === "UNAUTHORIZED" || errorMessage.includes("login")) {
         setTimeout(() => {
-          setLocation(getLoginUrl());
+          setLocation('/login');
         }, 1500);
       }
     },
@@ -163,7 +163,7 @@ export default function MentorProfile() {
       // 인증 실패 시 로그인 페이지로 리다이렉트
       if (error.data?.code === "UNAUTHORIZED" || errorMessage.includes("login")) {
         setTimeout(() => {
-          setLocation(getLoginUrl());
+          setLocation('/login');
         }, 1500);
       }
     },
