@@ -60,7 +60,10 @@ export const FeaturedMentorsSlide = () => {
   // 실제 멘토 데이터 조회 (평점 높은 순서, 최대 12개)
   const { data: mentorsData, isLoading, error } = trpc.mentor.getTopMentors.useQuery(
     { limit: 12 },
-    { staleTime: 1000 * 60 * 5 } // 5분 캐시
+    { 
+      staleTime: 1000 * 60 * 5, // 5분 캐시
+      retry: false // 재시도 안 함 - 에러 발생 시 리다이렉트되지 않도록
+    }
   );
 
   const mentors: FeaturedMentor[] = (mentorsData || []).map((mentor: any) => ({

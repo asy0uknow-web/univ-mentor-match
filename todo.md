@@ -3324,3 +3324,11 @@
 - [x] 모든 파일에서 getLoginUrl import 제거 (의도된 마누스 로그인 링크 제외)
 - [x] 프로젝트 빌드 성공 (0 errors)
 - [x] 비로그인 상태에서 모든 라우트 유니브매치 로그인 페이지로 리다이렉트 확인
+
+
+## 홈페이지 후기 섹션 로그인 리다이렉트 문제 해결 (완료)
+- [x] FeaturedMentorsSlide 컴포넌트에서 getTopMentors 쿼리 retry: false 설정
+- [x] main.tsx 전역 에러 핸들러 개선 - 공개 쿼리(mentor, verification) 제외
+- [x] 비로그인 상태에서 홈페이지 스크롤 시 로그인 페이지로 리다이렉트 안 됨 확인
+- [x] TypeScript 0 errors
+- [x] 개발 서버 정상 작동
