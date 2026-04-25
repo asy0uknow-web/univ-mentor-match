@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
 import { useQueryClient } from "@tanstack/react-query";
 import { ArrowRight } from "lucide-react";
+import { useAuth } from "@/_core/hooks/useAuth";
 
 
 export default function Login() {
@@ -16,6 +17,9 @@ export default function Login() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
   const queryClient = useQueryClient();
+  
+  // useAuth 훅을 사용하되, 리다이렉트는 비활성화
+  useAuth({ redirectOnUnauthenticated: false });
 
   const loginMutation = trpc.auth.login.useMutation();
 
@@ -53,6 +57,8 @@ export default function Login() {
 
       if (response.user) {
         queryClient.setQueryData(["auth", "me"], response.user);
+        // 인증 상태 갱신
+        await queryClient.invalidateQueries({ queryKey: ["auth", "me"] });
       }
 
       toast.success("로그인이 완료되었습니다!");
