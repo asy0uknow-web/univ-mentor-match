@@ -23,7 +23,7 @@ import { PageLayout } from "@/components/layout";
 
 export default function AdminDashboard() {
   // 모든 훅을 조건부 return 이전에 선언 (React 훅 규칙)
-  const { user, isAuthenticated, loading } = useAuth();
+  const { user, isAuthenticated, loading } = useAuth({ redirectOnUnauthenticated: false });
   const [, setLocation] = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
   const [editingMentor, setEditingMentor] = useState<any>(null);

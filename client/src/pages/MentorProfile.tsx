@@ -39,7 +39,7 @@ export default function MentorProfile() {
     setPageMeta(PAGE_META.profile);
   }, []);
 
-  const { user, isAuthenticated, logout } = useAuth();
+  const { user, isAuthenticated, logout } = useAuth({ redirectOnUnauthenticated: false });
   const [, setLocation] = useLocation();
 
   // All hooks must be declared before any conditional returns (React Rules of Hooks)

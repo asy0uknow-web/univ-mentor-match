@@ -29,7 +29,7 @@ const mapStatusToStatusBadge = (status: string) => {
 };
 
 export default function QnADetail() {
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated } = useAuth({ redirectOnUnauthenticated: false });
   const [, setLocation] = useLocation();
   const [answerContent, setAnswerContent] = useState("");
   const [reportDialogOpen, setReportDialogOpen] = useState(false);

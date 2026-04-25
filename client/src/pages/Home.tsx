@@ -63,7 +63,7 @@ const ConsultationIcon = () => (
 );
 
 export default function Home() {
-  const { user, isAuthenticated, loading } = useAuth();
+  const { user, isAuthenticated, loading } = useAuth({ redirectOnUnauthenticated: false });
   const [, navigate] = useLocation();
   
   // 프로필 완성 상태 조회

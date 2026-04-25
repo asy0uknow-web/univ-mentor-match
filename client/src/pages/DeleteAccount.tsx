@@ -9,7 +9,7 @@ import { useAuth } from "@/_core/hooks/useAuth";
 
 export default function DeleteAccount() {
   const [location, navigate] = useLocation();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuth({ redirectOnUnauthenticated: false });
   const [isConfirmed, setIsConfirmed] = useState(false);
 
   if (!isAuthenticated) {

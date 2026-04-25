@@ -3306,3 +3306,10 @@
 - [x] Login.tsx에 useAuth 훅 추가 및 redirectOnUnauthenticated 옵션 비활성화
 - [x] 로그인 성공 후 인증 상태 갱신 (queryClient.invalidateQueries)
 - [x] 유니브매치 전용 로그인 페이지 정상 작동 확인
+
+
+## 비로그인 상태 마누스 로그인 리다이렉트 문제 전체 해결 (완료)
+- [x] 멘토 찾기 페이지에서 멘토 프로필 클릭 시 마누스 로그인으로 리다이렉트되는 문제 확인
+- [x] 21개 페이지 및 4개 컴포넌트에 useAuth 훅 redirectOnUnauthenticated: false 옵션 적용
+- [x] 비로그인 상태에서 보호된 페이지 접근 시 로그인 페이지로 정상 리다이렉트 확인
+- [x] 모든 라우트에서 마누스 로그인으로 리다이렉트되지 않음 확인

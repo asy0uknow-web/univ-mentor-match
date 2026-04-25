@@ -130,7 +130,7 @@ function EndReasonModal({
 }
 
 export default function Bookings() {
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated } = useAuth({ redirectOnUnauthenticated: false });
   const [location, setLocation] = useLocation();
   const [endModalOpen, setEndModalOpen] = useState(false);
   const [selectedBookingId, setSelectedBookingId] = useState<number | null>(null);

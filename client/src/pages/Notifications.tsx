@@ -20,7 +20,7 @@ export default function Notifications() {
   useEffect(() => {
     setPageMeta(PAGE_META.notifications);
   }, []);
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated } = useAuth({ redirectOnUnauthenticated: false });
   const [searchQuery, setSearchQuery] = useState("");
   const [notificationFilter, setNotificationFilter] = useState<"all" | "unread" | "booking" | "message">("all");
   const [sortBy, setSortBy] = useState<"latest" | "oldest">("latest");

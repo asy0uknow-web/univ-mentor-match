@@ -12,7 +12,7 @@ import { toast } from "sonner";
 
 export default function DraftColumns() {
   const [, setLocation] = useLocation();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuth({ redirectOnUnauthenticated: false });
   const [deletingId, setDeletingId] = useState<number | null>(null);
 
   // draft 칼럼 목록 조회

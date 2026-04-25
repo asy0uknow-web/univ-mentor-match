@@ -445,7 +445,7 @@ function StatusBanner({ statusData }: { statusData: any }) {
 // ===== 메인 Messages 컴포넌트 =====
 export function Messages() {
   const [location, setLocation] = useLocation();
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated } = useAuth({ redirectOnUnauthenticated: false });
 
   const [messageContent, setMessageContent] = useState("");
   const [selectedConversation, setSelectedConversation] = useState<number | null>(null);

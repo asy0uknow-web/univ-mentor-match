@@ -13,7 +13,7 @@ import { ko } from "date-fns/locale";
 import { toast } from "sonner";
 
 export default function ReviewCreate() {
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated } = useAuth({ redirectOnUnauthenticated: false });
   const [location, setLocation] = useLocation();
   const [rating, setRating] = useState(5);
   const [content, setContent] = useState("");

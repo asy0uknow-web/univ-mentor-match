@@ -36,7 +36,7 @@ const COLUMN_CATEGORIES = [
 export default function MentorColumnCreate() {
   // 모든 훅을 조건부 return 이전에 선언 (React 훅 규칙)
   const [, setLocation] = useLocation();
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated } = useAuth({ redirectOnUnauthenticated: false });
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [categories, setCategories] = useState<string[]>([]);

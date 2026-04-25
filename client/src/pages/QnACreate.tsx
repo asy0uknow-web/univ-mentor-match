@@ -36,7 +36,7 @@ const GOOD_EXAMPLES = [
 ];
 
 export default function QnACreate() {
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated } = useAuth({ redirectOnUnauthenticated: false });
   const [location, setLocation] = useLocation();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");

@@ -280,7 +280,7 @@ function MentorDashboard() {
 }
 
 export default function QnADashboard() {
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated } = useAuth({ redirectOnUnauthenticated: false });
   const [, setLocation] = useLocation();
 
   useEffect(() => {

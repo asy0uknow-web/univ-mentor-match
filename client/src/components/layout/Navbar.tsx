@@ -43,7 +43,7 @@ const DROPDOWN_MENU = [
 const LOGO_URL = "/logonew.png";
 
 export default function Navbar({ onBugReport }: NavbarProps) {
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated, user } = useAuth({ redirectOnUnauthenticated: false });
   const { theme, toggleTheme } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 

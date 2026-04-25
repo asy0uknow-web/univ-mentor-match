@@ -16,7 +16,7 @@ type UserRole = "mentor" | "mentee" | null;
 
 export default function CompleteProfile() {
   const [, navigate] = useLocation();
-  const { refresh: refreshAuth } = useAuth();
+  const { refresh: refreshAuth } = useAuth({ redirectOnUnauthenticated: false });
   const [userRole, setUserRole] = useState<UserRole>(null);
   const [name, setName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");

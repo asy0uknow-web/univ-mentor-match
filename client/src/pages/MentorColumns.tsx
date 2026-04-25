@@ -33,7 +33,7 @@ const COLUMN_CATEGORIES = [
 
 export default function MentorColumns() {
   const [, setLocation] = useLocation();
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated, user } = useAuth({ redirectOnUnauthenticated: false });
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [sortBy, setSortBy] = useState<"latest" | "likes" | "comments">("latest");

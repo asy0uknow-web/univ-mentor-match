@@ -17,7 +17,7 @@ const DRAFT_MESSAGE_KEY = "univmatch:draftMessage";
 
 export default function MentorDetail() {
   const { id } = useParams();
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated } = useAuth({ redirectOnUnauthenticated: false });
   const isValidMentorId = !!(id && id.length > 0);
   
   const { data: mentor, isLoading, isError, error } = trpc.mentor.getById.useQuery(

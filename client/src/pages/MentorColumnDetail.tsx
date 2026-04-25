@@ -17,7 +17,7 @@ import { toast } from "sonner";
 export default function MentorColumnDetail() {
   const [, setLocation] = useLocation();
   const [match, params] = useRoute("/columns/:id");
-  const { user } = useAuth();
+  const { user } = useAuth({ redirectOnUnauthenticated: false });
   const [replyContent, setReplyContent] = useState("");
   const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
   const [editingCommentContent, setEditingCommentContent] = useState("");

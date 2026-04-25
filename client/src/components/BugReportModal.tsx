@@ -13,7 +13,7 @@ interface BugReportModalProps {
 }
 
 export default function BugReportModal({ isOpen, onClose }: BugReportModalProps) {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuth({ redirectOnUnauthenticated: false });
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [device, setDevice] = useState("");

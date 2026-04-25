@@ -56,7 +56,7 @@ const mapStatusToStatusBadge = (status: string) => {
 };
 
 export default function QnAList() {
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated, user } = useAuth({ redirectOnUnauthenticated: false });
   const isMentor = user?.role === 'mentor';
   const [, setLocation] = useLocation();
   const [searchQuery, setSearchQuery] = useState("");

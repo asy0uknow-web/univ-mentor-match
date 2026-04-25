@@ -12,7 +12,7 @@ export default function MyProfile() {
     setPageMeta(PAGE_META.profile);
   }, []);
 
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated } = useAuth({ redirectOnUnauthenticated: false });
 
   if (!isAuthenticated) {
     return null; // MentorProfile 또는 StudentProfile에서 처리됨

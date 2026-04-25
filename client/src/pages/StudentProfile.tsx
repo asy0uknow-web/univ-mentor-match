@@ -14,7 +14,7 @@ export default function StudentProfile() {
     setPageMeta(PAGE_META.profile);
   }, []);
 
-  const { user, isAuthenticated, logout, loading } = useAuth();
+  const { user, isAuthenticated, logout, loading } = useAuth({ redirectOnUnauthenticated: false });
   const [, setLocation] = useLocation();
 
   const { data: mentorProfile } = trpc.mentor.getMyProfile.useQuery(undefined, {

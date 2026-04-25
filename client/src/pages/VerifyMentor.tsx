@@ -12,7 +12,7 @@ import { toast } from "sonner";
 import { PageLayout } from "@/components/layout";
 
 export default function VerifyMentor() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuth({ redirectOnUnauthenticated: false });
   const [, setLocation] = useLocation();
 
   // All hooks must be declared before any conditional returns (React Rules of Hooks)
