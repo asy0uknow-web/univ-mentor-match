@@ -66,7 +66,8 @@ import { sendConsultationReminders } from "./booking-notifications";
 import { getMonthlyConsultationStats, getOverallConsultationStats, getLast12MonthsStats } from "./booking-statistics";
 import { createQuestion, getQuestionById, getQuestions, updateQuestion, deleteQuestion, createAnswer, getAnswersByQuestionId, getAnswerById, updateAnswer, deleteAnswer, createAnswerReply, getRepliesByAnswerId, getReplyById, updateReply, deleteReply, getQuestionDetail, acceptAnswer, toggleAnswerLike, getUserAnswerLikes, notifyQuestionAuthorOnAnswer, getMyQuestions, getMyAnswers } from "./qna";
 import { getColumnsList, getColumnById, createColumn, updateColumn, deleteColumn, toggleColumnLike, getColumnComments, createComment, updateComment, deleteComment, getMyColumns, incrementViewCount } from "./columns";
-import { mentorColumns, emailVerificationCodes, mentorGallery, messages, notifications, bookings, reviews, mentorProfiles, mentorVerifications, users, bugReports, mentorConsultationTypes, consultationProposals, studentProfiles } from "../drizzle/schema";
+import { mentorColumns, emailVerificationCodes, mentorGallery, messages, notifications, bookings, reviews, mentorProfiles, mentorVerifications, users, bugReports, mentorConsultationTypes, consultationProposals, studentProfiles, studentInterests, mentorRecommendations } from "../drizzle/schema";
+
 import { eq, and, desc, isNull, eq as drizzleEq, or as drizzleOr, desc as drizzleDesc, count } from "drizzle-orm";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
@@ -1007,6 +1008,27 @@ getTopMentors: publicProcedure
         });
 
         return { checkoutUrl: session.url };
+      }),
+
+    // 추천 멘토 조회
+    getRecommendedMentors: protectedProcedure
+      .input(z.object({ limit: z.number().default(10) }))
+      .query(async ({ ctx, input }) => {
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+        
+        // 평점 높은 멘토 추천 (간단한 버전)
+        const recommendedMentors = await db
+          .select()
+          .from(mentorProfiles)
+          .where(and(
+            eq(mentorProfiles.verificationStatus, "approved"),
+            eq(mentorProfiles.isDeleted, false)
+          ))
+          .orderBy(desc(mentorProfiles.averageRating))
+          .limit(input.limit);
+        
+        return recommendedMentors;
       }),
   }),
 
@@ -2640,6 +2662,78 @@ getTopMentors: publicProcedure
       .input(z.object({ columnId: z.number() }))
       .mutation(async ({ input }) => {
         await incrementViewCount(input.columnId);
+        return { success: true };
+      }),
+  }),
+
+  // 추천 시스템 라우터
+  recommendations: router({
+    // 학생의 관심사 저장
+    saveStudentInterests: protectedProcedure
+      .input(z.object({
+        interests: z.array(z.object({
+          category: z.string(),
+          level: z.enum(["beginner", "intermediate", "advanced"]),
+        })),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+        
+        // 기존 관심사 삭제
+        await db.delete(studentInterests).where(eq(studentInterests.studentId, ctx.user.id));
+        
+        // 새 관심사 추가
+        for (const interest of input.interests) {
+          await db.insert(studentInterests).values({
+            studentId: ctx.user.id,
+            interestCategory: interest.category,
+            interestLevel: interest.level,
+          });
+        }
+        
+        return { success: true };
+      }),
+
+    // 추천 멘토 조회
+    getRecommendedMentors: protectedProcedure
+      .input(z.object({ limit: z.number().default(10) }))
+      .query(async ({ ctx, input }) => {
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+        
+        // 평점 높은 멘토 추천 (간단한 버전)
+        const recommendedMentors = await db
+          .select()
+          .from(mentorProfiles)
+          .where(and(
+            eq(mentorProfiles.verificationStatus, "approved"),
+            eq(mentorProfiles.isDeleted, false)
+          ))
+          .orderBy(desc(mentorProfiles.averageRating))
+          .limit(input.limit);
+        
+        return recommendedMentors;
+      }),
+
+    // 추천 기록 저장
+    recordRecommendation: protectedProcedure
+      .input(z.object({
+        mentorId: z.number(),
+        score: z.number().min(0).max(100),
+        reason: z.string(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+        
+        await db.insert(mentorRecommendations).values({
+          studentId: ctx.user.id,
+          mentorId: input.mentorId,
+          recommendationScore: input.score.toString(),
+          recommendationReason: input.reason,
+        });
+        
         return { success: true };
       }),
   }),

@@ -600,3 +600,45 @@ export const emailVerificationCodes = mysqlTable("email_verification_codes", {
 });
 export type EmailVerificationCode = typeof emailVerificationCodes.$inferSelect;
 export type InsertEmailVerificationCode = typeof emailVerificationCodes.$inferInsert;
+
+
+/**
+ * Student Interests - 학생의 관심사
+ * 학생이 선택한 관심 분야를 저장하여 추천 알고리즘에 사용
+ */
+export const studentInterests = mysqlTable("student_interests", {
+  id: int("id").autoincrement().primaryKey(),
+  studentId: int("studentId").notNull(), // References users.id
+  // Interest category: engineering, natural_science, business, humanities, education, liberal_arts, medicine, etc.
+  interestCategory: varchar("interestCategory", { length: 100 }).notNull(),
+  // Interest level: beginner, intermediate, advanced
+  interestLevel: mysqlEnum("interestLevel", ["beginner", "intermediate", "advanced"]),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type StudentInterest = typeof studentInterests.$inferSelect;
+export type InsertStudentInterest = typeof studentInterests.$inferInsert;
+
+/**
+ * Mentor Recommendations - 멘토 추천 기록
+ * 학생에게 추천된 멘토 목록 및 추천 점수를 저장
+ */
+export const mentorRecommendations = mysqlTable("mentor_recommendations", {
+  id: int("id").autoincrement().primaryKey(),
+  studentId: int("studentId").notNull(), // References users.id
+  mentorId: int("mentorId").notNull(), // References users.id
+  // Recommendation score (0-100): 유사도 기반 점수
+  recommendationScore: decimal("recommendationScore", { precision: 5, scale: 2 }).notNull(),
+  // Recommendation reason: interest_match, rating_match, availability_match, etc.
+  recommendationReason: varchar("recommendationReason", { length: 255 }),
+  // Whether the student clicked on this recommendation
+  isClicked: boolean("isClicked").default(false).notNull(),
+  // Whether the student booked this mentor after recommendation
+  isConverted: boolean("isConverted").default(false).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type MentorRecommendation = typeof mentorRecommendations.$inferSelect;
+export type InsertMentorRecommendation = typeof mentorRecommendations.$inferInsert;

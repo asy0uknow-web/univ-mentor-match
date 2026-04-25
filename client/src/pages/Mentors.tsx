@@ -59,6 +59,8 @@ export default function Mentors() {
   const [tempSelectedConsultationTypes, setTempSelectedConsultationTypes] = useState<string[]>([]);
   const [sortBy, setSortBy] = useState("rating");
 
+
+
   useEffect(() => {
     setPageMeta(PAGE_META.mentors);
   }, []);
@@ -568,6 +570,25 @@ export default function Mentors() {
             </div>
           </div>
         )}
+
+        {/* 추천 멘토 섹션 */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+          <div className="mb-12">
+            <div className="flex items-center gap-2 mb-4">
+              <Sparkles className="w-6 h-6 text-[var(--brand-primary-500)]" />
+              <h2 className="text-2xl sm:text-3xl font-bold text-[var(--color-text-primary)]">지금 가장 인기있는 추천멘토들을 만나보세요</h2>
+            </div>
+            <p className="text-[var(--color-text-secondary)] text-sm sm:text-base mb-6">
+              높은 평점과 많은 상담 경험을 가진 멘토들을 추천해드립니다
+            </p>
+            <Link href="/recommended-mentors" className="inline-block">
+              <Button className="bg-[var(--color-cta-primary-bg)] hover:bg-[var(--color-cta-primary-bg-hover)] text-white">
+                추천 멘토 더보기
+                <ChevronRight className="h-4 w-4 ml-2" />
+              </Button>
+            </Link>
+          </div>
+        </div>
 
         {/* 멘토 목록 */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
