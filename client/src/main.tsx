@@ -18,6 +18,11 @@ const redirectToLoginIfUnauthorized = (error: unknown, queryKey?: any) => {
 
   if (!isUnauthorized) return;
 
+  // 로그인 페이지에서는 리다이렉트하지 않음 (무한 루프 방지)
+  if (window.location.pathname === '/login') {
+    return;
+  }
+
   // 공개 쿼리는 리다이렉트하지 않음 (비로그인 사용자도 볼 수 있어야 함)
   if (queryKey && Array.isArray(queryKey)) {
     const firstKey = queryKey[0];

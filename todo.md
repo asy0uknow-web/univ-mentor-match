@@ -3340,3 +3340,11 @@
 - [x] 버튼 테스트 '상담 신청' 에서 '멘토 프로필'로 변경
 - [x] TypeScript 0 errors
 - [x] 개발 서버 정상 작동
+
+
+## 웹사이트 계속 새로고침 문제 해결 (완료)
+- [x] 로그인 페이지에서 무한 리다이렉트 문제 분석
+- [x] main.tsx - redirectToLoginIfUnauthorized 함수에 로그인 페이지 예외 처리 추가
+- [x] window.location.pathname 체크 추가
+- [x] TypeScript 0 errors
+- [x] 개발 서버 정상 작동
