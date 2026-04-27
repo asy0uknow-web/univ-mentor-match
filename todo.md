@@ -3356,3 +3356,13 @@
 - [x] main.tsx - /signup 패스도 리다이렉트 예외 처리 추가
 - [x] TypeScript 0 errors
 - [x] 개발 서버 정상 작동
+
+
+## 이메일 인증 완료 후 이메일 수정 제한 (완료)
+- [x] SignUp.tsx에서 isEmailVerified 상태 추가
+- [x] 이메일 입력 필드 disabled 속성 추가
+- [x] 인증 완료 시 로그인 단계로 넘어가는 로직 추가
+- [x] 이메일 수정 불가 안내 메시지 추가
+- [x] 로그인 단계에서 이메일 수정 불가 메시지 추가
+- [x] TypeScript 0 errors
+- [x] 개발 서버 정상 작동

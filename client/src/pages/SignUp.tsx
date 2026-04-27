@@ -17,6 +17,7 @@ export default function SignUp() {
   const [name, setName] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
+  const [isEmailVerified, setIsEmailVerified] = useState(false);
 
   const signupMutation = trpc.auth.signup.useMutation();
 
@@ -87,6 +88,7 @@ export default function SignUp() {
 
   const handleEmailVerified = () => {
     setStep("form");
+    setIsEmailVerified(true);
     toast.success("이메일 인증이 완료되었습니다. 회원가입을 진행해주세요.");
   };
 
@@ -143,7 +145,8 @@ export default function SignUp() {
             <Label htmlFor="email" className="text-sm font-semibold text-foreground">
               이메일
             </Label>
-            <Input
+            <div className="relative">
+              <Input
               id="email"
               type="email"
               placeholder="example@email.com"
@@ -154,9 +157,21 @@ export default function SignUp() {
                   setErrors({ ...errors, email: "" });
                 }
               }}
-              className={`text-sm border ${errors.email ? "border-red-500 focus:border-red-500" : "border-border focus:border-primary"} px-4 py-2.5 rounded-md transition-colors`}
+              disabled={isEmailVerified}
+              className={`text-sm border ${errors.email ? "border-red-500 focus:border-red-500" : "border-border focus:border-primary"} px-4 py-2.5 rounded-md transition-colors ${
+                isEmailVerified ? "bg-muted text-muted-foreground cursor-not-allowed" : ""
+              }`}
             />
+              {isEmailVerified && (
+                <div className="absolute inset-y-0 right-0 flex items-center pr-3">
+                  <span className="text-xs font-medium text-green-600 dark:text-green-400">인증됨</span>
+                </div>
+              )}
+            </div>
             {errors.email && <p className="text-red-500 text-xs font-medium">{errors.email}</p>}
+            {isEmailVerified && (
+              <p className="text-xs text-muted-foreground">인증이 완료되었으므로 이메일을 변경할 수 없습니다.</p>
+            )}
           </div>
 
           {/* 이름 */}
