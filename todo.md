@@ -3348,3 +3348,11 @@
 - [x] window.location.pathname 체크 추가
 - [x] TypeScript 0 errors
 - [x] 개발 서버 정상 작동
+
+
+## 회원가입 페이지 시간 경과 후 로그인 페이지 리다이렉트 문제 (완료)
+- [x] 이메일 인증 시 5분 타이머 발견
+- [x] 세션 만료 시 API 에러 발생 분석
+- [x] main.tsx - /signup 패스도 리다이렉트 예외 처리 추가
+- [x] TypeScript 0 errors
+- [x] 개발 서버 정상 작동

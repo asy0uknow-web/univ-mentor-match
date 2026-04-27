@@ -18,8 +18,8 @@ const redirectToLoginIfUnauthorized = (error: unknown, queryKey?: any) => {
 
   if (!isUnauthorized) return;
 
-  // 로그인 페이지에서는 리다이렉트하지 않음 (무한 루프 방지)
-  if (window.location.pathname === '/login') {
+  // 로그인 페이지와 회원가입 페이지에서는 리다이렉트하지 않음 (무한 루프 방지)
+  if (window.location.pathname === '/login' || window.location.pathname === '/signup') {
     return;
   }
 
