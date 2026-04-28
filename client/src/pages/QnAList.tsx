@@ -349,11 +349,9 @@ export default function QnAList() {
                       {question.content}
                     </p>
 
-                    {/* 메타 정보 */}
-                    <div className="flex items-center gap-2 text-xs text-[var(--color-text-secondary)]">
-                      <span>{question.isAnonymous ? "익명" : question.author?.name || "사용자"}</span>
-                      <span>•</span>
-                      <Eye className="h-3 w-3 inline" />
+                    {/* 메타 정보 - 조회수 */}
+                    <div className="flex items-center gap-1 text-xs text-[var(--color-text-secondary)]">
+                      <Eye className="h-3 w-3" />
                       <span>{question.viewCount || 0}</span>
                     </div>
                   </div>
