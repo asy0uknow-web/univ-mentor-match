@@ -335,17 +335,17 @@ export default function QnAList() {
               return (
                 <Card
                   key={question.id}
-                  className="card-premium overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer group hover:scale-[1.02] hover:-translate-y-1 bg-[var(--color-background-card)] border-[var(--color-border-default)] hover:border-[var(--brand-primary-400)] flex flex-col"
+                  className="card-premium overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer group hover:scale-[1.02] hover:-translate-y-1 bg-[var(--color-background-card)] border-[var(--color-border-default)] hover:border-[var(--brand-primary-400)] flex"
                   onClick={() => setLocation(`/qna/${question.id}`)}
                 >
-                  {/* 좌츧0 아이콘 영역 - 높이의 80% */}
-                  <div className={`flex-shrink-0 flex items-center justify-center ${categoryData.bgColor} w-full py-4 sm:py-6`}>
-                    <IconComponent className={`h-12 w-12 sm:h-16 sm:w-16 ${categoryData.color}`} />
+                  {/* 좌측 아이콘 영역 - 전체 높이의 80% */}
+                  <div className={`flex-shrink-0 flex items-center justify-center ${categoryData.bgColor} w-24 sm:w-32`} style={{height: 'calc(100% - 20%)'}}>
+                    <IconComponent className={`h-14 w-14 sm:h-20 sm:w-20 ${categoryData.color}`} />
                   </div>
 
-                  {/* 우츧0 콘텐츠 영역 */}
-                  <div className="flex-1 flex flex-col justify-between px-3 sm:px-4">
-                    <CardHeader className="pb-2 sm:pb-3 px-3 sm:px-4 pt-3 sm:pt-4">
+                  {/* 우측 콘텐츠 영역 */}
+                  <div className="flex-1 flex flex-col justify-between">
+                    <CardHeader className="pb-2 sm:pb-3 px-3 sm:px-4 pt-3 sm:pt-4 flex-1">
                       {/* 상단: 카테고리 태그 + 상태 배지 */}
                       <div className="flex items-center gap-2 mb-2 flex-wrap">
                         <Badge variant="outline" className="text-xs bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-600">
@@ -368,7 +368,7 @@ export default function QnAList() {
                     </CardHeader>
 
                     {/* 콘텐츠 및 통계 */}
-                    <CardContent className="px-3 sm:px-4 pb-3 sm:pb-4">
+                    <CardContent className="px-3 sm:px-4 pb-3 sm:pb-4 flex-1">
                       <p className="text-xs sm:text-sm text-[var(--color-text-secondary)] line-clamp-2 mb-3">
                         {question.content}
                       </p>
