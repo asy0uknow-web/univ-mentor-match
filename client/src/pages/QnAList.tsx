@@ -333,7 +333,7 @@ export default function QnAList() {
                   onClick={() => setLocation(`/qna/${question.id}`)}
                 >
                   {/* 좌측 아이콘 - 작은 정사각형 */}
-                  <div className={`flex-shrink-0 flex items-center justify-center ${categoryData.bgColor} w-12 h-12 sm:w-14 sm:h-14 rounded-lg p-3 sm:p-4`}>
+                  <div className={`flex-shrink-0 flex items-center justify-center ${categoryData.bgColor} w-12 h-12 sm:w-14 sm:h-14 rounded-lg p-3 sm:p-4 ml-3 sm:ml-4`}>
                     <IconComponent className={`h-6 w-6 sm:h-8 sm:w-8 ${categoryData.color}`} />
                   </div>
 
