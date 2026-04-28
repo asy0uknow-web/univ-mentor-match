@@ -406,6 +406,10 @@ export const questions = mysqlTable("questions", {
   status: mysqlEnum("status", ["awaiting_answer", "answered", "solved"]).default("awaiting_answer").notNull(),
   // Answer count (denormalized for performance)
   answerCount: int("answerCount").default(0).notNull(),
+  // View count (조회수)
+  viewCount: int("viewCount").default(0).notNull(),
+  // Like count (추천수)
+  likeCount: int("likeCount").default(0).notNull(),
   // Last answered timestamp
   lastAnsweredAt: timestamp("lastAnsweredAt"),
   // Context fields for better answers

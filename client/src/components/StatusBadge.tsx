@@ -1,6 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 
-type StatusType = "pending" | "answered" | "solved" | "confirmed" | "completed" | "warning" | "danger" | "new" | "popular" | "accepted";
+type StatusType = "pending" | "answered" | "solved" | "confirmed" | "completed" | "warning" | "danger" | "new" | "popular" | "accepted" | "popular_question" | "mentor_viewing";
 
 interface StatusBadgeProps {
   status: StatusType;
@@ -54,6 +54,14 @@ const STATUS_CONFIG: Record<StatusType, { label: string; className: string }> = 
   popular: {
     label: "인기",
     className: "bg-[var(--brand-accent-50)] text-[var(--brand-accent-700)] border-[var(--brand-accent-200)] dark:bg-[var(--brand-accent-900)] dark:text-[var(--brand-accent-300)] dark:border-[var(--brand-accent-700)]",
+  },
+  popular_question: {
+    label: "인기 질문",
+    className: "bg-orange-50 text-orange-700 border-orange-200 dark:bg-orange-900 dark:text-orange-300 dark:border-orange-700",
+  },
+  mentor_viewing: {
+    label: "멘토 열람 중",
+    className: "bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900 dark:text-blue-300 dark:border-blue-700",
   },
 };
 

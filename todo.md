@@ -3378,3 +3378,14 @@
 - [x] 배경색: bg-gradient-to-b from-blue-50 to-white dark:from-slate-900 dark:to-slate-950
 - [x] TypeScript 0 errors
 - [x] 개발 서버 정상 작동
+
+
+## QnA 카드 디자인 개선 (완료)
+- [x] 데이터베이스에 viewCount, likeCount 필드 추가
+- [x] 카테고리별 아이콘 시스템 구축 (categoryIcons.ts)
+- [x] QnAList 카드에 카테고리 아이콘 좌측 표시
+- [x] 조회수(눈), 추천수(엄지) 데이터 표시
+- [x] 다채로운 상태 배지 시스템 (답변대기, 인기 질문, 멘토 열람 중, 해결됨)
+- [x] 호버 이펙트 개선 (스케일, 산단단, 스냥단)
+- [x] TypeScript 0 errors
+- [x] 전체 테스트 및 검증
