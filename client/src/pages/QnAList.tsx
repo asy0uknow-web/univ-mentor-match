@@ -335,16 +335,16 @@ export default function QnAList() {
               return (
                 <Card
                   key={question.id}
-                  className="card-premium overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer group hover:scale-[1.02] hover:-translate-y-1 bg-[var(--color-background-card)] border-[var(--color-border-default)] hover:border-[var(--brand-primary-400)] flex"
+                  className="card-premium overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer group hover:scale-[1.02] hover:-translate-y-1 bg-[var(--color-background-card)] border-[var(--color-border-default)] hover:border-[var(--brand-primary-400)] flex flex-col"
                   onClick={() => setLocation(`/qna/${question.id}`)}
                 >
-                  {/* 좌측 아이콘 영역 - 전체 높이 80% */}
-                  <div className={`flex-shrink-0 flex items-center justify-center ${categoryData.bgColor} px-5 sm:px-8 py-0 sm:py-0 h-full`}>
+                  {/* 좌츧0 아이콘 영역 - 높이의 80% */}
+                  <div className={`flex-shrink-0 flex items-center justify-center ${categoryData.bgColor} w-full py-4 sm:py-6`}>
                     <IconComponent className={`h-12 w-12 sm:h-16 sm:w-16 ${categoryData.color}`} />
                   </div>
 
                   {/* 우츧0 콘텐츠 영역 */}
-                  <div className="flex-1 flex flex-col justify-between">
+                  <div className="flex-1 flex flex-col justify-between px-3 sm:px-4">
                     <CardHeader className="pb-2 sm:pb-3 px-3 sm:px-4 pt-3 sm:pt-4">
                       {/* 상단: 카테고리 태그 + 상태 배지 */}
                       <div className="flex items-center gap-2 mb-2 flex-wrap">
