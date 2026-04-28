@@ -3399,3 +3399,9 @@
 - [x] Card 컴포넌트 !flex !flex-row override로 가로 배치 강제
 - [x] TypeScript 0 errors 확인
 - [x] 전체 기능 테스트 완료 - 이미지 예시와 동일한 레이아웃 구현
+
+## 회원가입 페이지 수정
+- [x] 이메일 인증 후 비밀번호 페이지에서 이름 필드 제거
+- [x] 비밀번호만 수집하도록 변경
+- [x] 백엔드 API name 필드 선택사항으로 변경
+- [x] TypeScript 0 errors 확인

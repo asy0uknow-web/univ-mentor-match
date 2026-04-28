@@ -14,7 +14,6 @@ export default function SignUp() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [name, setName] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
   const [isEmailVerified, setIsEmailVerified] = useState(false);
@@ -28,12 +27,6 @@ export default function SignUp() {
       newErrors.email = "이메일을 입력해주세요";
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       newErrors.email = "올바른 이메일 형식이 아닙니다";
-    }
-
-    if (!name) {
-      newErrors.name = "이름을 입력해주세요";
-    } else if (name.length < 2) {
-      newErrors.name = "이름은 2자 이상이어야 합니다";
     }
 
     if (!password) {
@@ -72,7 +65,6 @@ export default function SignUp() {
       await signupMutation.mutateAsync({
         email,
         password,
-        name,
         userType: undefined as any,
       });
 
@@ -172,27 +164,6 @@ export default function SignUp() {
             {isEmailVerified && (
               <p className="text-xs text-muted-foreground">인증이 완료되었으므로 이메일을 변경할 수 없습니다.</p>
             )}
-          </div>
-
-          {/* 이름 */}
-          <div className="space-y-2">
-            <Label htmlFor="name" className="text-sm font-semibold text-foreground">
-              이름
-            </Label>
-            <Input
-              id="name"
-              type="text"
-              placeholder="홍길동"
-              value={name}
-              onChange={(e) => {
-                setName(e.target.value);
-                if (errors.name) {
-                  setErrors({ ...errors, name: "" });
-                }
-              }}
-              className={`text-sm border ${errors.name ? "border-red-500 focus:border-red-500" : "border-border focus:border-primary"} px-4 py-2.5 rounded-md transition-colors`}
-            />
-            {errors.name && <p className="text-red-500 text-xs font-medium">{errors.name}</p>}
           </div>
 
           {/* 비밀번호 */}
