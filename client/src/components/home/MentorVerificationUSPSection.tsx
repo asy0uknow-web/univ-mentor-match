@@ -9,7 +9,7 @@ import { CheckCircle, Award } from "lucide-react";
  */
 export function MentorVerificationUSPSection() {
   return (
-    <section className="py-24 bg-background" aria-label="철저한 멘토 검증">
+    <section className="py-24 bg-gradient-to-b from-blue-50 to-white dark:from-slate-900 dark:to-slate-950" aria-label="총저한 멘토 검증">
       <div className="container mx-auto px-4">
         <div className="max-w-6xl mx-auto">
           {/* 지그재그 레이아웃: 왼쪽 카드, 오른쪽 텍스트 */}

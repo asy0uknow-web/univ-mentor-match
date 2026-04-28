@@ -25,7 +25,7 @@ export const ContactSection = () => {
   ];
 
   return (
-    <section id="contact" role="region" className="py-16 sm:py-24 md:py-32 bg-background" aria-label="문의 채널">
+    <section id="contact" role="region" className="py-16 sm:py-24 md:py-32 bg-gradient-to-b from-blue-50 to-white dark:from-slate-900 dark:to-slate-950" aria-label="문의 채널">
       <div className="container mx-auto px-4">
         {/* Section Header */}
         <div className="max-w-4xl mx-auto text-center mb-12 sm:mb-16">

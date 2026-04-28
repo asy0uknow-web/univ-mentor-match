@@ -12,7 +12,7 @@ export function FeaturedColumnsSection() {
 
   if (isLoading) {
     return (
-      <section className="py-16 sm:py-24 md:py-32 bg-background">
+      <section className="py-16 sm:py-24 md:py-32 bg-gradient-to-b from-blue-50 to-white dark:from-slate-900 dark:to-slate-950">
         <div className="container mx-auto px-4">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-4 text-foreground">
             칼럼 스튜디오
@@ -42,7 +42,7 @@ export function FeaturedColumnsSection() {
   }
 
   return (
-    <section className="py-16 sm:py-24 md:py-32 bg-background">
+    <section className="py-16 sm:py-24 md:py-32 bg-gradient-to-b from-blue-50 to-white dark:from-slate-900 dark:to-slate-950">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12 sm:mb-16">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-4">

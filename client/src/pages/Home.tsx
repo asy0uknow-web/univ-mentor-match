@@ -180,7 +180,7 @@ export default function Home() {
       </section>
 
       {/* Quick Entry Section - 프리미엄 카드 디자인 */}
-      <section id="quick-entry" role="region" className="py-16 sm:py-20 md:py-24 bg-background" aria-label="빠른 멘토 탐색">
+      <section id="quick-entry" role="region" className="py-16 sm:py-20 md:py-24 bg-gradient-to-b from-blue-50 to-white dark:from-slate-900 dark:to-slate-950" aria-label="빠른 멘토 탐색">
         <div className="container mx-auto px-4">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-4 text-[var(--color-text-primary)]">
             어떤 상담이 필요하신가요?
@@ -280,7 +280,7 @@ export default function Home() {
       </section>
 
       {/* How It Works Section - 프리미엄 스텝 디자인 */}
-      <section id="how-it-works" role="region" className="py-16 sm:py-20 md:py-24 bg-muted" aria-label="이용 방법">
+      <section id="how-it-works" role="region" className="py-16 sm:py-20 md:py-24 bg-gradient-to-b from-blue-50 to-white dark:from-slate-900 dark:to-slate-950" aria-label="이용 방법">
         <div className="container mx-auto px-4">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-4 text-[var(--color-text-primary)]">
             이용 방법

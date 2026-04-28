@@ -102,7 +102,7 @@ export const IntegratedFAQSection = () => {
     <section
       id="faq-safety"
       role="region"
-      className="py-16 sm:py-24 md:py-32 bg-muted/30"
+      className="py-16 sm:py-24 md:py-32 bg-gradient-to-b from-blue-50 to-white dark:from-slate-900 dark:to-slate-950"
       aria-label="FAQ 및 안전 가이드"
     >
       <div className="container mx-auto px-4">
