@@ -252,71 +252,67 @@ export default function QnAList() {
                       <ArrowRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
                     </div>
                   </CardContent>
+      
                 </Card>
               ))}
             </div>
           </div>
         )}
 
-        {/* 검색 및 필터 섹션 */}
+        {/* 필터 및 정렬 섹션 */}
         <div className="mb-8">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-6">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             {/* 검색 */}
-            <div className="sm:col-span-2">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--color-text-secondary)]" />
-                <Input
-                  placeholder="질문 검색..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 bg-[var(--color-background-card)] border-[var(--color-border-default)] text-[var(--color-text-primary)] placeholder-[var(--color-text-secondary)]"
-                />
-              </div>
+            <div className="flex-1 relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-[var(--color-text-secondary)]" />
+              <Input
+                placeholder="질문 검색..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 bg-[var(--color-background-card)] border-[var(--color-border-default)] text-[var(--color-text-primary)]"
+              />
             </div>
 
             {/* 카테고리 필터 */}
             <Select.Root value={selectedCategory} onValueChange={setSelectedCategory}>
-              <Select.Trigger className="flex items-center justify-between px-3 py-2 rounded-lg border border-[var(--color-border-default)] bg-[var(--color-background-card)] text-[var(--color-text-primary)] hover:border-[var(--brand-primary-400)] transition-colors">
+              <Select.Trigger className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[var(--color-background-card)] border border-[var(--color-border-default)] text-[var(--color-text-primary)] hover:border-[var(--brand-primary-400)] transition-colors w-full sm:w-auto">
                 <Select.Value />
                 <ChevronDown className="h-4 w-4 opacity-50" />
               </Select.Trigger>
-              <Select.Content className="bg-[var(--color-background-card)] border border-[var(--color-border-default)]">
-                {CATEGORIES.map((cat) => (
-                  <Select.Item key={cat.value} value={cat.value} className="text-[var(--color-text-primary)]">
-                    {cat.label}
+              <Select.Content className="bg-[var(--color-background-card)] border border-[var(--color-border-default)] rounded-lg shadow-lg">
+                {CATEGORIES.map((category) => (
+                  <Select.Item key={category.value} value={category.value} className="px-4 py-2 hover:bg-[var(--brand-primary-100)] dark:hover:bg-[var(--brand-primary-900)] cursor-pointer">
+                    {category.label}
                   </Select.Item>
                 ))}
               </Select.Content>
             </Select.Root>
-          </div>
 
-          {/* 상태 탭 및 정렬 */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div className="flex gap-2">
-              {STATUS_TABS.map((tab) => (
-                <button
-                  key={tab.value}
-                  onClick={() => setSelectedStatus(tab.value)}
-                  className={`px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium transition-all ${
-                    selectedStatus === tab.value
-                      ? "bg-[var(--brand-primary-600)] text-white"
-                      : "bg-[var(--color-background-card)] text-[var(--color-text-secondary)] border border-[var(--color-border-default)] hover:border-[var(--brand-primary-600)]"
-                  }`}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </div>
-
-            <Select.Root value={sortBy} onValueChange={setSortBy}>
-              <Select.Trigger className="flex items-center justify-between px-3 py-1.5 rounded-lg border border-[var(--color-border-default)] bg-[var(--color-background-card)] text-[var(--color-text-primary)] text-xs sm:text-sm hover:border-[var(--brand-primary-400)] transition-colors">
+            {/* 상태 필터 */}
+            <Select.Root value={selectedStatus} onValueChange={setSelectedStatus}>
+              <Select.Trigger className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[var(--color-background-card)] border border-[var(--color-border-default)] text-[var(--color-text-primary)] hover:border-[var(--brand-primary-400)] transition-colors w-full sm:w-auto">
                 <Select.Value />
-                <ChevronDown className="h-3 w-3 sm:h-4 sm:w-4 opacity-50 ml-1" />
+                <ChevronDown className="h-4 w-4 opacity-50" />
               </Select.Trigger>
-              <Select.Content className="bg-[var(--color-background-card)] border border-[var(--color-border-default)]">
-                {SORT_OPTIONS.map((opt) => (
-                  <Select.Item key={opt.value} value={opt.value} className="text-[var(--color-text-primary)]">
-                    {opt.label}
+              <Select.Content className="bg-[var(--color-background-card)] border border-[var(--color-border-default)] rounded-lg shadow-lg">
+                {STATUS_TABS.map((status) => (
+                  <Select.Item key={status.value} value={status.value} className="px-4 py-2 hover:bg-[var(--brand-primary-100)] dark:hover:bg-[var(--brand-primary-900)] cursor-pointer">
+                    {status.label}
+                  </Select.Item>
+                ))}
+              </Select.Content>
+            </Select.Root>
+
+            {/* 정렬 */}
+            <Select.Root value={sortBy} onValueChange={setSortBy}>
+              <Select.Trigger className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[var(--color-background-card)] border border-[var(--color-border-default)] text-[var(--color-text-primary)] hover:border-[var(--brand-primary-400)] transition-colors w-full sm:w-auto">
+                <Select.Value />
+                <ChevronDown className="h-4 w-4 opacity-50" />
+              </Select.Trigger>
+              <Select.Content className="bg-[var(--color-background-card)] border border-[var(--color-border-default)] rounded-lg shadow-lg">
+                {SORT_OPTIONS.map((option) => (
+                  <Select.Item key={option.value} value={option.value} className="px-4 py-2 hover:bg-[var(--brand-primary-100)] dark:hover:bg-[var(--brand-primary-900)] cursor-pointer">
+                    {option.label}
                   </Select.Item>
                 ))}
               </Select.Content>
@@ -325,9 +321,7 @@ export default function QnAList() {
         </div>
 
         {/* 질문 목록 */}
-        {isLoading ? (
-          <p className="text-xs sm:text-sm text-[var(--color-text-secondary)]">로드 중...</p>
-        ) : filteredQuestions && filteredQuestions.length > 0 ? (
+        {filteredQuestions && filteredQuestions.length > 0 ? (
           <div className="space-y-3 sm:space-y-4">
             {filteredQuestions.map((question: any) => {
               const categoryData = getCategoryIcon(question.category);
@@ -335,63 +329,38 @@ export default function QnAList() {
               return (
                 <Card
                   key={question.id}
-                  className="card-premium overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer group hover:scale-[1.02] hover:-translate-y-1 bg-[var(--color-background-card)] border-[var(--color-border-default)] hover:border-[var(--brand-primary-400)] flex"
+                  className="card-premium overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer group hover:scale-[1.01] hover:-translate-y-0.5 bg-[var(--color-background-card)] border-[var(--color-border-default)] hover:border-[var(--brand-primary-400)] !flex !flex-row items-center gap-3 sm:gap-4 p-3 sm:p-4 !py-0 !px-0 !gap-0"
                   onClick={() => setLocation(`/qna/${question.id}`)}
                 >
-                  {/* 좌측 아이콘 영역 - 전체 높이의 80% */}
-                  <div className={`flex-shrink-0 flex items-center justify-center ${categoryData.bgColor} w-24 sm:w-32`} style={{height: 'calc(100% - 20%)'}}>
-                    <IconComponent className={`h-14 w-14 sm:h-20 sm:w-20 ${categoryData.color}`} />
+                  {/* 좌측 아이콘 - 작은 정사각형 */}
+                  <div className={`flex-shrink-0 flex items-center justify-center ${categoryData.bgColor} w-12 h-12 sm:w-14 sm:h-14 rounded-lg p-3 sm:p-4`}>
+                    <IconComponent className={`h-6 w-6 sm:h-8 sm:w-8 ${categoryData.color}`} />
                   </div>
 
-                  {/* 우측 콘텐츠 영역 */}
-                  <div className="flex-1 flex flex-col justify-between">
-                    <CardHeader className="pb-2 sm:pb-3 px-3 sm:px-4 pt-3 sm:pt-4 flex-1">
-                      {/* 상단: 카테고리 태그 + 상태 배지 */}
-                      <div className="flex items-center gap-2 mb-2 flex-wrap">
-                        <Badge variant="outline" className="text-xs bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-600">
-                          {question.category}
-                        </Badge>
-                        <StatusBadge status={mapStatusToStatusBadge(question.status)} />
-                      </div>
+                  {/* 중앙 콘텐츠 영역 */}
+                  <div className="flex-1 flex flex-col justify-start min-w-0 px-3 sm:px-4">
+                    {/* 제목 */}
+                    <h3 className="text-base sm:text-lg font-semibold group-hover:text-[var(--brand-primary-700)] transition-colors text-[var(--color-text-primary)] line-clamp-2 mb-1">
+                      {question.title}
+                    </h3>
 
-                      {/* 제목 */}
-                      <CardTitle className="text-base sm:text-lg group-hover:text-[var(--brand-primary-700)] transition-colors text-[var(--color-text-primary)] mb-1 line-clamp-2">
-                        {question.title}
-                      </CardTitle>
+                    {/* 내용 */}
+                    <p className="text-xs sm:text-sm text-[var(--color-text-secondary)] line-clamp-2 mb-2">
+                      {question.content}
+                    </p>
 
-                      {/* 메타 정보 */}
-                      <CardDescription className="text-xs sm:text-sm text-[var(--color-text-secondary)]">
-                        {question.isAnonymous ? "익명" : question.author?.name || "사용자"} • {format(new Date(question.createdAt), "MMM dd", { locale: ko })}
-                        {question.interestUniversity && ` • ${question.interestUniversity}`}
-                        {question.interestMajor && ` • ${question.interestMajor}`}
-                      </CardDescription>
-                    </CardHeader>
+                    {/* 메타 정보 */}
+                    <div className="flex items-center gap-2 text-xs text-[var(--color-text-secondary)]">
+                      <span>{question.isAnonymous ? "익명" : question.author?.name || "사용자"}</span>
+                      <span>•</span>
+                      <Eye className="h-3 w-3 inline" />
+                      <span>{question.viewCount || 0}</span>
+                    </div>
+                  </div>
 
-                    {/* 콘텐츠 및 통계 */}
-                    <CardContent className="px-3 sm:px-4 pb-3 sm:pb-4 flex-1">
-                      <p className="text-xs sm:text-sm text-[var(--color-text-secondary)] line-clamp-2 mb-3">
-                        {question.content}
-                      </p>
-                      <div className="flex items-center justify-between text-xs text-[var(--color-text-secondary)]">
-                        <div className="flex gap-4">
-                          <div className="flex items-center gap-1">
-                            <Eye className="h-3 w-3" />
-                            <span>{question.viewCount || 0}</span>
-                          </div>
-                          <div className="flex items-center gap-1">
-                            <ThumbsUp className="h-3 w-3" />
-                            <span>{question.likeCount || 0}</span>
-                          </div>
-                          {question.answerCount > 0 && (
-                            <div className="flex items-center gap-1">
-                              <MessageCircle className="h-3 w-3" />
-                              <span>{question.answerCount}</span>
-                            </div>
-                          )}
-                        </div>
-                        <ArrowRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" />
-                      </div>
-                    </CardContent>
+                  {/* 우측 상태 배지 */}
+                  <div className="flex-shrink-0 flex items-start">
+                    <StatusBadge status={mapStatusToStatusBadge(question.status)} />
                   </div>
                 </Card>
               );
