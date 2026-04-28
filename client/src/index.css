@@ -64,7 +64,7 @@
   --popover-foreground: oklch(0.25 0.05 260);
   --secondary: oklch(0.50 0.08 260); /* Medium Indigo */
   --secondary-foreground: oklch(0.25 0.05 260);
-  --muted: oklch(0.92 0.02 0); /* Light gray */
+  --muted: oklch(0.92 0.01 250); /* Light gray */
   --muted-foreground: oklch(0.55 0.04 260);
   --accent: oklch(0.55 0.12 280); /* Purple accent */
   --accent-foreground: oklch(1 0 0);
