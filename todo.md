@@ -3405,3 +3405,10 @@
 - [x] 비밀번호만 수집하도록 변경
 - [x] 백엔드 API name 필드 선택사항으로 변경
 - [x] TypeScript 0 errors 확인
+
+
+## 회원가입 페이지 에러 수정
+- [x] 백엔드: sendVerificationCode에 이메일 중복 확인 기능 추가
+- [x] 프론트엔드: EmailVerification 에러 메시지 배영
+- [x] 이미 가입된 이메일은 인증번호 발송 차단
+- [x] TypeScript 0 errors 확인

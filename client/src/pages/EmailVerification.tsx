@@ -49,7 +49,10 @@ export default function EmailVerification({ email, onVerified }: EmailVerificati
       toast.success("인증 코드가 이메일로 발송되었습니다");
       startResendTimer();
     } catch (err: any) {
-      const errorMsg = err.message || "코드 발송 실패";
+      let errorMsg = err.message || "코드 발송 실패";
+      if (errorMsg === "Email already registered") {
+        errorMsg = "이미 가입되어있는 이메일입니다";
+      }
       setErrors({ email: errorMsg });
       toast.error(errorMsg);
     } finally {
@@ -90,7 +93,11 @@ export default function EmailVerification({ email, onVerified }: EmailVerificati
       toast.success("인증 코드가 다시 발송되었습니다");
       startResendTimer();
     } catch (error: any) {
-      toast.error(error.message || "인증 코드 재발송에 실패했습니다");
+      let errorMsg = error.message || "인증 코드 재발송에 실패했습니다";
+      if (errorMsg === "Email already registered") {
+        errorMsg = "이미 가입되어있는 이메일입니다";
+      }
+      toast.error(errorMsg);
     }
   };
 

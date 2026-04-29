@@ -134,6 +134,19 @@ export const appRouter = router({
       .input(z.object({ email: z.string().email() }))
       .mutation(async ({ input }) => {
         try {
+          const db = await getDb();
+          if (!db) throw new Error("Database not available");
+          
+          const existingUser = await db
+            .select()
+            .from(users)
+            .where(eq(users.email, input.email))
+            .limit(1);
+          
+          if (existingUser.length > 0) {
+            throw new Error("Email already registered");
+          }
+          
           await sendVerificationCode(input.email);
           return { success: true, message: "Verification code sent" };
         } catch (error: any) {
