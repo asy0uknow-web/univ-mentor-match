@@ -3412,3 +3412,8 @@
 - [x] 프론트엔드: EmailVerification 에러 메시지 배영
 - [x] 이미 가입된 이메일은 인증번호 발송 차단
 - [x] TypeScript 0 errors 확인
+
+
+## 멜토 찾기 페이지 다크 모드 수정
+- [x] Mentors.tsx:633 평점 글자색 - 어두운 모드에서 흰색으로 변경
+- [x] dark:text-white 클래스 추가하여 다크 모드 대응

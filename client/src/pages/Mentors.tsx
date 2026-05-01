@@ -632,7 +632,7 @@ export default function Mentors() {
                           {mentor.averageRating && mentor.averageRating > 0 && (
                             <div className="flex items-center gap-1 bg-[var(--brand-accent-50)] px-2 py-1 rounded-lg">
                               <Star className="h-4 w-4 text-[var(--brand-accent-700)] fill-[var(--brand-accent-700)]" />
-                              <span className="text-sm font-semibold text-[var(--color-text-primary)]">
+                              <span className="text-sm font-semibold text-[var(--color-text-primary)] dark:text-white">
                                 {mentor.averageRating ? Number(mentor.averageRating).toFixed(1) : "0.0"}
                               </span>
                             </div>
