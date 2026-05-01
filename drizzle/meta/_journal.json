@@ -162,6 +162,13 @@
       "when": 1777366859788,
       "tag": "0022_pink_nehzno",
       "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "5",
+      "when": 1777648347389,
+      "tag": "0023_petite_tigra",
+      "breakpoints": true
     }
   ]
 }

@@ -356,7 +356,23 @@ export const appRouter = router({
       }))
       .query(async ({ input }) => {
         // getMentorById 함수가 UUID와 숫자 ID 모두 지원
-        return await getMentorById(input.mentorId);
+        const mentor = await getMentorById(input.mentorId);
+        
+        // 대표 사진 추가
+        if (mentor) {
+          const db = await getDb();
+          if (db) {
+            const primaryImage = await db
+              .select({ imageUrl: mentorGallery.imageUrl })
+              .from(mentorGallery)
+              .where(and(eq(mentorGallery.mentorId, mentor.profile.id), eq(mentorGallery.isPrimary, true)))
+              .limit(1);
+            
+            (mentor.profile as any).profileImage = primaryImage.length > 0 ? primaryImage[0].imageUrl : null;
+          }
+        }
+        
+        return mentor;
       }),
 
 getTopMentors: publicProcedure
@@ -427,17 +443,17 @@ getTopMentors: publicProcedure
           }
         }
         
-        // 각 멘토의 첫 번째 갤러리 이미지 추가
+        // 각 멘토의 대표 사진 추가
         const mentors = Array.from(mentorMap.values());
         for (const mentor of mentors) {
-          const firstImage = await db
+          // 대표 사진 조회
+          const primaryImage = await db
             .select({ imageUrl: mentorGallery.imageUrl })
             .from(mentorGallery)
-            .where(drizzleEq(mentorGallery.mentorId, mentor.profileId))
-            .orderBy(mentorGallery.displayOrder)
+            .where(and(drizzleEq(mentorGallery.mentorId, mentor.profileId), drizzleEq(mentorGallery.isPrimary, true)))
             .limit(1);
           
-          mentor.firstGalleryImage = firstImage.length > 0 ? firstImage[0].imageUrl : null;
+          mentor.profileImage = primaryImage.length > 0 ? primaryImage[0].imageUrl : null;
         }
         
         return mentors;
@@ -1746,6 +1762,34 @@ getTopMentors: publicProcedure
         }
         
         await updateGalleryImageOrder(input.imageId, input.displayOrder);
+        return { success: true };
+      }),
+
+    setPrimary: protectedProcedure
+      .input(z.object({
+        imageId: z.number(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const database = await getDb();
+        if (!database) throw new Error("Database not available");
+        const gallery = await database.select().from(mentorGallery).where(eq(mentorGallery.id, input.imageId)).limit(1);
+        if (gallery.length === 0) throw new Error("Image not found");
+        
+        const mentor = await getMentorById(gallery[0].mentorId);
+        if (!mentor || mentor.profile.userId !== ctx.user?.id) {
+          throw new Error("Unauthorized");
+        }
+        
+        // 기존 대표 사진 해제
+        await database.update(mentorGallery)
+          .set({ isPrimary: false })
+          .where(eq(mentorGallery.mentorId, gallery[0].mentorId));
+        
+        // 새로운 대표 사진 설정
+        await database.update(mentorGallery)
+          .set({ isPrimary: true })
+          .where(eq(mentorGallery.id, input.imageId));
+        
         return { success: true };
       }),
   }),

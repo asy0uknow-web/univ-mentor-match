@@ -156,7 +156,7 @@ export default function MentorDetail() {
                   <div className="flex flex-col sm:flex-row gap-4 sm:gap-8">
                     <div className="flex-shrink-0">
                       <img
-                        src="https://d2xsxph8kpxj0f.cloudfront.net/310519663280786037/Gy6RaYwMhnXP5TJQbTpkxJ/mentor-default-avatar-XSMy7BuwnsbcDukFiGhL9q.webp"
+                        src={(mentor.profile as any)?.profileImage || "https://d2xsxph8kpxj0f.cloudfront.net/310519663280786037/Gy6RaYwMhnXP5TJQbTpkxJ/mentor-default-avatar-XSMy7BuwnsbcDukFiGhL9q.webp"}
                         alt={mentor.user.name || "멘토 프로필"}
                         className="w-24 h-24 sm:w-40 sm:h-40 rounded-xl object-cover"
                       />

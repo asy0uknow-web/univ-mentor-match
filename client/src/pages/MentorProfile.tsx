@@ -223,6 +223,16 @@ export default function MentorProfile() {
     },
   });
 
+  const setPrimaryImageMutation = trpc.gallery.setPrimary.useMutation({
+    onSuccess: () => {
+      toast.success("대표 사진으로 설정되었습니다");
+      utils.gallery.getByMentorId.invalidate();
+    },
+    onError: (error: any) => {
+      toast.error(error.message || "대표 사진 설정에 실패했습니다");
+    },
+  });
+
   if (!isAuthenticated) {
     return <PageLayout><div>로그인이 필요합니다</div></PageLayout>;
   }
@@ -762,12 +772,29 @@ export default function MentorProfile() {
                       <div className="grid grid-cols-3 gap-4">
                         {gallery.map((image: any) => (
                           <div key={image.id} className="relative group">
+                            {image.isPrimary && (
+                              <div className="absolute top-2 right-2 z-10 bg-yellow-500 text-white px-2 py-1 rounded text-xs font-semibold">
+                                대표
+                              </div>
+                            )}
                             <img
                               src={image.imageUrl}
                               alt={image.caption || "갤러리 이미지"}
-                              className="w-full h-40 object-cover rounded-lg"
+                              className={`w-full h-40 object-cover rounded-lg ${
+                                image.isPrimary ? "ring-2 ring-yellow-500" : ""
+                              }`}
                             />
-                            <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 rounded-lg transition flex items-center justify-center opacity-0 group-hover:opacity-100">
+                            <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 rounded-lg transition flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100">
+                              {!image.isPrimary && (
+                                <button
+                                  type="button"
+                                  onClick={() => setPrimaryImageMutation.mutate({ imageId: image.id })}
+                                  className="p-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded-full transition"
+                                  title="대표 사진로 설정"
+                                >
+                                  <Star className="w-4 h-4" />
+                                </button>
+                              )}
                               <button
                                 type="button"
                                 onClick={() => deleteGalleryImageMutation.mutate({ imageId: image.id })}

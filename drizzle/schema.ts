@@ -340,6 +340,8 @@ export const mentorGallery = mysqlTable("mentor_gallery", {
   caption: text("caption"),
   // Display order
   displayOrder: int("displayOrder").default(0).notNull(),
+  // Is this the primary/profile image
+  isPrimary: boolean("isPrimary").default(false).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });

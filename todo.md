@@ -3430,3 +3430,14 @@
 ## 갤러리 이미지 표시 문제 (완료)
 - [x] 멘토 대시보드에서 갤러리 이미지 안 보이는 문제 - MentorProfile.tsx mentorId 수정
 - [x] 멘토 찾기 페이지에서 첫 번째 갤러리 이미지 표시 - Mentors.tsx 에 갤러리 이미지 추가
+
+
+## 프로필 이미지 대표 사진 기능 (완료)
+- [x] 데이터베이스 스키마 업데이트 - mentorGallery 테이블에 isPrimary 필드 추가
+- [x] 백엔드 API 추가 - setPrimary mutation 추가
+- [x] 백엔드 getTopMentors 수정 - profileImage 추가
+- [x] 백엔드 getById 수정 - profileImage 추가
+- [x] MentorProfile.tsx - 갤러리에서 대표 사진 선택 UI 추가 (별 아이콘)
+- [x] MentorDetail.tsx - 프로필 이미지를 대표 사진으로 변경
+- [x] Mentors.tsx - 멘토 찾기 페이지에서 대표 사진 표시
+- [x] TypeScript 0 errors 확인
