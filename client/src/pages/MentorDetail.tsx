@@ -37,10 +37,11 @@ export default function MentorDetail() {
     { mentorId: mentor?.profile?.id || 0 },
     { enabled: !!mentor?.profile?.id }
   );
-  const { data: gallery } = trpc.gallery.getByMentorId.useQuery(
+  const galleryQuery = trpc.gallery.getByMentorId.useQuery(
     { mentorId: mentor?.profile?.id || 0 },
     { enabled: !!mentor?.profile?.id }
   );
+  const { data: gallery } = galleryQuery;
 
   const { data: mentorColumns } = trpc.mentorColumns.getList.useQuery(
     { limit: 3, sortBy: "latest" },
@@ -240,7 +241,7 @@ export default function MentorDetail() {
                   initialImages={gallery || []}
                   onUploadSuccess={() => {
                     // 갤러리 데이터 새로고침
-                    window.location.reload();
+                    galleryQuery.refetch();
                   }}
                 />
               )}

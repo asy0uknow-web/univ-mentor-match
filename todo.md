@@ -3417,3 +3417,11 @@
 ## 멜토 찾기 페이지 다크 모드 수정
 - [x] Mentors.tsx:633 평점 글자색 - 다크 모드에서 검은색으로 변경
 - [x] dark:text-black 클래스 추가 - 살구색 배경과 대비 개선
+
+
+## 멜토 프로필 갤러리 이미지 업로드 문제 (완료)
+- [x] 업로드 로직 분석 - 프론트엔드 파일 선택 및 전송 정상
+- [x] 백엔드 API 분석 - 이미지 S3 저장 및 DB 업데이트 정상
+- [x] 데이터베이스 확인 - 이미지 URL 저장 정상
+- [x] 프론트엔드 UI 업데이트 - MentorDetail.tsx에서 galleryQuery.refetch() 사용
+- [x] 문제 원인 파악: onUploadSuccess 콜개가 window.location.reload() 대신 refetch() 사용
