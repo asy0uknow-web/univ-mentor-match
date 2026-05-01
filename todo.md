@@ -3425,3 +3425,8 @@
 - [x] 데이터베이스 확인 - 이미지 URL 저장 정상
 - [x] 프론트엔드 UI 업데이트 - MentorDetail.tsx에서 galleryQuery.refetch() 사용
 - [x] 문제 원인 파악: onUploadSuccess 콜개가 window.location.reload() 대신 refetch() 사용
+
+
+## 갤러리 이미지 표시 문제 (완료)
+- [x] 멘토 대시보드에서 갤러리 이미지 안 보이는 문제 - MentorProfile.tsx mentorId 수정
+- [x] 멘토 찾기 페이지에서 첫 번째 갤러리 이미지 표시 - Mentors.tsx 에 갤러리 이미지 추가

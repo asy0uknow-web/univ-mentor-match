@@ -415,6 +415,7 @@ getTopMentors: publicProcedure
             mentorMap.set(mentorId, {
               ...row,
               consultationTypes: [],
+              profileId: row.id,
             });
           }
           
@@ -426,7 +427,20 @@ getTopMentors: publicProcedure
           }
         }
         
-        return Array.from(mentorMap.values());
+        // 각 멘토의 첫 번째 갤러리 이미지 추가
+        const mentors = Array.from(mentorMap.values());
+        for (const mentor of mentors) {
+          const firstImage = await db
+            .select({ imageUrl: mentorGallery.imageUrl })
+            .from(mentorGallery)
+            .where(drizzleEq(mentorGallery.mentorId, mentor.profileId))
+            .orderBy(mentorGallery.displayOrder)
+            .limit(1);
+          
+          mentor.firstGalleryImage = firstImage.length > 0 ? firstImage[0].imageUrl : null;
+        }
+        
+        return mentors;
       }),
 
     getMyBookings: protectedProcedure.query(async ({ ctx }) => {

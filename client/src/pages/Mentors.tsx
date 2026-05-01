@@ -605,7 +605,18 @@ export default function Mentors() {
               {filteredMentors.map((mentor: any) => (
                 <Link key={mentor.uuid || mentor.id} href={`/mentor/${mentor.uuid}`} className="group">
                   <div className="bg-[var(--color-bg-card)] border border-[var(--color-border-default)] rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300 h-full flex flex-col cursor-pointer group-hover:-translate-y-1">
-                      {/* 멘토 정보 헤더 */}
+                      {/* 갤러리 이미지 */}
+                      {mentor.firstGalleryImage && (
+                        <div className="w-full h-24 sm:h-32 bg-[var(--color-bg-secondary)] overflow-hidden">
+                          <img
+                            src={mentor.firstGalleryImage}
+                            alt="갤러리"
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      )}
+                      
+                      {/* 멘토 정보 헬더 */}
                       <div className="p-4 sm:p-6 border-b border-[var(--color-border-default)]">
                         <div className="flex items-start justify-between mb-3">
                           <div className="flex-1">

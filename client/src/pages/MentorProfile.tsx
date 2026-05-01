@@ -104,8 +104,8 @@ export default function MentorProfile() {
   });
 
   const { data: gallery } = trpc.gallery.getByMentorId.useQuery(
-    { mentorId: user?.id || 0 },
-    { enabled: isAuthenticated && !!user?.id }
+    { mentorId: profile?.id || 0 },
+    { enabled: isAuthenticated && !!profile?.id }
   );
 
   // 수정 모드 진입 시 기존 값으로 폼 초기화
