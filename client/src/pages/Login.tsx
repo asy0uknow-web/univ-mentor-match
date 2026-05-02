@@ -21,8 +21,9 @@ export default function Login() {
 
   const loginMutation = trpc.auth.login.useMutation();
 
-  const handleLogin = async () => {
-    console.log("[Login] handleLogin called with:", { email, password });
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    console.log("[Login] Form submitted with:", { email, password });
     
     const newErrors: Record<string, string> = {};
     if (!email) newErrors.email = "이메일을 입력해주세요";
@@ -48,8 +49,8 @@ export default function Login() {
       await queryClient.invalidateQueries({ queryKey: ["auth", "me"] });
       
       // 새로운 사용자 정보 조회
-      const newUserData = await queryClient.refetchQueries({ queryKey: ["auth", "me"] });
-      console.log("[Login] Refetched user data:", newUserData);
+      await queryClient.refetchQueries({ queryKey: ["auth", "me"] });
+      console.log("[Login] User data refetched");
 
       // 페이지 이동
       setTimeout(() => {
@@ -65,7 +66,6 @@ export default function Login() {
       console.error("[Login] Error:", error);
       const errorMessage = error.message || "로그인에 실패했습니다";
       toast.error(errorMessage);
-    } finally {
       setIsLoading(false);
     }
   };
@@ -78,7 +78,7 @@ export default function Login() {
           <p className="text-base text-muted-foreground">유니브매치에 로그인하세요</p>
         </div>
 
-        <div className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-5">
           {/* 이메일 */}
           <div className="space-y-2">
             <Label htmlFor="email" className="text-sm font-semibold text-foreground">
@@ -86,7 +86,7 @@ export default function Login() {
             </Label>
             <Input
               id="email"
-              type="text"
+              type="email"
               placeholder="example@email.com"
               value={email}
               onChange={(e) => {
@@ -125,7 +125,7 @@ export default function Login() {
 
           {/* 로그인 버튼 */}
           <Button
-            onClick={handleLogin}
+            type="submit"
             disabled={isLoading || loginMutation.isPending}
             className="w-full bg-primary hover:bg-primary/90 text-white text-base font-semibold py-3 rounded-md transition-all duration-200 shadow-md hover:shadow-lg mt-4 flex items-center justify-center gap-2"
           >
@@ -136,7 +136,7 @@ export default function Login() {
               </>
             )}
           </Button>
-        </div>
+        </form>
 
         {/* 회원가입 링크 */}
         <p className="text-center text-sm text-muted-foreground mt-6">
