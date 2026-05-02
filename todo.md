@@ -3465,3 +3465,10 @@
 - [x] 멘토 프로필 이미지 - 우측 상단에 멘토 원형 프로필 이미지 배치
 - [x] 사회적 증거 - 하단에 "멘토가 고민 중" 문구 표시
 - [x] TypeScript 0 errors 확인
+
+## 버그 수정 - 회원가입 직후 로그인 실패 (완료)
+- [x] 로그인 팝업은 나타나지만 실제 로그인이 적용되지 않는 문제 분석 - React Query 캐시 무효화 문제 발견
+- [x] 백엔드 로그인 로직 검토 (auth-procedures.ts) - 정상 동작 확인
+- [x] 프론트엔드 로그인 상태 관리 검토 (Login.tsx) - invalidateQueries + refetchQueries 추가
+- [x] 세션/쿠키 처리 검토 - 정상 동작 확인
+- [x] 로그인 기능 테스트 작성 (auth.login.test.ts)
