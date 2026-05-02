@@ -55,11 +55,11 @@ export default function Login() {
       // 페이지 이동
       setTimeout(() => {
         if (response.user?.role === "admin") {
-          window.location.href = "/admin";
+          navigate("/admin");
         } else if (!response.user?.name || !response.user?.userType) {
-          window.location.href = "/complete-profile";
+          navigate("/complete-profile");
         } else {
-          window.location.href = "/";
+          navigate("/");
         }
       }, 500);
     } catch (error: any) {
