@@ -3441,4 +3441,5 @@
 - [x] MentorDetail.tsx - 프로필 이미지를 대표 사진으로 변경
 - [x] Mentors.tsx - 멘토 찾기 페이지에서 대표 사진 표시
 - [x] FeaturedMentorsSlide.tsx - 홍페이지 추천 멘토 섹셔나 프로필 이미지 표시
+- [x] Mentors.tsx - 프로필 이미지 없을 때 로고와 배경색 표시 (FeaturedMentorsSlide와 동일)
 - [x] TypeScript 0 errors 확인

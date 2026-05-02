@@ -605,16 +605,14 @@ export default function Mentors() {
               {filteredMentors.map((mentor: any) => (
                 <Link key={mentor.uuid || mentor.id} href={`/mentor/${mentor.uuid}`} className="group">
                   <div className="bg-[var(--color-bg-card)] border border-[var(--color-border-default)] rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300 h-full flex flex-col cursor-pointer group-hover:-translate-y-1">
-                      {/* 갤러리 이미지 - 대표 사진 */}
-                      {(mentor as any).profileImage && (
-                        <div className="w-full h-24 sm:h-32 bg-[var(--color-bg-secondary)] overflow-hidden">
-                          <img
-                            src={(mentor as any).profileImage}
-                            alt="프로필"
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-                      )}
+                      {/* 갤러리 이미지 - 대표 사진 또는 로고 */}
+                      <div className="w-full h-24 sm:h-32 bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center overflow-hidden">
+                        <img
+                          src={(mentor as any).profileImage || "/logonew.png"}
+                          alt={(mentor as any).profileImage ? "프로필" : "유니브매치 로고"}
+                          className={`${(mentor as any).profileImage ? 'w-full h-full object-cover' : 'w-12 h-12 sm:w-16 sm:h-16 object-contain'}`}
+                        />
+                      </div>
                       
                       {/* 멘토 정보 헬더 */}
                       <div className="p-4 sm:p-6 border-b border-[var(--color-border-default)]">
