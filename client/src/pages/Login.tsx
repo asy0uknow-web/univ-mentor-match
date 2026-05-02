@@ -56,9 +56,9 @@ export default function Login() {
       });
 
       if (response.user) {
-        queryClient.setQueryData(["auth", "me"], response.user);
-        // 인증 상태 갱신
+        // 쿼리 캐시 무효화 및 새로운 데이터 조회
         await queryClient.invalidateQueries({ queryKey: ["auth", "me"] });
+        await queryClient.refetchQueries({ queryKey: ["auth", "me"] });
       }
 
       toast.success("로그인이 완료되었습니다!");
@@ -66,7 +66,11 @@ export default function Login() {
       // Admin 계정이면 /admin으로 이동
       if (response.user?.role === "admin") {
         navigate("/admin");
+      } else if (!response.user?.name || !response.user?.userType) {
+        // 프로필 미완성 사용자는 프로필 완성 페이지로 이동
+        navigate("/complete-profile", { replace: true });
       } else {
+        // 프로필 완성된 일반 사용자는 홈으로 이동
         navigate("/");
       }
     } catch (error: any) {
