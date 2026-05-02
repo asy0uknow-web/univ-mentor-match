@@ -9,7 +9,6 @@ import { useQueryClient } from "@tanstack/react-query";
 import { ArrowRight } from "lucide-react";
 import { useAuth } from "@/_core/hooks/useAuth";
 
-
 export default function Login() {
   const [, navigate] = useLocation();
   const [email, setEmail] = useState("");
@@ -18,62 +17,52 @@ export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
   const queryClient = useQueryClient();
   
-  // useAuth 훅을 사용하되, 리다이렉트는 비활성화
   useAuth({ redirectOnUnauthenticated: false });
 
   const loginMutation = trpc.auth.login.useMutation();
 
-  const validateForm = () => {
+  const handleLogin = async () => {
+    console.log("[Login] handleLogin called with:", { email, password });
+    
     const newErrors: Record<string, string> = {};
+    if (!email) newErrors.email = "이메일을 입력해주세요";
+    if (!password) newErrors.password = "비밀번호를 입력해주세요";
 
-    if (!email) {
-      newErrors.email = "이메일을 입력해주세요";
-    }
-    // 이메일 형식 검증 완화 - 관리자 계정(univadmin) 등을 위해
-
-    if (!password) {
-      newErrors.password = "비밀번호를 입력해주세요";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!validateForm()) {
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
       toast.error("입력 정보를 확인해주세요");
       return;
     }
 
     setIsLoading(true);
+    setErrors({});
 
     try {
-      const response = await loginMutation.mutateAsync({
-        email,
-        password,
-      });
-
-      if (response.user) {
-        // 쿼리 캐시 무효화 및 새로운 데이터 조회
-        await queryClient.invalidateQueries({ queryKey: ["auth", "me"] });
-        await queryClient.refetchQueries({ queryKey: ["auth", "me"] });
-      }
+      console.log("[Login] Calling login mutation...");
+      const response = await loginMutation.mutateAsync({ email, password });
+      console.log("[Login] Login response:", response);
 
       toast.success("로그인이 완료되었습니다!");
+
+      // 쿼리 캐시 무효화
+      await queryClient.invalidateQueries({ queryKey: ["auth", "me"] });
       
-      // Admin 계정이면 /admin으로 이동
-      if (response.user?.role === "admin") {
-        navigate("/admin");
-      } else if (!response.user?.name || !response.user?.userType) {
-        // 프로필 미완성 사용자는 프로필 완성 페이지로 이동
-        navigate("/complete-profile", { replace: true });
-      } else {
-        // 프로필 완성된 일반 사용자는 홈으로 이동
-        navigate("/");
-      }
+      // 새로운 사용자 정보 조회
+      const newUserData = await queryClient.refetchQueries({ queryKey: ["auth", "me"] });
+      console.log("[Login] Refetched user data:", newUserData);
+
+      // 페이지 이동
+      setTimeout(() => {
+        if (response.user?.role === "admin") {
+          window.location.href = "/admin";
+        } else if (!response.user?.name || !response.user?.userType) {
+          window.location.href = "/complete-profile";
+        } else {
+          window.location.href = "/";
+        }
+      }, 500);
     } catch (error: any) {
+      console.error("[Login] Error:", error);
       const errorMessage = error.message || "로그인에 실패했습니다";
       toast.error(errorMessage);
     } finally {
@@ -89,7 +78,7 @@ export default function Login() {
           <p className="text-base text-muted-foreground">유니브매치에 로그인하세요</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <div className="space-y-5">
           {/* 이메일 */}
           <div className="space-y-2">
             <Label htmlFor="email" className="text-sm font-semibold text-foreground">
@@ -106,6 +95,7 @@ export default function Login() {
                   setErrors({ ...errors, email: "" });
                 }
               }}
+              disabled={isLoading}
               className={`text-sm border ${errors.email ? "border-red-500 focus:border-red-500" : "border-border focus:border-primary"} px-4 py-2.5 rounded-md transition-colors`}
             />
             {errors.email && <p className="text-red-500 text-xs font-medium">{errors.email}</p>}
@@ -127,14 +117,15 @@ export default function Login() {
                   setErrors({ ...errors, password: "" });
                 }
               }}
+              disabled={isLoading}
               className={`text-sm border ${errors.password ? "border-red-500 focus:border-red-500" : "border-border focus:border-primary"} px-4 py-2.5 rounded-md transition-colors`}
             />
             {errors.password && <p className="text-red-500 text-xs font-medium">{errors.password}</p>}
           </div>
 
-          {/* 제출 버튼 */}
+          {/* 로그인 버튼 */}
           <Button
-            type="submit"
+            onClick={handleLogin}
             disabled={isLoading || loginMutation.isPending}
             className="w-full bg-primary hover:bg-primary/90 text-white text-base font-semibold py-3 rounded-md transition-all duration-200 shadow-md hover:shadow-lg mt-4 flex items-center justify-center gap-2"
           >
@@ -145,7 +136,7 @@ export default function Login() {
               </>
             )}
           </Button>
-        </form>
+        </div>
 
         {/* 회원가입 링크 */}
         <p className="text-center text-sm text-muted-foreground mt-6">

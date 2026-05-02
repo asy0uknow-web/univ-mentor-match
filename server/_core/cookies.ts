@@ -9,16 +9,25 @@ function isIpAddress(host: string) {
 }
 
 function isSecureRequest(req: Request) {
+  // 프리뷰 환경에서 항상 secure로 처리
   if (req.protocol === "https") return true;
 
   const forwardedProto = req.headers["x-forwarded-proto"];
-  if (!forwardedProto) return false;
-
-  const protoList = Array.isArray(forwardedProto)
-    ? forwardedProto
-    : forwardedProto.split(",");
-
-  return protoList.some(proto => proto.trim().toLowerCase() === "https");
+  if (forwardedProto) {
+    const protoList = Array.isArray(forwardedProto)
+      ? forwardedProto
+      : forwardedProto.split(",");
+    return protoList.some(proto => proto.trim().toLowerCase() === "https");
+  }
+  
+  // x-forwarded-proto가 없으면 호스트명으로 판별
+  // manus.space 도메인은 항상 HTTPS
+  const hostname = req.hostname || "";
+  if (hostname.includes("manus.space") || hostname.includes("manus.computer")) {
+    return true;
+  }
+  
+  return false;
 }
 
 export function getSessionCookieOptions(

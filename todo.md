@@ -3472,3 +3472,11 @@
 - [x] 프론트엔드 로그인 상태 관리 검토 (Login.tsx) - invalidateQueries + refetchQueries 추가
 - [x] 세션/쿠키 처리 검토 - 정상 동작 확인
 - [x] 로그인 기능 테스트 작성 (auth.login.test.ts)
+
+
+## 버그 수정 - 회원가입 직후 로그인 실패 (진행 중)
+- [x] 로그인 문제 원인 파악 (React Query 캐시 무효화 필요)
+- [x] Login.tsx 수정 - invalidateQueries 및 refetchQueries 추가
+- [x] 쿠키 설정 개선 (secure, sameSite 설정)
+- [x] Login.tsx 완전 재작성 (간단한 구조로 변경)
+- [ ] 배포 후 실제 사이트에서 테스트 필요
