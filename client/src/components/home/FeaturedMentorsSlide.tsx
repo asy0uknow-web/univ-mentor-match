@@ -74,6 +74,7 @@ export const FeaturedMentorsSlide = () => {
     major: mentor.major || "전공 미등록",
     bio: mentor.bio || "자기소개 미등록",
     field: mentor.field,
+    image: (mentor as any).profileImage,
     rating: mentor.averageRating ? parseFloat(mentor.averageRating.toString()) : 0,
     reviewCount: mentor.reviewCount || 0,
   }));
@@ -223,11 +224,11 @@ export const FeaturedMentorsSlide = () => {
               >
                 {/* Mentor Image Placeholder */}
                 <div className="w-full flex-shrink-0 bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 overflow-hidden" style={{ height: '192px' }}>
-                  {/* 유니브매치 로고 이미지 */}
+                  {/* 프로필 이미지 또는 로고 */}
                   <img
-                    src="/logonew.png"
-                    alt="유니브매치 로고"
-                    className="w-24 h-24 object-contain group-hover:scale-125 transition-transform duration-300"
+                    src={mentor.image || "/logonew.png"}
+                    alt={mentor.image ? mentor.name : "유니브매치 로고"}
+                    className={`${mentor.image ? 'w-full h-full object-cover' : 'w-24 h-24 object-contain'} group-hover:scale-125 transition-transform duration-300`}
                   />
                 </div>
 
