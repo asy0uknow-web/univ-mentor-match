@@ -1,6 +1,6 @@
 import { getDb } from "./db";
 import { questions, answers, answerReplies, users, mentorProfiles, qnaReports } from "../drizzle/schema";
-import { eq, isNull, desc, and, or } from "drizzle-orm";
+import { eq, isNull, desc, and, or, asc } from "drizzle-orm";
 
 /**
  * 질문 생성
@@ -114,7 +114,44 @@ export async function getQuestions(
     .limit(limit)
     .offset(offset);
 
-  return result;
+  // 각 질문에 대해 첫 번째 답변 멘토 정보 추가
+  const questionsWithAnswers = await Promise.all(
+    result.map(async (question: any) => {
+      const db = await getDb();
+      if (!db) return { ...question, firstAnswerMentor: null, answerPreview: null };
+
+      // 첫 번째 답변 조회
+      const firstAnswer = await db
+        .select()
+        .from(answers)
+        .where(eq(answers.questionId, question.id))
+        .orderBy(asc(answers.createdAt))
+        .limit(1);
+
+      if (!firstAnswer || firstAnswer.length === 0) {
+        return { ...question, firstAnswerMentor: null, answerPreview: null };
+      }
+
+      // 답변 작성자(멘토) 정보 조회
+      const mentor = await db
+        .select()
+        .from(mentorProfiles)
+        .where(eq(mentorProfiles.userId, firstAnswer[0].authorId))
+        .limit(1);
+
+      return {
+        ...question,
+        firstAnswerMentor: mentor && mentor.length > 0 ? {
+          id: mentor[0].id,
+          name: mentor[0].userId,
+          profileImage: null,
+        } : null,
+        answerPreview: firstAnswer[0].content?.substring(0, 100) || null,
+      };
+    })
+  );
+
+  return questionsWithAnswers;
 }
 
 /**

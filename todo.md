@@ -3443,3 +3443,13 @@
 - [x] FeaturedMentorsSlide.tsx - 홍페이지 추천 멘토 섹셔나 프로필 이미지 표시
 - [x] Mentors.tsx - 프로필 이미지 없을 때 로고와 배경색 표시 (FeaturedMentorsSlide와 동일)
 - [x] TypeScript 0 errors 확인
+
+
+## QnA 카드 디자인 고도화 (완료)
+- [x] 세로 길이 확장 및 여백 조정 - 카드 상하 패딩 증가 (p-4 sm:p-6)
+- [x] 배지 제거 및 사회적 증거 추가 - "멘토가 고민 중" 문구
+- [x] 답변 미리보기 기능 - 질문 제목 아래 답변 첫 100자 표시
+- [x] 아이콘 제거 및 멘토 프로필 추가 - 우측 상단에 멘토 원형 프로필 이미지
+- [x] 질문자 정보 태그 - 카테고리 배지 + "익명의 멘니" 태그
+- [x] 데이터 구조 업데이트 - 답변 멘토 정보 추가 (firstAnswerMentor, answerPreview)
+- [x] TypeScript 0 errors 확인
