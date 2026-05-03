@@ -16,14 +16,18 @@ export default function Login() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
   const queryClient = useQueryClient();
+  const { user: currentUser } = useAuth({ redirectOnUnauthenticated: false });
   
-  useAuth({ redirectOnUnauthenticated: false });
+  // 이미 로그인되어 있으면 홈으로 리다이렉트
+  if (currentUser) {
+    navigate("/", { replace: true });
+    return null;
+  }
 
   const loginMutation = trpc.auth.login.useMutation();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("[Login] Form submitted with:", { email, password });
     
     const newErrors: Record<string, string> = {};
     if (!email) newErrors.email = "이메일을 입력해주세요";
@@ -39,31 +43,36 @@ export default function Login() {
     setErrors({});
 
     try {
-      console.log("[Login] Calling login mutation...");
       const response = await loginMutation.mutateAsync({ email, password });
-      console.log("[Login] Login response:", response);
-
       toast.success("로그인이 완료되었습니다!");
 
-      // 쿼리 캐시 무효화
+      // 쿼리 캐시 무효화 및 새로운 데이터 조회
       await queryClient.invalidateQueries({ queryKey: ["auth", "me"] });
       
-      // 새로운 사용자 정보 조회
+      // 새로운 사용자 정보를 기다림
       await queryClient.refetchQueries({ queryKey: ["auth", "me"] });
-      console.log("[Login] User data refetched");
-
-      // 페이지 이동
-      setTimeout(() => {
-        if (response.user?.role === "admin") {
-          navigate("/admin");
-        } else if (!response.user?.name || !response.user?.userType) {
-          navigate("/complete-profile");
-        } else {
-          navigate("/");
+      
+      // 캐시에서 새로운 사용자 정보 조회
+      const cachedData = queryClient.getQueryData(["auth", "me"]) as any;
+      
+      if (cachedData) {
+        // 프로필 미완성 사용자
+        if (!cachedData.name || !cachedData.userType) {
+          navigate("/complete-profile", { replace: true });
+        } 
+        // 관리자
+        else if (cachedData.role === "admin") {
+          navigate("/admin", { replace: true });
         }
-      }, 500);
+        // 일반 사용자
+        else {
+          navigate("/", { replace: true });
+        }
+      } else {
+        // 데이터가 없으면 홈으로 이동 (useAuth 훅에서 처리)
+        navigate("/", { replace: true });
+      }
     } catch (error: any) {
-      console.error("[Login] Error:", error);
       const errorMessage = error.message || "로그인에 실패했습니다";
       toast.error(errorMessage);
       setIsLoading(false);
