@@ -1839,3 +1839,37 @@
   - [x] averageRating 안전 처리 (null/undefined 체크)
   - [x] 김멘토가 멘토 찾기에 정상 표시됨
   - [x] 김멘토 프로필 페이지 정상 로드
+
+
+## Phase 5: 쿠키 설정 및 로그인 버그 디버깅 (현재)
+- [x] 쿠키 설정 문제 체크 - 사용자 요청
+- [x] vite.ts 수정 - Vite 미들웨어가 /api/ 경로 우회하도록 변경
+- [x] server/_core/index.ts 수정 - tRPC 경로에 JSON 파서 명시적 추가
+- [x] client/src/App.tsx 수정 - 라우팅 버그 (path="\\" → path="/")
+- [x] client/src/pages/Login.tsx 수정 - 포괄적인 로깅 추가
+- [ ] 로그인 기능 완전 해결 - tRPC 요청 형식 문제 분석 중
+  - 현재 오류: "Invalid input: expected object, received undefined"
+  - 원인: tRPC 요청 본문이 서버에 도착하지 않음 (형식 문제 추정)
+  - 다음 단계: Network 탭 분석, 서버 로그 추가, tRPC 클라이언트 재검토
+- [ ] TypeScript 컴파일 오류 수정
+  - @radix-ui/react-context-menu 누락
+  - @radix-ui/react-hover-card 누락
+  - @radix-ui/react-menubar 누락
+  - @radix-ui/react-navigation-menu 누락
+
+
+## Phase 5: 쿠키 설정 및 로그인 버그 디버깅 (현재)
+- [x] 쿠키 설정 문제 체크 - 사용자 요청
+- [x] vite.ts 수정 - Vite 미들웨어가 /api/ 경로 우회하도록 변경
+- [x] server/_core/index.ts 수정 - tRPC 경로에 JSON 파서 명시적 추가
+- [x] client/src/App.tsx 수정 - 라우팅 버그 (path="\\" → path="/")
+- [x] client/src/pages/Login.tsx 수정 - 포괄적인 로깅 추가
+- [ ] 로그인 기능 완전 해결 - tRPC 요청 형식 문제 분석 중
+  - 현재 오류: "Invalid input: expected object, received undefined"
+  - 원인: tRPC 요청 본문이 서버에 도착하지 않음 (형식 문제 추정)
+  - 다음 단계: Network 탭 분석, 서버 로그 추가, tRPC 클라이언트 재검토
+- [ ] TypeScript 컴파일 오류 수정
+  - @radix-ui/react-context-menu 누락
+  - @radix-ui/react-hover-card 누락
+  - @radix-ui/react-menubar 누락
+  - @radix-ui/react-navigation-menu 누락
