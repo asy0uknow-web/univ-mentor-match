@@ -14,11 +14,10 @@ export default function Login() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
   
-  const utils = trpc.useUtils();
   const loginMutation = trpc.auth.login.useMutation();
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleLogin = async () => {
+    console.log("[Login] handleLogin called");
     
     const newErrors: Record<string, string> = {};
     if (!email) newErrors.email = "이메일을 입력해주세요";
@@ -39,19 +38,19 @@ export default function Login() {
       console.log("[Login] Login response:", response);
       toast.success("로그인이 완료되었습니다!");
 
-      // 로그인 응답에서 받은 사용자 정보로 캐시 즉시 업데이트
-      // response.user는 간단한 형태이므로, 직접 캐시에 설정하지 않고 리다이렉트만 수행
-      
       // 프로필 미완성 사용자
       if (!response.user.name || !response.user.userType) {
+        console.log("[Login] Redirecting to complete-profile");
         window.location.href = "/complete-profile";
       } 
       // 관리자
       else if (response.user.role === "admin") {
+        console.log("[Login] Redirecting to admin");
         window.location.href = "/admin";
       }
       // 일반 사용자
       else {
+        console.log("[Login] Redirecting to home");
         window.location.href = "/";
       }
     } catch (error: any) {
@@ -59,6 +58,12 @@ export default function Login() {
       const errorMessage = error.message || "로그인에 실패했습니다";
       toast.error(errorMessage);
       setIsLoading(false);
+    }
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      handleLogin();
     }
   };
 
@@ -70,7 +75,7 @@ export default function Login() {
           <p className="text-base text-muted-foreground">유니브매치에 로그인하세요</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <div className="space-y-5">
           {/* 이메일 */}
           <div className="space-y-2">
             <Label htmlFor="email" className="text-sm font-semibold text-foreground">
@@ -87,7 +92,8 @@ export default function Login() {
                   setErrors({ ...errors, email: "" });
                 }
               }}
-              disabled={isLoading}
+              onKeyPress={handleKeyPress}
+              disabled={isLoading || loginMutation.isPending}
               className={`text-sm border ${errors.email ? "border-red-500 focus:border-red-500" : "border-border focus:border-primary"} px-4 py-2.5 rounded-md transition-colors`}
             />
             {errors.email && <p className="text-red-500 text-xs font-medium">{errors.email}</p>}
@@ -109,7 +115,8 @@ export default function Login() {
                   setErrors({ ...errors, password: "" });
                 }
               }}
-              disabled={isLoading}
+              onKeyPress={handleKeyPress}
+              disabled={isLoading || loginMutation.isPending}
               className={`text-sm border ${errors.password ? "border-red-500 focus:border-red-500" : "border-border focus:border-primary"} px-4 py-2.5 rounded-md transition-colors`}
             />
             {errors.password && <p className="text-red-500 text-xs font-medium">{errors.password}</p>}
@@ -117,7 +124,7 @@ export default function Login() {
 
           {/* 로그인 버튼 */}
           <Button
-            type="submit"
+            onClick={handleLogin}
             disabled={isLoading || loginMutation.isPending}
             className="w-full bg-primary hover:bg-primary/90 text-white text-base font-semibold py-3 rounded-md transition-all duration-200 shadow-md hover:shadow-lg mt-4 flex items-center justify-center gap-2"
           >
@@ -128,7 +135,7 @@ export default function Login() {
               </>
             )}
           </Button>
-        </form>
+        </div>
 
         {/* 회원가입 링크 */}
         <p className="text-center text-sm text-muted-foreground mt-6">
