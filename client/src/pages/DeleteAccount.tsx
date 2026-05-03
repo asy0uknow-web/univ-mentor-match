@@ -5,32 +5,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { AlertCircle, ArrowLeft } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
-import { useAuth } from "@/_core/hooks/useAuth";
 
 export default function DeleteAccount() {
   const [location, navigate] = useLocation();
-  const { isAuthenticated } = useAuth({ redirectOnUnauthenticated: false });
   const [isConfirmed, setIsConfirmed] = useState(false);
-
-  if (!isAuthenticated) {
-    return (
-      <div className="min-h-screen flex items-center justify-center px-4">
-        <Card className="max-w-md w-full">
-          <CardHeader>
-            <CardTitle className="text-lg sm:text-xl">로그인이 필요합니다</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Button 
-              onClick={() => navigate('/login')}
-              className="w-full text-xs sm:text-sm h-9 sm:h-10"
-            >
-              로그인
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
   const [isLoading, setIsLoading] = useState(false);
   const deleteAccountMutation = trpc.auth.deleteAccount.useMutation();
 

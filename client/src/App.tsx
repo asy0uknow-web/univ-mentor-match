@@ -4,8 +4,6 @@ import NotFound from "@/pages/NotFound";
 import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
-import { NotificationToast } from "./components/NotificationToast";
-import { ProtectedRoute } from "./components/ProtectedRoute";
 import { lazy, Suspense } from "react";
 
 // 주요 페이지는 즉시 로드, 나머지는 동적 로드
@@ -25,231 +23,37 @@ const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const StudentProfile = lazy(() => import("./pages/StudentProfile"));
 const SignUp = lazy(() => import("./pages/SignUp"));
 const Login = lazy(() => import("./pages/Login"));
+const VerifyEmail = lazy(() => import("./pages/VerifyEmail"));
 const ReviewCreate = lazy(() => import("./pages/ReviewCreate"));
 const QnAList = lazy(() => import("./pages/QnAList"));
 const QnADetail = lazy(() => import("./pages/QnADetail"));
 const QnACreate = lazy(() => import("./pages/QnACreate"));
-const QnAGuide = lazy(() => import("./pages/QnAGuide"));
-const QnADashboard = lazy(() => import("./pages/QnADashboard"));
-const MentorColumns = lazy(() => import("./pages/MentorColumns"));
-const MentorColumnDetail = lazy(() => import("./pages/MentorColumnDetail"));
-const MentorColumnCreate = lazy(() => import("./pages/MentorColumnCreate"));
-const AdminColumnStats = lazy(() => import("./pages/AdminColumnStats"));
-const Terms = lazy(() => import("./pages/Terms"));
-const RefundPolicy = lazy(() => import("./pages/RefundPolicy"));
-const DraftColumns = lazy(() => import("./pages/DraftColumns"));
-const RecommendedMentors = lazy(() => import("./pages/RecommendedMentors"));
 
 function Router() {
   return (
     <Suspense fallback={<div className="flex items-center justify-center min-h-screen">로딩 중...</div>}>
       <Switch>
-        <Route path={"/"} component={Home} />
+        <Route path={"\\"} component={Home} />
         <Route path={"/signup"} component={SignUp} />
         <Route path={"/login"} component={Login} />
+        <Route path={"/verify-email"} component={VerifyEmail} />
         <Route path={"/mentors"} component={Mentors} />
         <Route path={"/mentor/:id"} component={MentorDetail} />
-        <Route path={"/my-profile"}>
-          {() => (
-            <ProtectedRoute>
-              <Suspense fallback={<div className="flex items-center justify-center min-h-screen">로딩 중...</div>}>
-                <MentorProfile />
-              </Suspense>
-            </ProtectedRoute>
-          )}
-        </Route>
-        <Route path={"/student-profile"}>
-          {() => (
-            <ProtectedRoute>
-              <Suspense fallback={<div className="flex items-center justify-center min-h-screen">로딩 중...</div>}>
-                <StudentProfile />
-              </Suspense>
-            </ProtectedRoute>
-          )}
-        </Route>
-        <Route path={"/bookings"}>
-          {() => (
-            <ProtectedRoute>
-              <Suspense fallback={<div className="flex items-center justify-center min-h-screen">로딩 중...</div>}>
-                <Bookings />
-              </Suspense>
-            </ProtectedRoute>
-          )}
-        </Route>
-        <Route path={"/notifications"}>
-          {() => (
-            <ProtectedRoute>
-              <Suspense fallback={<div className="flex items-center justify-center min-h-screen">로딩 중...</div>}>
-                <Notifications />
-              </Suspense>
-            </ProtectedRoute>
-          )}
-        </Route>
-        <Route path={"/messages"}>
-          {() => (
-            <ProtectedRoute>
-              <Suspense fallback={<div className="flex items-center justify-center min-h-screen">로딩 중...</div>}>
-                <Messages />
-              </Suspense>
-            </ProtectedRoute>
-          )}
-        </Route>
-        <Route path={"/verify-mentor"}>
-          {() => (
-            <ProtectedRoute>
-              <Suspense fallback={<div className="flex items-center justify-center min-h-screen">로딩 중...</div>}>
-                <VerifyMentor />
-              </Suspense>
-            </ProtectedRoute>
-          )}
-        </Route>
-        <Route path={"/admin"}>
-          {() => (
-            <ProtectedRoute>
-              <Suspense fallback={<div className="flex items-center justify-center min-h-screen">로딩 중...</div>}>
-                <AdminDashboard />
-              </Suspense>
-            </ProtectedRoute>
-          )}
-        </Route>
-        <Route path={"/delete-account"}>
-          {() => (
-            <ProtectedRoute>
-              <Suspense fallback={<div className="flex items-center justify-center min-h-screen">로딩 중...</div>}>
-                <DeleteAccount />
-              </Suspense>
-            </ProtectedRoute>
-          )}
-        </Route>
-        <Route path={"/admin/bug-reports"}>
-          {() => (
-            <ProtectedRoute>
-              <Suspense fallback={<div className="flex items-center justify-center min-h-screen">로딩 중...</div>}>
-                <AdminBugReports />
-              </Suspense>
-            </ProtectedRoute>
-          )}
-        </Route>
-        <Route path={"/admin/column-stats"}>
-          {() => (
-            <ProtectedRoute>
-              <Suspense fallback={<div className="flex items-center justify-center min-h-screen">로딩 중...</div>}>
-                <AdminColumnStats />
-              </Suspense>
-            </ProtectedRoute>
-          )}
-        </Route>
-        <Route path={"/complete-profile"}>
-          {() => (
-            <ProtectedRoute>
-              <Suspense fallback={<div className="flex items-center justify-center min-h-screen">로딩 중...</div>}>
-                <CompleteProfile />
-              </Suspense>
-            </ProtectedRoute>
-          )}
-        </Route>
+        <Route path={"/my-profile"} component={MentorProfile} />
+        <Route path={"/student-profile"} component={StudentProfile} />
+        <Route path={"/bookings"} component={Bookings} />
+        <Route path={"/notifications"} component={Notifications} />
+        <Route path={"/messages"} component={Messages} />
+        <Route path={"/verify-mentor"} component={VerifyMentor} />
+        <Route path={"/admin"} component={AdminDashboard} />
+        <Route path={"/delete-account"} component={DeleteAccount} />
+        <Route path={"/admin/bug-reports"} component={AdminBugReports} />
+        <Route path={"/complete-profile"} component={CompleteProfile} />
         <Route path={"/privacy-policy"} component={PrivacyPolicy} />
-        <Route path={"/terms"} component={Terms} />
-        <Route path={"/refund-policy"} component={RefundPolicy} />
-        <Route path={"/reviews/new"}>
-          {() => (
-            <ProtectedRoute>
-              <Suspense fallback={<div className="flex items-center justify-center min-h-screen">로딩 중...</div>}>
-                <ReviewCreate />
-              </Suspense>
-            </ProtectedRoute>
-          )}
-        </Route>
-        <Route path={"/qna"}>
-          {() => (
-            <ProtectedRoute>
-              <Suspense fallback={<div className="flex items-center justify-center min-h-screen">로딩 중...</div>}>
-                <QnAList />
-              </Suspense>
-            </ProtectedRoute>
-          )}
-        </Route>
-        <Route path={"/qna/guide"}>
-          {() => (
-            <ProtectedRoute>
-              <Suspense fallback={<div className="flex items-center justify-center min-h-screen">로딩 중...</div>}>
-                <QnAGuide />
-              </Suspense>
-            </ProtectedRoute>
-          )}
-        </Route>
-        <Route path={"/qna/dashboard"}>
-          {() => (
-            <ProtectedRoute>
-              <Suspense fallback={<div className="flex items-center justify-center min-h-screen">로딩 중...</div>}>
-                <QnADashboard />
-              </Suspense>
-            </ProtectedRoute>
-          )}
-        </Route>
-        <Route path={"/qna/new"}>
-          {() => (
-            <ProtectedRoute>
-              <Suspense fallback={<div className="flex items-center justify-center min-h-screen">로딩 중...</div>}>
-                <QnACreate />
-              </Suspense>
-            </ProtectedRoute>
-          )}
-        </Route>
-        <Route path={"/qna/:id"}>
-          {() => (
-            <ProtectedRoute>
-              <Suspense fallback={<div className="flex items-center justify-center min-h-screen">로딩 중...</div>}>
-                <QnADetail />
-              </Suspense>
-            </ProtectedRoute>
-          )}
-        </Route>
-        <Route path={"/columns"}>
-          {() => (
-            <ProtectedRoute>
-              <Suspense fallback={<div className="flex items-center justify-center min-h-screen">로딩 중...</div>}>
-                <MentorColumns />
-              </Suspense>
-            </ProtectedRoute>
-          )}
-        </Route>
-        <Route path={"/columns/new"}>
-          {() => (
-            <ProtectedRoute>
-              <Suspense fallback={<div className="flex items-center justify-center min-h-screen">로딩 중...</div>}>
-                <MentorColumnCreate />
-              </Suspense>
-            </ProtectedRoute>
-          )}
-        </Route>
-        <Route path={"/columns/:id"}>
-          {() => (
-            <ProtectedRoute>
-              <Suspense fallback={<div className="flex items-center justify-center min-h-screen">로딩 중...</div>}>
-                <MentorColumnDetail />
-              </Suspense>
-            </ProtectedRoute>
-          )}
-        </Route>
-        <Route path={"/draft-columns"}>
-          {() => (
-            <ProtectedRoute>
-              <Suspense fallback={<div className="flex items-center justify-center min-h-screen">로딩 중...</div>}>
-                <DraftColumns />
-              </Suspense>
-            </ProtectedRoute>
-          )}
-        </Route>
-        <Route path={"/recommended-mentors"}>
-          {() => (
-            <ProtectedRoute>
-              <Suspense fallback={<div className="flex items-center justify-center min-h-screen">로딩 중...</div>}>
-                <RecommendedMentors />
-              </Suspense>
-            </ProtectedRoute>
-          )}
-        </Route>
+        <Route path={"/reviews/new"} component={ReviewCreate} />
+        <Route path={"/qna"} component={QnAList} />
+        <Route path={"/qna/new"} component={QnACreate} />
+        <Route path={"/qna/:id"} component={QnADetail} />
         <Route path={"/404"} component={NotFound} />
         <Route component={NotFound} />
       </Switch>
@@ -257,13 +61,17 @@ function Router() {
   );
 }
 
+// NOTE: About Theme
+// - First choose a default theme according to your design style (dark or light bg), than change color palette in index.css
+//   to keep consistent foreground/background color across components
+// - If you want to make theme switchable, pass `switchable` ThemeProvider and use `useTheme` hook
+
 function App() {
   return (
     <ErrorBoundary>
-      <ThemeProvider defaultTheme="light" switchable>
+      <ThemeProvider defaultTheme="light">
         <TooltipProvider>
           <Toaster />
-          <NotificationToast />
           <Router />
         </TooltipProvider>
       </ThemeProvider>

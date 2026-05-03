@@ -12,11 +12,7 @@ export default function MyProfile() {
     setPageMeta(PAGE_META.profile);
   }, []);
 
-  const { user, isAuthenticated } = useAuth({ redirectOnUnauthenticated: false });
-
-  if (!isAuthenticated) {
-    return null; // MentorProfile 또는 StudentProfile에서 처리됨
-  }
+  const { user, isAuthenticated } = useAuth();
 
   // 멘티 (고등학생)
   if (user?.userType === "high_school_student") {

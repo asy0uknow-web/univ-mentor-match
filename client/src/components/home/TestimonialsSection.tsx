@@ -1,51 +1,52 @@
 import { Star } from "lucide-react";
-import { Link } from "wouter";
 
 interface Testimonial {
   id: string;
   name: string;
-  role: string;
+  role: string; // "학생" or "학부모"
   content: string;
   rating: number;
-  category: string;
+  mentor?: string;
+  avatar?: string;
 }
 
 const TESTIMONIALS: Testimonial[] = [
   {
     id: "1",
-    name: "이○○",
+    name: "이지은",
     role: "고등학교 3학년",
-    category: "전공 탐색",
     content:
-      "막막했던 진로가 멘토님 덕분에 명확해졌어요. 데이터과학이 정말 내 적성인지 직접 재학생에게 물어볼 수 있어서 좋았고, 대학 선택까지 실질적인 도움을 받았습니다.",
+      "막막했던 진로가 멘토님 덕분에 명확해졌어요. 데이터과학이 정말 내 적성인지 알 수 있었고, 대학 선택까지 도움을 받았습니다. 정말 감사합니다!",
     rating: 5,
+    mentor: "김데이터 멘토",
   },
   {
     id: "2",
-    name: "박○○ 학부모",
+    name: "박준호 학부모",
     role: "학부모",
-    category: "안전 & 신뢰",
     content:
-      "아이가 진로 고민이 많았는데, 실제 대학생 멘토와 상담하면서 훨씬 자신감 있어졌어요. 신원이 검증된 멘토라 믿고 맡길 수 있었고, 상담 후 아이의 방향이 뚜렷해졌습니다.",
+      "아이가 진로 고민이 많았는데, 유니브매치를 통해 실제 대학생 멘토와 상담하면서 훨씬 자신감 있어졌어요. 안전하고 투명한 서비스라 믿고 맡길 수 있었습니다.",
     rating: 5,
+    mentor: "이컴퓨터 멘토",
   },
   {
     id: "3",
-    name: "최○○",
-    role: "예비 대학생",
-    category: "대학 생활",
+    name: "최수현",
+    role: "대학교 1학년",
     content:
-      "대학 입학 전 궁금했던 점들을 솔직하게 물어볼 수 있어서 정말 좋았어요. 학과 분위기, 실제 수업 방식, 취업 준비까지 생생한 이야기를 들을 수 있었습니다.",
+      "대학 입학 전 궁금했던 점들을 멘토님께 물어볼 수 있어서 정말 좋았어요. 실제 대학 생활, 학과 선택, 취업까지 생생한 조언을 받을 수 있었습니다.",
     rating: 5,
+    mentor: "박의학 멘토",
   },
 ];
 
 export const TestimonialsSection = () => {
   return (
-    <section className="py-16 sm:py-24 md:py-32 bg-card ">
+    <section className="py-16 sm:py-24 md:py-32 bg-white">
       <div className="container mx-auto px-4">
+        {/* Section Header */}
         <div className="text-center mb-12 sm:mb-16">
-          <span className="inline-block px-4 py-2 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full text-sm font-semibold mb-4">
+          <span className="inline-block px-4 py-2 bg-green-100 text-green-700 rounded-full text-sm font-semibold mb-4">
             💬 학생과 학부모의 목소리
           </span>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-4">
@@ -56,61 +57,65 @@ export const TestimonialsSection = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6 lg:gap-8 max-w-6xl mx-auto">
+        {/* Testimonials Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 max-w-6xl mx-auto">
           {TESTIMONIALS.map((testimonial) => (
             <div
               key={testimonial.id}
-              className="bg-card rounded-2xl p-3 sm:p-4 md:p-6 lg:p-8 shadow-md hover:shadow-xl transition-all duration-300 border border-border hover:scale-105 hover:-translate-y-2 group"
+              className="bg-gradient-to-br from-gray-50 to-white rounded-2xl p-6 sm:p-8 shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100"
             >
-              <span className="inline-block px-3 py-1 bg-primary/5 text-blue-600 rounded-full text-xs font-semibold mb-4 group-hover:bg-indigo-100 group-hover:text-indigo-700 transition-colors">
-                {testimonial.category}
-              </span>
-
-              <div className="flex gap-1 mb-3 sm:mb-4">
+              {/* Stars */}
+              <div className="flex gap-1 mb-4">
                 {[...Array(5)].map((_, i) => (
                   <Star
                     key={i}
-                    className={`w-4 sm:w-5 h-4 sm:h-5 ${
+                    className={`w-5 h-5 ${
                       i < testimonial.rating
                         ? "fill-yellow-400 text-yellow-400"
-                        : "text-muted-foreground/40"
+                        : "text-gray-300"
                     }`}
                   />
                 ))}
               </div>
 
-              <p className="text-xs sm:text-sm md:text-base text-foreground mb-6 leading-relaxed italic transition-colors line-clamp-3 sm:line-clamp-4">
+              {/* Content */}
+              <p className="text-base sm:text-lg text-foreground mb-6 leading-relaxed italic">
                 "{testimonial.content}"
               </p>
 
-              <div className="border-t border-border pt-3 sm:pt-4">
-                <div className="flex items-center gap-2 sm:gap-3">
-                  <div className="w-8 sm:w-10 h-8 sm:h-10 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white font-bold text-xs sm:text-sm flex-shrink-0">
+              {/* Author Info */}
+              <div className="border-t border-gray-200 pt-4">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white font-bold text-sm">
                     {testimonial.name.charAt(0)}
                   </div>
-                  <div className="min-w-0">
-                    <p className="font-semibold text-foreground text-xs sm:text-sm truncate">
+                  <div>
+                    <p className="font-semibold text-foreground text-sm sm:text-base">
                       {testimonial.name}
                     </p>
-                    <p className="text-xs text-muted-foreground truncate">
+                    <p className="text-xs sm:text-sm text-muted-foreground">
                       {testimonial.role}
                     </p>
                   </div>
                 </div>
+                {testimonial.mentor && (
+                  <p className="text-xs sm:text-sm text-blue-600 font-medium">
+                    {testimonial.mentor}과 상담
+                  </p>
+                )}
               </div>
             </div>
           ))}
         </div>
 
+        {/* CTA */}
         <div className="text-center mt-12 sm:mt-16">
           <p className="text-lg text-muted-foreground mb-6">
-            나에게 맞는 멘토를 직접 찾아보세요
+            당신도 유니브매치에서 진로를 찾을 수 있습니다
           </p>
-          <Link href="/mentors">
-            <div className="inline-block px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold rounded-lg hover:shadow-xl transition-all duration-300 text-base sm:text-lg cursor-pointer hover:scale-105 active:scale-95">
-              멘토 찾기
-            </div>
-          </Link>
+          <button className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold rounded-lg hover:shadow-xl transition-all duration-300 text-base sm:text-lg">
+            지금 바로 시작하기
+          </button>
         </div>
       </div>
     </section>

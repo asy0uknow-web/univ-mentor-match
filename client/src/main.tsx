@@ -5,12 +5,12 @@ import { httpBatchLink, TRPCClientError } from "@trpc/client";
 import { createRoot } from "react-dom/client";
 import superjson from "superjson";
 import App from "./App";
-
+import { getLoginUrl } from "./const";
 import "./index.css";
 
 const queryClient = new QueryClient();
 
-const redirectToLoginIfUnauthorized = (error: unknown, queryKey?: any) => {
+const redirectToLoginIfUnauthorized = (error: unknown) => {
   if (!(error instanceof TRPCClientError)) return;
   if (typeof window === "undefined") return;
 
@@ -18,28 +18,13 @@ const redirectToLoginIfUnauthorized = (error: unknown, queryKey?: any) => {
 
   if (!isUnauthorized) return;
 
-  // 로그인 페이지와 회원가입 페이지에서는 리다이렉트하지 않음 (무한 루프 방지)
-  if (window.location.pathname === '/login' || window.location.pathname === '/signup') {
-    return;
-  }
-
-  // 공개 쿼리는 리다이렉트하지 않음 (비로그인 사용자도 볼 수 있어야 함)
-  if (queryKey && Array.isArray(queryKey)) {
-    const firstKey = queryKey[0];
-    // mentor.getTopMentors, verification.getProfileVerificationStatus 등 공개 쿼리
-    if (firstKey === 'mentor' || firstKey === 'verification') {
-      return;
-    }
-  }
-
-  window.location.href = '/login';
+  window.location.href = getLoginUrl();
 };
 
 queryClient.getQueryCache().subscribe(event => {
   if (event.type === "updated" && event.action.type === "error") {
     const error = event.query.state.error;
-    const queryKey = event.query.queryKey;
-    redirectToLoginIfUnauthorized(error, queryKey);
+    redirectToLoginIfUnauthorized(error);
     console.error("[API Query Error]", error);
   }
 });

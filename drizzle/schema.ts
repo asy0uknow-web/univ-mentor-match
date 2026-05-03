@@ -1,4 +1,4 @@
-import { int, mysqlEnum, mysqlTable, text, timestamp, varchar, decimal, boolean, uniqueIndex } from "drizzle-orm/mysql-core";
+import { int, mysqlEnum, mysqlTable, text, timestamp, varchar, decimal, boolean } from "drizzle-orm/mysql-core";
 
 /**
  * Core user table backing auth flow.
@@ -73,8 +73,8 @@ export const mentorProfiles = mysqlTable("mentor_profiles", {
   university: varchar("university", { length: 255 }).notNull(),
   major: varchar("major", { length: 255 }).notNull(),
 
-  // Available regions: 서울, 경기, 인천, 강원, 충청, 전라, 경상, 제주 (다중 선택 가능)
-  availableRegions: text("availableRegions"), // JSON array of regions
+  // Region: 서울, 경기, 인천, 강원, 충청, 전라, 경상, 제주
+  region: mysqlEnum("region", ["seoul", "gyeonggi", "incheon", "gangwon", "chungcheong", "jeolla", "gyeongsang", "jeju"]),
   grade: mysqlEnum("grade", ["1", "2", "3", "4", "graduate"]).notNull(),
 
   bio: text("bio"),
@@ -92,8 +92,6 @@ export const mentorProfiles = mysqlTable("mentor_profiles", {
   averageRating: decimal("averageRating", { precision: 3, scale: 2 }).default("0.00"),
   // Total number of reviews
   reviewCount: int("reviewCount").default(0).notNull(),
-  // Total number of Q&A answers
-  answerCount: int("answerCount").default(0).notNull(),
 
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
@@ -155,21 +153,6 @@ export const bookings = mysqlTable("bookings", {
   rescheduleRequestedBy: int("rescheduleRequestedBy"),
   // Reschedule reason/notice
   rescheduleNotice: text("rescheduleNotice"),
-  // Student clicked start button
-  studentStartedAt: timestamp("studentStartedAt"),
-  // Mentor clicked start button
-  mentorStartedAt: timestamp("mentorStartedAt"),
-  // Student clicked end button
-  studentEndedAt: timestamp("studentEndedAt"),
-  // Mentor clicked end button
-  mentorEndedAt: timestamp("mentorEndedAt"),
-  // End reason (early_end, additional_time, etc.)
-  endReason: varchar("endReason", { length: 255 }),
-  // End reason details
-  endReasonDetails: text("endReasonDetails"),
-  // Notification sent flags
-  notified30MinBefore: boolean("notified30MinBefore").default(false),
-  notified10MinBefore: boolean("notified10MinBefore").default(false),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });
@@ -200,7 +183,7 @@ export type InsertReview = typeof reviews.$inferInsert;
 export const notifications = mysqlTable("notifications", {
   id: int("id").autoincrement().primaryKey(),
   userId: int("userId").notNull(), // References users.id
-  type: mysqlEnum("type", ["booking_request", "booking_confirmed", "booking_cancelled", "schedule_changed", "review_received", "message", "consultation_reminder", "consultation_urgent_reminder", "qna_answer"]).notNull(),
+  type: mysqlEnum("type", ["booking_request", "booking_confirmed", "booking_cancelled", "schedule_changed", "review_received", "message"]).notNull(),
   title: varchar("title", { length: 255 }).notNull(),
   message: text("message").notNull(),
   isRead: boolean("isRead").default(false).notNull(),
@@ -340,8 +323,6 @@ export const mentorGallery = mysqlTable("mentor_gallery", {
   caption: text("caption"),
   // Display order
   displayOrder: int("displayOrder").default(0).notNull(),
-  // Is this the primary/profile image
-  isPrimary: boolean("isPrimary").default(false).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });
@@ -389,8 +370,20 @@ export const mentorConsultationTypes = mysqlTable("mentor_consultation_types", {
 export type MentorConsultationType = typeof mentorConsultationTypes.$inferSelect;
 export type InsertMentorConsultationType = typeof mentorConsultationTypes.$inferInsert;
 
-// Deprecated: emailVerificationTokens removed in favor of emailVerificationCodes
-// Use emailVerificationCodes for 6-digit code-based email verification instead
+/**
+ * Email verification tokens for simple email verification flow
+ */
+export const emailVerificationTokens = mysqlTable("email_verification_tokens", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(), // References users.id
+  token: varchar("token", { length: 255 }).notNull().unique(), // Unique verification token
+  expiresAt: timestamp("expiresAt").notNull(), // Token expiration time (24 hours)
+  isUsed: boolean("isUsed").default(false).notNull(), // Whether token has been used
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type EmailVerificationToken = typeof emailVerificationTokens.$inferSelect;
+export type InsertEmailVerificationToken = typeof emailVerificationTokens.$inferInsert;
 
 /**
  * QnA Questions - 멘티가 올리는 질문
@@ -404,21 +397,6 @@ export const questions = mysqlTable("questions", {
   category: varchar("category", { length: 100 }),
   // Whether the question is anonymous
   isAnonymous: boolean("isAnonymous").default(false).notNull(),
-  // Question status: awaiting_answer, answered, solved
-  status: mysqlEnum("status", ["awaiting_answer", "answered", "solved"]).default("awaiting_answer").notNull(),
-  // Answer count (denormalized for performance)
-  answerCount: int("answerCount").default(0).notNull(),
-  // View count (조회수)
-  viewCount: int("viewCount").default(0).notNull(),
-  // Like count (추천수)
-  likeCount: int("likeCount").default(0).notNull(),
-  // Last answered timestamp
-  lastAnsweredAt: timestamp("lastAnsweredAt"),
-  // Context fields for better answers
-  interestUniversity: varchar("interestUniversity", { length: 255 }),
-  interestMajor: varchar("interestMajor", { length: 255 }),
-  gradeLevel: varchar("gradeLevel", { length: 50 }),
-  contextInfo: text("contextInfo"),
   // Soft delete
   deletedAt: timestamp("deletedAt"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
@@ -434,16 +412,8 @@ export type InsertQuestion = typeof questions.$inferInsert;
 export const answers = mysqlTable("answers", {
   id: int("id").autoincrement().primaryKey(),
   questionId: int("questionId").notNull(), // References questions.id
-  authorId: int("authorId").notNull(), // References users.id (멘토)
+  authorId: int("authorId").notNull(), // References users.id (멘토만)
   content: text("content").notNull(),
-  // Acceptance status (질문 작성자가 채택)
-  isAccepted: boolean("isAccepted").default(false).notNull(),
-  // Like count
-  likeCount: int("likeCount").default(0).notNull(),
-  // Report status
-  isReported: boolean("isReported").default(false).notNull(),
-  reportReason: varchar("reportReason", { length: 255 }),
-  reportCount: int("reportCount").default(0).notNull(),
   // Soft delete
   deletedAt: timestamp("deletedAt"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
@@ -454,19 +424,6 @@ export type Answer = typeof answers.$inferSelect;
 export type InsertAnswer = typeof answers.$inferInsert;
 
 /**
- * Answer Likes - 답변 좋아요 (계정당 1회, 토글 가능)
- */
-export const answerLikes = mysqlTable("answer_likes", {
-  id: int("id").autoincrement().primaryKey(),
-  answerId: int("answerId").notNull(), // References answers.id
-  userId: int("userId").notNull(), // References users.id
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-});
-
-export type AnswerLike = typeof answerLikes.$inferSelect;
-export type InsertAnswerLike = typeof answerLikes.$inferInsert;
-
-/**
  * QnA Answer Replies - 답변에 다는 댓글 (멘토/멘티 모두 가능)
  */
 export const answerReplies = mysqlTable("answer_replies", {
@@ -474,10 +431,6 @@ export const answerReplies = mysqlTable("answer_replies", {
   answerId: int("answerId").notNull(), // References answers.id
   authorId: int("authorId").notNull(), // References users.id
   content: text("content").notNull(),
-  // Report status
-  isReported: boolean("isReported").default(false).notNull(),
-  reportReason: varchar("reportReason", { length: 255 }),
-  reportCount: int("reportCount").default(0).notNull(),
   // Soft delete
   deletedAt: timestamp("deletedAt"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
@@ -486,165 +439,3 @@ export const answerReplies = mysqlTable("answer_replies", {
 
 export type AnswerReply = typeof answerReplies.$inferSelect;
 export type InsertAnswerReply = typeof answerReplies.$inferInsert;
-
-/**
- * QnA Reports - 질문/답변/댓글 신고
- */
-export const qnaReports = mysqlTable("qna_reports", {
-  id: int("id").autoincrement().primaryKey(),
-  reporterId: int("reporterId").notNull(), // References users.id
-  // Type: question, answer, reply
-  reportType: mysqlEnum("reportType", ["question", "answer", "reply"]).notNull(),
-  // ID of reported content
-  contentId: int("contentId").notNull(),
-  // Reason for report
-  reason: varchar("reason", { length: 255 }).notNull(),
-  // Report description
-  description: text("description"),
-  // Status: pending, reviewed, resolved, dismissed
-  status: mysqlEnum("status", ["pending", "reviewed", "resolved", "dismissed"]).default("pending").notNull(),
-  // Admin notes
-  adminNotes: text("adminNotes"),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
-});
-
-export type QnaReport = typeof qnaReports.$inferSelect;
-export type InsertQnaReport = typeof qnaReports.$inferInsert;
-
-/**
- * Column Reports - 칼럼 신고
- */
-export const columnReports = mysqlTable("column_reports", {
-  id: int("id").autoincrement().primaryKey(),
-  reporterId: int("reporterId").notNull(), // References users.id
-  columnId: int("columnId").notNull(), // References mentor_columns.id
-  reason: varchar("reason", { length: 100 }).notNull(), // e.g., "부적절한 콘텐츠", "스팸"
-  description: text("description"),
-  status: mysqlEnum("status", ["pending", "reviewed", "approved", "rejected"]).default("pending").notNull(),
-  adminNotes: text("adminNotes"),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
-});
-
-export type ColumnReport = typeof columnReports.$inferSelect;
-export type InsertColumnReport = typeof columnReports.$inferInsert;
-
-/**
- * Mentor Columns - 멘토 칼럼 게시판
- */
-export const mentorColumns = mysqlTable("mentor_columns", {
-  id: int("id").autoincrement().primaryKey(),
-  authorId: int("authorId").notNull(), // References users.id (must be verified mentor)
-  title: varchar("title", { length: 255 }).notNull(),
-  content: text("content").notNull(),
-  category: varchar("category", { length: 100 }).notNull(), // e.g., "전공 선택", "대학 생활", etc.
-  excerpt: text("excerpt"), // Optional preview text, can be auto-generated from content
-  coverImageUrl: varchar("coverImageUrl", { length: 500 }), // Optional cover image
-  likesCount: int("likesCount").default(0).notNull(),
-  commentsCount: int("commentsCount").default(0).notNull(),
-  viewCount: int("viewCount").default(0).notNull(), // 칼럼 조회수
-  status: mysqlEnum("status", ["draft", "published"]).default("draft").notNull(),
-  // Soft delete
-  deletedAt: timestamp("deletedAt"),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
-});
-export type MentorColumn = typeof mentorColumns.$inferSelect;
-export type InsertMentorColumn = typeof mentorColumns.$inferInsert;
-
-/**
- * Mentor Column Likes - 칼럼 좋아요 (1인 1회)
- */
-export const mentorColumnLikes = mysqlTable(
-  "mentor_column_likes",
-  {
-    id: int("id").autoincrement().primaryKey(),
-    columnId: int("columnId").notNull(), // References mentor_columns.id
-    userId: int("userId").notNull(), // References users.id
-    createdAt: timestamp("createdAt").defaultNow().notNull(),
-  },
-  (table) => ({
-    unique: uniqueIndex("unique_column_like").on(table.columnId, table.userId),
-  })
-);
-export type MentorColumnLike = typeof mentorColumnLikes.$inferSelect;
-export type InsertMentorColumnLike = typeof mentorColumnLikes.$inferInsert;
-
-/**
- * Mentor Column Comments - 칼럼 댓글 (1단계 대댓글까지만)
- */
-export const mentorColumnComments = mysqlTable("mentor_column_comments", {
-  id: int("id").autoincrement().primaryKey(),
-  columnId: int("columnId").notNull(), // References mentor_columns.id
-  authorId: int("authorId").notNull(), // References users.id
-  parentCommentId: int("parentCommentId"), // References mentor_column_comments.id for replies (null = top-level comment)
-  content: text("content").notNull(),
-  // Soft delete
-  deletedAt: timestamp("deletedAt"),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
-});
-export type MentorColumnComment = typeof mentorColumnComments.$inferSelect;
-export type InsertMentorColumnComment = typeof mentorColumnComments.$inferInsert;
-
-
-/**
- * Email Verification Codes - 이메일 인증 코드
- * 회원가입 전 이메일 인증을 위한 임시 코드 저장
- */
-export const emailVerificationCodes = mysqlTable("email_verification_codes", {
-  id: int("id").autoincrement().primaryKey(),
-  email: varchar("email", { length: 320 }).notNull(),
-  code: varchar("code", { length: 10 }).notNull(), // 6자리 인증 코드
-  isVerified: boolean("isVerified").default(false).notNull(), // 인증 완료 여부
-  attemptCount: int("attemptCount").default(0).notNull(), // 인증 시도 횟수
-  lastSentAt: timestamp("lastSentAt").defaultNow().notNull(), // 마지막 발송 시간
-  expiresAt: timestamp("expiresAt").notNull(), // 코드 만료 시간 (10분)
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
-});
-export type EmailVerificationCode = typeof emailVerificationCodes.$inferSelect;
-export type InsertEmailVerificationCode = typeof emailVerificationCodes.$inferInsert;
-
-
-/**
- * Student Interests - 학생의 관심사
- * 학생이 선택한 관심 분야를 저장하여 추천 알고리즘에 사용
- */
-export const studentInterests = mysqlTable("student_interests", {
-  id: int("id").autoincrement().primaryKey(),
-  studentId: int("studentId").notNull(), // References users.id
-  // Interest category: engineering, natural_science, business, humanities, education, liberal_arts, medicine, etc.
-  interestCategory: varchar("interestCategory", { length: 100 }).notNull(),
-  // Interest level: beginner, intermediate, advanced
-  interestLevel: mysqlEnum("interestLevel", ["beginner", "intermediate", "advanced"]),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
-});
-
-export type StudentInterest = typeof studentInterests.$inferSelect;
-export type InsertStudentInterest = typeof studentInterests.$inferInsert;
-
-/**
- * Mentor Recommendations - 멘토 추천 기록
- * 학생에게 추천된 멘토 목록 및 추천 점수를 저장
- */
-export const mentorRecommendations = mysqlTable("mentor_recommendations", {
-  id: int("id").autoincrement().primaryKey(),
-  studentId: int("studentId").notNull(), // References users.id
-  mentorId: int("mentorId").notNull(), // References users.id
-  // Recommendation score (0-100): 유사도 기반 점수
-  recommendationScore: decimal("recommendationScore", { precision: 5, scale: 2 }).notNull(),
-  // Recommendation reason: interest_match, rating_match, availability_match, etc.
-  recommendationReason: varchar("recommendationReason", { length: 255 }),
-  // Whether the student clicked on this recommendation
-  isClicked: boolean("isClicked").default(false).notNull(),
-  // Whether the student booked this mentor after recommendation
-  isConverted: boolean("isConverted").default(false).notNull(),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
-});
-
-export type MentorRecommendation = typeof mentorRecommendations.$inferSelect;
-export type InsertMentorRecommendation = typeof mentorRecommendations.$inferInsert;

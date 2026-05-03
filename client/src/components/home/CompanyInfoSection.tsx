@@ -40,7 +40,7 @@ export const CompanyInfoSection = () => {
   ];
 
   return (
-    <section id="company-info" role="region" className="py-16 sm:py-24 md:py-32 bg-card " aria-label="운영 주체 소개">
+    <section id="company-info" role="region" className="py-16 sm:py-24 md:py-32 bg-white" aria-label="운영 주체 소개">
       <div className="container mx-auto px-4">
         {/* Section Header */}
         <div className="max-w-4xl mx-auto text-center mb-12 sm:mb-16">
@@ -78,11 +78,11 @@ export const CompanyInfoSection = () => {
         {/* Core Values */}
         <div className="max-w-5xl mx-auto mb-16 sm:mb-20">
           <h3 className="text-2xl sm:text-3xl font-bold text-center text-foreground mb-12">핵심 가치</h3>
-            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6 lg:gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
             {values.map((value, idx) => (
               <div
                 key={idx}
-                className="bg-card  rounded-2xl p-6 sm:p-8 shadow-md  hover:shadow-lg transition-shadow duration-300 border border-border 700 700 text-center"
+                className="bg-white rounded-2xl p-6 sm:p-8 shadow-md hover:shadow-lg transition-shadow duration-300 border border-gray-100 text-center"
               >
                 <div className="text-4xl sm:text-5xl mb-4">
                   {value.icon}
@@ -101,11 +101,11 @@ export const CompanyInfoSection = () => {
         {/* Team */}
         <div className="max-w-5xl mx-auto">
           <h3 className="text-2xl sm:text-3xl font-bold text-center text-foreground mb-12">팀 소개</h3>
-          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6 lg:gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
             {teamMembers.map((member, idx) => (
               <div
                 key={idx}
-                className="bg-card rounded-2xl p-6 sm:p-8 shadow-md  hover:shadow-lg transition-shadow duration-300 border border-border 700 700 text-center"
+                className="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-6 sm:p-8 shadow-md hover:shadow-lg transition-shadow duration-300 border border-gray-100 text-center"
               >
                 <div className="text-5xl sm:text-6xl mb-4">
                   {member.icon}

@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { trpc } from "@/lib/trpc";
 import { useLocation } from "wouter";
-import { Search, Plus, MessageCircle, ChevronDown, AlertCircle, ArrowRight } from "lucide-react";
+import { Search, Plus, MessageCircle, ChevronDown } from "lucide-react";
 import { useState, useEffect } from "react";
 import { PageLayout } from "@/components/layout";
 import { setPageMeta } from "@/lib/seo";
@@ -13,66 +13,23 @@ import { format } from "date-fns";
 import { ko } from "date-fns/locale";
 import * as Select from "@radix-ui/react-select";
 
-import { StatusBadge } from "@/components/StatusBadge";
-import { ConsultationCTAButton } from "@/components/ConsultationCTAButton";
-import { getCategoryIcon, getCategoryBgColor } from "@/lib/categoryIcons";
-import { Eye, ThumbsUp } from "lucide-react";
-
-
-const CATEGORIES = [
-  { value: "all", label: "전체" },
-  { value: "입시 전략", label: "입시 전략" },
-  { value: "전공 선택", label: "전공 선택" },
-  { value: "대학 생활", label: "대학 생활" },
-  { value: "학교 분위기", label: "학교 분위기" },
-  { value: "학업/생기부", label: "학업/생기부" },
-  { value: "기숙사/통학", label: "기숙사/통학" },
-  { value: "인간관계/적응", label: "인간관계/적응" },
-  { value: "진로 고민", label: "진로 고민" },
-  { value: "기타", label: "기타" },
-];
-
+const CATEGORIES = ["전체", "대학생활", "진로", "학습", "기타"];
 const SORT_OPTIONS = [
   { value: "recent", label: "최신순" },
-  { value: "latest_answer", label: "최근답변순" },
-  { value: "most_answers", label: "답변많은순" },
-  { value: "solved", label: "해결도 높은순" },
+  { value: "popular", label: "인기순" },
+  { value: "answers", label: "답변 많은순" },
 ];
-
-const STATUS_TABS = [
-  { value: "all", label: "전체" },
-  { value: "awaiting_answer", label: "답변대기" },
-  { value: "answered_or_solved", label: "답변완료" },
-];
-
-const mapStatusToStatusBadge = (status: string) => {
-  switch (status) {
-    case "awaiting_answer":
-      return "pending";
-    case "answered":
-    case "solved":
-      return "accepted";
-    default:
-      return "new";
-  }
-};
 
 export default function QnAList() {
-  const { isAuthenticated, user } = useAuth({ redirectOnUnauthenticated: false });
-  const isMentor = user?.role === 'mentor';
+  const { isAuthenticated } = useAuth();
   const [, setLocation] = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("all");
-  const [selectedStatus, setSelectedStatus] = useState("all");
+  const [selectedCategory, setSelectedCategory] = useState("전체");
   const [sortBy, setSortBy] = useState("recent");
-  const [trendingPeriod, setTrendingPeriod] = useState<"week" | "month" | "all">("week");
 
   useEffect(() => {
-    setPageMeta({ 
-      title: "QnA 센터 - 대학 생활 Q&A", 
-      description: "입시, 전공 선택, 학교 분위기까지 재학생 멘토에게 자유롭게 질문해보세요" 
-    });
+    setPageMeta({ title: "Q&A", description: "멘토와 학생의 질문과 답변 공간" });
   }, []);
 
   // 검색 디바운싱
@@ -88,310 +45,140 @@ export default function QnAList() {
     limit: 20,
     offset: 0,
     searchQuery: debouncedSearch,
-    category: selectedCategory === "all" ? undefined : selectedCategory,
+    category: selectedCategory === "전체" ? undefined : selectedCategory,
     sortBy: sortBy as any,
-    status: selectedStatus === "all" ? undefined : selectedStatus === "answered_or_solved" ? undefined : selectedStatus,
-  });
-
-  // 답변완료 내에서 answered와 solved 모두 필터링
-  const filteredQuestions = selectedStatus === "answered_or_solved" && questions
-    ? questions.filter((q: any) => q.status === "answered" || q.status === "solved")
-    : questions;
-
-  // 이번주 인기 질문 조회 (답변많은순, 최대 5개)
-  const { data: trendingQuestions } = trpc.qna.getQuestions.useQuery({
-    limit: 5,
-    offset: 0,
-    sortBy: "most_answers" as any,
   });
 
   return (
     <PageLayout>
-      <div 
-        className="relative min-h-screen py-6 sm:py-12 overflow-hidden"
-        style={{
-          backgroundImage: 'url(https://d2xsxph8kpxj0f.cloudfront.net/310519663280786037/Gy6RaYwMhnXP5TJQbTpkxJ/qna-center-background-v2-JVpKhRfA6vNwToNjTnLJMJ.webp)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundAttachment: 'fixed',
-          backgroundClip: 'border-box'
-        }}
-      >
-        <div className="absolute inset-0 bg-white/75 dark:bg-black/80 backdrop-blur-sm"></div>
-        <div className="relative container mx-auto px-3 sm:px-4">
-        {/* 헤더 섹션 */}
-        <div className="mb-8 sm:mb-12">
-          <div className="flex items-center justify-between gap-2 mb-4 sm:mb-6">
-            <div>
-              <h1 className="text-2xl sm:text-4xl font-bold mb-2 text-[var(--color-text-primary)]">🎓 QnA 센터</h1>
-              <p className="text-sm sm:text-base text-[var(--color-text-secondary)]">
-                입시, 전공 선택, 학교 분위기, 대학생활까지<br className="sm:hidden" />
-                재학생 멘토에게 자유롭게 질문해보세요.
-              </p>
-            </div>
-            {isAuthenticated && (
-              isMentor ? (
-                <Button
-                  onClick={() => {
-                    // 멘토는 답변 대기 중인 첫 번째 질문으로 이동
-                    setSelectedStatus('awaiting_answer');
-                    window.scrollTo({ top: 400, behavior: 'smooth' });
-                  }}
-                  className="text-xs sm:text-sm h-10 sm:h-10 flex-shrink-0 bg-[var(--color-cta-primary-bg)] hover:bg-[var(--color-cta-primary-bg-hover)]"
-                >
-                  <MessageCircle className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-                  <span className="hidden sm:inline">답변하기</span>
-                  <span className="sm:hidden">답변</span>
-                </Button>
-              ) : (
-                <Button
-                  onClick={() => setLocation('/qna/new')}
-                  className="text-xs sm:text-sm h-10 sm:h-10 flex-shrink-0 bg-[var(--color-cta-primary-bg)] hover:bg-[var(--color-cta-primary-bg-hover)]"
-                >
-                  <Plus className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-                  <span className="hidden sm:inline">질문하기</span>
-                  <span className="sm:hidden">질문</span>
-                </Button>
-              )
-            )}
-          </div>
-
-          {/* 안내 박스 */}
-          <Card className="bg-[var(--brand-primary-50)] dark:bg-[var(--brand-primary-900)] border-[var(--color-border-default)] border-2 mb-8 shadow-lg">
-            <CardContent className="pt-6 px-6 pb-6">
-              <div className="flex gap-4">
-                <AlertCircle className="h-7 w-7 text-[var(--brand-primary-700)] dark:text-[var(--brand-primary-300)] flex-shrink-0 mt-1" />
-                <div className="text-sm sm:text-base text-[var(--brand-primary-700)] dark:text-[var(--brand-primary-300)] space-y-2">
-                  <p className="font-bold text-lg">좋은 질문 팁</p>
-                  <ul className="text-sm sm:text-base space-y-1.5 opacity-95">
-                    <li>• 한 질문에 한 가지 핵심 고민만 적기</li>
-                    <li>• 학교/전공/학년/상황을 적으면 더 정확한 답변 가능</li>
-                    <li>• 개인정보(전화번호, 카톡 ID, SNS)는 적지 않기</li>
-                  </ul>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* CTA 버튼 */}
-          <div className="flex gap-2 flex-wrap">
-            <Button 
-              variant="outline" 
-              size="sm"
-              className="text-xs sm:text-sm bg-[var(--color-cta-secondary-bg)] hover:bg-[var(--color-cta-secondary-bg-hover)]"
-              onClick={() => setLocation('/mentors')}
+      <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-12">
+        <div className="flex items-center justify-between gap-2 mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-4xl font-bold">Q&A</h1>
+          {isAuthenticated && (
+            <Button
+              onClick={() => setLocation('/qna/new')}
+              className="text-xs sm:text-sm h-8 sm:h-10"
             >
-              멘토 찾기
+              <Plus className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+              질문 작성
             </Button>
-            {isAuthenticated && (
-              <Button 
-                variant="outline" 
-                size="sm"
-                className="text-xs sm:text-sm bg-[var(--color-cta-secondary-bg)] hover:bg-[var(--color-cta-secondary-bg-hover)]"
-                onClick={() => setLocation('/qna/dashboard')}
-              >
-                {isMentor ? '내 답변 관리' : '내 질문 관리'}
-              </Button>
-            )}
-          </div>
+          )}
         </div>
 
-        {/* 이번주 인기 질문 섹션 */}
-        {trendingQuestions && trendingQuestions.length > 0 && (
-          <div className="mb-12">
-            <div className="mb-6">
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
-                <div>
-                  <h2 className="text-xl sm:text-2xl font-bold mb-2 text-[var(--color-text-primary)]">🔥 인기 질문</h2>
-                  <p className="text-sm text-[var(--color-text-secondary)]">가장 많은 답변을 받은 질문들을 만나보세요</p>
-                </div>
-                <div className="flex gap-2">
-                  {[
-                    { label: "이번주", value: "week" },
-                    { label: "이번달", value: "month" },
-                    { label: "전체", value: "all" },
-                  ].map((period) => (
-                    <button
-                      key={period.value}
-                      onClick={() => setTrendingPeriod(period.value as any)}
-                      className={`px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium transition-all ${
-                        trendingPeriod === period.value
-                          ? "bg-[var(--brand-primary-600)] text-white"
-                          : "bg-[var(--color-background-card)] text-[var(--color-text-secondary)] border border-[var(--color-border-default)] hover:border-[var(--brand-primary-600)]"
-                      }`}
-                    >
-                      {period.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
-              {trendingQuestions.map((question: any) => (
-                <Card
-                  key={question.id}
-                  className="card-premium overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer group group-hover:-translate-y-1 bg-[var(--color-background-card)] border-[var(--color-border-default)]"
-                  onClick={() => setLocation(`/qna/${question.id}`)}
-                >
-                  <CardHeader className="pb-2">
-                    <div className="flex items-start justify-between gap-2 mb-1">
-                      <StatusBadge status={mapStatusToStatusBadge(question.status)} />
-                    </div>
-                    <CardTitle className="line-clamp-2 text-sm group-hover:text-[var(--brand-primary-700)] transition-colors text-[var(--color-text-primary)]">
-                      {question.title}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="pb-2">
-                    <div className="flex items-center justify-between text-xs text-[var(--color-text-secondary)]">
-                      <div className="flex gap-2">
-                        <div className="flex items-center gap-0.5">
-                          <MessageCircle className="h-3 w-3" />
-                          <span>{question.answerCount}개</span>
-                        </div>
-                      </div>
-                      <ArrowRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+        {/* 검색 및 필터 바 */}
+        <div className="mb-6 sm:mb-8 space-y-3 sm:space-y-4">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="질문을 검색해보세요..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10 text-xs sm:text-sm h-9 sm:h-10"
+            />
           </div>
-        )}
 
-        {/* 필터 및 정렬 섹션 */}
-        <div className="mb-8">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            {/* 검색 */}
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-[var(--color-text-secondary)]" />
-              <Input
-                placeholder="질문 검색..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 bg-[var(--color-background-card)] border-[var(--color-border-default)] text-[var(--color-text-primary)]"
-              />
-            </div>
+          {/* 필터 및 정렬 */}
+          <div className="flex gap-2 flex-wrap">
             {/* 카테고리 필터 */}
             <Select.Root value={selectedCategory} onValueChange={setSelectedCategory}>
-              <Select.Trigger className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[var(--color-background-card)] border border-[var(--color-border-default)] text-[var(--color-text-primary)] hover:border-[var(--brand-primary-400)] transition-colors w-full sm:w-auto">
+              <Select.Trigger className="inline-flex items-center justify-between px-3 py-2 text-xs sm:text-sm border border-input rounded-md bg-background hover:bg-accent h-9 sm:h-10 min-w-[100px]">
                 <Select.Value />
-                <ChevronDown className="h-4 w-4 opacity-50" />
+                <Select.Icon className="ml-2">
+                  <ChevronDown className="h-3 w-3 sm:h-4 sm:w-4" />
+                </Select.Icon>
               </Select.Trigger>
-              <Select.Content className="bg-[var(--color-background-card)] border border-[var(--color-border-default)] rounded-lg shadow-lg">
-                {CATEGORIES.map((category) => (
-                  <Select.Item key={category.value} value={category.value} className="px-4 py-2 hover:bg-[var(--brand-primary-100)] dark:hover:bg-[var(--brand-primary-900)] cursor-pointer">
-                    {category.label}
-                  </Select.Item>
-                ))}
+              <Select.Content className="bg-background border border-input rounded-md shadow-md z-50">
+                <Select.Viewport className="p-1">
+                  {CATEGORIES.map((cat) => (
+                    <Select.Item key={cat} value={cat} className="px-3 py-2 text-xs sm:text-sm cursor-pointer hover:bg-accent rounded">
+                      {cat}
+                    </Select.Item>
+                  ))}
+                </Select.Viewport>
               </Select.Content>
             </Select.Root>
-            {/* 상태 필터 */}
-            <Select.Root value={selectedStatus} onValueChange={setSelectedStatus}>
-              <Select.Trigger className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[var(--color-background-card)] border border-[var(--color-border-default)] text-[var(--color-text-primary)] hover:border-[var(--brand-primary-400)] transition-colors w-full sm:w-auto">
-                <Select.Value />
-                <ChevronDown className="h-4 w-4 opacity-50" />
-              </Select.Trigger>
-              <Select.Content className="bg-[var(--color-background-card)] border border-[var(--color-border-default)] rounded-lg shadow-lg">
-                {STATUS_TABS.map((status) => (
-                  <Select.Item key={status.value} value={status.value} className="px-4 py-2 hover:bg-[var(--brand-primary-100)] dark:hover:bg-[var(--brand-primary-900)] cursor-pointer">
-                    {status.label}
-                  </Select.Item>
-                ))}
-              </Select.Content>
-            </Select.Root>
-            {/* 정렬 */}
+
+            {/* 정렬 옵션 */}
             <Select.Root value={sortBy} onValueChange={setSortBy}>
-              <Select.Trigger className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[var(--color-background-card)] border border-[var(--color-border-default)] text-[var(--color-text-primary)] hover:border-[var(--brand-primary-400)] transition-colors w-full sm:w-auto">
+              <Select.Trigger className="inline-flex items-center justify-between px-3 py-2 text-xs sm:text-sm border border-input rounded-md bg-background hover:bg-accent h-9 sm:h-10 min-w-[100px]">
                 <Select.Value />
-                <ChevronDown className="h-4 w-4 opacity-50" />
+                <Select.Icon className="ml-2">
+                  <ChevronDown className="h-3 w-3 sm:h-4 sm:w-4" />
+                </Select.Icon>
               </Select.Trigger>
-              <Select.Content className="bg-[var(--color-background-card)] border border-[var(--color-border-default)] rounded-lg shadow-lg">
-                {SORT_OPTIONS.map((option) => (
-                  <Select.Item key={option.value} value={option.value} className="px-4 py-2 hover:bg-[var(--brand-primary-100)] dark:hover:bg-[var(--brand-primary-900)] cursor-pointer">
-                    {option.label}
-                  </Select.Item>
-                ))}
+              <Select.Content className="bg-background border border-input rounded-md shadow-md z-50">
+                <Select.Viewport className="p-1">
+                  {SORT_OPTIONS.map((opt) => (
+                    <Select.Item key={opt.value} value={opt.value} className="px-3 py-2 text-xs sm:text-sm cursor-pointer hover:bg-accent rounded">
+                      {opt.label}
+                    </Select.Item>
+                  ))}
+                </Select.Viewport>
               </Select.Content>
             </Select.Root>
           </div>
         </div>
 
-        {/* 질문 목록 - 새로운 디자인 */}
-        {filteredQuestions && filteredQuestions.length > 0 ? (
+        {/* 질문 목록 */}
+        {isLoading ? (
+          <p className="text-xs sm:text-sm text-muted-foreground">로딩 중...</p>
+        ) : questions && questions.length > 0 ? (
           <div className="space-y-3 sm:space-y-4">
-            {filteredQuestions.map((question: any) => (
+            {questions.map((question) => (
               <Card
                 key={question.id}
-                className="card-premium overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer group hover:scale-[1.01] hover:-translate-y-0.5 bg-[var(--color-background-card)] border-[var(--color-border-default)] hover:border-[var(--brand-primary-400)] !flex !flex-col p-4 sm:p-6"
+                className="overflow-hidden hover:shadow-md transition-shadow cursor-pointer"
                 onClick={() => setLocation(`/qna/${question.id}`)}
               >
-                {/* 상단: 질문자 정보 + 우측 멘토 프로필 */}
-                <div className="flex items-start justify-between mb-3 sm:mb-4">
-                  <div className="flex items-center gap-2 flex-1 min-w-0">
-                    <Badge className="bg-[var(--brand-primary-100)] text-[var(--brand-primary-700)] dark:bg-[var(--brand-primary-900)] dark:text-[var(--brand-primary-200)] text-xs flex-shrink-0">
-                      {question.category || "기타"}
-                    </Badge>
-                    <span className="text-xs text-[var(--color-text-secondary)] flex-shrink-0">익명의 멘티</span>
-                  </div>
-                  {/* 우측 멘토 프로필 이미지 */}
-                  {(question as any).firstAnswerMentor && (
-                    <div className="flex-shrink-0 ml-2">
-                      <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center overflow-hidden border-2 border-[var(--color-border-default)]">
-                        <img
-                          src={(question as any).firstAnswerMentor.profileImage || "/logonew.png"}
-                          alt="멘토"
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
+                <CardHeader className="pb-2 sm:pb-3 px-3 sm:px-6">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex-1 min-w-0">
+                      <CardTitle className="text-base sm:text-lg truncate">
+                        {question.title}
+                      </CardTitle>
+                      <CardDescription className="text-xs sm:text-sm truncate mt-1">
+                        {question.isAnonymous ? "익명" : question.author?.name || "사용자"} • {format(new Date(question.createdAt), "MMM dd", { locale: ko })}
+                      </CardDescription>
                     </div>
-                  )}
-                </div>
-
-                {/* 제목 */}
-                <h3 className="text-base sm:text-lg font-semibold group-hover:text-[var(--brand-primary-700)] transition-colors text-[var(--color-text-primary)] line-clamp-2 mb-2 sm:mb-3">
-                  {question.title}
-                </h3>
-
-                {/* 답변 미리보기 */}
-                {(question as any).answerPreview && (
-                  <div className="bg-[var(--color-bg-secondary)] rounded-lg p-2 sm:p-3 mb-3 sm:mb-4 border-l-2 border-[var(--brand-primary-400)]">
-                    <p className="text-xs sm:text-sm text-[var(--color-text-secondary)] line-clamp-2">
-                      {(question as any).answerPreview}...
-                    </p>
+                    {question.category && (
+                      <Badge variant="secondary" className="text-xs flex-shrink-0">
+                        {question.category}
+                      </Badge>
+                    )}
                   </div>
-                )}
-
-                {/* 하단: 조회수 + 사회적 증거 */}
-                <div className="flex items-center justify-between text-xs text-[var(--color-text-secondary)]">
-                  <div className="flex items-center gap-1">
-                    <Eye className="h-3 w-3" />
-                    <span>{question.viewCount || 0}</span>
+                </CardHeader>
+                <CardContent className="px-3 sm:px-6 pb-3 sm:pb-4">
+                  <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2 mb-3">
+                    {question.content}
+                  </p>
+                  <div className="flex items-center justify-end text-xs text-muted-foreground">
+                    <div className="flex items-center gap-1">
+                      <MessageCircle className="h-3 w-3" />
+                      <span>{(question as any).answerCount || 0}개 답변</span>
+                    </div>
                   </div>
-                  {(question as any).firstAnswerMentor && (
-                    <span className="text-xs text-[var(--brand-primary-600)] dark:text-[var(--brand-primary-400)]">
-                      멘토가 고민 중
-                    </span>
-                  )}
-                </div>
+                </CardContent>
               </Card>
             ))}
           </div>
         ) : (
-          <Card className="bg-[var(--color-background-card)] border-[var(--color-border-default)]">
-            <CardContent className="pt-12 pb-12 text-center">
-              <p className="text-sm text-[var(--color-text-secondary)] mb-4">질문이 없습니다</p>
-              {isAuthenticated && !isMentor && (
+          <Card>
+            <CardContent className="py-8 sm:py-12 text-center px-4">
+              <p className="text-xs sm:text-sm text-muted-foreground mb-4">
+                {searchQuery ? "검색 결과가 없습니다" : "질문이 없습니다"}
+              </p>
+              {!searchQuery && isAuthenticated && (
                 <Button
                   onClick={() => setLocation('/qna/new')}
-                  className="bg-[var(--color-cta-primary-bg)] hover:bg-[var(--color-cta-primary-bg-hover)]"
+                  className="text-xs sm:text-sm h-8 sm:h-10"
                 >
-                  첫 번째 질문 하기
+                  <Plus className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                  첫 번째 질문 작성하기
                 </Button>
               )}
             </CardContent>
           </Card>
         )}
-        </div>
       </div>
     </PageLayout>
   );

@@ -51,14 +51,14 @@ export default function BugReportForm() {
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto p-6 bg-card  rounded-lg border border-border 700 700 shadow-sm">
+    <div className="w-full max-w-2xl mx-auto p-6 bg-white rounded-lg border border-gray-200 shadow-sm">
       <div className="flex items-center gap-3 mb-6">
         <AlertCircle className="w-6 h-6 text-orange-500" />
         <h2 className="text-2xl font-bold">버그 신고</h2>
       </div>
 
       {submitted && (
-        <div className="mb-4 p-4 bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800/50 rounded-lg text-green-800">
+        <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded-lg text-green-800">
           ✓ 버그 신고가 접수되었습니다. 감사합니다!
         </div>
       )}
@@ -91,7 +91,7 @@ export default function BugReportForm() {
             minLength={10}
             rows={5}
           />
-          <p className="text-xs text-muted-foreground mt-1">{description.length}/10자 이상 필요</p>
+          <p className="text-xs text-gray-500 mt-1">{description.length}/10자 이상 필요</p>
         </div>
 
         <div>

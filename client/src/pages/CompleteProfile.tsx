@@ -16,7 +16,7 @@ type UserRole = "mentor" | "mentee" | null;
 
 export default function CompleteProfile() {
   const [, navigate] = useLocation();
-  const { refresh: refreshAuth } = useAuth({ redirectOnUnauthenticated: false });
+  const { refresh: refreshAuth } = useAuth();
   const [userRole, setUserRole] = useState<UserRole>(null);
   const [name, setName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -224,18 +224,18 @@ export default function CompleteProfile() {
 
   return (
     <PageLayout>
-      <div className="min-h-screen bg-gradient-to-tr from-green-50 via-white to-blue-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
+      <div className="min-h-screen bg-gradient-to-tr from-green-50 via-white to-blue-50">
         <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-8 max-w-2xl">
-          <Card className="shadow-sm sm:shadow-md ">
+          <Card className="shadow-sm sm:shadow-md">
             <CardHeader className="px-3 sm:px-6 py-4 sm:py-6">
               <div className="mb-4 sm:mb-6">
                 <div className="flex justify-between items-center mb-2">
-                  <span className="text-xs sm:text-sm font-semibold text-foreground">진행률</span>
+                  <span className="text-xs sm:text-sm font-semibold text-gray-700">진행률</span>
                   <span className="text-xs sm:text-sm font-bold text-primary">
                     {isProfileSaved ? '100%' : userRole ? '50%' : '0%'}
                   </span>
                 </div>
-                <div className="w-full bg-muted rounded-full h-2 overflow-hidden">
+                <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
                   <div
                     className="bg-gradient-to-r from-green-400 to-blue-400 h-full rounded-full transition-all duration-500 ease-out"
                     style={{ width: isProfileSaved ? '100%' : userRole ? '50%' : '0%' }}
@@ -251,8 +251,8 @@ export default function CompleteProfile() {
 
             <CardContent className="px-3 sm:px-6 pb-4 sm:pb-6">
               {successMessage && (
-                <Alert className="mb-4 sm:mb-6 border-green-200 dark:border-green-800/50 bg-green-50 dark:bg-green-950/30">
-                  <CheckCircle2 className="h-4 w-4 text-green-600 dark:text-green-400 flex-shrink-0" />
+                <Alert className="mb-4 sm:mb-6 border-green-200 bg-green-50">
+                  <CheckCircle2 className="h-4 w-4 text-green-600 flex-shrink-0" />
                   <AlertDescription className="text-xs sm:text-sm text-green-800">
                     {successMessage}
                   </AlertDescription>
@@ -260,7 +260,7 @@ export default function CompleteProfile() {
               )}
 
               {errors.submit && (
-                <Alert className="mb-4 sm:mb-6 border-red-200 dark:border-red-800/50 bg-red-50 dark:bg-red-950/30">
+                <Alert className="mb-4 sm:mb-6 border-red-200 bg-red-50">
                   <AlertCircle className="h-4 w-4 text-red-600 flex-shrink-0" />
                   <AlertDescription className="text-xs sm:text-sm text-red-800">
                     {errors.submit}
@@ -270,17 +270,17 @@ export default function CompleteProfile() {
 
               {!userRole ? (
                 <div className="space-y-3 sm:space-y-4">
-                  <p className="text-xs sm:text-sm font-semibold text-foreground">당신의 역할을 선택해주세요</p>
+                  <p className="text-xs sm:text-sm font-semibold text-gray-700">당신의 역할을 선택해주세요</p>
                   <div className="grid grid-cols-2 gap-2 sm:gap-3">
                     <button
                       onClick={() => setUserRole("mentor")}
-                      className="p-3 sm:p-4 border-2 border-border 700 700 rounded-lg hover:border-primary hover:bg-primary/5 transition text-xs sm:text-sm font-medium"
+                      className="p-3 sm:p-4 border-2 border-gray-200 rounded-lg hover:border-primary hover:bg-primary/5 transition text-xs sm:text-sm font-medium"
                     >
                       🎓 멘토
                     </button>
                     <button
                       onClick={() => setUserRole("mentee")}
-                      className="p-3 sm:p-4 border-2 border-border 700 700 rounded-lg hover:border-primary hover:bg-primary/5 transition text-xs sm:text-sm font-medium"
+                      className="p-3 sm:p-4 border-2 border-gray-200 rounded-lg hover:border-primary hover:bg-primary/5 transition text-xs sm:text-sm font-medium"
                     >
                       📚 멘티
                     </button>
@@ -353,17 +353,17 @@ export default function CompleteProfile() {
                           setGrade(value as any);
                           if (errors.grade) setErrors((prev) => ({ ...prev, grade: "" }));
                         }}>
-                          <Select.Trigger className="mt-1 w-full px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm border border-border rounded-md inline-flex items-center justify-between bg-card ">
+                          <Select.Trigger className="mt-1 w-full px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm border border-gray-300 rounded-md inline-flex items-center justify-between bg-white">
                             <Select.Value placeholder="학년을 선택해주세요" />
                             <Select.Icon className="ml-2">
                               <ChevronDown size={16} />
                             </Select.Icon>
                           </Select.Trigger>
                           <Select.Portal>
-                            <Select.Content className="bg-card  border border-border rounded-md shadow-lg z-50">
+                            <Select.Content className="bg-white border border-gray-300 rounded-md shadow-lg z-50">
                               <Select.Viewport className="p-1">
                                 {grades.map((g) => (
-                                  <Select.Item key={g.value} value={g.value} className="px-3 py-2 text-xs sm:text-sm cursor-pointer hover:bg-muted 800 rounded-md">
+                                  <Select.Item key={g.value} value={g.value} className="px-3 py-2 text-xs sm:text-sm cursor-pointer hover:bg-gray-100 rounded-md">
                                     <Select.ItemText>{g.label}</Select.ItemText>
                                   </Select.Item>
                                 ))}
@@ -380,14 +380,14 @@ export default function CompleteProfile() {
                           <button
                             type="button"
                             onClick={() => setShowRegionDropdown(!showRegionDropdown)}
-                            className="w-full px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm border border-border rounded-md text-left bg-card "
+                            className="w-full px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm border border-gray-300 rounded-md text-left bg-white"
                           >
                             {mentorRegions.length > 0 ? `${mentorRegions.length}개 지역 선택됨` : "지역을 선택해주세요"}
                           </button>
                           {showRegionDropdown && (
-                            <div className="absolute top-full left-0 right-0 mt-1 bg-card  border border-border rounded-md shadow-lg z-10 max-h-48 overflow-y-auto">
+                            <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-300 rounded-md shadow-lg z-10 max-h-48 overflow-y-auto">
                               {regions.map((region) => (
-                                <label key={region.value} className="flex items-center px-2 sm:px-3 py-1.5 sm:py-2 hover:bg-background 900 text-xs sm:text-sm cursor-pointer">
+                                <label key={region.value} className="flex items-center px-2 sm:px-3 py-1.5 sm:py-2 hover:bg-gray-50 text-xs sm:text-sm cursor-pointer">
                                   <input
                                     type="checkbox"
                                     checked={mentorRegions.includes(region.value)}
@@ -443,17 +443,17 @@ export default function CompleteProfile() {
                           setMenteeGrade(value as "1" | "2" | "3");
                           if (errors.menteeGrade) setErrors((prev) => ({ ...prev, menteeGrade: "" }));
                         }}>
-                          <Select.Trigger className="mt-1 w-full px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm border border-border rounded-md inline-flex items-center justify-between bg-card ">
+                          <Select.Trigger className="mt-1 w-full px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm border border-gray-300 rounded-md inline-flex items-center justify-between bg-white">
                             <Select.Value placeholder="학년을 선택해주세요" />
                             <Select.Icon className="ml-2">
                               <ChevronDown size={16} />
                             </Select.Icon>
                           </Select.Trigger>
                           <Select.Portal>
-                            <Select.Content className="bg-card  border border-border rounded-md shadow-lg z-50">
+                            <Select.Content className="bg-white border border-gray-300 rounded-md shadow-lg z-50">
                               <Select.Viewport className="p-1">
                                 {menteeGrades.map((g) => (
-                                  <Select.Item key={g.value} value={g.value} className="px-3 py-2 text-xs sm:text-sm cursor-pointer hover:bg-muted 800 rounded-md">
+                                  <Select.Item key={g.value} value={g.value} className="px-3 py-2 text-xs sm:text-sm cursor-pointer hover:bg-gray-100 rounded-md">
                                     <Select.ItemText>{g.label}</Select.ItemText>
                                   </Select.Item>
                                 ))}
@@ -470,17 +470,17 @@ export default function CompleteProfile() {
                           setMenteeRegion(value);
                           if (errors.menteeRegion) setErrors((prev) => ({ ...prev, menteeRegion: "" }));
                         }}>
-                          <Select.Trigger className="mt-1 w-full px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm border border-border rounded-md inline-flex items-center justify-between bg-card ">
+                          <Select.Trigger className="mt-1 w-full px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm border border-gray-300 rounded-md inline-flex items-center justify-between bg-white">
                             <Select.Value placeholder="지역을 선택해주세요" />
                             <Select.Icon className="ml-2">
                               <ChevronDown size={16} />
                             </Select.Icon>
                           </Select.Trigger>
                           <Select.Portal>
-                            <Select.Content className="bg-card  border border-border rounded-md shadow-lg z-50">
+                            <Select.Content className="bg-white border border-gray-300 rounded-md shadow-lg z-50">
                               <Select.Viewport className="p-1">
                                 {regions.map((region) => (
-                                  <Select.Item key={region.value} value={region.value} className="px-3 py-2 text-xs sm:text-sm cursor-pointer hover:bg-muted 800 rounded-md">
+                                  <Select.Item key={region.value} value={region.value} className="px-3 py-2 text-xs sm:text-sm cursor-pointer hover:bg-gray-100 rounded-md">
                                     <Select.ItemText>{region.label}</Select.ItemText>
                                   </Select.Item>
                                 ))}

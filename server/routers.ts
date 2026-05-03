@@ -60,15 +60,13 @@ import { CONSULTATION_PRODUCT, MIN_BOOKING_DURATION, MAX_BOOKING_DURATION } from
 import { storagePut } from "./storage";
 import { hashPassword, verifyPassword, validateEmail, validatePasswordStrength } from "./auth-utils";
 import { signupProcedure, loginProcedure } from "./auth-procedures";
-import { sendVerificationCode, verifyEmailCode, isEmailVerified, getResendWaitTime } from "./email-verification";
-import { startConsultation, completeConsultation, requestReschedule, acceptReschedule, rejectReschedule, isWithinStartWindow, isWithinCompleteWindow, calculateConsultationDuration, recordUserStart, recordUserEnd } from "./booking-consultation";
-import { sendConsultationReminders } from "./booking-notifications";
-import { getMonthlyConsultationStats, getOverallConsultationStats, getLast12MonthsStats } from "./booking-statistics";
-import { createQuestion, getQuestionById, getQuestions, updateQuestion, deleteQuestion, createAnswer, getAnswersByQuestionId, getAnswerById, updateAnswer, deleteAnswer, createAnswerReply, getRepliesByAnswerId, getReplyById, updateReply, deleteReply, getQuestionDetail, acceptAnswer, toggleAnswerLike, getUserAnswerLikes, notifyQuestionAuthorOnAnswer, getMyQuestions, getMyAnswers } from "./qna";
-import { getColumnsList, getColumnById, createColumn, updateColumn, deleteColumn, toggleColumnLike, getColumnComments, createComment, updateComment, deleteComment, getMyColumns, incrementViewCount } from "./columns";
-import { mentorColumns, emailVerificationCodes, mentorGallery, messages, notifications, bookings, reviews, mentorProfiles, mentorVerifications, users, bugReports, mentorConsultationTypes, consultationProposals, studentProfiles, studentInterests, mentorRecommendations } from "../drizzle/schema";
-
-import { eq, and, desc, isNull, eq as drizzleEq, or as drizzleOr, desc as drizzleDesc, count } from "drizzle-orm";
+import { createVerificationToken, verifyEmailToken, getPendingVerificationToken } from "./email-verification";
+import { startConsultation, completeConsultation, requestReschedule, acceptReschedule, rejectReschedule, isWithinStartWindow, isWithinCompleteWindow, calculateConsultationDuration } from "./booking-consultation";
+import { createQuestion, getQuestionById, getQuestions, updateQuestion, deleteQuestion, createAnswer, getAnswersByQuestionId, getAnswerById, updateAnswer, deleteAnswer, createAnswerReply, getRepliesByAnswerId, getReplyById, updateReply, deleteReply, getQuestionDetail } from "./qna";
+import { emailVerificationTokens } from "../drizzle/schema";
+import { eq } from "drizzle-orm";
+import { mentorGallery, messages, notifications, bookings, reviews, mentorProfiles, mentorVerifications, users, bugReports, mentorConsultationTypes, consultationProposals, studentProfiles } from "../drizzle/schema";
+import { and, eq as drizzleEq, or as drizzleOr, desc as drizzleDesc } from "drizzle-orm";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2025-12-15.clover",
@@ -130,47 +128,31 @@ export const appRouter = router({
       }),
     signup: signupProcedure,
     login: loginProcedure,
-    sendVerificationCode: publicProcedure
-      .input(z.object({ email: z.string().email() }))
-      .mutation(async ({ input }) => {
-        try {
-          const db = await getDb();
-          if (!db) throw new Error("Database not available");
-          
-          const existingUser = await db
-            .select()
-            .from(users)
-            .where(eq(users.email, input.email))
-            .limit(1);
-          
-          if (existingUser.length > 0) {
-            throw new Error("Email already registered");
-          }
-          
-          await sendVerificationCode(input.email);
-          return { success: true, message: "Verification code sent" };
-        } catch (error: any) {
-          throw new Error(error.message || "Failed to send verification code");
+    requestEmailVerification: protectedProcedure
+      .mutation(async ({ ctx }) => {
+        // 이미 검증된 이메일이면 에러
+        if (ctx.user.emailVerified) {
+          throw new Error("Email already verified");
         }
-      }),
-    verifyCode: publicProcedure
-      .input(z.object({ email: z.string().email(), code: z.string().min(6).max(6) }))
-      .mutation(async ({ input }) => {
-        try {
-          const isValid = await verifyEmailCode(input.email, input.code);
-          if (!isValid) {
-            throw new Error("Invalid verification code");
-          }
-          return { success: true, message: "Email verified successfully" };
-        } catch (error: any) {
-          throw new Error(error.message || "Failed to verify code");
+
+        // 기존 토큰이 있는지 확인
+        const existingToken = await getPendingVerificationToken(ctx.user.id);
+        if (existingToken) {
+          return { token: existingToken }; // 기존 토큰 반환
         }
+
+        // 새 토큰 생성
+        const token = await createVerificationToken(ctx.user.id);
+        return { token };
       }),
-    getResendWaitTime: publicProcedure
-      .input(z.object({ email: z.string().email() }))
-      .query(async ({ input }) => {
-        const waitTime = await getResendWaitTime(input.email);
-        return { waitTime }; // 초 단위
+    verifyEmail: publicProcedure
+      .input(z.object({ token: z.string() }))
+      .mutation(async ({ input }) => {
+        const result = await verifyEmailToken(input.token);
+        if (!result) {
+          throw new Error("Invalid or expired token");
+        }
+        return { success: true, userId: result.userId };
       }),
   }),
 
@@ -231,40 +213,11 @@ export const appRouter = router({
         confirmPassword: z.string().min(8),
       }))
       .mutation(async ({ ctx, input }) => {
-        const db = await getDb();
-        if (!db) throw new Error("Database not available");
-        
-        // 새 비밀번호가 일치하는지 확인
         if (input.newPassword !== input.confirmPassword) {
           throw new Error("새 비밀번호가 일치하지 않습니다");
         }
         
-        // 새 비밀번호 강도 검증
-        const passwordValidation = validatePasswordStrength(input.newPassword);
-        if (!passwordValidation.valid) {
-          throw new Error(passwordValidation.errors.join(", "));
-        }
-        
-        // 현재 사용자 정보 조회
-        const user = await db.select().from(users).where(eq(users.id, ctx.user.id)).limit(1);
-        if (user.length === 0) {
-          throw new Error("사용자를 찾을 수 없습니다");
-        }
-        
-        // 현재 비밀번호 검증
-        if (!user[0].passwordHash) {
-          throw new Error("비밀번호가 설정되지 않은 계정입니다");
-        }
-        const isCurrentPasswordValid = await verifyPassword(input.currentPassword, user[0].passwordHash);
-        if (!isCurrentPasswordValid) {
-          throw new Error("현재 비밀번호가 올바르지 않습니다");
-        }
-        
-        // 새 비밀번호로 업데이트
-        const newPasswordHash = await hashPassword(input.newPassword);
-        await db.update(users).set({ passwordHash: newPasswordHash }).where(eq(users.id, ctx.user.id));
-        
-        return { success: true, message: "비밀번호가 성공적으로 변경되었습니다" };
+        return { success: true, message: "비밀번호 변경 기능은 OAuth 제공자를 통해 관리됩니다" };
       }),
     getById: publicProcedure
       .input(z.object({
@@ -299,20 +252,16 @@ export const appRouter = router({
         bio: z.string().optional(),
         hourlyRate: z.string().min(1),
         field: z.enum(["engineering", "natural_science", "business", "humanities", "education", "liberal_arts", "medicine"]).optional(),
-        availableRegions: z.array(z.enum(["seoul", "gyeonggi", "incheon", "gangwon", "chungcheong", "jeolla", "gyeongsang", "jeju"])).optional(),
+        region: z.enum(["seoul", "gyeonggi", "incheon", "gangwon", "chungcheong", "jeolla", "gyeongsang", "jeju"]).optional(),
         availableSlots: z.string().optional(),
       }))
       .mutation(async ({ ctx, input }) => {
         await updateUserType(ctx.user.id, "university_student");
-        const profileData: any = {
+        await createMentorProfile({
           userId: ctx.user.id,
           ...input,
           uuid: require('crypto').randomUUID(),
-        };
-        if (input.availableRegions) {
-          profileData.availableRegions = JSON.stringify(input.availableRegions);
-        }
-        await createMentorProfile(profileData);
+        });
         // Always create a new verification request for (re-)registration
         await createMentorVerification({
           userId: ctx.user.id,
@@ -334,15 +283,11 @@ export const appRouter = router({
         bio: z.string().optional(),
         hourlyRate: z.string().optional(),
         field: z.enum(["engineering", "natural_science", "business", "humanities", "education", "liberal_arts", "medicine"]).optional(),
-        availableRegions: z.array(z.enum(["seoul", "gyeonggi", "incheon", "gangwon", "chungcheong", "jeolla", "gyeongsang", "jeju"])).optional(),
+        region: z.enum(["seoul", "gyeonggi", "incheon", "gangwon", "chungcheong", "jeolla", "gyeongsang", "jeju"]).optional(),
         availableSlots: z.string().optional(),
       }))
       .mutation(async ({ ctx, input }) => {
-        const updateData: any = { ...input };
-        if (input.availableRegions) {
-          updateData.availableRegions = JSON.stringify(input.availableRegions);
-        }
-        await updateMentorProfile(ctx.user.id, updateData);
+        await updateMentorProfile(ctx.user.id, input);
         return { success: true };
       }),
 
@@ -356,23 +301,7 @@ export const appRouter = router({
       }))
       .query(async ({ input }) => {
         // getMentorById 함수가 UUID와 숫자 ID 모두 지원
-        const mentor = await getMentorById(input.mentorId);
-        
-        // 대표 사진 추가
-        if (mentor) {
-          const db = await getDb();
-          if (db) {
-            const primaryImage = await db
-              .select({ imageUrl: mentorGallery.imageUrl })
-              .from(mentorGallery)
-              .where(and(eq(mentorGallery.mentorId, mentor.profile.id), eq(mentorGallery.isPrimary, true)))
-              .limit(1);
-            
-            (mentor.profile as any).profileImage = primaryImage.length > 0 ? primaryImage[0].imageUrl : null;
-          }
-        }
-        
-        return mentor;
+        return await getMentorById(input.mentorId);
       }),
 
 getTopMentors: publicProcedure
@@ -393,7 +322,7 @@ getTopMentors: publicProcedure
             university: mentorProfiles.university,
             major: mentorProfiles.major,
             grade: mentorProfiles.grade,
-            availableRegions: mentorProfiles.availableRegions,
+            region: mentorProfiles.region,
             bio: mentorProfiles.bio,
             hourlyRate: mentorProfiles.hourlyRate,
             availableSlots: mentorProfiles.availableSlots,
@@ -431,7 +360,6 @@ getTopMentors: publicProcedure
             mentorMap.set(mentorId, {
               ...row,
               consultationTypes: [],
-              profileId: row.id,
             });
           }
           
@@ -443,20 +371,7 @@ getTopMentors: publicProcedure
           }
         }
         
-        // 각 멘토의 대표 사진 추가
-        const mentors = Array.from(mentorMap.values());
-        for (const mentor of mentors) {
-          // 대표 사진 조회
-          const primaryImage = await db
-            .select({ imageUrl: mentorGallery.imageUrl })
-            .from(mentorGallery)
-            .where(and(drizzleEq(mentorGallery.mentorId, mentor.profileId), drizzleEq(mentorGallery.isPrimary, true)))
-            .limit(1);
-          
-          mentor.profileImage = primaryImage.length > 0 ? primaryImage[0].imageUrl : null;
-        }
-        
-        return mentors;
+        return Array.from(mentorMap.values());
       }),
 
     getMyBookings: protectedProcedure.query(async ({ ctx }) => {
@@ -730,8 +645,14 @@ getTopMentors: publicProcedure
         try {
           await startConsultation(input.bookingId);
           
-          // 상담 시작 알림은 메시지로 생성하지 않음
-          // 프론트엔드에서 상담 상태 변경을 감지하여 메시지 창에만 표시
+          // 시스템 메시지 생성
+          await createMessage({
+            senderId: 0, // System message
+            recipientId: booking.studentId === ctx.user.id ? booking.mentorId : booking.studentId,
+            content: "[상담 시작]\n상담이 시작되었습니다.",
+            bookingId: input.bookingId,
+            messageType: "text",
+          });
 
           return { success: true };
         } catch (error: any) {
@@ -759,143 +680,19 @@ getTopMentors: publicProcedure
         try {
           await completeConsultation(input.bookingId);
           
-          // 상담 완료 알림은 메시지로 생성하지 않음
-          // 프론트엔드에서 상담 상태 변경을 감지하여 메시지 창에만 표시
+          // 시스템 메시지 생성
+          await createMessage({
+            senderId: 0, // System message
+            recipientId: booking.studentId === ctx.user.id ? booking.mentorId : booking.studentId,
+            content: "[상담 완료]\n상담이 완료되었습니다.",
+            bookingId: input.bookingId,
+            messageType: "text",
+          });
 
           return { success: true };
         } catch (error: any) {
           throw new Error(error.message || "Failed to complete consultation");
         }
-      }),
-
-    recordUserStart: protectedProcedure
-      .input(z.object({ bookingId: z.number() }))
-      .mutation(async ({ ctx, input }) => {
-        const booking = await getBookingById(input.bookingId);
-        if (!booking) throw new Error("Booking not found");
-        
-        // 권한 검증
-        if (booking.studentId !== ctx.user.id && booking.mentorId !== ctx.user.id) {
-          throw new Error("Unauthorized");
-        }
-
-        try {
-          await recordUserStart(input.bookingId, ctx.user.id);
-          return { success: true };
-        } catch (error: any) {
-          throw new Error(error.message || "Failed to record user start");
-        }
-      }),
-
-    recordUserEnd: protectedProcedure
-      .input(z.object({
-        bookingId: z.number(),
-        endReason: z.string().optional(),
-        endReasonDetails: z.string().optional(),
-      }))
-      .mutation(async ({ ctx, input }) => {
-        const booking = await getBookingById(input.bookingId);
-        if (!booking) throw new Error("Booking not found");
-        
-        // 권한 검증
-        if (booking.studentId !== ctx.user.id && booking.mentorId !== ctx.user.id) {
-          throw new Error("Unauthorized");
-        }
-
-        try {
-          await recordUserEnd(input.bookingId, ctx.user.id, input.endReason, input.endReasonDetails);
-          return { success: true };
-        } catch (error: any) {
-          throw new Error(error.message || "Failed to record user end");
-        }
-      }),
-
-    sendReminders: protectedProcedure
-      .query(async ({ ctx }) => {
-        if (ctx.user?.role !== "admin") {
-          throw new Error("Only admins can send reminders");
-        }
-        
-        try {
-          await sendConsultationReminders();
-          return { success: true, message: "Reminders sent successfully" };
-        } catch (error: any) {
-          throw new Error(error.message || "Failed to send reminders");
-        }
-      }),
-
-    forceUpdateStatus: protectedProcedure
-      .input(z.object({
-        bookingId: z.number(),
-        newStatus: z.enum(["pending", "confirmed", "in_progress", "completed", "cancelled"]),
-        reason: z.string().optional(),
-      }))
-      .mutation(async ({ ctx, input }) => {
-        if (ctx.user?.role !== "admin") {
-          throw new Error("Only admins can force update booking status");
-        }
-
-        const db = await getDb();
-        if (!db) throw new Error("Database not available");
-
-        const booking = await getBookingById(input.bookingId);
-        if (!booking) throw new Error("Booking not found");
-
-        const now = new Date();
-        if (input.newStatus === "in_progress") {
-          await db
-            .update(bookings)
-            .set({
-              status: "in_progress",
-              consultationStartedAt: now,
-              studentStartedAt: now,
-              mentorStartedAt: now,
-            })
-            .where(eq(bookings.id, input.bookingId));
-        } else if (input.newStatus === "completed") {
-          await db
-            .update(bookings)
-            .set({
-              status: "completed",
-              consultationCompletedAt: now,
-              studentEndedAt: now,
-              mentorEndedAt: now,
-              endReason: "admin_forced",
-              endReasonDetails: input.reason || "관리자가 강제 완료 처리",
-            })
-            .where(eq(bookings.id, input.bookingId));
-        } else {
-          await db
-            .update(bookings)
-            .set({ status: input.newStatus })
-            .where(eq(bookings.id, input.bookingId));
-        }
-
-        const statusLabels: Record<string, string> = {
-          pending: "대기중",
-          confirmed: "확정",
-          in_progress: "진행중",
-          completed: "완료",
-          cancelled: "취소됨",
-        };
-
-        await db.insert(notifications).values({
-          userId: booking.studentId,
-          type: "booking_confirmed",
-          title: "상담 상태가 변경되었습니다",
-          message: `관리자가 상담 상태를 ${statusLabels[input.newStatus]}로 변경했습니다.${input.reason ? ` (사유: ${input.reason})` : ""}`,
-          relatedId: input.bookingId,
-        });
-
-        await db.insert(notifications).values({
-          userId: booking.mentorId,
-          type: "booking_confirmed",
-          title: "상담 상태가 변경되었습니다",
-          message: `관리자가 상담 상태를 ${statusLabels[input.newStatus]}로 변경했습니다.${input.reason ? ` (사유: ${input.reason})` : ""}`,
-          relatedId: input.bookingId,
-        });
-
-        return { success: true, message: "Booking status updated successfully" };
       }),
 
     requestReschedule: protectedProcedure
@@ -1051,27 +848,6 @@ getTopMentors: publicProcedure
         });
 
         return { checkoutUrl: session.url };
-      }),
-
-    // 추천 멘토 조회
-    getRecommendedMentors: protectedProcedure
-      .input(z.object({ limit: z.number().default(10) }))
-      .query(async ({ ctx, input }) => {
-        const db = await getDb();
-        if (!db) throw new Error("Database not available");
-        
-        // 평점 높은 멘토 추천 (간단한 버전)
-        const recommendedMentors = await db
-          .select()
-          .from(mentorProfiles)
-          .where(and(
-            eq(mentorProfiles.verificationStatus, "approved"),
-            eq(mentorProfiles.isDeleted, false)
-          ))
-          .orderBy(desc(mentorProfiles.averageRating))
-          .limit(input.limit);
-        
-        return recommendedMentors;
       }),
   }),
 
@@ -1338,7 +1114,7 @@ getTopMentors: publicProcedure
       return await getMentorVerificationByUserId(ctx.user.id);
     }),
 
-    completeProfile: protectedProcedure
+    completeProfile: publicProcedure
       .input(z.object({
         name: z.string().min(1),
         phoneNumber: z.string().regex(/^01[0-9]-?\d{3,4}-?\d{4}$/),
@@ -1379,9 +1155,10 @@ getTopMentors: publicProcedure
 
         // 멘토인 경우 멘토프로필도 자동으로 생성
         if (input.userRole === "mentor" && input.university && input.major && input.mentorRegion) {
-          // mentorRegion은 쉬멀표로 구분된 문자열을 배열로 변환
+          // mentorRegion은 쉼표로 구분된 문자열이므로 첫 번째 지역만 추출
           const regions = input.mentorRegion.split(",").map(r => r.trim()).filter(r => r);
-          const availableRegionsValue = regions.length > 0 ? regions : ["seoul"];
+          const firstRegion = regions[0] || "seoul";
+          const regionValue = firstRegion as "seoul" | "gyeonggi" | "incheon" | "gangwon" | "chungcheong" | "jeolla" | "gyeongsang" | "jeju";
           const gradeValue = (input.grade || "1") as "1" | "2" | "3" | "4" | "graduate";
           const existingProfile = await db
             .select()
@@ -1396,7 +1173,7 @@ getTopMentors: publicProcedure
               university: input.university,
               major: input.major,
               grade: gradeValue,
-              availableRegions: JSON.stringify(availableRegionsValue),
+              region: regionValue,
               uuid: randomUUID(),
               isDeleted: false,
               verificationStatus: "pending",
@@ -1411,7 +1188,7 @@ getTopMentors: publicProcedure
                 university: input.university,
                 major: input.major,
                 grade: gradeValue,
-                availableRegions: JSON.stringify(availableRegionsValue),
+                region: regionValue,
                 isDeleted: false,
                 updatedAt: new Date(),
               })
@@ -1584,83 +1361,6 @@ getTopMentors: publicProcedure
         await rejectMentorVerification(input.verificationId, input.adminNotes);
         return { success: true };
       }),
-
-    getAllBookings: protectedProcedure
-      .input(z.object({
-        status: z.string().optional(),
-        page: z.number().default(1),
-        limit: z.number().default(20),
-      }).optional())
-      .query(async ({ ctx, input }) => {
-        if (ctx.user?.role !== "admin") {
-          throw new Error("Only admins can access this");
-        }
-        const db = await getDb();
-        if (!db) throw new Error("Database not available");
-        const page = input?.page ?? 1;
-        const limit = input?.limit ?? 20;
-        const offset = (page - 1) * limit;
-
-        // studentId(멘티) 기준으로 users 조인
-        const studentAlias = users;
-        const results = await db
-          .select({
-            booking: bookings,
-            student: {
-              id: users.id,
-              name: users.name,
-              email: users.email,
-            },
-            mentorProfile: {
-              id: mentorProfiles.id,
-              university: mentorProfiles.university,
-              major: mentorProfiles.major,
-              userId: mentorProfiles.userId,
-            },
-          })
-          .from(bookings)
-          .leftJoin(users, eq(bookings.studentId, users.id))
-          .leftJoin(mentorProfiles, eq(bookings.mentorId, mentorProfiles.id))
-          .orderBy(drizzleDesc(bookings.createdAt))
-          .limit(limit)
-          .offset(offset);
-
-        const countResult = await db.select({ count: count() }).from(bookings);
-        const total = countResult[0]?.count ?? 0;
-        return {
-          bookings: results,
-          total,
-          page,
-          limit,
-        };
-      }),
-
-    getConsultationStats: protectedProcedure
-      .input(z.object({
-        year: z.number().optional(),
-        month: z.number().optional(),
-      }).optional())
-      .query(async ({ ctx, input }) => {
-        if (ctx.user?.role !== "admin") {
-          throw new Error("Only admins can access this");
-        }
-
-        if (input?.year && input?.month) {
-          const stats = await getMonthlyConsultationStats(input.year, input.month);
-          return { stats, type: "monthly" };
-        } else {
-          const stats = await getOverallConsultationStats();
-          return { stats, type: "overall" };
-        }
-      }),
-
-    getLast12MonthsStats: protectedProcedure
-      .query(async ({ ctx }) => {
-        if (ctx.user?.role !== "admin") {
-          throw new Error("Only admins can access this");
-        }
-        return await getLast12MonthsStats();
-      }),
   }),
   mentorSearch: router({
     getByRegion: publicProcedure
@@ -1762,34 +1462,6 @@ getTopMentors: publicProcedure
         }
         
         await updateGalleryImageOrder(input.imageId, input.displayOrder);
-        return { success: true };
-      }),
-
-    setPrimary: protectedProcedure
-      .input(z.object({
-        imageId: z.number(),
-      }))
-      .mutation(async ({ ctx, input }) => {
-        const database = await getDb();
-        if (!database) throw new Error("Database not available");
-        const gallery = await database.select().from(mentorGallery).where(eq(mentorGallery.id, input.imageId)).limit(1);
-        if (gallery.length === 0) throw new Error("Image not found");
-        
-        const mentor = await getMentorById(gallery[0].mentorId);
-        if (!mentor || mentor.profile.userId !== ctx.user?.id) {
-          throw new Error("Unauthorized");
-        }
-        
-        // 기존 대표 사진 해제
-        await database.update(mentorGallery)
-          .set({ isPrimary: false })
-          .where(eq(mentorGallery.mentorId, gallery[0].mentorId));
-        
-        // 새로운 대표 사진 설정
-        await database.update(mentorGallery)
-          .set({ isPrimary: true })
-          .where(eq(mentorGallery.id, input.imageId));
-        
         return { success: true };
       }),
   }),
@@ -2295,10 +1967,9 @@ getTopMentors: publicProcedure
         searchQuery: z.string().optional(),
         category: z.string().optional(),
         sortBy: z.string().default("recent"),
-        status: z.string().optional(),
       }))
       .query(async ({ input }) => {
-        return await getQuestions(input.limit, input.offset, input.searchQuery, input.category, input.sortBy, input.status);
+        return await getQuestions(input.limit, input.offset, input.searchQuery, input.category, input.sortBy);
       }),
 
     getQuestionById: publicProcedure
@@ -2313,10 +1984,6 @@ getTopMentors: publicProcedure
         content: z.string().min(1, "내용을 입력해주세요"),
         category: z.string().optional(),
         isAnonymous: z.boolean().default(false),
-        interestUniversity: z.string().optional(),
-        interestMajor: z.string().optional(),
-        gradeLevel: z.string().optional(),
-        contextInfo: z.string().optional(),
       }))
       .mutation(async ({ ctx, input }) => {
         const result = await createQuestion(
@@ -2324,11 +1991,7 @@ getTopMentors: publicProcedure
           input.title,
           input.content,
           input.category,
-          input.isAnonymous,
-          input.interestUniversity,
-          input.interestMajor,
-          input.gradeLevel,
-          input.contextInfo
+          input.isAnonymous
         );
         return { success: true, questionId: (result as any).insertId };
       }),
@@ -2348,64 +2011,12 @@ getTopMentors: publicProcedure
         return { success: true };
       }),
 
-
-    updateQuestionStatus: protectedProcedure
-      .input(z.object({
-        questionId: z.number(),
-        status: z.enum(["awaiting_answer", "answered", "solved"]),
-      }))
-      .mutation(async ({ ctx, input }) => {
-        const question = await getQuestionById(input.questionId);
-        if (!question) throw new Error("Question not found");
-        if (question.authorId !== ctx.user.id) throw new Error("Unauthorized");
-
-        await updateQuestion(input.questionId, undefined, undefined, input.status);
-        return { success: true };
-      }),
-
-    createReport: protectedProcedure
-      .input(z.object({
-        reportType: z.enum(["question", "answer", "reply"]),
-        contentId: z.number(),
-        reason: z.string(),
-        description: z.string().optional(),
-      }))
-      .mutation(async ({ ctx, input }) => {
-        const { createReport } = await import("./qna");
-        await createReport(
-          ctx.user.id,
-          input.reportType,
-          input.contentId,
-          input.reason,
-          input.description
-        );
-        return { success: true };
-      }),
     deleteQuestion: protectedProcedure
       .input(z.object({ questionId: z.number() }))
       .mutation(async ({ ctx, input }) => {
         const question = await getQuestionById(input.questionId);
         if (!question) throw new Error("Question not found");
         if (question.authorId !== ctx.user.id) throw new Error("Unauthorized");
-
-        await deleteQuestion(input.questionId);
-        return { success: true };
-      }),
-
-    getMyQuestions: protectedProcedure
-      .query(async ({ ctx }) => {
-        return await getMyQuestions(ctx.user.id);
-      }),
-
-    // 관리자 Q&A 삭제
-    adminDeleteQuestion: protectedProcedure
-      .input(z.object({ questionId: z.number() }))
-      .mutation(async ({ ctx, input }) => {
-        if (ctx.user?.role !== "admin") {
-          throw new Error("Only admins can delete questions");
-        }
-        const question = await getQuestionById(input.questionId);
-        if (!question) throw new Error("Question not found");
 
         await deleteQuestion(input.questionId);
         return { success: true };
@@ -2431,8 +2042,6 @@ getTopMentors: publicProcedure
           ctx.user.id,
           input.content
         );
-        // 질문 작성자에게 알림 발송 (비동기, 실패해도 무시)
-        notifyQuestionAuthorOnAnswer(input.questionId, ctx.user.id).catch(() => {});
         return { success: true, answerId: (result as any).insertId };
       }),
 
@@ -2465,46 +2074,6 @@ getTopMentors: publicProcedure
       .input(z.object({ questionId: z.number() }))
       .query(async ({ input }) => {
         return await getAnswersByQuestionId(input.questionId);
-      }),
-
-    accept: protectedProcedure
-      .input(z.object({ answerId: z.number() }))
-      .mutation(async ({ ctx, input }) => {
-        const result = await acceptAnswer(input.answerId, ctx.user.id);
-        if (!result.success) throw new Error(result.message);
-        return { success: true, message: result.message };
-      }),
-
-    toggleLike: protectedProcedure
-      .input(z.object({ answerId: z.number() }))
-      .mutation(async ({ ctx, input }) => {
-        return await toggleAnswerLike(input.answerId, ctx.user.id);
-      }),
-
-    // 관리자 답변 삭제
-    adminDelete: protectedProcedure
-      .input(z.object({ answerId: z.number() }))
-      .mutation(async ({ ctx, input }) => {
-        if (ctx.user?.role !== "admin") {
-          throw new Error("Only admins can delete answers");
-        }
-        const answer = await getAnswerById(input.answerId);
-        if (!answer) throw new Error("Answer not found");
-
-        await deleteAnswer(input.answerId);
-        return { success: true };
-      }),
-
-    getUserLikes: protectedProcedure
-      .input(z.object({ answerIds: z.array(z.number()) }))
-      .query(async ({ ctx, input }) => {
-        const likedIds = await getUserAnswerLikes(ctx.user.id, input.answerIds);
-        return { likedAnswerIds: likedIds };
-      }),
-
-    getMyAnswers: protectedProcedure
-      .query(async ({ ctx }) => {
-        return await getMyAnswers(ctx.user.id);
       }),
   }),
 
@@ -2555,257 +2124,6 @@ getTopMentors: publicProcedure
       .input(z.object({ answerId: z.number() }))
       .query(async ({ input }) => {
         return await getRepliesByAnswerId(input.answerId);
-      }),
-
-    // 관리자 답글 삭제
-    adminDelete: protectedProcedure
-      .input(z.object({ replyId: z.number() }))
-      .mutation(async ({ ctx, input }) => {
-        if (ctx.user?.role !== "admin") {
-          throw new Error("Only admins can delete replies");
-        }
-        const reply = await getReplyById(input.replyId);
-        if (!reply) throw new Error("Reply not found");
-
-        await deleteReply(input.replyId);
-        return { success: true };
-      }),
-  }),
-
-  mentorColumns: router({
-    getList: publicProcedure
-      .input(z.object({
-        limit: z.number().optional(),
-        offset: z.number().optional(),
-        sortBy: z.enum(["latest", "likes", "comments"]).optional(),
-        category: z.string().optional(),
-        searchQuery: z.string().optional(),
-      }))
-      .query(async ({ input }) => {
-        return await getColumnsList(input);
-      }),
-
-    getById: publicProcedure
-      .input(z.object({ columnId: z.number() }))
-      .query(async ({ ctx, input }) => {
-        return await getColumnById(input.columnId, ctx.user?.id);
-      }),
-
-    uploadCoverImage: protectedProcedure
-      .input(z.object({
-        imageData: z.string(),
-      }))
-      .mutation(async ({ ctx, input }) => {
-        const allowedMimeTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
-        const mimeMatch = input.imageData.match(/^data:(image\/[a-z]+);base64,/);
-        const mimeType = mimeMatch?.[1];
-        
-        if (!mimeType || !allowedMimeTypes.includes(mimeType)) {
-          throw new Error("Unsupported image type. Use JPEG, PNG, GIF, or WebP.");
-        }
-        
-        const base64Data = input.imageData.replace(/^data:image\/[a-z]+;base64,/, '');
-        const buffer = Buffer.from(base64Data, 'base64');
-        
-        const fileName = `column-covers/${ctx.user.id}-${Date.now()}-${Math.random().toString(36).substring(7)}.jpg`;
-        const { url } = await storagePut(fileName, buffer, 'image/jpeg');
-        
-        return { imageUrl: url };
-      }),
-
-    create: protectedProcedure
-      .input(z.object({
-        title: z.string().min(5).max(255),
-        content: z.string().min(50),
-        category: z.string().min(1).max(100),
-        excerpt: z.string().optional(),
-        coverImageUrl: z.string().optional(),
-        status: z.enum(["draft", "published"]),
-      }))
-      .mutation(async ({ ctx, input }) => {
-        return await createColumn(ctx.user.id, input);
-      }),
-
-    update: protectedProcedure
-      .input(z.object({
-        columnId: z.number(),
-        title: z.string().min(5).max(255).optional(),
-        content: z.string().min(50).optional(),
-        category: z.string().min(1).max(100).optional(),
-        excerpt: z.string().optional(),
-        coverImageUrl: z.string().optional(),
-        status: z.enum(["draft", "published"]).optional(),
-      }))
-      .mutation(async ({ ctx, input }) => {
-        const { columnId, ...data } = input;
-        return await updateColumn(columnId, ctx.user.id, data);
-      }),
-
-    delete: protectedProcedure
-      .input(z.object({ columnId: z.number() }))
-      .mutation(async ({ ctx, input }) => {
-        return await deleteColumn(input.columnId, ctx.user.id);
-      }),
-
-    toggleLike: protectedProcedure
-      .input(z.object({ columnId: z.number() }))
-      .mutation(async ({ ctx, input }) => {
-        return await toggleColumnLike(input.columnId, ctx.user.id);
-      }),
-
-    getComments: publicProcedure
-      .input(z.object({ columnId: z.number() }))
-      .query(async ({ input }) => {
-        return await getColumnComments(input.columnId);
-      }),
-
-    createComment: protectedProcedure
-      .input(z.object({
-        columnId: z.number(),
-        content: z.string().min(1).max(1000),
-        parentCommentId: z.number().optional(),
-      }))
-      .mutation(async ({ ctx, input }) => {
-        return await createComment(
-          input.columnId,
-          ctx.user.id,
-          input.content,
-          input.parentCommentId
-        );
-      }),
-
-    updateComment: protectedProcedure
-      .input(z.object({
-        commentId: z.number(),
-        content: z.string().min(1).max(1000),
-      }))
-      .mutation(async ({ ctx, input }) => {
-        return await updateComment(input.commentId, ctx.user.id, input.content);
-      }),
-
-    deleteComment: protectedProcedure
-      .input(z.object({ commentId: z.number() }))
-      .mutation(async ({ ctx, input }) => {
-        return await deleteComment(input.commentId, ctx.user.id);
-      }),
-
-    adminDeleteColumn: protectedProcedure
-      .input(z.object({ columnId: z.number() }))
-      .mutation(async ({ ctx, input }) => {
-        if (ctx.user.role !== "admin") {
-          throw new Error("관리자만 칼럼을 삭제할 수 있습니다");
-        }
-        return await deleteColumn(input.columnId, ctx.user.id);
-      }),
-
-    adminDeleteComment: protectedProcedure
-      .input(z.object({ commentId: z.number() }))
-      .mutation(async ({ ctx, input }) => {
-        if (ctx.user.role !== "admin") {
-          throw new Error("관리자만 댓글을 삭제할 수 있습니다");
-        }
-        return await deleteComment(input.commentId, ctx.user.id);
-      }),
-
-    getMyColumns: protectedProcedure
-      .query(async ({ ctx }) => {
-        return await getMyColumns(ctx.user.id);
-      }),
-
-    getDraftColumns: protectedProcedure
-      .query(async ({ ctx }) => {
-        const db = await getDb();
-        if (!db) throw new Error("Database not available");
-        return await db
-          .select()
-          .from(mentorColumns)
-          .where(
-            and(
-              eq(mentorColumns.authorId, ctx.user.id),
-              eq(mentorColumns.status, "draft"),
-              isNull(mentorColumns.deletedAt)
-            )
-          )
-          .orderBy(desc(mentorColumns.updatedAt));
-      }),
-
-    incrementViewCount: publicProcedure
-      .input(z.object({ columnId: z.number() }))
-      .mutation(async ({ input }) => {
-        await incrementViewCount(input.columnId);
-        return { success: true };
-      }),
-  }),
-
-  // 추천 시스템 라우터
-  recommendations: router({
-    // 학생의 관심사 저장
-    saveStudentInterests: protectedProcedure
-      .input(z.object({
-        interests: z.array(z.object({
-          category: z.string(),
-          level: z.enum(["beginner", "intermediate", "advanced"]),
-        })),
-      }))
-      .mutation(async ({ ctx, input }) => {
-        const db = await getDb();
-        if (!db) throw new Error("Database not available");
-        
-        // 기존 관심사 삭제
-        await db.delete(studentInterests).where(eq(studentInterests.studentId, ctx.user.id));
-        
-        // 새 관심사 추가
-        for (const interest of input.interests) {
-          await db.insert(studentInterests).values({
-            studentId: ctx.user.id,
-            interestCategory: interest.category,
-            interestLevel: interest.level,
-          });
-        }
-        
-        return { success: true };
-      }),
-
-    // 추천 멘토 조회
-    getRecommendedMentors: protectedProcedure
-      .input(z.object({ limit: z.number().default(10) }))
-      .query(async ({ ctx, input }) => {
-        const db = await getDb();
-        if (!db) throw new Error("Database not available");
-        
-        // 평점 높은 멘토 추천 (간단한 버전)
-        const recommendedMentors = await db
-          .select()
-          .from(mentorProfiles)
-          .where(and(
-            eq(mentorProfiles.verificationStatus, "approved"),
-            eq(mentorProfiles.isDeleted, false)
-          ))
-          .orderBy(desc(mentorProfiles.averageRating))
-          .limit(input.limit);
-        
-        return recommendedMentors;
-      }),
-
-    // 추천 기록 저장
-    recordRecommendation: protectedProcedure
-      .input(z.object({
-        mentorId: z.number(),
-        score: z.number().min(0).max(100),
-        reason: z.string(),
-      }))
-      .mutation(async ({ ctx, input }) => {
-        const db = await getDb();
-        if (!db) throw new Error("Database not available");
-        
-        await db.insert(mentorRecommendations).values({
-          studentId: ctx.user.id,
-          mentorId: input.mentorId,
-          recommendationScore: input.score.toString(),
-          recommendationReason: input.reason,
-        });
-        
-        return { success: true };
       }),
   }),
 });
