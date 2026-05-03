@@ -5,9 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
-import { useQueryClient } from "@tanstack/react-query";
 import { ArrowRight } from "lucide-react";
-import { useAuth } from "@/_core/hooks/useAuth";
 
 export default function Login() {
   const [, navigate] = useLocation();
@@ -15,15 +13,8 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
-  const queryClient = useQueryClient();
-  const { user: currentUser } = useAuth({ redirectOnUnauthenticated: false });
   
-  // 이미 로그인되어 있으면 홈으로 리다이렉트
-  if (currentUser) {
-    navigate("/", { replace: true });
-    return null;
-  }
-
+  const utils = trpc.useUtils();
   const loginMutation = trpc.auth.login.useMutation();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -46,31 +37,20 @@ export default function Login() {
       const response = await loginMutation.mutateAsync({ email, password });
       toast.success("로그인이 완료되었습니다!");
 
-      // 쿼리 캐시 무효화 및 새로운 데이터 조회
-      await queryClient.invalidateQueries({ queryKey: ["auth", "me"] });
+      // 로그인 응답에서 받은 사용자 정보로 캐시 즉시 업데이트
+      // response.user는 간단한 형태이므로, 직접 캐시에 설정하지 않고 리다이렉트만 수행
       
-      // 새로운 사용자 정보를 기다림
-      await queryClient.refetchQueries({ queryKey: ["auth", "me"] });
-      
-      // 캐시에서 새로운 사용자 정보 조회
-      const cachedData = queryClient.getQueryData(["auth", "me"]) as any;
-      
-      if (cachedData) {
-        // 프로필 미완성 사용자
-        if (!cachedData.name || !cachedData.userType) {
-          navigate("/complete-profile", { replace: true });
-        } 
-        // 관리자
-        else if (cachedData.role === "admin") {
-          navigate("/admin", { replace: true });
-        }
-        // 일반 사용자
-        else {
-          navigate("/", { replace: true });
-        }
-      } else {
-        // 데이터가 없으면 홈으로 이동 (useAuth 훅에서 처리)
-        navigate("/", { replace: true });
+      // 프로필 미완성 사용자
+      if (!response.user.name || !response.user.userType) {
+        window.location.href = "/complete-profile";
+      } 
+      // 관리자
+      else if (response.user.role === "admin") {
+        window.location.href = "/admin";
+      }
+      // 일반 사용자
+      else {
+        window.location.href = "/";
       }
     } catch (error: any) {
       const errorMessage = error.message || "로그인에 실패했습니다";
