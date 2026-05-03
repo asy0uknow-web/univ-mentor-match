@@ -34,7 +34,9 @@ export default function Login() {
     setErrors({});
 
     try {
+      console.log("[Login] Attempting login with email:", email);
       const response = await loginMutation.mutateAsync({ email, password });
+      console.log("[Login] Login response:", response);
       toast.success("로그인이 완료되었습니다!");
 
       // 로그인 응답에서 받은 사용자 정보로 캐시 즉시 업데이트
@@ -53,6 +55,7 @@ export default function Login() {
         window.location.href = "/";
       }
     } catch (error: any) {
+      console.error("[Login] Error:", error);
       const errorMessage = error.message || "로그인에 실패했습니다";
       toast.error(errorMessage);
       setIsLoading(false);
