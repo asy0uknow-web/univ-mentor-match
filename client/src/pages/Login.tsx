@@ -7,7 +7,6 @@ import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
 import { useQueryClient } from "@tanstack/react-query";
 
-
 export default function Login() {
   const [, navigate] = useLocation();
   const [email, setEmail] = useState("");
@@ -15,55 +14,68 @@ export default function Login() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
   const queryClient = useQueryClient();
-
   const loginMutation = trpc.auth.login.useMutation();
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
-
     if (!email) {
       newErrors.email = "이메일을 입력해주세요";
     }
-    // 이메일 형식 검증 완화 - 관리자 계정(univadmin) 등을 위해
-
     if (!password) {
       newErrors.password = "비밀번호를 입력해주세요";
     }
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("[Login] Form submitted", { email, password: "***" });
 
     if (!validateForm()) {
+      console.log("[Login] Form validation failed");
       toast.error("입력 정보를 확인해주세요");
       return;
     }
 
     setIsLoading(true);
-
     try {
+      console.log("[Login] Starting login mutation...");
       const response = await loginMutation.mutateAsync({
         email,
         password,
       });
 
-      if (response.user) {
-        queryClient.setQueryData(["auth", "me"], response.user);
-      }
+      console.log("[Login] Login response:", response);
 
-      toast.success("로그인이 완료되었습니다!");
-      
-      // Admin 계정이면 /admin으로 이동
-      if (response.user?.role === "admin") {
-        navigate("/admin");
+      if (response.user) {
+        console.log("[Login] User data received:", response.user);
+        
+        // Invalidate and refetch user data
+        await queryClient.invalidateQueries();
+        const userData = await queryClient.refetchQueries();
+        console.log("[Login] Refetched queries:", userData);
+
+        toast.success("로그인이 완료되었습니다!");
+
+        // Determine redirect destination
+        if (response.user.role === "admin") {
+          console.log("[Login] Redirecting to /admin");
+          navigate("/admin");
+        } else if (!response.user.name || !response.user.userType) {
+          console.log("[Login] Redirecting to /complete-profile (incomplete profile)");
+          navigate("/complete-profile");
+        } else {
+          console.log("[Login] Redirecting to / (home)");
+          navigate("/");
+        }
       } else {
-        navigate("/");
+        console.error("[Login] No user data in response");
+        toast.error("로그인에 실패했습니다");
       }
     } catch (error: any) {
-      const errorMessage = error.message || "로그인에 실패했습니다";
+      console.error("[Login] Login error:", error);
+      const errorMessage = error?.message || "로그인에 실패했습니다";
       toast.error(errorMessage);
     } finally {
       setIsLoading(false);
@@ -75,7 +87,6 @@ export default function Login() {
       <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-4 sm:p-8">
         <h1 className="text-2xl sm:text-3xl font-bold text-navy-900 mb-1 sm:mb-2">로그인</h1>
         <p className="text-xs sm:text-sm text-gray-600 mb-4 sm:mb-6">UnivMatch에 로그인하세요</p>
-
         <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
           {/* 이메일 */}
           <div className="space-y-1.5 sm:space-y-2">

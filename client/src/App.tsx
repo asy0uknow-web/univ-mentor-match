@@ -33,7 +33,7 @@ function Router() {
   return (
     <Suspense fallback={<div className="flex items-center justify-center min-h-screen">로딩 중...</div>}>
       <Switch>
-        <Route path={"\\"} component={Home} />
+        <Route path={"/"} component={Home} />
         <Route path={"/signup"} component={SignUp} />
         <Route path={"/login"} component={Login} />
         <Route path={"/verify-email"} component={VerifyEmail} />
