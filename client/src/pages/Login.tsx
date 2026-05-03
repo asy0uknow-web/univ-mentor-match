@@ -16,8 +16,9 @@ export default function Login() {
   
   const loginMutation = trpc.auth.login.useMutation();
 
-  const handleLogin = async () => {
-    console.log("[Login] handleLogin called");
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    console.log("[Login] Form submitted");
     
     const newErrors: Record<string, string> = {};
     if (!email) newErrors.email = "이메일을 입력해주세요";
@@ -61,12 +62,6 @@ export default function Login() {
     }
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
-      handleLogin();
-    }
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted flex items-center justify-center p-3 sm:p-4">
       <div className="w-full max-w-md card-premium-lg p-6 sm:p-10">
@@ -75,7 +70,7 @@ export default function Login() {
           <p className="text-base text-muted-foreground">유니브매치에 로그인하세요</p>
         </div>
 
-        <div className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-5">
           {/* 이메일 */}
           <div className="space-y-2">
             <Label htmlFor="email" className="text-sm font-semibold text-foreground">
@@ -92,9 +87,9 @@ export default function Login() {
                   setErrors({ ...errors, email: "" });
                 }
               }}
-              onKeyPress={handleKeyPress}
               disabled={isLoading || loginMutation.isPending}
               className={`text-sm border ${errors.email ? "border-red-500 focus:border-red-500" : "border-border focus:border-primary"} px-4 py-2.5 rounded-md transition-colors`}
+              required
             />
             {errors.email && <p className="text-red-500 text-xs font-medium">{errors.email}</p>}
           </div>
@@ -115,18 +110,18 @@ export default function Login() {
                   setErrors({ ...errors, password: "" });
                 }
               }}
-              onKeyPress={handleKeyPress}
               disabled={isLoading || loginMutation.isPending}
               className={`text-sm border ${errors.password ? "border-red-500 focus:border-red-500" : "border-border focus:border-primary"} px-4 py-2.5 rounded-md transition-colors`}
+              required
             />
             {errors.password && <p className="text-red-500 text-xs font-medium">{errors.password}</p>}
           </div>
 
           {/* 로그인 버튼 */}
-          <Button
-            onClick={handleLogin}
+          <button
+            type="submit"
             disabled={isLoading || loginMutation.isPending}
-            className="w-full bg-primary hover:bg-primary/90 text-white text-base font-semibold py-3 rounded-md transition-all duration-200 shadow-md hover:shadow-lg mt-4 flex items-center justify-center gap-2"
+            className="w-full bg-primary hover:bg-primary/90 disabled:bg-primary/50 text-white text-base font-semibold py-3 rounded-md transition-all duration-200 shadow-md hover:shadow-lg mt-4 flex items-center justify-center gap-2"
           >
             {isLoading || loginMutation.isPending ? "로그인 중..." : (
               <>
@@ -134,8 +129,8 @@ export default function Login() {
                 <ArrowRight className="w-4 h-4" />
               </>
             )}
-          </Button>
-        </div>
+          </button>
+        </form>
 
         {/* 회원가입 링크 */}
         <p className="text-center text-sm text-muted-foreground mt-6">
