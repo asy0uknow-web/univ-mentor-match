@@ -5,7 +5,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
-import { useQueryClient } from "@tanstack/react-query";
 import { ArrowRight } from "lucide-react";
 export default function Login() {
   const [, navigate] = useLocation();
@@ -13,7 +12,7 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
-  const queryClient = useQueryClient();
+  const utils = trpc.useUtils();
 
   const loginMutation = trpc.auth.login.useMutation();
 
@@ -50,18 +49,23 @@ export default function Login() {
       });
 
       if (response.user) {
-        queryClient.setQueryData(["auth", "me"], response.user);
-        // 인증 상태 갱신
-        await queryClient.invalidateQueries({ queryKey: ["auth", "me"] });
+        // tRPC 캐시 무효화 - useAuth 훅이 다시 데이터를 가져오게 함
+        utils.auth.me.invalidate();
       }
 
       toast.success("로그인이 완료되었습니다!");
       
-      // Admin 계정이면 /admin으로 이동
-      if (response.user?.role === "admin") {
-        navigate("/admin");
+      // 프로필 완성 여부 확인
+      if (response.user?.name && response.user?.userType) {
+        // 프로필 완성됨 - 홈으로 이동
+        if (response.user?.role === "admin") {
+          navigate("/admin");
+        } else {
+          navigate("/");
+        }
       } else {
-        navigate("/");
+        // 프로필 미완성 - 프로필 완성 페이지로 이동
+        navigate("/complete-profile");
       }
     } catch (error: any) {
       const errorMessage = error.message || "로그인에 실패했습니다";
