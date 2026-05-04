@@ -78,7 +78,7 @@ export default function Home() {
   // 프로필 완성 상태 조회
   const { data: verificationStatus } = trpc.verification.getProfileVerificationStatus.useQuery(
     undefined,
-    { enabled: isAuthenticated }
+    { enabled: !!user?.id }
   );
 
   useEffect(() => {

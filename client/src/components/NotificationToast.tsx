@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Bell, X, CheckCircle, AlertCircle, MessageCircle } from "lucide-react";
 import { trpc } from "@/lib/trpc";
+import { useAuth } from "@/_core/hooks/useAuth";
 
 interface Notification {
   id: number;
@@ -12,14 +13,21 @@ interface Notification {
 }
 
 export function NotificationToast() {
+  const { isAuthenticated } = useAuth();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [visibleNotifications, setVisibleNotifications] = useState<Set<number>>(new Set());
 
-  // 알림 조회 쿼리
-  const { data: allNotifications, refetch } = trpc.notification.getAll.useQuery();
+  // 알림 조회 쿼리 (인증된 사용자만 실행)
+  const { data: allNotifications, refetch } = trpc.notification.getAll.useQuery(
+    undefined,
+    { enabled: isAuthenticated }
+  );
 
-  // 미읽음 알림 개수 조회
-  const { data: unreadCount } = trpc.notification.getUnreadCount.useQuery();
+  // 미읽음 알림 개수 조회 (인증된 사용자만 실행)
+  const { data: unreadCount } = trpc.notification.getUnreadCount.useQuery(
+    undefined,
+    { enabled: isAuthenticated }
+  );
 
   // 알림 읽음 표시 뮤테이션
   const markAsReadMutation = trpc.notification.markAsRead.useMutation();
