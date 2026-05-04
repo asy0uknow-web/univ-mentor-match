@@ -13,7 +13,7 @@ export const signupProcedure = publicProcedure
   .input(z.object({
     email: z.string().email(),
     password: z.string().min(8),
-    name: z.string().min(1).max(255),
+    name: z.string().min(1).max(255).optional(),
     userType: z.enum(["high_school_student", "university_student"]).optional(),
   }))
   .mutation(async ({ ctx, input }) => {
@@ -52,7 +52,7 @@ export const signupProcedure = publicProcedure
     await db.insert(users).values({
       openId,
       email: input.email,
-      name: input.name,
+      name: input.name || "",
       passwordHash,
       emailVerified: false,
       loginMethod: "email",

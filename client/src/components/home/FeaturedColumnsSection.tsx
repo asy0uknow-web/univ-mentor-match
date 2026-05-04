@@ -1,0 +1,127 @@
+import { Link } from "wouter";
+import { trpc } from "@/lib/trpc";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Heart, MessageCircle, ArrowRight } from "lucide-react";
+
+export function FeaturedColumnsSection() {
+  const { data: columns, isLoading } = trpc.mentorColumns.getList.useQuery({
+    limit: 3,
+    sortBy: "latest",
+  });
+
+  if (isLoading) {
+    return (
+      <section className="py-16 sm:py-24 md:py-32 bg-gradient-to-b from-blue-50 to-white dark:from-slate-900 dark:to-slate-950">
+        <div className="container mx-auto px-4">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-4 text-foreground">
+            칼럼 스튜디오
+          </h2>
+          <p className="text-center text-muted-foreground mb-12 sm:mb-16">
+            멘토들의 경험과 조언을 담은 칼럼을 읽어보세요
+          </p>
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6 lg:gap-8">
+            {[1, 2, 3].map((idx) => (
+              <div key={idx} className="rounded-2xl overflow-hidden bg-card  shadow-md ">
+                <Skeleton className="w-full h-48" />
+                <div className="p-6">
+                  <Skeleton className="h-6 w-3/4 mb-3" />
+                  <Skeleton className="h-4 w-full mb-2" />
+                  <Skeleton className="h-4 w-5/6" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (!columns || columns.length === 0) {
+    return null;
+  }
+
+  return (
+    <section className="py-16 sm:py-24 md:py-32 bg-gradient-to-b from-blue-50 to-white dark:from-slate-900 dark:to-slate-950">
+      <div className="container mx-auto px-4">
+        <div className="text-center mb-12 sm:mb-16">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-4">
+            칼럼 스튜디오
+          </h2>
+          <p className="text-center text-muted-foreground max-w-2xl mx-auto">
+            멘토들의 다양한 경험을 담은 칼럼을 동료 나누세요.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6 lg:gap-8 mb-12">
+          {columns.map((column: any) => (
+            <Link key={column.id} href={`/columns/${column.id}`}>
+              <div className="group rounded-2xl overflow-hidden bg-card  shadow-md  hover:shadow-xl transition-all duration-300 h-full flex flex-col cursor-pointer hover:scale-105 hover:-translate-y-2">
+                {/* 커버 이미지 */}
+                {column.coverImageUrl && (
+                  <div className="relative h-48 overflow-hidden bg-gradient-to-br from-primary/20 to-primary/5">
+                    <img
+                      src={column.coverImageUrl}
+                      alt={column.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
+                )}
+
+                {/* 콘텐츠 */}
+                <div className="p-6 flex-1 flex flex-col">
+                  {/* 카테고리 배지 */}
+                  <div className="mb-3">
+                    <span className="inline-block px-3 py-1 bg-primary/10 text-primary text-xs font-semibold rounded-full">
+                      {column.category}
+                    </span>
+                  </div>
+
+                  {/* 제목 */}
+                  <h3 className="text-lg font-bold text-foreground mb-2 line-clamp-2 group-hover:text-indigo-600 transition-colors">
+                    {column.title}
+                  </h3>
+
+                  {/* 요약 */}
+                  <p className="text-sm text-muted-foreground mb-4 line-clamp-2 flex-1 group-hover:text-foreground transition-colors">
+                    {column.excerpt || column.content.substring(0, 100)}
+                  </p>
+
+                  {/* 메타 정보 */}
+                  <div className="flex items-center gap-4 text-xs text-muted-foreground border-t pt-4">
+                    <div className="flex items-center gap-1">
+                      <Heart className="w-4 h-4" />
+                      <span>{column.likesCount || 0}</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <MessageCircle className="w-4 h-4" />
+                      <span>{column.commentsCount || 0}</span>
+                    </div>
+                    <div className="ml-auto text-xs text-muted-foreground">
+                      {new Date(column.createdAt).toLocaleDateString("ko-KR", {
+                        month: "short",
+                        day: "numeric",
+                      })}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
+
+        {/* 더보기 버튼 */}
+        <div className="text-center">
+          <Link href="/columns">
+            <div>
+              <Button variant="outline" size="lg" className="group hover:scale-105 active:scale-95 transition-transform">
+                모든 칼럼 보기
+                <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+              </Button>
+            </div>
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+}

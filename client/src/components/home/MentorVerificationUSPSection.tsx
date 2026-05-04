@@ -2,21 +2,21 @@ import { CheckCircle, Award } from "lucide-react";
 
 /**
  * 철저한 멘토 검증 USP 섹션 (지그재그 #1)
- * - 배경: 연한 그레이 (bg-slate-50)
+ * - 배경: 연한 그레이 (bg-background)
  * - 왼쪽: 멘토 프로필 카드 (검증완료 배지, 명문대 로고)
  * - 오른쪽: 타이포그래피 제목 및 설명
  * - 높이: py-24 (충분한 여백)
  */
 export function MentorVerificationUSPSection() {
   return (
-    <section className="py-24 bg-slate-50" aria-label="철저한 멘토 검증">
+    <section className="py-24 bg-gradient-to-b from-blue-50 to-white dark:from-slate-900 dark:to-slate-950" aria-label="총저한 멘토 검증">
       <div className="container mx-auto px-4">
         <div className="max-w-6xl mx-auto">
           {/* 지그재그 레이아웃: 왼쪽 카드, 오른쪽 텍스트 */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             {/* 왼쪽: 멘토 프로필 카드 (컴팩트) */}
             <div className="flex justify-center">
-              <div className="bg-white rounded-3xl p-8 shadow-lg w-full max-w-sm">
+              <div className="bg-card  rounded-3xl p-8 shadow-lg w-full max-w-sm">
                 {/* 프로필 헤더 */}
                 <div className="flex items-start justify-between mb-6">
                   <div className="flex-1">
@@ -29,7 +29,7 @@ export function MentorVerificationUSPSection() {
                     <p className="text-sm text-muted-foreground mb-2">서울대학교 · 컴퓨터공학부</p>
                   </div>
                   {/* 검증완료 배지 */}
-                  <div className="flex flex-col items-center gap-1 bg-blue-50 rounded-lg px-3 py-2 border border-blue-200">
+                  <div className="flex flex-col items-center gap-1 bg-primary/5 rounded-lg px-3 py-2 border border-blue-200">
                     <CheckCircle className="w-5 h-5 text-blue-600" />
                     <span className="text-xs font-semibold text-blue-600">검증완료</span>
                   </div>
@@ -47,7 +47,7 @@ export function MentorVerificationUSPSection() {
                 </div>
 
                 {/* 간단한 정보 */}
-                <div className="space-y-3 pt-4 border-t border-gray-200">
+                <div className="space-y-3 pt-4 border-t border-border 700 700">
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">학년</span>
                     <span className="font-semibold text-foreground">3학년</span>

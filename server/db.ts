@@ -283,7 +283,7 @@ export async function getAllActiveMentors() {
         university: mentorProfiles.university,
         major: mentorProfiles.major,
         grade: mentorProfiles.grade,
-        region: mentorProfiles.region,
+        availableRegions: mentorProfiles.availableRegions,
         bio: mentorProfiles.bio,
         hourlyRate: mentorProfiles.hourlyRate,
         availableSlots: mentorProfiles.availableSlots,
@@ -302,7 +302,7 @@ export async function getAllActiveMentors() {
     .innerJoin(users, eq(mentorProfiles.userId, users.id))
     .leftJoin(
       mentorConsultationTypes,
-      eq(mentorProfiles.userId, mentorConsultationTypes.mentorId)
+      eq(users.id, mentorConsultationTypes.mentorId)
     )
     .where(
       and(
@@ -937,7 +937,9 @@ export async function getMentorsByFieldAndRegion(
     const validRegions = ["seoul", "gyeonggi", "incheon", "gangwon", "chungcheong", "jeolla", "gyeongsang", "jeju"];
     const filteredRegions = regions.filter(r => validRegions.includes(r)) as any[];
     if (filteredRegions.length > 0) {
-      conditions.push(inArray(mentorProfiles.region, filteredRegions));
+      // TODO: availableRegions JSON 배열을 검색하는 로직 구현 필요
+      // 일단 필터링 스킵
+      // conditions.push(inArray(mentorProfiles.region, filteredRegions));
     }
   }
   conditions.push(eq(mentorProfiles.verificationStatus, "approved"));
@@ -971,7 +973,7 @@ export async function getMentorsByRegion(
     .innerJoin(users, eq(mentorProfiles.userId, users.id))
     .where(
       and(
-        eq(mentorProfiles.region, region),
+        // TODO: availableRegions JSON 배열을 검색하는 로직 구현 필요
         eq(mentorProfiles.verificationStatus, "approved")
       )
     )

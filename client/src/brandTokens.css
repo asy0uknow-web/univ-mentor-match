@@ -1,0 +1,264 @@
+/* UnivMatch Brand Color Token System */
+/* 신뢰감 있으면서도 젊고 현대적인 교육 상담 플랫폼 */
+
+:root {
+  /* ========================================
+     1. BRAND PALETTE - Primary (Blue)
+     ======================================== */
+  --brand-primary-50: #EFF6FF;
+  --brand-primary-100: #DBEAFE;
+  --brand-primary-200: #BFDBFE;
+  --brand-primary-300: #93C5FD;
+  --brand-primary-400: #60A5FA;
+  --brand-primary-500: #3B82F6;
+  --brand-primary-600: #2563EB;
+  --brand-primary-700: #1D4ED8;
+  --brand-primary-800: #1E40AF;
+  --brand-primary-900: #1E3A8A;
+
+  /* ========================================
+     2. BRAND PALETTE - Secondary (Teal/Green)
+     ======================================== */
+  --brand-secondary-50: #ECFDF5;
+  --brand-secondary-100: #D1FAE5;
+  --brand-secondary-200: #A7F3D0;
+  --brand-secondary-300: #6EE7B7;
+  --brand-secondary-400: #34D399;
+  --brand-secondary-500: #10B981;
+  --brand-secondary-600: #059669;
+  --brand-secondary-700: #047857;
+  --brand-secondary-800: #065F46;
+  --brand-secondary-900: #064E3B;
+
+  /* ========================================
+     3. BRAND PALETTE - Accent (Amber/Warm)
+     ======================================== */
+  --brand-accent-50: #FFFBEB;
+  --brand-accent-100: #FEF3C7;
+  --brand-accent-200: #FDE68A;
+  --brand-accent-300: #FCD34D;
+  --brand-accent-400: #FBBF24;
+  --brand-accent-500: #F59E0B;
+  --brand-accent-600: #D97706;
+  --brand-accent-700: #B45309;
+  --brand-accent-800: #92400E;
+  --brand-accent-900: #78350F;
+
+  /* ========================================
+     4. BRAND PALETTE - Neutral (Gray)
+     ======================================== */
+  --brand-neutral-50: #F8FAFC;
+  --brand-neutral-100: #F1F5F9;
+  --brand-neutral-200: #E2E8F0;
+  --brand-neutral-300: #CBD5E1;
+  --brand-neutral-400: #94A3B8;
+  --brand-neutral-500: #64748B;
+  --brand-neutral-600: #475569;
+  --brand-neutral-700: #334155;
+  --brand-neutral-800: #1E293B;
+  --brand-neutral-900: #0F172A;
+
+  /* ========================================
+     5. SEMANTIC STATUS COLORS
+     ======================================== */
+  --color-status-success: var(--brand-secondary-600);
+  --color-status-warning: var(--brand-accent-500);
+  --color-status-danger: #EF4444;
+  --color-status-info: var(--brand-primary-600);
+
+  /* ========================================
+     6. SEMANTIC BACKGROUND TOKENS
+     ======================================== */
+  --color-bg-page: #FFFFFF;
+  --color-bg-card: #FFFFFF;
+  --color-bg-muted: var(--brand-neutral-50);
+  --color-bg-soft: var(--brand-neutral-100);
+  --color-bg-hover: var(--brand-primary-50);
+  --color-bg-active: var(--brand-primary-100);
+  --color-bg-disabled: var(--brand-neutral-100);
+
+  /* ========================================
+     7. SEMANTIC TEXT TOKENS
+     ======================================== */
+  --color-text-primary: var(--brand-neutral-900);
+  --color-text-secondary: var(--brand-neutral-600);
+  --color-text-muted: var(--brand-neutral-500);
+  --color-text-inverse: #FFFFFF;
+  --color-text-disabled: var(--brand-neutral-400);
+
+  /* ========================================
+     8. SEMANTIC BORDER TOKENS
+     ======================================== */
+  --color-border-default: var(--brand-neutral-200);
+  --color-border-strong: var(--brand-neutral-300);
+  --color-border-primary: var(--brand-primary-300);
+  --color-border-focus: var(--brand-primary-500);
+
+  /* ========================================
+     9. SEMANTIC STATUS DETAIL TOKENS
+     ======================================== */
+  /* Pending / Waiting */
+  --color-status-pending: var(--brand-accent-500);
+  --color-status-pending-bg: var(--brand-accent-50);
+  --color-status-pending-text: var(--brand-accent-900);
+
+  /* Answered / Responded */
+  --color-status-answered: var(--brand-primary-500);
+  --color-status-answered-bg: var(--brand-primary-50);
+  --color-status-answered-text: var(--brand-primary-900);
+
+  /* Solved / Completed */
+  --color-status-solved: var(--brand-secondary-600);
+  --color-status-solved-bg: var(--brand-secondary-50);
+  --color-status-solved-text: var(--brand-secondary-900);
+
+  /* Confirmed / Verified */
+  --color-status-confirmed: var(--brand-secondary-600);
+  --color-status-confirmed-bg: var(--brand-secondary-50);
+  --color-status-confirmed-text: var(--brand-secondary-900);
+
+  /* Completed */
+  --color-status-completed: var(--brand-secondary-600);
+  --color-status-completed-bg: var(--brand-secondary-50);
+  --color-status-completed-text: var(--brand-secondary-900);
+
+  /* Warning / Change Requested */
+  --color-status-warning-bg: var(--brand-accent-50);
+  --color-status-warning-text: var(--brand-accent-900);
+
+  /* Danger / Error */
+  --color-status-danger-bg: #FEE2E2;
+  --color-status-danger-text: #991B1B;
+
+  /* ========================================
+     10. SEMANTIC CTA TOKENS
+     ======================================== */
+  /* Primary CTA */
+  --color-cta-primary-bg: var(--brand-primary-600);
+  --color-cta-primary-bg-hover: var(--brand-primary-700);
+  --color-cta-primary-bg-active: var(--brand-primary-800);
+  --color-cta-primary-text: #FFFFFF;
+  --color-cta-primary-border: var(--brand-primary-600);
+
+  /* Secondary CTA */
+  --color-cta-secondary-bg: var(--brand-neutral-50);
+  --color-cta-secondary-bg-hover: var(--brand-neutral-100);
+  --color-cta-secondary-border: var(--brand-neutral-200);
+  --color-cta-secondary-text: var(--brand-primary-700);
+
+  /* Ghost CTA */
+  --color-cta-ghost-bg: transparent;
+  --color-cta-ghost-bg-hover: var(--brand-primary-50);
+  --color-cta-ghost-text: var(--brand-primary-600);
+
+  /* ========================================
+     11. SEMANTIC FOCUS & INTERACTION
+     ======================================== */
+  --color-focus-ring: var(--brand-primary-500);
+  --color-focus-ring-light: var(--brand-primary-100);
+  --color-hover-overlay: rgba(59, 130, 246, 0.05);
+  --color-active-overlay: rgba(59, 130, 246, 0.1);
+
+  /* ========================================
+     12. SHADOW TOKENS
+     ======================================== */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.12);
+  --shadow-focus: 0 0 0 3px var(--color-focus-ring-light), 0 0 0 5px var(--color-focus-ring);
+}
+
+/* ========================================
+   DARK MODE OVERRIDES
+   ======================================== */
+.dark {
+  --color-bg-page: var(--brand-neutral-900);
+  --color-bg-card: var(--brand-neutral-800);
+  --color-bg-muted: var(--brand-neutral-800);
+  --color-bg-soft: var(--brand-neutral-700);
+  --color-bg-hover: rgba(59, 130, 246, 0.1);
+  --color-bg-active: rgba(59, 130, 246, 0.2);
+  --color-bg-disabled: var(--brand-neutral-700);
+
+  --color-text-primary: var(--brand-neutral-50);
+  --color-text-secondary: var(--brand-neutral-300);
+  --color-text-muted: var(--brand-neutral-400);
+  --color-text-inverse: var(--brand-neutral-900);
+
+  --color-border-default: var(--brand-neutral-700);
+  --color-border-strong: var(--brand-neutral-600);
+  --color-border-primary: var(--brand-primary-700);
+
+  --color-cta-secondary-bg: var(--brand-neutral-800);
+  --color-cta-secondary-bg-hover: var(--brand-neutral-700);
+  --color-cta-secondary-border: var(--brand-neutral-600);
+  --color-cta-secondary-text: var(--brand-primary-300);
+
+  --color-cta-ghost-bg-hover: rgba(59, 130, 246, 0.1);
+  --color-cta-ghost-text: var(--brand-primary-400);
+
+  --color-status-pending-bg: rgba(245, 158, 11, 0.1);
+  --color-status-pending-text: var(--brand-accent-300);
+
+  --color-status-answered-bg: rgba(59, 130, 246, 0.1);
+  --color-status-answered-text: var(--brand-primary-300);
+
+  --color-status-solved-bg: rgba(16, 185, 129, 0.1);
+  --color-status-solved-text: var(--brand-secondary-300);
+
+  --color-status-warning-bg: rgba(245, 158, 11, 0.1);
+  --color-status-warning-text: var(--brand-accent-300);
+
+  --color-status-danger-bg: rgba(239, 68, 68, 0.1);
+  --color-status-danger-text: #FCA5A5;
+}
+
+/* ========================================
+   UTILITY CLASSES FOR BRAND COLORS
+   ======================================== */
+@layer utilities {
+  /* Primary brand utilities */
+  .brand-primary { color: var(--brand-primary-600); }
+  .bg-brand-primary { background-color: var(--brand-primary-600); }
+  .border-brand-primary { border-color: var(--brand-primary-600); }
+
+  /* Secondary brand utilities */
+  .brand-secondary { color: var(--brand-secondary-600); }
+  .bg-brand-secondary { background-color: var(--brand-secondary-600); }
+  .border-brand-secondary { border-color: var(--brand-secondary-600); }
+
+  /* Accent brand utilities */
+  .brand-accent { color: var(--brand-accent-500); }
+  .bg-brand-accent { background-color: var(--brand-accent-500); }
+  .border-brand-accent { border-color: var(--brand-accent-500); }
+
+  /* Status utilities */
+  .text-status-success { color: var(--color-status-success); }
+  .bg-status-success { background-color: var(--color-status-success); }
+  .text-status-warning { color: var(--color-status-warning); }
+  .bg-status-warning { background-color: var(--color-status-warning); }
+  .text-status-danger { color: var(--color-status-danger); }
+  .bg-status-danger { background-color: var(--color-status-danger); }
+
+  /* CTA utilities */
+  .cta-primary {
+    background-color: var(--color-cta-primary-bg);
+    color: var(--color-cta-primary-text);
+    border-color: var(--color-cta-primary-border);
+  }
+
+  .cta-primary:hover {
+    background-color: var(--color-cta-primary-bg-hover);
+  }
+
+  .cta-secondary {
+    background-color: var(--color-cta-secondary-bg);
+    color: var(--color-cta-secondary-text);
+    border-color: var(--color-cta-secondary-border);
+  }
+
+  .cta-secondary:hover {
+    background-color: var(--color-cta-secondary-bg-hover);
+  }
+}

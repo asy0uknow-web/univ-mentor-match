@@ -4,27 +4,27 @@ export const ConsultationSafetySection = () => {
     {
       title: "개인정보 보호",
       description: "주민등록번호, 계좌 정보 등 민감한 개인정보는 절대 공유하지 마세요.",
-      icon: "🔒"
+      icon: ""
     },
     {
       title: "안전한 상담 환경",
       description: "온라인 상담은 안전한 플랫폼을 통해서만 진행되며, 오프라인 상담은 공공장소에서 진행하세요.",
-      icon: "🏢"
+      icon: ""
     },
     {
       title: "신고 및 문제 해결",
       description: "부적절한 행동이나 문제가 발생하면 즉시 고객센터에 신고할 수 있습니다.",
-      icon: "📞"
+      icon: ""
     },
     {
       title: "결제 안전",
-      description: "모든 결제는 안전한 결제 시스템을 통해 진행되며, 직거래는 절대 금지입니다.",
-      icon: "💳"
+      description: "대면 거래를 원칙으로 하여 안전한 상담 환경을 보장합니다.",
+      icon: ""
     }
   ];
 
   return (
-    <section id="consultation-safety" role="region" className="py-16 sm:py-24 md:py-32 bg-white" aria-label="상담 안전 가이드">
+    <section id="consultation-safety" role="region" className="py-16 sm:py-24 md:py-32 bg-card " aria-label="상담 안전 가이드">
       <div className="container mx-auto px-4">
         {/* Section Header */}
         <div className="max-w-4xl mx-auto text-center mb-12 sm:mb-16">
@@ -42,7 +42,7 @@ export const ConsultationSafetySection = () => {
             {safetyGuidelines.map((guideline, idx) => (
               <div
                 key={idx}
-                className="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-6 sm:p-8 shadow-md hover:shadow-lg transition-shadow duration-300 border border-gray-100"
+                className="bg-card rounded-2xl p-6 sm:p-8 shadow-md  hover:shadow-lg transition-shadow duration-300 border border-border 700 700"
               >
                 {/* Icon */}
                 <div className="text-4xl sm:text-5xl mb-4 sm:mb-6">
@@ -63,15 +63,15 @@ export const ConsultationSafetySection = () => {
           </div>
 
           {/* Emergency Contact */}
-          <div className="mt-12 sm:mt-16 bg-amber-50 rounded-2xl p-6 sm:p-8 border-2 border-amber-200">
+          <div className="mt-12 sm:mt-16 bg-amber-50 dark:bg-amber-950/30 rounded-2xl p-6 sm:p-8 border-2 border-amber-200 dark:border-amber-800/50">
             <h3 className="text-lg sm:text-xl font-bold text-amber-900 mb-3 sm:mb-4">
               ℹ️ 문제가 발생하신가요?
             </h3>
             <p className="text-base sm:text-lg text-amber-800 mb-4">
-              부적절한 상담이나 문제 상황이 발생하면 언제든 고객센터에 연락주세요. 우리는 24시간 대응 가능합니다.
+              부적절한 상담이나 문제 상황이 발생하면 언제든 고객센터에 연락주세요. 고객센터에서 신속하게 처리해드립니다.
             </p>
-            <p className="text-sm sm:text-base text-amber-700">
-              <span className="font-bold">이메일:</span> support@univmatch.com | <span className="font-bold">전화:</span> 1234-5678
+            <p className="text-sm sm:text-base text-amber-700 dark:text-amber-400">
+              <span className="font-bold">이메일:</span> support@univmatch.com
             </p>
           </div>
         </div>

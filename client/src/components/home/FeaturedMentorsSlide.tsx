@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ChevronLeft, ChevronRight, Cpu, Microscope, Briefcase, BookOpen, GraduationCap, Lightbulb, Stethoscope } from "lucide-react";
+import { ChevronLeft, ChevronRight, Cpu, Microscope, Briefcase, BookOpen, GraduationCap, Lightbulb, Stethoscope, ArrowRight } from "lucide-react";
 import { useLocation } from "wouter";
 import { trpc } from "@/lib/trpc";
 
@@ -60,7 +60,10 @@ export const FeaturedMentorsSlide = () => {
   // 실제 멘토 데이터 조회 (평점 높은 순서, 최대 12개)
   const { data: mentorsData, isLoading, error } = trpc.mentor.getTopMentors.useQuery(
     { limit: 12 },
-    { staleTime: 1000 * 60 * 5 } // 5분 캐시
+    { 
+      staleTime: 1000 * 60 * 5, // 5분 캐시
+      retry: false // 재시도 안 함 - 에러 발생 시 리다이렉트되지 않도록
+    }
   );
 
   const mentors: FeaturedMentor[] = (mentorsData || []).map((mentor: any) => ({
@@ -71,6 +74,7 @@ export const FeaturedMentorsSlide = () => {
     major: mentor.major || "전공 미등록",
     bio: mentor.bio || "자기소개 미등록",
     field: mentor.field,
+    image: (mentor as any).profileImage,
     rating: mentor.averageRating ? parseFloat(mentor.averageRating.toString()) : 0,
     reviewCount: mentor.reviewCount || 0,
   }));
@@ -153,10 +157,10 @@ export const FeaturedMentorsSlide = () => {
   // 로딩 상태
   if (isLoading) {
     return (
-      <section className="py-16 sm:py-24 md:py-32 bg-gradient-to-b from-blue-50 to-white">
+      <section className="py-16 sm:py-24 md:py-32 bg-gradient-to-b from-blue-50 to-white dark:from-slate-900 dark:to-slate-950">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12 sm:mb-16">
-            <span className="inline-block px-4 py-2 bg-blue-100 text-blue-700 rounded-full text-sm font-semibold mb-4">
+            <span className="inline-block px-4 py-2 bg-primary/10 text-blue-700 dark:text-blue-400 rounded-full text-sm font-semibold mb-4">
               🌟 지금 가장 인기 있는
             </span>
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-4">
@@ -174,10 +178,10 @@ export const FeaturedMentorsSlide = () => {
   // 에러 상태
   if (error || mentors.length === 0) {
     return (
-      <section className="py-16 sm:py-24 md:py-32 bg-gradient-to-b from-blue-50 to-white">
+      <section className="py-16 sm:py-24 md:py-32 bg-gradient-to-b from-blue-50 to-white dark:from-slate-900 dark:to-slate-950">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12 sm:mb-16">
-            <span className="inline-block px-4 py-2 bg-blue-100 text-blue-700 rounded-full text-sm font-semibold mb-4">
+            <span className="inline-block px-4 py-2 bg-primary/10 text-blue-700 dark:text-blue-400 rounded-full text-sm font-semibold mb-4">
               🌟 지금 가장 인기 있는
             </span>
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-4">
@@ -193,11 +197,11 @@ export const FeaturedMentorsSlide = () => {
   }
 
   return (
-    <section className="py-16 sm:py-24 md:py-32 bg-gradient-to-b from-blue-50 to-white">
+    <section className="py-16 sm:py-24 md:py-32 bg-gradient-to-b from-blue-50 to-white dark:from-slate-900 dark:to-slate-950">
       <div className="container mx-auto px-4">
         {/* Section Header */}
         <div className="text-center mb-12 sm:mb-16">
-          <span className="inline-block px-4 py-2 bg-blue-100 text-blue-700 rounded-full text-sm font-semibold mb-4">
+          <span className="inline-block px-4 py-2 bg-primary/10 text-blue-700 rounded-full text-sm font-semibold mb-4">
             🌟 지금 가장 인기 있는
           </span>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-4">
@@ -211,37 +215,48 @@ export const FeaturedMentorsSlide = () => {
         {/* Slider Container */}
         <div className="relative max-w-6xl mx-auto">
           {/* Mentor Cards Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6 lg:gap-8">
             {visibleMentors.map((mentor) => (
               <div
                 key={`${mentor.id}-${currentIndex}`}
-                className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden hover:scale-105 cursor-pointer flex flex-col h-full"
+                className="bg-card  rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden hover:scale-105 hover:-translate-y-2 cursor-pointer flex flex-col h-full group"
                 style={{ height: `${maxCardHeight}px` }}
               >
                 {/* Mentor Image Placeholder */}
-                <div className="w-full flex-shrink-0 bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center" style={{ height: '192px' }}>
-                  {/* 유니브매치 로고 이미지 */}
+                <div className="w-full flex-shrink-0 bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 overflow-hidden" style={{ height: '192px' }}>
+                  {/* 프로필 이미지 또는 로고 */}
                   <img
-                    src="/logonew.png"
-                    alt="유니브매치 로고"
-                    className="w-24 h-24 object-contain"
+                    src={mentor.image || "/logonew.png"}
+                    alt={mentor.image ? mentor.name : "유니브매치 로고"}
+                    className={`${mentor.image ? 'w-full h-full object-cover' : 'w-24 h-24 object-contain'} group-hover:scale-125 transition-transform duration-300`}
                   />
                 </div>
 
                 {/* Mentor Info */}
                 <div className="p-4 sm:p-6 md:p-8 flex flex-col flex-grow">
-                  {/* Name and Rating Row */}
-                  <div className="flex items-start justify-between gap-2 sm:gap-3 mb-3 sm:mb-4">
-                    <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-foreground flex-1 line-clamp-1">
-                      {mentor.name}
-                    </h3>
-                    {/* Rating or New Badge */}
+                  {/* Name */}
+                  <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-foreground line-clamp-2 mb-2 group-hover:text-indigo-600 transition-colors">
+                    {mentor.name}
+                  </h3>
+                  
+                  {/* University */}
+                  <p className="text-xs sm:text-sm text-muted-foreground mb-1 line-clamp-1">
+                    {mentor.university}
+                  </p>
+                  
+                  {/* Major */}
+                  <p className="text-xs sm:text-sm font-semibold text-blue-600 mb-2 line-clamp-2">
+                    {mentor.major}
+                  </p>
+                  
+                  {/* Rating or New Badge */}
+                  <div className="mb-3 sm:mb-4">
                     {mentor.reviewCount === 0 ? (
-                      <div className="inline-flex items-center gap-1.5 px-2 py-1 rounded-lg bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 shadow-sm whitespace-nowrap flex-shrink-0">
+                      <div className="inline-flex items-center gap-1.5 px-2 py-1 rounded-lg bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 shadow-sm whitespace-nowrap">
                         <span className="text-xs font-bold tracking-wider text-emerald-700 uppercase">New</span>
                       </div>
                     ) : (
-                      <div className="flex items-center gap-1.5 flex-shrink-0">
+                      <div className="flex items-center gap-1.5">
                         <div className="flex items-center">
                           {[...Array(5)].map((_, i) => (
                             <span
@@ -262,17 +277,10 @@ export const FeaturedMentorsSlide = () => {
                       </div>
                     )}
                   </div>
-                  
-                  <p className="text-xs sm:text-sm text-muted-foreground mb-1 line-clamp-1">
-                    {mentor.university}
-                  </p>
-                  <p className="text-xs sm:text-sm font-semibold text-blue-600 mb-3 sm:mb-4 line-clamp-1">
-                    {mentor.major}
-                  </p>
 
                   {/* Professional Field Badge */}
                   {mentor.field && (
-                    <div className="flex items-center gap-2 mb-3 sm:mb-4 px-2 sm:px-3 py-1.5 sm:py-2 bg-blue-50 rounded-lg w-fit">
+                    <div className="flex items-center gap-2 mb-3 sm:mb-4 px-2 sm:px-3 py-1.5 sm:py-2 bg-primary/5 rounded-lg w-fit">
                       <span className="text-blue-600 w-4 h-4 flex-shrink-0">{getFieldIcon(mentor.field)}</span>
                       <span className="text-xs font-medium text-blue-700">
                         {getFieldLabel(mentor.field)}
@@ -306,7 +314,7 @@ export const FeaturedMentorsSlide = () => {
             <div className="flex justify-center items-center gap-4 mt-8 sm:mt-12">
               <button
                 onClick={handlePrev}
-                className="p-2 sm:p-3 rounded-full bg-white shadow-md hover:shadow-lg hover:bg-gray-50 transition-all"
+                className="p-2 sm:p-3 rounded-full bg-card  shadow-md  hover:shadow-lg hover:bg-background 900 transition-all"
                 aria-label="이전 멘토"
               >
                 <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6 text-foreground" />
@@ -324,7 +332,7 @@ export const FeaturedMentorsSlide = () => {
                         setCurrentIndex(idx * 3);
                       }}
                       className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all ${
-                        Math.floor(currentIndex / 3) === idx ? "bg-blue-600 w-8 sm:w-10" : "bg-gray-300"
+                        Math.floor(currentIndex / 3) === idx ? "bg-blue-600 w-8 sm:w-10" : "bg-muted-foreground/30"
                       }`}
                       aria-label={`${idx + 1}번째 페이지 보기`}
                     />
@@ -339,7 +347,7 @@ export const FeaturedMentorsSlide = () => {
                         setCurrentIndex(idx);
                       }}
                       className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all ${
-                        idx === currentIndex ? "bg-blue-600 w-8 sm:w-10" : "bg-gray-300"
+                        idx === currentIndex ? "bg-blue-600 w-8 sm:w-10" : "bg-muted-foreground/30"
                       }`}
                       aria-label={`${idx + 1}번째 멘토 보기`}
                     />
@@ -349,7 +357,7 @@ export const FeaturedMentorsSlide = () => {
 
               <button
                 onClick={handleNext}
-                className="p-2 sm:p-3 rounded-full bg-white shadow-md hover:shadow-lg hover:bg-gray-50 transition-all"
+                className="p-2 sm:p-3 rounded-full bg-card  shadow-md  hover:shadow-lg hover:bg-background 900 transition-all"
                 aria-label="다음 멘토"
               >
                 <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 text-foreground" />

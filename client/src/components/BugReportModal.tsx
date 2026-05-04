@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
+import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { X } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { useAuth } from "@/_core/hooks/useAuth";
-import { getLoginUrl } from "@/const";
 
 interface BugReportModalProps {
   isOpen: boolean;
@@ -13,7 +13,8 @@ interface BugReportModalProps {
 }
 
 export default function BugReportModal({ isOpen, onClose }: BugReportModalProps) {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuth({ redirectOnUnauthenticated: false });
+  const [, setLocation] = useLocation();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [device, setDevice] = useState("");
@@ -26,9 +27,9 @@ export default function BugReportModal({ isOpen, onClose }: BugReportModalProps)
   useEffect(() => {
     if (isOpen && !isAuthenticated) {
       onClose();
-      window.location.href = getLoginUrl();
+      setLocation('/login');
     }
-  }, [isOpen, isAuthenticated, onClose]);
+  }, [isOpen, isAuthenticated, onClose, setLocation]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -73,11 +74,11 @@ export default function BugReportModal({ isOpen, onClose }: BugReportModalProps)
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-lg max-w-md w-full max-h-[90vh] overflow-y-auto">
+      <div className="bg-card  rounded-lg shadow-lg max-w-md w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200">
+        <div className="flex items-center justify-between p-6 border-b border-border 700 700">
           <h2 className="text-xl font-bold">버그 신고</h2>
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-700 transition-colors">
+          <button onClick={onClose} className="text-muted-foreground hover:text-foreground transition-colors">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -86,9 +87,9 @@ export default function BugReportModal({ isOpen, onClose }: BugReportModalProps)
         <div className="p-6">
           {submitted ? (
             <div className="text-center py-8">
-              <div className="text-green-600 text-lg font-semibold mb-2">완료!</div>
-              <p className="text-gray-600">버그 신고가 접수되었습니다.</p>
-              <p className="text-sm text-gray-500 mt-2">감사합니다!</p>
+              <div className="text-green-600 dark:text-green-400 text-lg font-semibold mb-2">완료!</div>
+              <p className="text-muted-foreground 300 300">버그 신고가 접수되었습니다.</p>
+              <p className="text-sm text-muted-foreground mt-2">감사합니다!</p>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -116,7 +117,7 @@ export default function BugReportModal({ isOpen, onClose }: BugReportModalProps)
                   rows={4}
                   className="resize-none"
                 />
-                <p className="text-xs text-gray-500 mt-1">{description.length}/10자 이상 필요</p>
+                <p className="text-xs text-muted-foreground mt-1">{description.length}/10자 이상 필요</p>
               </div>
 
               <div>

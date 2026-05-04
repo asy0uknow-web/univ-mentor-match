@@ -6,6 +6,9 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
 import { useQueryClient } from "@tanstack/react-query";
+import { ArrowRight } from "lucide-react";
+import { useAuth } from "@/_core/hooks/useAuth";
+
 
 export default function Login() {
   const [, navigate] = useLocation();
@@ -14,68 +17,60 @@ export default function Login() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
   const queryClient = useQueryClient();
+  
+  // useAuth 훅을 사용하되, 리다이렉트는 비활성화
+  useAuth({ redirectOnUnauthenticated: false });
+
   const loginMutation = trpc.auth.login.useMutation();
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
+
     if (!email) {
       newErrors.email = "이메일을 입력해주세요";
     }
+    // 이메일 형식 검증 완화 - 관리자 계정(univadmin) 등을 위해
+
     if (!password) {
       newErrors.password = "비밀번호를 입력해주세요";
     }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("[Login] Form submitted", { email, password: "***" });
 
     if (!validateForm()) {
-      console.log("[Login] Form validation failed");
       toast.error("입력 정보를 확인해주세요");
       return;
     }
 
     setIsLoading(true);
+
     try {
-      console.log("[Login] Starting login mutation...");
       const response = await loginMutation.mutateAsync({
         email,
         password,
       });
 
-      console.log("[Login] Login response:", response);
-
       if (response.user) {
-        console.log("[Login] User data received:", response.user);
-        
-        // Invalidate and refetch user data
-        await queryClient.invalidateQueries();
-        const userData = await queryClient.refetchQueries();
-        console.log("[Login] Refetched queries:", userData);
+        queryClient.setQueryData(["auth", "me"], response.user);
+        // 인증 상태 갱신
+        await queryClient.invalidateQueries({ queryKey: ["auth", "me"] });
+      }
 
-        toast.success("로그인이 완료되었습니다!");
-
-        // Determine redirect destination
-        if (response.user.role === "admin") {
-          console.log("[Login] Redirecting to /admin");
-          navigate("/admin");
-        } else if (!response.user.name || !response.user.userType) {
-          console.log("[Login] Redirecting to /complete-profile (incomplete profile)");
-          navigate("/complete-profile");
-        } else {
-          console.log("[Login] Redirecting to / (home)");
-          navigate("/");
-        }
+      toast.success("로그인이 완료되었습니다!");
+      
+      // Admin 계정이면 /admin으로 이동
+      if (response.user?.role === "admin") {
+        navigate("/admin");
       } else {
-        console.error("[Login] No user data in response");
-        toast.error("로그인에 실패했습니다");
+        navigate("/");
       }
     } catch (error: any) {
-      console.error("[Login] Login error:", error);
-      const errorMessage = error?.message || "로그인에 실패했습니다";
+      const errorMessage = error.message || "로그인에 실패했습니다";
       toast.error(errorMessage);
     } finally {
       setIsLoading(false);
@@ -83,14 +78,17 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-cream-50 to-cream-100 flex items-center justify-center p-3 sm:p-4">
-      <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-4 sm:p-8">
-        <h1 className="text-2xl sm:text-3xl font-bold text-navy-900 mb-1 sm:mb-2">로그인</h1>
-        <p className="text-xs sm:text-sm text-gray-600 mb-4 sm:mb-6">UnivMatch에 로그인하세요</p>
-        <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted flex items-center justify-center p-3 sm:p-4">
+      <div className="w-full max-w-md card-premium-lg p-6 sm:p-10">
+        <div className="mb-8">
+          <h1 className="text-3xl sm:text-4xl font-bold text-foreground mb-2">로그인</h1>
+          <p className="text-base text-muted-foreground">유니브매치에 로그인하세요</p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-5">
           {/* 이메일 */}
-          <div className="space-y-1.5 sm:space-y-2">
-            <Label htmlFor="email" className="text-xs sm:text-sm text-navy-900 font-semibold">
+          <div className="space-y-2">
+            <Label htmlFor="email" className="text-sm font-semibold text-foreground">
               이메일
             </Label>
             <Input
@@ -104,14 +102,14 @@ export default function Login() {
                   setErrors({ ...errors, email: "" });
                 }
               }}
-              className={`text-xs sm:text-sm border-2 ${errors.email ? "border-red-500" : "border-gray-300"} focus:border-gold-500 px-3 py-2`}
+              className={`text-sm border ${errors.email ? "border-red-500 focus:border-red-500" : "border-border focus:border-primary"} px-4 py-2.5 rounded-md transition-colors`}
             />
-            {errors.email && <p className="text-red-500 text-xs">{errors.email}</p>}
+            {errors.email && <p className="text-red-500 text-xs font-medium">{errors.email}</p>}
           </div>
 
           {/* 비밀번호 */}
-          <div className="space-y-1.5 sm:space-y-2">
-            <Label htmlFor="password" className="text-xs sm:text-sm text-navy-900 font-semibold">
+          <div className="space-y-2">
+            <Label htmlFor="password" className="text-sm font-semibold text-foreground">
               비밀번호
             </Label>
             <Input
@@ -125,27 +123,32 @@ export default function Login() {
                   setErrors({ ...errors, password: "" });
                 }
               }}
-              className={`text-xs sm:text-sm border-2 ${errors.password ? "border-red-500" : "border-gray-300"} focus:border-gold-500 px-3 py-2`}
+              className={`text-sm border ${errors.password ? "border-red-500 focus:border-red-500" : "border-border focus:border-primary"} px-4 py-2.5 rounded-md transition-colors`}
             />
-            {errors.password && <p className="text-red-500 text-xs">{errors.password}</p>}
+            {errors.password && <p className="text-red-500 text-xs font-medium">{errors.password}</p>}
           </div>
 
           {/* 제출 버튼 */}
           <Button
             type="submit"
             disabled={isLoading || loginMutation.isPending}
-            className="w-full bg-primary hover:bg-primary/90 text-white text-sm sm:text-base font-semibold py-2 sm:py-3 rounded-lg transition-colors mt-2"
+            className="w-full bg-primary hover:bg-primary/90 text-white text-base font-semibold py-3 rounded-md transition-all duration-200 shadow-md hover:shadow-lg mt-4 flex items-center justify-center gap-2"
           >
-            {isLoading || loginMutation.isPending ? "로그인 중..." : "로그인"}
+            {isLoading || loginMutation.isPending ? "로그인 중..." : (
+              <>
+                로그인
+                <ArrowRight className="w-4 h-4" />
+              </>
+            )}
           </Button>
         </form>
 
         {/* 회원가입 링크 */}
-        <p className="text-center text-xs sm:text-sm text-gray-600 mt-4 sm:mt-6">
+        <p className="text-center text-sm text-muted-foreground mt-6">
           계정이 없으신가요?{" "}
           <button
             onClick={() => navigate("/signup")}
-            className="text-gold-500 hover:text-gold-600 font-semibold"
+            className="text-primary hover:text-primary/80 font-semibold transition-colors"
           >
             회원가입
           </button>

@@ -10,9 +10,10 @@ import { setPageMeta, PAGE_META } from "@/lib/seo";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
+import { toast } from "sonner";
 
 export default function ReviewCreate() {
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated } = useAuth({ redirectOnUnauthenticated: false });
   const [location, setLocation] = useLocation();
   const [rating, setRating] = useState(5);
   const [content, setContent] = useState("");
@@ -37,22 +38,22 @@ export default function ReviewCreate() {
   // 후기 작성 뮤테이션
   const createReviewMutation = trpc.review.create.useMutation({
     onSuccess: () => {
-      alert("후기가 작성되었습니다");
+      toast.success("후기 작성 완료", { description: "소중한 후기 감사합니다!" });
       setLocation('/bookings');
     },
     onError: (error: any) => {
-      alert("오류: " + error.message);
+      toast.error("오류", { description: error.message });
     },
   });
 
   const handleSubmit = async () => {
     if (!content.trim()) {
-      alert("후기 내용을 입력해주세요");
+      toast.error("후기 내용을 입력해주세요");
       return;
     }
 
     if (rating < 1 || rating > 5) {
-      alert("별점을 선택해주세요");
+      toast.error("별점을 선택해주세요");
       return;
     }
 

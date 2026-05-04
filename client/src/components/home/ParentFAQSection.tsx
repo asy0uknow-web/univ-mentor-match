@@ -7,7 +7,7 @@ export const ParentFAQSection = () => {
   const faqs = [
     {
       question: "상담료는 얼마인가요?",
-      answer: "상담 종류와 시간에 따라 다릅니다. 생기부 컨설팅은 시간당 50,000원, 진로상담은 30,000원, 학업관리는 40,000원, 대학탐방은 50,000원입니다. 첫 상담은 30분 무료 상담으로 시작할 수 있습니다."
+      answer: "상담료는 멘토마다 다르며, 각 멘토의 프로필 페이지에서 확인할 수 있습니다. 멘토가 직접 상담 유형별 가격을 설정하며, 유니브매치는 별도의 중개 수수료를 받지 않습니다."
     },
     {
       question: "환불은 어떻게 되나요?",
@@ -27,12 +27,12 @@ export const ParentFAQSection = () => {
     },
     {
       question: "성적 향상을 보장하나요?",
-      answer: "성적 향상은 학생의 노력과 실천이 가장 중요합니다. 우리의 멘토들은 진로 선택, 학습 방법, 대학 정보 등을 제공하여 학생이 올바른 결정을 내릴 수 있도록 돕습니다."
+      answer: "성적 향상은 학생의 노력과 실천이 가장 중요합니다. 멘토들은 진로 선택, 학습 방법, 대학 정보 등을 제공하여 학생이 올바른 결정을 내릴 수 있도록 돕습니다."
     }
   ];
 
   return (
-    <section id="parent-faq" role="region" className="py-16 sm:py-24 md:py-32 bg-gradient-to-b from-gray-50 to-white" aria-label="학부모 FAQ">
+    <section id="parent-faq" role="region" className="py-16 sm:py-24 md:py-32 bg-gradient-to-b from-blue-50 to-white dark:from-slate-900 dark:to-slate-950" aria-label="학부모 FAQ">
       <div className="container mx-auto px-4">
         {/* Section Header */}
         <div className="max-w-4xl mx-auto text-center mb-12 sm:mb-16">
@@ -50,12 +50,12 @@ export const ParentFAQSection = () => {
             {faqs.map((faq, idx) => (
               <div
                 key={idx}
-                className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-300"
+                className="bg-card  rounded-xl border border-border 700 700 shadow-sm hover:shadow-md  transition-shadow duration-300"
               >
                 {/* Question */}
                 <button
                   onClick={() => setExpandedIndex(expandedIndex === idx ? null : idx)}
-                  className="w-full px-6 sm:px-8 py-4 sm:py-5 text-left flex items-center justify-between hover:bg-gray-50 transition-colors"
+                  className="w-full px-6 sm:px-8 py-4 sm:py-5 text-left flex items-center justify-between hover:bg-background 900 transition-colors"
                   aria-expanded={expandedIndex === idx}
                   aria-controls={`faq-answer-${idx}`}
                 >
@@ -80,7 +80,7 @@ export const ParentFAQSection = () => {
                 {expandedIndex === idx && (
                   <div
                     id={`faq-answer-${idx}`}
-                    className="px-6 sm:px-8 py-4 sm:py-5 bg-gray-50 border-t border-gray-200"
+                    className="px-6 sm:px-8 py-4 sm:py-5 bg-background 900 border-t border-border 700 700"
                   >
                     <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
                       {faq.answer}

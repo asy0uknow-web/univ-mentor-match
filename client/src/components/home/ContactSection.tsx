@@ -16,16 +16,16 @@ export const ContactSection = () => {
       link: "https://open.kakao.com/o/univmatch"
     },
     {
-      title: "전화",
-      description: "1234-5678",
-      details: "평일 10:00 - 18:00",
-      icon: "☎️",
-      link: "tel:1234-5678"
+      title: "Q&A 커뮤니티",
+      description: "질문 등록하기",
+      details: "멘토들이 직접 답변해드립니다",
+      icon: "💡",
+      link: "/qna"
     }
   ];
 
   return (
-    <section id="contact" role="region" className="py-16 sm:py-24 md:py-32 bg-gradient-to-b from-white to-gray-50" aria-label="문의 채널">
+    <section id="contact" role="region" className="py-16 sm:py-24 md:py-32 bg-gradient-to-b from-blue-50 to-white dark:from-slate-900 dark:to-slate-950" aria-label="문의 채널">
       <div className="container mx-auto px-4">
         {/* Section Header */}
         <div className="max-w-4xl mx-auto text-center mb-12 sm:mb-16">
@@ -39,14 +39,14 @@ export const ContactSection = () => {
 
         {/* Contact Channels */}
         <div className="max-w-5xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6 lg:gap-8">
             {contactChannels.map((channel, idx) => (
               <a
                 key={idx}
                 href={channel.link}
                 target={channel.link.startsWith("http") ? "_blank" : undefined}
                 rel={channel.link.startsWith("http") ? "noopener noreferrer" : undefined}
-                className="bg-white rounded-2xl p-6 sm:p-8 shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 border border-gray-100 text-center group"
+                className="bg-card  rounded-2xl p-6 sm:p-8 shadow-md  hover:shadow-lg hover:scale-105 transition-all duration-300 border border-border 700 700 text-center group"
               >
                 {/* Icon */}
                 <div className="text-4xl sm:text-5xl mb-4 group-hover:scale-110 transition-transform duration-300">

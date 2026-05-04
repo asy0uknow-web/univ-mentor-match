@@ -38,8 +38,7 @@ async function startServer() {
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
   // OAuth callback under /api/oauth/callback
   registerOAuthRoutes(app);
-  // tRPC API - ensure JSON parsing happens before tRPC middleware
-  app.use("/api/trpc", express.json({ limit: "50mb" }));
+  // tRPC API
   app.use(
     "/api/trpc",
     createExpressMiddleware({
