@@ -16,10 +16,12 @@ export function useAuth(options?: UseAuthOptions) {
   const meQuery = trpc.auth.me.useQuery(undefined, {
     retry: false,
     refetchOnWindowFocus: false,
-    // staleTime을 5분으로 설정하여 불필요한 refetch 방지
-    staleTime: 5 * 60 * 1000,
-    // 캐시는 5분 유지
-    gcTime: 5 * 60 * 1000,
+    refetchOnReconnect: false,
+    refetchOnMount: false,
+    // staleTime을 10분으로 설정하여 불필요한 refetch 방지
+    staleTime: 10 * 60 * 1000,
+    // 캐시는 10분 유지
+    gcTime: 10 * 60 * 1000,
     // 오류를 throw하지 않음 (로그인되지 않은 사용자도 안전하게 처리)
     throwOnError: false,
   });
@@ -48,15 +50,24 @@ export function useAuth(options?: UseAuthOptions) {
   }, [logoutMutation, utils]);
 
   const state = useMemo(() => {
-    localStorage.setItem(
-      "manus-runtime-user-info",
-      JSON.stringify(meQuery.data)
-    );
+    // 비로그인 사용자를 위한 데이터 도메인의 검증
+    const userData = meQuery.data;
+    const isAuth = Boolean(userData && userData.id);
+    
+    if (isAuth) {
+      localStorage.setItem(
+        "manus-runtime-user-info",
+        JSON.stringify(userData)
+      );
+    } else {
+      localStorage.removeItem("manus-runtime-user-info");
+    }
+    
     return {
-      user: meQuery.data ?? null,
+      user: userData ?? null,
       loading: meQuery.isLoading || logoutMutation.isPending,
       error: meQuery.error ?? logoutMutation.error ?? null,
-      isAuthenticated: Boolean(meQuery.data),
+      isAuthenticated: isAuth,
     };
   }, [
     meQuery.data,
@@ -69,7 +80,8 @@ export function useAuth(options?: UseAuthOptions) {
   useEffect(() => {
     if (!redirectOnUnauthenticated) return;
     if (meQuery.isLoading || logoutMutation.isPending) return;
-    if (state.user) return;
+    // 인증된 사용자는 리다이렉트하지 않음
+    if (state.isAuthenticated) return;
     if (typeof window === "undefined") return;
     if (window.location.pathname === redirectPath) return;
 
@@ -79,7 +91,7 @@ export function useAuth(options?: UseAuthOptions) {
     redirectPath,
     logoutMutation.isPending,
     meQuery.isLoading,
-    state.user,
+    state.isAuthenticated,
   ]);
 
   return {

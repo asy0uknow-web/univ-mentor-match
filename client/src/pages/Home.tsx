@@ -66,6 +66,15 @@ export default function Home() {
   const { user, isAuthenticated, loading } = useAuth({ redirectOnUnauthenticated: false });
   const [, navigate] = useLocation();
   
+  // 디버그: 인증 상태 로깅
+  useEffect(() => {
+    console.log('[Home] Auth state:', {
+      isAuthenticated,
+      loading,
+      user: user ? { id: user.id, name: user.name, userType: user.userType } : null,
+    });
+  }, [isAuthenticated, loading, user]);
+  
   // 프로필 완성 상태 조회
   const { data: verificationStatus } = trpc.verification.getProfileVerificationStatus.useQuery(
     undefined,
@@ -76,16 +85,23 @@ export default function Home() {
     setPageMeta(PAGE_META.home);
   }, []);
 
-  // OAuth 로그인 후 프로필 미완성 시 리다이렉트
+  // OAuth 로그인 후 프로필 미완성 시 리다이렉트 (비로그인 사용자는 제외)
   useEffect(() => {
     if (loading) return;
-    if (isAuthenticated && user && (!user.name || !user.userType)) {
+    // 비로그인 사용자는 리다이렉트하지 않음 (user.id로 명확히 확인)
+    if (!user?.id) {
+      console.log('[Home] 비로그인 사용자 - 리다이렉트 안함');
+      return;
+    }
+    // 프로필 미완성 사용자만 리다이렉트
+    if (!user.name || !user.userType) {
+      console.log('[Home] 프로필 미완성 - 리다이렉트:', { name: user.name, userType: user.userType });
       navigate("/complete-profile", { replace: true });
     }
-  }, [isAuthenticated, user, navigate, loading]);
+  }, [user, navigate, loading]);
 
-  // 프로필 완성 페이지로 리다이렉트 중이면 로드 표시
-  if (!loading && isAuthenticated && user && (!user.name || !user.userType)) {
+  // 프로필 완성 페이지로 리다이렉트 중이면 로드 표시 (비로그인 사용자는 제외)
+  if (!loading && user?.id && (!user.name || !user.userType)) {
     return (
       <PageLayout showFooter>
         <div className="flex items-center justify-center min-h-screen">
@@ -97,6 +113,8 @@ export default function Home() {
       </PageLayout>
     );
   }
+
+  // 비로그인 사용자는 홈페이지 정상 렌더링
 
   return (
     <PageLayout showFooter>
