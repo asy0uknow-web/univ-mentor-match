@@ -1,0 +1,42 @@
+{
+  "query": "SELECT * FROM mentor_consultation_types LIMIT 10",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute SELECT * FROM mentor_consultation_types LIMIT 10",
+  "rows": [
+    {
+      "id": "1",
+      "mentorId": "1",
+      "consultationType": "career_counseling",
+      "pricePerHour": "40000.00",
+      "createdAt": "2026-03-06 14:46:25",
+      "updatedAt": "2026-03-06 14:46:25"
+    },
+    {
+      "id": "2",
+      "mentorId": "1",
+      "consultationType": "university_tour",
+      "pricePerHour": "50000.00",
+      "createdAt": "2026-03-06 14:46:25",
+      "updatedAt": "2026-03-06 14:46:25"
+    },
+    {
+      "id": "3",
+      "mentorId": "1",
+      "consultationType": "resume_consulting",
+      "pricePerHour": "50000.00",
+      "createdAt": "2026-03-06 14:46:25",
+      "updatedAt": "2026-03-06 14:46:25"
+    },
+    {
+      "id": "4",
+      "mentorId": "1",
+      "consultationType": "academic_management",
+      "pricePerHour": "40000.00",
+      "createdAt": "2026-03-06 14:46:25",
+      "updatedAt": "2026-03-06 14:46:25"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tmentorId\tconsultationType\tpricePerHour\tcreatedAt\tupdatedAt\n1\t1\tcareer_counseling\t40000.00\t2026-03-06 14:46:25\t2026-03-06 14:46:25\n2\t1\tuniversity_tour\t50000.00\t2026-03-06 14:46:25\t2026-03-06 14:46:25\n3\t1\tresume_consulting\t50000.00\t2026-03-06 14:46:25\t2026-03-06 14:46:25\n4\t1\tacademic_management\t40000.00\t2026-03-06 14:46:25\t2026-03-06 14:46:25\n",
+  "stderr": "",
+  "execution_time_ms": 1513
+}

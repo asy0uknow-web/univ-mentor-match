@@ -1,0 +1,31 @@
+{
+  "query": "SELECT id, name, email, role, createdAt FROM users WHERE email LIKE '%yjh032201%' OR email LIKE '%gmail%';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute SELECT id, name, email, role, createdAt FROM users WHERE email LIKE '%yjh032201%' OR email LIKE '%gmail%';",
+  "rows": [
+    {
+      "id": "240075",
+      "name": "NULL",
+      "email": "2003yunho@gmail.com",
+      "role": "admin",
+      "createdAt": "2026-02-23 15:24:19"
+    },
+    {
+      "id": "330001",
+      "name": "NULL",
+      "email": "yjh032201@gmail.com",
+      "role": "admin",
+      "createdAt": "2026-02-24 07:17:01"
+    },
+    {
+      "id": "750009",
+      "name": "NULL",
+      "email": "syoung.choi327@gmail.com",
+      "role": "user",
+      "createdAt": "2026-02-26 14:53:24"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\temail\trole\tcreatedAt\n240075\tNULL\t2003yunho@gmail.com\tadmin\t2026-02-23 15:24:19\n330001\tNULL\tyjh032201@gmail.com\tadmin\t2026-02-24 07:17:01\n750009\tNULL\tsyoung.choi327@gmail.com\tuser\t2026-02-26 14:53:24\n",
+  "stderr": "",
+  "execution_time_ms": 1523
+}

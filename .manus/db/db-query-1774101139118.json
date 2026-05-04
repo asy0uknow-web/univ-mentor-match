@@ -1,0 +1,78 @@
+{
+  "query": "SELECT u.id, u.name FROM users u WHERE u.userType = 'university_student' ORDER BY u.id;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute SELECT u.id, u.name FROM users u WHERE u.userType = 'university_student' ORDER BY u.id;",
+  "rows": [
+    {
+      "id": "3840007",
+      "name": "최세영"
+    },
+    {
+      "id": "4110002",
+      "name": "양주혁"
+    },
+    {
+      "id": "4170010",
+      "name": "테스트 멘토"
+    },
+    {
+      "id": "4200008",
+      "name": "최세영"
+    },
+    {
+      "id": "4410001",
+      "name": "최세영"
+    },
+    {
+      "id": "4410009",
+      "name": "멘토1"
+    },
+    {
+      "id": "4410015",
+      "name": "멘토2"
+    },
+    {
+      "id": "4410049",
+      "name": "멘토3"
+    },
+    {
+      "id": "4410055",
+      "name": "멘토4"
+    },
+    {
+      "id": "4470011",
+      "name": "이윤호"
+    },
+    {
+      "id": "4470024",
+      "name": "테스트멘토"
+    },
+    {
+      "id": "4500053",
+      "name": "멘토5"
+    },
+    {
+      "id": "4500058",
+      "name": "멘토6"
+    },
+    {
+      "id": "4500071",
+      "name": "멘토7"
+    },
+    {
+      "id": "4500077",
+      "name": "멘토8"
+    },
+    {
+      "id": "4500100",
+      "name": "멘토9"
+    },
+    {
+      "id": "4500106",
+      "name": "멘토10"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\n3840007\t최세영\n4110002\t양주혁\n4170010\t테스트 멘토\n4200008\t최세영\n4410001\t최세영\n4410009\t멘토1\n4410015\t멘토2\n4410049\t멘토3\n4410055\t멘토4\n4470011\t이윤호\n4470024\t테스트멘토\n4500053\t멘토5\n4500058\t멘토6\n4500071\t멘토7\n4500077\t멘토8\n4500100\t멘토9\n4500106\t멘토10\n",
+  "stderr": "",
+  "execution_time_ms": 1556
+}

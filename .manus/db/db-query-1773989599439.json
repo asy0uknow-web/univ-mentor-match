@@ -1,0 +1,110 @@
+{
+  "query": "SELECT id, email, name FROM users WHERE name LIKE '%Test%' OR email LIKE '%test%' LIMIT 20",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute SELECT id, email, name FROM users WHERE name LIKE '%Test%' OR email LIKE '%test%' LIMIT 20",
+  "rows": [
+    {
+      "id": "99901",
+      "email": "test-ux-a-1773986732011@test.com",
+      "name": "테스트유저A"
+    },
+    {
+      "id": "99902",
+      "email": "test-ux-b-1773986732011@test.com",
+      "name": "테스트유저B"
+    },
+    {
+      "id": "3660006",
+      "email": "NULL",
+      "name": "ReReg Test Mentor"
+    },
+    {
+      "id": "3660011",
+      "email": "NULL",
+      "name": "Deleted Profile Test"
+    },
+    {
+      "id": "3660034",
+      "email": "NULL",
+      "name": "ReReg Test Mentor"
+    },
+    {
+      "id": "3660039",
+      "email": "NULL",
+      "name": "Deleted Profile Test"
+    },
+    {
+      "id": "3780030",
+      "email": "NULL",
+      "name": "ReReg Test Mentor"
+    },
+    {
+      "id": "3780035",
+      "email": "NULL",
+      "name": "Deleted Profile Test"
+    },
+    {
+      "id": "3780047",
+      "email": "NULL",
+      "name": "ReReg Test Mentor"
+    },
+    {
+      "id": "3780052",
+      "email": "NULL",
+      "name": "Deleted Profile Test"
+    },
+    {
+      "id": "3810004",
+      "email": "NULL",
+      "name": "ReReg Test Mentor"
+    },
+    {
+      "id": "3810010",
+      "email": "NULL",
+      "name": "Deleted Profile Test"
+    },
+    {
+      "id": "3840013",
+      "email": "NULL",
+      "name": "ReReg Test Mentor"
+    },
+    {
+      "id": "3840018",
+      "email": "NULL",
+      "name": "Deleted Profile Test"
+    },
+    {
+      "id": "3840030",
+      "email": "NULL",
+      "name": "ReReg Test Mentor"
+    },
+    {
+      "id": "3840035",
+      "email": "NULL",
+      "name": "Deleted Profile Test"
+    },
+    {
+      "id": "3840072",
+      "email": "NULL",
+      "name": "ReReg Test Mentor"
+    },
+    {
+      "id": "3840078",
+      "email": "NULL",
+      "name": "Deleted Profile Test"
+    },
+    {
+      "id": "3840084",
+      "email": "NULL",
+      "name": "ReReg Test Mentor"
+    },
+    {
+      "id": "3840089",
+      "email": "NULL",
+      "name": "Deleted Profile Test"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\temail\tname\n99901\ttest-ux-a-1773986732011@test.com\t테스트유저A\n99902\ttest-ux-b-1773986732011@test.com\t테스트유저B\n3660006\tNULL\tReReg Test Mentor\n3660011\tNULL\tDeleted Profile Test\n3660034\tNULL\tReReg Test Mentor\n3660039\tNULL\tDeleted Profile Test\n3780030\tNULL\tReReg Test Mentor\n3780035\tNULL\tDeleted Profile Test\n3780047\tNULL\tReReg Test Mentor\n3780052\tNULL\tDeleted Profile Test\n3810004\tNULL\tReReg Test Mentor\n3810010\tNULL\tDeleted Profile Test\n3840013\tNULL\tReReg Test Mentor\n3840018\tNULL\tDeleted Profile Test\n3840030\tNULL\tReReg Test Mentor\n3840035\tNULL\tDeleted Profile Test\n3840072\tNULL\tReReg Test Mentor\n3840078\tNULL\tDeleted Profile Test\n3840084\tNULL\tReReg Test Mentor\n3840089\tNULL\tDeleted Profile Test\n",
+  "stderr": "",
+  "execution_time_ms": 1587
+}

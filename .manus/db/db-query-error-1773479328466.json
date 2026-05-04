@@ -1,0 +1,8 @@
+{
+  "query": "\nSELECT u.id, u.name, u.email, u.userType, mp.id as mentee_profile_id, mp.school, mp.region\nFROM users u\nJOIN mentee_profiles mp ON u.id = mp.userId\nORDER BY u.createdAt DESC\nLIMIT 10;\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute \nSELECT u.id, u.name, u.email, u.userType, mp.id as mentee_profile_id, mp.school, mp.region\nFROM users u\nJOIN mentee_profiles mp ON u.id = mp.userId\nORDER BY u.createdAt DESC\nLIMIT 10;\n",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1146 (42S02) at line 2: Table 'gy6raywmhnxp5tjqbtpkxj.mentee_profiles' doesn't exist"
+  ]
+}

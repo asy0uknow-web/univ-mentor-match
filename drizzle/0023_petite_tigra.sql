@@ -1,0 +1,1 @@
+ALTER TABLE `mentor_gallery` ADD `isPrimary` boolean DEFAULT false NOT NULL;

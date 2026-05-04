@@ -1,0 +1,8 @@
+{
+  "query": "INSERT INTO mentor_consultation_types (mentorId, consultationType, hourlyRate) VALUES (1, 'university_tour', 50000), (1, 'academic_management', 40000);",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute INSERT INTO mentor_consultation_types (mentorId, consultationType, hourlyRate) VALUES (1, 'university_tour', 50000), (1, 'academic_management', 40000);",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1054 (42S22) at line 1: Unknown column 'hourlyRate' in 'field list'"
+  ]
+}

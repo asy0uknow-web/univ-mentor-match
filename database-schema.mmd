@@ -1,0 +1,111 @@
+erDiagram
+    USERS ||--o{ MENTOR_PROFILES : has
+    USERS ||--o{ BOOKINGS : makes
+    USERS ||--o{ MESSAGES : sends
+    USERS ||--o{ NOTIFICATIONS : receives
+    USERS ||--o{ REVIEWS : writes
+    MENTOR_PROFILES ||--o{ BOOKINGS : receives
+    BOOKINGS ||--o{ REVIEWS : has
+    BOOKINGS ||--o{ MESSAGES : references
+    MENTOR_PROFILES ||--o{ MENTOR_VERIFICATIONS : has
+    MENTOR_PROFILES ||--o{ GALLERY_IMAGES : has
+
+    USERS {
+        int id PK
+        string openId UK
+        string name
+        string email
+        string loginMethod
+        enum role
+        enum userType
+        string stripeCustomerId
+        timestamp createdAt
+        timestamp updatedAt
+        timestamp lastSignedIn
+    }
+
+    MENTOR_PROFILES {
+        int id PK
+        int userId FK "UK with isDeleted"
+        string university
+        string major
+        enum field
+        enum region
+        enum grade
+        text bio
+        decimal hourlyRate
+        text availableSlots
+        boolean isActive
+        enum verificationStatus
+        boolean isDeleted "Soft delete flag"
+        decimal averageRating
+        int reviewCount
+        timestamp createdAt
+        timestamp updatedAt
+    }
+
+    BOOKINGS {
+        int id PK
+        int studentId FK
+        int mentorId FK
+        timestamp scheduledAt
+        decimal duration
+        decimal totalAmount
+        enum consultationType
+        enum status
+        string stripePaymentIntentId
+        text studentMessage
+        timestamp createdAt
+        timestamp updatedAt
+    }
+
+    REVIEWS {
+        int id PK
+        int bookingId FK
+        int studentId FK
+        int mentorId FK
+        int rating
+        text comment
+        timestamp createdAt
+        timestamp updatedAt
+    }
+
+    NOTIFICATIONS {
+        int id PK
+        int userId FK
+        enum type
+        string title
+        text message
+        boolean isRead
+        int relatedId
+        timestamp createdAt
+    }
+
+    MESSAGES {
+        int id PK
+        int senderId FK
+        int recipientId FK
+        text content
+        boolean isRead
+        int bookingId FK
+        timestamp createdAt
+        timestamp updatedAt
+    }
+
+    MENTOR_VERIFICATIONS {
+        int id PK
+        int userId FK
+        string studentIdImageUrl
+        enum verificationStatus
+        text rejectionReason
+        timestamp createdAt
+        timestamp updatedAt
+    }
+
+    GALLERY_IMAGES {
+        int id PK
+        int mentorId FK
+        string imageUrl
+        string imageKey
+        timestamp createdAt
+    }

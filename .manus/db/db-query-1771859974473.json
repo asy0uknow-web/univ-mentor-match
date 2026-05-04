@@ -1,0 +1,26 @@
+{
+  "query": "SELECT 'messages' as table_name, COUNT(*) as count FROM messages WHERE senderId = (SELECT id FROM users WHERE email = '2003yunho@gmail.com') OR recipientId = (SELECT id FROM users WHERE email = '2003yunho@gmail.com')\nUNION ALL\nSELECT 'bookings', COUNT(*) FROM bookings WHERE studentId = (SELECT id FROM users WHERE email = '2003yunho@gmail.com') OR mentorId = (SELECT id FROM users WHERE email = '2003yunho@gmail.com')\nUNION ALL\nSELECT 'notifications', COUNT(*) FROM notifications WHERE userId = (SELECT id FROM users WHERE email = '2003yunho@gmail.com')\nUNION ALL\nSELECT 'mentor_profiles', COUNT(*) FROM mentor_profiles WHERE userId = (SELECT id FROM users WHERE email = '2003yunho@gmail.com');",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute SELECT 'messages' as table_name, COUNT(*) as count FROM messages WHERE senderId = (SELECT id FROM users WHERE email = '2003yunho@gmail.com') OR recipientId = (SELECT id FROM users WHERE email = '2003yunho@gmail.com')\nUNION ALL\nSELECT 'bookings', COUNT(*) FROM bookings WHERE studentId = (SELECT id FROM users WHERE email = '2003yunho@gmail.com') OR mentorId = (SELECT id FROM users WHERE email = '2003yunho@gmail.com')\nUNION ALL\nSELECT 'notifications', COUNT(*) FROM notifications WHERE userId = (SELECT id FROM users WHERE email = '2003yunho@gmail.com')\nUNION ALL\nSELECT 'mentor_profiles', COUNT(*) FROM mentor_profiles WHERE userId = (SELECT id FROM users WHERE email = '2003yunho@gmail.com');",
+  "rows": [
+    {
+      "table_name": "messages",
+      "count": "0"
+    },
+    {
+      "table_name": "bookings",
+      "count": "0"
+    },
+    {
+      "table_name": "notifications",
+      "count": "0"
+    },
+    {
+      "table_name": "mentor_profiles",
+      "count": "0"
+    }
+  ],
+  "messages": [],
+  "stdout": "table_name\tcount\nmessages\t0\nbookings\t0\nnotifications\t0\nmentor_profiles\t0\n",
+  "stderr": "",
+  "execution_time_ms": 1665
+}

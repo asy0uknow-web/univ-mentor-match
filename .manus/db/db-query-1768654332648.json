@@ -1,0 +1,15 @@
+{
+  "query": "SELECT u.id, u.name, u.userType FROM users u WHERE u.name = '2003yunho'",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute SELECT u.id, u.name, u.userType FROM users u WHERE u.name = '2003yunho'",
+  "rows": [
+    {
+      "id": "1",
+      "name": "2003yunho",
+      "userType": "university_student"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\tuserType\n1\t2003yunho\tuniversity_student\n",
+  "stderr": "",
+  "execution_time_ms": 1515
+}

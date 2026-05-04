@@ -1,0 +1,82 @@
+{
+  "query": "\nSELECT u.id, u.name, u.email, u.userType, u.loginMethod,\n  CASE WHEN mp.id IS NOT NULL THEN 'mentor' ELSE 'mentee' END as role\nFROM users u\nLEFT JOIN mentor_profiles mp ON u.id = mp.userId\nORDER BY u.createdAt DESC\nLIMIT 20;\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute \nSELECT u.id, u.name, u.email, u.userType, u.loginMethod,\n  CASE WHEN mp.id IS NOT NULL THEN 'mentor' ELSE 'mentee' END as role\nFROM users u\nLEFT JOIN mentor_profiles mp ON u.id = mp.userId\nORDER BY u.createdAt DESC\nLIMIT 20;\n",
+  "rows": [
+    {
+      "id": "3270082",
+      "name": "테스트멘티",
+      "email": "test-mentee@test.com",
+      "userType": "university_student",
+      "loginMethod": "email",
+      "role": "mentee"
+    },
+    {
+      "id": "2550046",
+      "name": "양주혁",
+      "email": "yjh03220@naver.com",
+      "userType": "high_school_student",
+      "loginMethod": "email",
+      "role": "mentee"
+    },
+    {
+      "id": "2490061",
+      "name": "최세영",
+      "email": "syoung.choi327@gmail.com",
+      "userType": "university_student",
+      "loginMethod": "google",
+      "role": "mentor"
+    },
+    {
+      "id": "2160057",
+      "name": "윤호 이",
+      "email": "4g6hbs46s8@privaterelay.appleid.com",
+      "userType": "NULL",
+      "loginMethod": "apple",
+      "role": "mentee"
+    },
+    {
+      "id": "2160042",
+      "name": "NULL",
+      "email": "chltpdud3415@gmail.com",
+      "userType": "NULL",
+      "loginMethod": "google",
+      "role": "mentee"
+    },
+    {
+      "id": "2160001",
+      "name": "NULL",
+      "email": "yjh032201@gmail.com",
+      "userType": "university_student",
+      "loginMethod": "google",
+      "role": "mentor"
+    },
+    {
+      "id": "2070053",
+      "name": "NULL",
+      "email": "kgmin40@gmail.com",
+      "userType": "NULL",
+      "loginMethod": "google",
+      "role": "mentee"
+    },
+    {
+      "id": "2040021",
+      "name": "이윤호",
+      "email": "2003yunho@gmail.com",
+      "userType": "university_student",
+      "loginMethod": "email",
+      "role": "mentor"
+    },
+    {
+      "id": "1",
+      "name": "김테스토",
+      "email": "test@test.com",
+      "userType": "university_student",
+      "loginMethod": "oauth",
+      "role": "mentor"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\temail\tuserType\tloginMethod\trole\n3270082\t테스트멘티\ttest-mentee@test.com\tuniversity_student\temail\tmentee\n2550046\t양주혁\tyjh03220@naver.com\thigh_school_student\temail\tmentee\n2490061\t최세영\tsyoung.choi327@gmail.com\tuniversity_student\tgoogle\tmentor\n2160057\t윤호 이\t4g6hbs46s8@privaterelay.appleid.com\tNULL\tapple\tmentee\n2160042\tNULL\tchltpdud3415@gmail.com\tNULL\tgoogle\tmentee\n2160001\tNULL\tyjh032201@gmail.com\tuniversity_student\tgoogle\tmentor\n2070053\tNULL\tkgmin40@gmail.com\tNULL\tgoogle\tmentee\n2040021\t이윤호\t2003yunho@gmail.com\tuniversity_student\temail\tmentor\n1\t김테스토\ttest@test.com\tuniversity_student\toauth\tmentor\n",
+  "stderr": "",
+  "execution_time_ms": 1513
+}

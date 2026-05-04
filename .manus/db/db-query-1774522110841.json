@@ -1,0 +1,9 @@
+{
+  "query": "DELETE FROM messages WHERE senderId = 5160048 OR recipientId = 5160048;\nDELETE FROM notifications WHERE userId = 5160048;\nDELETE FROM bookings WHERE studentId = 5160048 OR mentorId = 5160048;\nDELETE FROM reviews WHERE mentorId = 5160048 OR studentId = 5160048;\nDELETE FROM mentor_consultation_types WHERE mentorId = 5160048;\nDELETE FROM mentor_gallery WHERE mentorId = 5160048;\nDELETE FROM mentor_verifications WHERE userId = 5160048;\nDELETE FROM mentor_profiles WHERE userId = 5160048;\nDELETE FROM user_profiles WHERE userId = 5160048;\nDELETE FROM users WHERE id = 5160048;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute DELETE FROM messages WHERE senderId = 5160048 OR recipientId = 5160048;\nDELETE FROM notifications WHERE userId = 5160048;\nDELETE FROM bookings WHERE studentId = 5160048 OR mentorId = 5160048;\nDELETE FROM reviews WHERE mentorId = 5160048 OR studentId = 5160048;\nDELETE FROM mentor_consultation_types WHERE mentorId = 5160048;\nDELETE FROM mentor_gallery WHERE mentorId = 5160048;\nDELETE FROM mentor_verifications WHERE userId = 5160048;\nDELETE FROM mentor_profiles WHERE userId = 5160048;\nDELETE FROM user_profiles WHERE userId = 5160048;\nDELETE FROM users WHERE id = 5160048;",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 3748
+}

@@ -1,0 +1,9 @@
+{
+  "query": "\nINSERT INTO mentor_profiles (userId, university, major, grade, bio, field, region, verificationStatus, isDeleted) \nVALUES (4170010, '서울대학교', '컴퓨터공학과', '3', '안녕하세요! 컴퓨터공학을 전공하고 있는 멘토입니다. 진로상담과 학업관리를 도와드립니다.', 'engineering', 'seoul', 'approved', false);\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute \nINSERT INTO mentor_profiles (userId, university, major, grade, bio, field, region, verificationStatus, isDeleted) \nVALUES (4170010, '서울대학교', '컴퓨터공학과', '3', '안녕하세요! 컴퓨터공학을 전공하고 있는 멘토입니다. 진로상담과 학업관리를 도와드립니다.', 'engineering', 'seoul', 'approved', false);\n",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 1538
+}

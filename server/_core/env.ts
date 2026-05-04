@@ -1,3 +1,26 @@
+// 필수 환경 변수 검증
+const REQUIRED_ENV_VARS = [
+  "DATABASE_URL",
+  "JWT_SECRET",
+  "OAUTH_SERVER_URL",
+] as const;
+
+function validateEnv(): void {
+  const missing = REQUIRED_ENV_VARS.filter((key) => !process.env[key]);
+  if (missing.length > 0) {
+    console.error(
+      `[ENV] Missing required environment variables: ${missing.join(", ")}`
+    );
+    if (process.env.NODE_ENV === "production") {
+      throw new Error(
+        `Missing required environment variables: ${missing.join(", ")}`
+      );
+    }
+  }
+}
+
+validateEnv();
+
 export const ENV = {
   appId: process.env.VITE_APP_ID ?? "",
   cookieSecret: process.env.JWT_SECRET ?? "",

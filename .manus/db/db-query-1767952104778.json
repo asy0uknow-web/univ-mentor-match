@@ -1,0 +1,15 @@
+{
+  "query": "SELECT id, name, email FROM users WHERE name = 'Seyoung' LIMIT 1;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute SELECT id, name, email FROM users WHERE name = 'Seyoung' LIMIT 1;",
+  "rows": [
+    {
+      "id": "60003",
+      "name": "Seyoung",
+      "email": "syoung.choi327@gmail.com"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\temail\n60003\tSeyoung\tsyoung.choi327@gmail.com\n",
+  "stderr": "",
+  "execution_time_ms": 1507
+}

@@ -1,0 +1,17 @@
+{
+  "query": "SELECT id, userId, uuid, university, major FROM mentor_profiles WHERE uuid = '941491ed-2ac4-11f1-b9b0-be4e90e67456';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute SELECT id, userId, uuid, university, major FROM mentor_profiles WHERE uuid = '941491ed-2ac4-11f1-b9b0-be4e90e67456';",
+  "rows": [
+    {
+      "id": "900001",
+      "userId": "4170010",
+      "uuid": "941491ed-2ac4-11f1-b9b0-be4e90e67456",
+      "university": "서울대학교",
+      "major": "컴퓨터공학과"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tuserId\tuuid\tuniversity\tmajor\n900001\t4170010\t941491ed-2ac4-11f1-b9b0-be4e90e67456\t서울대학교\t컴퓨터공학과\n",
+  "stderr": "",
+  "execution_time_ms": 1595
+}

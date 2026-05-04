@@ -1,0 +1,31 @@
+{
+  "query": "SELECT id, name, email, role, openId FROM users LIMIT 10;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute SELECT id, name, email, role, openId FROM users LIMIT 10;",
+  "rows": [
+    {
+      "id": "1",
+      "name": "2003yunho",
+      "email": "2003yunho@gmail.com",
+      "role": "admin",
+      "openId": "jNpicDk7jMFQGMZMFUDRwn"
+    },
+    {
+      "id": "210002",
+      "name": "주혁 양",
+      "email": "yjh032201@gmail.com",
+      "role": "user",
+      "openId": "oJpVLswcS8eApBHhgymjVM"
+    },
+    {
+      "id": "270055",
+      "name": "Seyoung",
+      "email": "syoung.choi327@gmail.com",
+      "role": "user",
+      "openId": "2sJUYDtiAF26ztRq5Z6Mqp"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\temail\trole\topenId\n1\t2003yunho\t2003yunho@gmail.com\tadmin\tjNpicDk7jMFQGMZMFUDRwn\n210002\t주혁 양\tyjh032201@gmail.com\tuser\toJpVLswcS8eApBHhgymjVM\n270055\tSeyoung\tsyoung.choi327@gmail.com\tuser\t2sJUYDtiAF26ztRq5Z6Mqp\n",
+  "stderr": "",
+  "execution_time_ms": 1520
+}

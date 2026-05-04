@@ -1,0 +1,9 @@
+{
+  "query": "UPDATE mentor_profiles SET major = '경영학과' WHERE major = '경영학';\nUPDATE mentor_profiles SET major = '데이터과학과' WHERE major = '데이터과학';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute UPDATE mentor_profiles SET major = '경영학과' WHERE major = '경영학';\nUPDATE mentor_profiles SET major = '데이터과학과' WHERE major = '데이터과학';",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 1836
+}

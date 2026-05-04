@@ -1,0 +1,26 @@
+{
+  "query": "SELECT id, userId, university, major, isActive, verificationStatus FROM mentor_profiles;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute SELECT id, userId, university, major, isActive, verificationStatus FROM mentor_profiles;",
+  "rows": [
+    {
+      "id": "1",
+      "userId": "1",
+      "university": "한국대학교",
+      "major": "학과공학과",
+      "isActive": "0",
+      "verificationStatus": "approved"
+    },
+    {
+      "id": "30001",
+      "userId": "210002",
+      "university": "고려대학교",
+      "major": "데이터과학과",
+      "isActive": "0",
+      "verificationStatus": "approved"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tuserId\tuniversity\tmajor\tisActive\tverificationStatus\n1\t1\t한국대학교\t학과공학과\t0\tapproved\n30001\t210002\t고려대학교\t데이터과학과\t0\tapproved\n",
+  "stderr": "",
+  "execution_time_ms": 1558
+}

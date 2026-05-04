@@ -16,6 +16,11 @@ export function useAuth(options?: UseAuthOptions) {
   const meQuery = trpc.auth.me.useQuery(undefined, {
     retry: false,
     refetchOnWindowFocus: false,
+    // staleTime을 0으로 설정하여 단배로 stale 상태로 변경
+    // 다른 페이지 전환 시 자동 갱신
+    staleTime: 0,
+    // 캐시는 5분 유지
+    gcTime: 5 * 60 * 1000,
   });
 
   const logoutMutation = trpc.auth.logout.useMutation({

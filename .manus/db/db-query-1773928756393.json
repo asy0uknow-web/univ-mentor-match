@@ -1,0 +1,9 @@
+{
+  "query": "\nINSERT INTO users (openId, email, name, role, userType, lastSignedIn) \nVALUES (CONCAT('test-mentor-', UNIX_TIMESTAMP() * 1000), CONCAT('test-mentor-', UNIX_TIMESTAMP() * 1000, '@test.com'), '테스트 멘토', 'user', 'university_student', NOW());\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute \nINSERT INTO users (openId, email, name, role, userType, lastSignedIn) \nVALUES (CONCAT('test-mentor-', UNIX_TIMESTAMP() * 1000), CONCAT('test-mentor-', UNIX_TIMESTAMP() * 1000, '@test.com'), '테스트 멘토', 'user', 'university_student', NOW());\n",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 1530
+}

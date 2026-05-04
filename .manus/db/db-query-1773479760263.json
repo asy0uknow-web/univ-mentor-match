@@ -1,0 +1,18 @@
+{
+  "query": "\nSELECT u.id as userId, mp.id as mentorProfileId, u.name, mp.university, mp.major, mp.grade\nFROM users u\nJOIN mentor_profiles mp ON u.id = mp.userId\nWHERE u.name = '이윤호'\nLIMIT 1;\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute \nSELECT u.id as userId, mp.id as mentorProfileId, u.name, mp.university, mp.major, mp.grade\nFROM users u\nJOIN mentor_profiles mp ON u.id = mp.userId\nWHERE u.name = '이윤호'\nLIMIT 1;\n",
+  "rows": [
+    {
+      "userId": "2040021",
+      "mentorProfileId": "330001",
+      "name": "이윤호",
+      "university": "고려대학교",
+      "major": "데이터과학과",
+      "grade": "3"
+    }
+  ],
+  "messages": [],
+  "stdout": "userId\tmentorProfileId\tname\tuniversity\tmajor\tgrade\n2040021\t330001\t이윤호\t고려대학교\t데이터과학과\t3\n",
+  "stderr": "",
+  "execution_time_ms": 1524
+}

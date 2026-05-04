@@ -1,0 +1,29 @@
+{
+  "query": "SELECT * FROM mentor_profiles WHERE userId = 2;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute SELECT * FROM mentor_profiles WHERE userId = 2;",
+  "rows": [
+    {
+      "id": "120001",
+      "userId": "2",
+      "university": "Harvard",
+      "major": "경영",
+      "field": "NULL",
+      "region": "jeju",
+      "grade": "3",
+      "bio": "NULL",
+      "hourlyRate": "0.00",
+      "availableSlots": "NULL",
+      "isActive": "1",
+      "verificationStatus": "approved",
+      "isDeleted": "0",
+      "averageRating": "0.00",
+      "reviewCount": "0",
+      "createdAt": "2026-03-07 04:19:33",
+      "updatedAt": "2026-03-07 04:20:21"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tuserId\tuniversity\tmajor\tfield\tregion\tgrade\tbio\thourlyRate\tavailableSlots\tisActive\tverificationStatus\tisDeleted\taverageRating\treviewCount\tcreatedAt\tupdatedAt\n120001\t2\tHarvard\t경영\tNULL\tjeju\t3\tNULL\t0.00\tNULL\t1\tapproved\t0\t0.00\t0\t2026-03-07 04:19:33\t2026-03-07 04:20:21\n",
+  "stderr": "",
+  "execution_time_ms": 1515
+}

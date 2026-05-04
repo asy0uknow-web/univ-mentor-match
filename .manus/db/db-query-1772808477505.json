@@ -1,0 +1,20 @@
+{
+  "query": "SELECT id, userId, university FROM mentor_profiles LIMIT 5",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute SELECT id, userId, university FROM mentor_profiles LIMIT 5",
+  "rows": [
+    {
+      "id": "30001",
+      "userId": "240075",
+      "university": "고려대학교"
+    },
+    {
+      "id": "60001",
+      "userId": "330001",
+      "university": "고려대학교"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tuserId\tuniversity\n30001\t240075\t고려대학교\n60001\t330001\t고려대학교\n",
+  "stderr": "",
+  "execution_time_ms": 1573
+}

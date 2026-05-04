@@ -1,0 +1,9 @@
+{
+  "query": "\nINSERT INTO users (openId, email, passwordHash, name, userType, role, emailVerified, loginMethod, createdAt, updatedAt) \nVALUES (\n  'ead9804f-8699-4665-9ccf-43241bacba17',\n  'test-mentor@example.com',\n  '9333c13f5ed3748ae2d2427a072a2dd5cd2e0395d2882c84218aa2a6077f78310900b2b649b111710bbe0686d32a4cc8c7b3b98d0884aa73c25691a18d671b76',\n  '테스트멘토',\n  'university_student',\n  'user',\n  1,\n  'email',\n  NOW(),\n  NOW()\n)\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute \nINSERT INTO users (openId, email, passwordHash, name, userType, role, emailVerified, loginMethod, createdAt, updatedAt) \nVALUES (\n  'ead9804f-8699-4665-9ccf-43241bacba17',\n  'test-mentor@example.com',\n  '9333c13f5ed3748ae2d2427a072a2dd5cd2e0395d2882c84218aa2a6077f78310900b2b649b111710bbe0686d32a4cc8c7b3b98d0884aa73c25691a18d671b76',\n  '테스트멘토',\n  'university_student',\n  'user',\n  1,\n  'email',\n  NOW(),\n  NOW()\n)\n",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 1591
+}
