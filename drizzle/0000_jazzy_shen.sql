@@ -1,2 +1,0 @@
--- Initial migration placeholder
--- This file is required by drizzle-kit migration system

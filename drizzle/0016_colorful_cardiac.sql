@@ -1,1 +1,0 @@
-ALTER TABLE `mentor_columns` ADD `viewCount` int DEFAULT 0 NOT NULL;

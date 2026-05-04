@@ -1,8 +1,0 @@
-{
-  "query": "\nINSERT INTO mentor_verifications (mentorId, studentIdImageUrl, verificationStatus, rejectionReason) \nSELECT id, 'https://via.placeholder.com/300x400?text=Student+ID', 'approved', NULL FROM mentor_profiles WHERE userId = 4170010 LIMIT 1;\n",
-  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute \nINSERT INTO mentor_verifications (mentorId, studentIdImageUrl, verificationStatus, rejectionReason) \nSELECT id, 'https://via.placeholder.com/300x400?text=Student+ID', 'approved', NULL FROM mentor_profiles WHERE userId = 4170010 LIMIT 1;\n",
-  "returncode": 1,
-  "logs": [
-    "ERROR 1054 (42S22) at line 2: Unknown column 'mentorId' in 'field list'"
-  ]
-}

@@ -1,9 +1,0 @@
-{
-  "query": "SELECT mv.id, mv.userId, mv.status, mv.studentIdImageUrl, u.name, u.email, u.role,\n       mp.id as profile_id, mp.university, mp.major\nFROM mentor_verifications mv\nINNER JOIN users u ON mv.userId = u.id\nLEFT JOIN mentor_profiles mp ON mv.userId = mp.userId\nWHERE mv.status = 'pending';",
-  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute SELECT mv.id, mv.userId, mv.status, mv.studentIdImageUrl, u.name, u.email, u.role,\n       mp.id as profile_id, mp.university, mp.major\nFROM mentor_verifications mv\nINNER JOIN users u ON mv.userId = u.id\nLEFT JOIN mentor_profiles mp ON mv.userId = mp.userId\nWHERE mv.status = 'pending';",
-  "rows": [],
-  "messages": [],
-  "stdout": "",
-  "stderr": "",
-  "execution_time_ms": 1544
-}

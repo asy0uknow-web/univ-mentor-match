@@ -1,8 +1,0 @@
-{
-  "query": "\nSELECT u.id, u.name, u.email, u.user_type, mp.id as mentor_profile_id, mp.university, mp.major, mp.grade, mp.is_active\nFROM users u\nLEFT JOIN mentor_profiles mp ON u.id = mp.user_id\nWHERE u.name LIKE '%이윤호%' OR u.email LIKE '%이윤호%'\nLIMIT 5;\n",
-  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute \nSELECT u.id, u.name, u.email, u.user_type, mp.id as mentor_profile_id, mp.university, mp.major, mp.grade, mp.is_active\nFROM users u\nLEFT JOIN mentor_profiles mp ON u.id = mp.user_id\nWHERE u.name LIKE '%이윤호%' OR u.email LIKE '%이윤호%'\nLIMIT 5;\n",
-  "returncode": 1,
-  "logs": [
-    "ERROR 1054 (42S22) at line 2: Unknown column 'mp.user_id' in 'on clause'"
-  ]
-}
