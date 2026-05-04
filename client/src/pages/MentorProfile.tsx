@@ -132,7 +132,7 @@ export default function MentorProfile() {
       setMajor(profile.major);
       setGrade(profile.grade);
       setBio(profile.bio || "");
-      setRegions(profile.region ? [profile.region] : []);
+      setRegions([]);
     }
   }, [profile]);
 

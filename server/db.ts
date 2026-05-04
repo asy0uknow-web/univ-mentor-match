@@ -283,7 +283,6 @@ export async function getAllActiveMentors() {
         university: mentorProfiles.university,
         major: mentorProfiles.major,
         grade: mentorProfiles.grade,
-        region: mentorProfiles.region,
         bio: mentorProfiles.bio,
         hourlyRate: mentorProfiles.hourlyRate,
         availableSlots: mentorProfiles.availableSlots,
@@ -934,11 +933,12 @@ export async function getMentorsByFieldAndRegion(
   
   // 지역 기반 필터링
   if (regions && regions.length > 0) {
-    const validRegions = ["seoul", "gyeonggi", "incheon", "gangwon", "chungcheong", "jeolla", "gyeongsang", "jeju"];
-    const filteredRegions = regions.filter(r => validRegions.includes(r)) as any[];
-    if (filteredRegions.length > 0) {
-      conditions.push(inArray(mentorProfiles.region, filteredRegions));
-    }
+    // Region filtering removed - region column no longer exists
+    // const validRegions = ["seoul", "gyeonggi", "incheon", "gangwon", "chungcheong", "jeolla", "gyeongsang", "jeju"];
+    // const filteredRegions = regions.filter(r => validRegions.includes(r)) as any[];
+    // if (filteredRegions.length > 0) {
+    //   conditions.push(inArray(mentorProfiles.region, filteredRegions));
+    // }
   }
   conditions.push(eq(mentorProfiles.verificationStatus, "approved"));
   
@@ -956,29 +956,30 @@ export async function getMentorsByFieldAndRegion(
 }
 
 
-export async function getMentorsByRegion(
-  region: "seoul" | "gyeonggi" | "incheon" | "gangwon" | "chungcheong" | "jeolla" | "gyeongsang" | "jeju"
-) {
-  const db = await getDb();
-  if (!db) throw new Error("Database not available");
-  
-  const result = await db
-    .select({
-      profile: mentorProfiles,
-      user: users,
-    })
-    .from(mentorProfiles)
-    .innerJoin(users, eq(mentorProfiles.userId, users.id))
-    .where(
-      and(
-        eq(mentorProfiles.region, region),
-        eq(mentorProfiles.verificationStatus, "approved")
-      )
-    )
-    .orderBy(desc(mentorProfiles.averageRating));
-  
-  return result;
-}
+// getMentorsByRegion removed - region column no longer exists
+// export async function getMentorsByRegion(
+//   region: "seoul" | "gyeonggi" | "incheon" | "gangwon" | "chungcheong" | "jeolla" | "gyeongsang" | "jeju"
+// ) {
+//   const db = await getDb();
+//   if (!db) throw new Error("Database not available");
+//   
+//   const result = await db
+//     .select({
+//       profile: mentorProfiles,
+//       user: users,
+//     })
+//     .from(mentorProfiles)
+//     .innerJoin(users, eq(mentorProfiles.userId, users.id))
+//     .where(
+//       and(
+//         eq(mentorProfiles.region, region),
+//         eq(mentorProfiles.verificationStatus, "approved")
+//       )
+//     )
+//     .orderBy(desc(mentorProfiles.averageRating));
+//   
+//   return result;
+// }
 
 // Mentor gallery queries
 export async function addGalleryImage(galleryImage: InsertMentorGallery) {

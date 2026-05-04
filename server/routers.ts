@@ -38,7 +38,7 @@ import {
   rejectMentorVerification,
   updateMentorVerification,
 
-  getMentorsByRegion,
+  // getMentorsByRegion, // Removed - region column no longer exists
   getMentorsByFieldAndRegion,
   addGalleryImage,
   getGalleryByMentorId,
@@ -322,7 +322,6 @@ getTopMentors: publicProcedure
             university: mentorProfiles.university,
             major: mentorProfiles.major,
             grade: mentorProfiles.grade,
-            region: mentorProfiles.region,
             bio: mentorProfiles.bio,
             hourlyRate: mentorProfiles.hourlyRate,
             availableSlots: mentorProfiles.availableSlots,
@@ -1148,7 +1147,6 @@ getTopMentors: publicProcedure
               university: input.university,
               major: input.major,
               grade: gradeValue,
-              region: regionValue,
               uuid: randomUUID(),
               isDeleted: false,
               verificationStatus: "pending",
@@ -1163,7 +1161,6 @@ getTopMentors: publicProcedure
                 university: input.university,
                 major: input.major,
                 grade: gradeValue,
-                region: regionValue,
                 isDeleted: false,
                 updatedAt: new Date(),
               })
@@ -1338,21 +1335,22 @@ getTopMentors: publicProcedure
       }),
   }),
   mentorSearch: router({
-    getByRegion: publicProcedure
-      .input(z.object({
-        region: z.enum(["seoul", "gyeonggi", "incheon", "gangwon", "chungcheong", "jeolla", "gyeongsang", "jeju"]),
-      }))
-      .query(async ({ input }) => {
-        return await getMentorsByRegion(input.region);
-      }),
+    // getByRegion removed - region column no longer exists
+    // getByRegion: publicProcedure
+    //   .input(z.object({
+    //     region: z.enum(["seoul", "gyeonggi", "incheon", "gangwon", "chungcheong", "jeolla", "gyeongsang", "jeju"]),
+    //   }))
+    //   .query(async ({ input }) => {
+    //     return await getMentorsByRegion(input.region);
+    //   }),
 
-    getByFieldAndRegion: publicProcedure
+    getByField: publicProcedure
       .input(z.object({
         fields: z.array(z.string()).optional(),
-        regions: z.array(z.string()).optional(),
+        // regions parameter removed - region column no longer exists
       }))
       .query(async ({ input }) => {
-        return await getMentorsByFieldAndRegion(input.fields, input.regions);
+        return await getMentorsByFieldAndRegion(input.fields, undefined);
       }),
   }),
 
