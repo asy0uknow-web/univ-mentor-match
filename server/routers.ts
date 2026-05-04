@@ -312,7 +312,7 @@ getTopMentors: publicProcedure
         const db = await getDb();
         if (!db) throw new Error("Database not available");
 
-        // 평탄한 구조로 반환
+        // 평탄한 구조로 반환 - consultationType 제거하여 LEFT JOIN 오류 해결
         const mentorsWithTypes = await db
           .select({
             id: mentorProfiles.id,
@@ -333,14 +333,9 @@ getTopMentors: publicProcedure
             averageRating: mentorProfiles.averageRating,
             reviewCount: mentorProfiles.reviewCount,
             field: mentorProfiles.field,
-            consultationType: mentorConsultationTypes.consultationType,
           })
           .from(mentorProfiles)
           .innerJoin(users, drizzleEq(mentorProfiles.userId, users.id))
-          .leftJoin(
-            mentorConsultationTypes,
-            drizzleEq(users.id, mentorConsultationTypes.mentorId)
-          )
           .where(
             and(
               drizzleEq(mentorProfiles.verificationStatus, "approved"),
@@ -350,28 +345,8 @@ getTopMentors: publicProcedure
           .orderBy(drizzleDesc(mentorProfiles.averageRating))
           .limit(input.limit);
 
-        // 결과를 멘토별로 그룹화
-        const mentorMap = new Map<number, any>();
-        
-        for (const row of mentorsWithTypes) {
-          const mentorId = row.userId;
-          
-          if (!mentorMap.has(mentorId)) {
-            mentorMap.set(mentorId, {
-              ...row,
-              consultationTypes: [],
-            });
-          }
-          
-          if (row.consultationType) {
-            const mentor = mentorMap.get(mentorId);
-            if (!mentor.consultationTypes.includes(row.consultationType)) {
-              mentor.consultationTypes.push(row.consultationType);
-            }
-          }
-        }
-        
-        return Array.from(mentorMap.values());
+        // 결과를 반환 (consultationType 제거되어 간단한 구조)
+        return mentorsWithTypes;
       }),
 
     getMyBookings: protectedProcedure.query(async ({ ctx }) => {
