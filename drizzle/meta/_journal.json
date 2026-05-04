@@ -169,6 +169,20 @@
       "when": 1777648347389,
       "tag": "0023_petite_tigra",
       "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "5",
+      "when": 1777880585907,
+      "tag": "0024_dazzling_boom_boom",
+      "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "5",
+      "when": 1777881076948,
+      "tag": "0025_dashing_robbie_robertson",
+      "breakpoints": true
     }
   ]
 }
