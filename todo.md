@@ -3478,3 +3478,29 @@
 - [ ] 로그인 후 프로필 완성 페이지로의 자동 리다이렉트 확인
 - [ ] 프로필 완성 사용자의 정상 리다이렉트 확인
 - [ ] 전체 인증 흐름 최종 테스트
+
+
+## 코드 최적화 - 카테고리 2 요소 제거 (완료)
+- [x] common/ConsultationCTAButton.tsx 제거
+- [x] common/StatusBadge.tsx 제거
+- [x] common/ScrollReveal.tsx 제거
+- [x] QnAList.tsx 미사용 import 제거
+- [x] VerifyEmail.tsx 페이지 제거
+- [x] CompanyInfoSection.tsx 제거
+- [x] ConsultationSafetySection.tsx 제거
+- [x] ContactSection.tsx 제거
+- [x] ImprovedFooter.tsx 제거
+- [x] ParentFAQSection.tsx 제거
+- [x] BugReportForm.tsx 제거
+- [x] DashboardLayout.tsx 제거
+- [x] DashboardLayoutSkeleton.tsx 제거
+- [x] ManusDialog.tsx 제거
+- [x] Map.tsx 제거
+- [x] categoryIcons 미사용 함수 제거 (getCategoryColor, getCategoryIconComponent)
+- [x] MyProfile.tsx 페이지 유지 (활발히 사용 중)
+- [x] BookingModal.tsx 유지 (MentorDetail에서 사용)
+- [x] BugReportModal.tsx 유지 (PageLayout, Notifications에서 사용)
+- [x] GalleryUpload.tsx 유지 (MentorDetail에서 사용)
+- [x] PublishChecklist.tsx 유지 (MentorColumnCreate에서 사용)
+- [x] ErrorBoundary.tsx 유지 (App.tsx에서 사용)
+- [x] getMentorsByRegion() DB 함수 유지 (routers.ts에서 사용)

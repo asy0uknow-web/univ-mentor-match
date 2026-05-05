@@ -74,14 +74,6 @@ export function getCategoryIcon(category?: string | null) {
   return CATEGORY_ICONS[category] || CATEGORY_ICONS["기타"];
 }
 
-export function getCategoryColor(category?: string | null): string {
-  return getCategoryIcon(category).color;
-}
-
 export function getCategoryBgColor(category?: string | null): string {
   return getCategoryIcon(category).bgColor;
-}
-
-export function getCategoryIconComponent(category?: string | null) {
-  return getCategoryIcon(category).icon;
 }

@@ -14,7 +14,6 @@ import { ko } from "date-fns/locale";
 import * as Select from "@radix-ui/react-select";
 
 import { StatusBadge } from "@/components/StatusBadge";
-import { ConsultationCTAButton } from "@/components/ConsultationCTAButton";
 import { getCategoryIcon, getCategoryBgColor } from "@/lib/categoryIcons";
 import { Eye, ThumbsUp } from "lucide-react";
 
