@@ -1,0 +1,17 @@
+{
+  "query": "SELECT id, email, openId, name, userType FROM users WHERE email = 'testprofile@example.com';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute SELECT id, email, openId, name, userType FROM users WHERE email = 'testprofile@example.com';",
+  "rows": [
+    {
+      "id": "300009",
+      "email": "testprofile@example.com",
+      "openId": "email_1778142658988_6e9yblbx5",
+      "name": "",
+      "userType": "NULL"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\temail\topenId\tname\tuserType\n300009\ttestprofile@example.com\temail_1778142658988_6e9yblbx5\t\tNULL\n",
+  "stderr": "",
+  "execution_time_ms": 1939
+}

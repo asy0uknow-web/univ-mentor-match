@@ -87,7 +87,7 @@ export const signupProcedure = publicProcedure
     const sessionToken = await new SignJWT({
       openId: user.openId,
       appId: ENV.appId,
-      name: user.name,
+      name: user.name || "User",
     })
       .setProtectedHeader({ alg: "HS256" })
       .setExpirationTime("7d")
@@ -151,7 +151,7 @@ export const loginProcedure = publicProcedure
     const sessionToken = await new SignJWT({
       openId: user.openId,
       appId: ENV.appId,
-      name: user.name,
+      name: user.name || "User",
     })
       .setProtectedHeader({ alg: "HS256" })
       .setExpirationTime("7d")

@@ -50,7 +50,7 @@ export default function Login() {
 
       if (response.user) {
         // tRPC 캐시 무효화 - useAuth 훅이 다시 데이터를 가져오게 함
-        utils.auth.me.invalidate();
+        utils.auth.me.setData(undefined, response.user as any);
       }
 
       toast.success("로그인이 완료되었습니다!");

@@ -134,3 +134,89 @@
 ---
 
 *마지막 업데이트: 2026-04-04 10:30 KST*
+
+
+---
+
+## 🔧 2026-05-08 로그인 기능 수정 (이메일 로그인)
+
+### 문제 상황
+- 이메일/비밀번호 로그인 시 500 에러 발생
+- 테스트 계정: `testprofile@example.com` / `Test@12345`
+- 콘솔 메시지: `[Auth] Session payload missing required fields`
+
+### 수정 내용
+
+#### 1. `server/auth-procedures.ts` 수정
+**라인 90 (Signup)과 라인 154 (Login)**
+```typescript
+// 수정 전
+name: user.name,
+
+// 수정 후
+name: user.name || "User",
+```
+**이유:** 사용자 `name` 필드가 빈 문자열일 경우, JWT 토큰에 기본값 "User"를 사용하여 세션 검증 실패 방지
+
+#### 2. `server/_core/sdk.ts` 수정
+**라인 175 (createSessionToken 메서드)**
+```typescript
+// 수정 전
+name: options.name || "",
+
+// 수정 후
+name: options.name || "User",
+```
+**이유:** SDK의 세션 토큰 생성 메서드에서도 빈 문자열 대신 기본값 "User" 사용
+
+#### 3. `server/_core/env.ts` 수정
+**라인 25-26 (ENV 설정)**
+```typescript
+// 수정 전
+appId: process.env.VITE_APP_ID ?? "",
+cookieSecret: process.env.JWT_SECRET ?? "",
+
+// 수정 후
+appId: process.env.VITE_APP_ID || process.env.APP_ID || "",
+cookieSecret: process.env.JWT_SECRET || "",
+```
+
+**라인 35-41 (환경변수 검증 추가)**
+```typescript
+// 로그인 기능 사용 시 필수 환경변수 검증
+if (!ENV.appId) {
+  console.warn("[ENV] WARNING: VITE_APP_ID or APP_ID not set. Email login may fail.");
+}
+if (!ENV.cookieSecret) {
+  console.warn("[ENV] WARNING: JWT_SECRET not set. Session creation will fail.");
+}
+```
+
+**이유:** 
+- `VITE_APP_ID`는 프론트엔드 환경변수이므로 `APP_ID` 폴백 추가
+- 환경변수 누락 시 경고 메시지 출력하여 디버깅 용이
+
+### 기술 분석
+
+#### 세션 검증 프로세스
+1. 로그인 시 JWT 토큰 생성 (`auth-procedures.ts`)
+2. 토큰에 포함된 필드: `openId`, `appId`, `name`
+3. 이후 요청 시 토큰 검증 (`sdk.verifySession`)
+4. 검증 조건: `isNonEmptyString(openId) && isNonEmptyString(appId) && isNonEmptyString(name)`
+
+#### 문제의 원인
+- 사용자 `name` 필드가 빈 문자열 ("")
+- JWT 토큰에 빈 문자열 포함
+- 검증 시 `isNonEmptyString("")` = false
+- 세션 검증 실패 → `auth.me` 호출 시 500 에러
+
+### 테스트 상태
+- ⏳ 로그인 기능 테스트 진행 중
+- 수정 후에도 500 에러 발생 (추가 분석 필요)
+- 가능성: 다른 필드 (openId, appId)의 문제 또는 환경변수 설정 문제
+
+### 다음 단계
+1. 서버 런타임 로그 상세 분석
+2. JWT 토큰 payload 디코딩 및 검증
+3. 환경변수 실제 값 확인
+4. 에러 핸들링 개선
