@@ -328,7 +328,6 @@ export default function MentorProfile() {
           backgroundClip: 'border-box'
         }}
       >
-        <div className="absolute inset-0 bg-white/75 dark:bg-black/80 backdrop-blur-sm"></div>
         <div className="relative min-h-screen bg-background">
         {/* 헤더 */}
         <div className="bg-card  border-b">
