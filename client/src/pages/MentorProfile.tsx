@@ -35,6 +35,7 @@ const REGION_LABELS: Record<string, string> = {
 };
 
 export default function MentorProfile() {
+  const [, navigate] = useLocation();
   useEffect(() => {
     setPageMeta(PAGE_META.profile);
   }, []);
@@ -368,8 +369,41 @@ export default function MentorProfile() {
                       </div>
                     </div>
 
+                    {/* 인증 상태 배지 */}
+                    {verification && (
+                      <div className="mb-4 p-3 rounded-lg bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800">
+                        {verification.status === "approved" && (
+                          <div className="flex items-center gap-2">
+                            <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                            <span className="text-sm font-medium text-green-700 dark:text-green-400">인증 완료</span>
+                          </div>
+                        )}
+                        {verification.status === "pending" && (
+                          <div className="flex items-center gap-2">
+                            <div className="w-2 h-2 rounded-full bg-yellow-500 animate-pulse"></div>
+                            <span className="text-sm font-medium text-yellow-700 dark:text-yellow-400">인증 대기 중</span>
+                          </div>
+                        )}
+                        {verification.status === "rejected" && (
+                          <div className="flex items-center gap-2">
+                            <div className="w-2 h-2 rounded-full bg-red-500"></div>
+                            <span className="text-sm font-medium text-red-700 dark:text-red-400">인증 거부</span>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
                     {/* 액션 버튼 */}
                     <div className="space-y-2">
+                      {(!verification || verification.status === "rejected") && (
+                        <Link
+                          href="/verify-mentor"
+                          className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition font-medium"
+                        >
+                          <CheckCircle className="w-4 h-4" />
+                          멘토 인증 신청
+                        </Link>
+                      )}
                       <button
                         onClick={() => setIsPasswordModalOpen(true)}
                         className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-muted 800 hover:bg-muted text-foreground rounded-lg transition"
