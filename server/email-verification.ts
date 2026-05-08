@@ -225,7 +225,7 @@ export async function sendVerificationCode(email: string): Promise<void> {
     // 이메일 발송
     const transporter = getTransporter();
     await transporter.sendMail({
-      from: process.env.GMAIL_USER,
+      from: `Univmatch <${process.env.GMAIL_USER}>`,
       to: email,
       subject: "🎓 유니브매치 이메일 인증 코드",
       html: getEmailTemplate(code),
