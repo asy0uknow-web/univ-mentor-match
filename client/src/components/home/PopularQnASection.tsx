@@ -144,7 +144,7 @@ export function PopularQnASection() {
           </div>
 
           {/* 하단 CTA */}
-          <div className="mt-12 sm:mt-16 p-6 sm:p-8 rounded-xl bg-primary/5 border border-blue-200 text-center">
+          <div className="mt-12 sm:mt-16 p-6 sm:p-8 rounded-2xl bg-primary/5 border border-blue-200 text-center">
             <h3 className="text-lg sm:text-xl font-semibold text-foreground mb-2">
               당신의 고민을 멘토 커뮤니티에 물어보세요
             </h3>

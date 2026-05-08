@@ -22,7 +22,7 @@ export const MentorVerificationSection = () => {
   ];
 
   return (
-    <section id="mentor-verification" role="region" className="py-16 sm:py-24 md:py-32 bg-gradient-to-b from-blue-50 to-white dark:from-slate-900 dark:to-slate-950" aria-label="멘토 검증 방식">
+    <section id="mentor-verification" role="region" className="py-16 sm:py-24 md:py-32 bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-950" aria-label="멘토 검증 방식">
       <div className="container mx-auto px-4">
         {/* Section Header */}
         <div className="max-w-4xl mx-auto text-center mb-12 sm:mb-16">

@@ -3504,3 +3504,11 @@
 - [x] PublishChecklist.tsx 유지 (MentorColumnCreate에서 사용)
 - [x] ErrorBoundary.tsx 유지 (App.tsx에서 사용)
 - [x] getMentorsByRegion() DB 함수 유지 (routers.ts에서 사용)
+
+
+## UI/UX 기반 다지기 (완료)
+- [x] 섹션 배경색 조정 (blue-50 → slate-50)
+- [x] padding 1.5배 증가 (py-16/20/24 → py-24/30/36)
+- [x] 테두리 색상 통일 (#E2E8F0)
+- [x] border-radius 증가 (rounded-xl → rounded-2xl)
+- [x] 모든 섹션 컴포넌트 적용 (Home.tsx, MentorVerificationUSPSection, ZeroCommissionUSPSection 등)

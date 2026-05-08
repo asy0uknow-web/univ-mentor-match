@@ -198,7 +198,7 @@ export default function Home() {
       </section>
 
       {/* Quick Entry Section - 프리미엄 카드 디자인 */}
-      <section id="quick-entry" role="region" className="py-16 sm:py-20 md:py-24 bg-gradient-to-b from-blue-50 to-white dark:from-slate-900 dark:to-slate-950" aria-label="빠른 멘토 탐색">
+      <section id="quick-entry" role="region" className="py-24 sm:py-30 md:py-36 bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-950" aria-label="빠른 멘토 탐색">
         <div className="container mx-auto px-4">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-4 text-[var(--color-text-primary)]">
             어떤 상담이 필요하신가요?
@@ -216,7 +216,7 @@ export default function Home() {
               tabIndex={0}
               aria-label="전공 탐색 멘토 찾기"
             >
-              <div className="bg-[var(--color-background-card)] p-8 border border-[var(--color-border-default)] rounded-xl hover:shadow-lg transition-all duration-300 group-hover:-translate-y-1">
+              <div className="bg-[var(--color-background-card)] p-8 border border-[#E2E8F0] rounded-2xl hover:shadow-lg transition-all duration-300 group-hover:-translate-y-1">
                 <div className="mb-4 flex justify-center group-hover:scale-110 transition-transform duration-300">
                   <MajorIcon />
                 </div>
@@ -237,7 +237,7 @@ export default function Home() {
               tabIndex={0}
               aria-label="진로 상담 멘토 찾기"
             >
-              <div className="bg-[var(--color-background-card)] p-8 border border-[var(--color-border-default)] rounded-xl hover:shadow-lg transition-all duration-300 group-hover:-translate-y-1">
+              <div className="bg-[var(--color-background-card)] p-8 border border-[#E2E8F0] rounded-2xl hover:shadow-lg transition-all duration-300 group-hover:-translate-y-1">
                 <div className="mb-4 flex justify-center group-hover:scale-110 transition-transform duration-300">
                   <CareerIcon />
                 </div>
@@ -258,7 +258,7 @@ export default function Home() {
               tabIndex={0}
               aria-label="대학 생활 멘토 찾기"
             >
-              <div className="bg-[var(--color-background-card)] p-8 border border-[var(--color-border-default)] rounded-xl hover:shadow-lg transition-all duration-300 group-hover:-translate-y-1">
+              <div className="bg-[var(--color-background-card)] p-8 border border-[#E2E8F0] rounded-2xl hover:shadow-lg transition-all duration-300 group-hover:-translate-y-1">
                 <div className="mb-4 flex justify-center group-hover:scale-110 transition-transform duration-300">
                   <LifeIcon />
                 </div>
@@ -279,7 +279,7 @@ export default function Home() {
               tabIndex={0}
               aria-label="입시 전략 멘토 찾기"
             >
-              <div className="bg-[var(--color-background-card)] p-8 border border-[var(--color-border-default)] rounded-xl hover:shadow-lg transition-all duration-300 group-hover:-translate-y-1">
+              <div className="bg-[var(--color-background-card)] p-8 border border-[#E2E8F0] rounded-2xl hover:shadow-lg transition-all duration-300 group-hover:-translate-y-1">
                 <div className="mb-4 flex justify-center group-hover:scale-110 transition-transform duration-300">
                   <svg className="w-10 h-10 sm:w-12 sm:h-12 text-[var(--brand-primary-600)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
@@ -298,7 +298,7 @@ export default function Home() {
       </section>
 
       {/* How It Works Section - 프리미엄 스텝 디자인 */}
-      <section id="how-it-works" role="region" className="py-16 sm:py-20 md:py-24 bg-gradient-to-b from-blue-50 to-white dark:from-slate-900 dark:to-slate-950" aria-label="이용 방법">
+      <section id="how-it-works" role="region" className="py-24 sm:py-30 md:py-36 bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-950" aria-label="이용 방법">
         <div className="container mx-auto px-4">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-4 text-[var(--color-text-primary)]">
             이용 방법
@@ -310,7 +310,7 @@ export default function Home() {
           <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
             {/* Step 1 */}
             <div className="relative">
-              <div className="bg-[var(--color-background-card)] p-8 text-center border border-[var(--color-border-default)] rounded-xl">
+              <div className="bg-[var(--color-background-card)] p-8 text-center border border-[#E2E8F0] rounded-2xl">
                 <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-[var(--brand-primary-700)] text-white font-bold mb-4">
                   1
                 </div>
@@ -325,7 +325,7 @@ export default function Home() {
 
             {/* Step 2 */}
             <div className="relative">
-              <div className="bg-[var(--color-background-card)] p-8 text-center border border-[var(--color-border-default)] rounded-xl">
+              <div className="bg-[var(--color-background-card)] p-8 text-center border border-[#E2E8F0] rounded-2xl">
                 <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-[var(--brand-primary-700)] text-white font-bold mb-4">
                   2
                 </div>
@@ -340,7 +340,7 @@ export default function Home() {
 
             {/* Step 3 */}
             <div className="relative">
-              <div className="bg-[var(--color-background-card)] p-8 text-center border border-[var(--color-border-default)] rounded-xl">
+              <div className="bg-[var(--color-background-card)] p-8 text-center border border-[#E2E8F0] rounded-2xl">
                 <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-[var(--brand-primary-700)] text-white font-bold mb-4">
                   3
                 </div>

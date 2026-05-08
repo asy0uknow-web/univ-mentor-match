@@ -102,7 +102,7 @@ export const IntegratedFAQSection = () => {
     <section
       id="faq-safety"
       role="region"
-      className="py-16 sm:py-24 md:py-32 bg-gradient-to-b from-blue-50 to-white dark:from-slate-900 dark:to-slate-950"
+      className="py-16 sm:py-24 md:py-32 bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-950"
       aria-label="FAQ 및 안전 가이드"
     >
       <div className="container mx-auto px-4">
@@ -178,7 +178,7 @@ export const IntegratedFAQSection = () => {
 
         {/* More Questions - Email Contact Section */}
         <div className="mt-12 sm:mt-16 max-w-4xl mx-auto">
-          <div className="bg-gradient-to-r from-indigo-50 via-blue-50 to-blue-100 dark:from-slate-800 dark:via-slate-800 dark:to-slate-900 rounded-xl p-6 sm:p-8 md:p-10 border border-blue-200 dark:border-slate-700 hover:shadow-lg hover:scale-102 transition-all duration-300">
+          <div className="bg-gradient-to-r from-indigo-50 via-blue-50 to-blue-100 dark:from-slate-800 dark:via-slate-800 dark:to-slate-900 rounded-2xl p-6 sm:p-8 md:p-10 border border-blue-200 dark:border-slate-700 hover:shadow-lg hover:scale-102 transition-all duration-300">
             <p className="text-base sm:text-lg text-foreground font-semibold mb-4">
               더 궁금한 점이 있으신가요?
             </p>
