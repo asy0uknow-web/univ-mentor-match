@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
+import MentorVerificationBanner from "./MentorVerificationBanner";
 import BugReportModal from "@/components/BugReportModal";
 
 interface PageLayoutProps {
@@ -14,6 +15,7 @@ export default function PageLayout({ children, showFooter = false }: PageLayoutP
   return (
     <div className="min-h-screen page-fade-in">
       <Navbar onBugReport={() => setShowBugReport(true)} />
+      <MentorVerificationBanner />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 page-transition">
         {children}
       </main>
