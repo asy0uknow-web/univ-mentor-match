@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight, Cpu, Microscope, Briefcase, BookOpen, GraduationCap, Lightbulb, Stethoscope, ArrowRight } from "lucide-react";
 import { useLocation } from "wouter";
 import { trpc } from "@/lib/trpc";
+import { PromotionCard } from "./PromotionCard";
 
 interface FeaturedMentor {
   id: number;
@@ -216,96 +217,99 @@ export const FeaturedMentorsSlide = () => {
         <div className="relative max-w-6xl mx-auto">
           {/* Mentor Cards Grid */}
           <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6 lg:gap-8">
-            {visibleMentors.map((mentor) => (
-              <div
-                key={`${mentor.id}-${currentIndex}`}
-                className="bg-card  rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden hover:scale-105 hover:-translate-y-2 cursor-pointer flex flex-col h-full group"
-                style={{ height: `${maxCardHeight}px` }}
-              >
-                {/* Mentor Image Placeholder */}
-                <div className="w-full flex-shrink-0 bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 overflow-hidden" style={{ height: '192px' }}>
-                  {/* 프로필 이미지 또는 로고 */}
-                  <img
-                    src={mentor.image || "/logonew.png"}
-                    alt={mentor.image ? mentor.name : "유니브매치 로고"}
-                    className={`${mentor.image ? 'w-full h-full object-cover' : 'w-24 h-24 object-contain'} group-hover:scale-125 transition-transform duration-300`}
-                  />
-                </div>
+            {visibleMentors.map((mentor, index) => (
+              <>
+                {index === 3 && <PromotionCard height={maxCardHeight} />}
+                <div
+                  key={`${mentor.id}-${currentIndex}`}
+                  className="bg-card  rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden hover:scale-105 hover:-translate-y-2 cursor-pointer flex flex-col h-full group"
+                  style={{ height: `${maxCardHeight}px` }}
+                >
+                  {/* Mentor Image Placeholder */}
+                  <div className="w-full flex-shrink-0 bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 overflow-hidden" style={{ height: '192px' }}>
+                    {/* 프로필 이미지 또는 로고 */}
+                    <img
+                      src={mentor.image || "/logonew.png"}
+                      alt={mentor.image ? mentor.name : "유니브매치 로고"}
+                      className={`${mentor.image ? 'w-full h-full object-cover' : 'w-24 h-24 object-contain'} group-hover:scale-125 transition-transform duration-300`}
+                    />
+                  </div>
 
-                {/* Mentor Info */}
-                <div className="p-4 sm:p-6 md:p-8 flex flex-col flex-grow">
-                  {/* Name */}
-                  <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-foreground line-clamp-2 mb-2 group-hover:text-indigo-600 transition-colors">
-                    {mentor.name}
-                  </h3>
-                  
-                  {/* University */}
-                  <p className="text-xs sm:text-sm text-muted-foreground mb-1 line-clamp-1">
-                    {mentor.university}
-                  </p>
-                  
-                  {/* Major */}
-                  <p className="text-xs sm:text-sm font-semibold text-blue-600 mb-2 line-clamp-2">
-                    {mentor.major}
-                  </p>
-                  
-                  {/* Rating or New Badge */}
-                  <div className="mb-3 sm:mb-4">
-                    {mentor.reviewCount === 0 ? (
-                      <div className="inline-flex items-center gap-1.5 px-2 py-1 rounded-lg bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 shadow-sm whitespace-nowrap">
-                        <span className="text-xs font-bold tracking-wider text-emerald-700 uppercase">New</span>
-                      </div>
-                    ) : (
-                      <div className="flex items-center gap-1.5">
-                        <div className="flex items-center">
-                          {[...Array(5)].map((_, i) => (
-                            <span
-                              key={i}
-                              className={`text-sm ${
-                                i < Math.floor(mentor.rating)
-                                  ? "text-yellow-400"
-                                  : "text-gray-300"
-                              }`}
-                            >
-                              ★
-                            </span>
-                          ))}
+                  {/* Mentor Info */}
+                  <div className="p-4 sm:p-6 md:p-8 flex flex-col flex-grow">
+                    {/* Name */}
+                    <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-foreground line-clamp-2 mb-2 group-hover:text-indigo-600 transition-colors">
+                      {mentor.name}
+                    </h3>
+                    
+                    {/* University */}
+                    <p className="text-xs sm:text-sm text-muted-foreground mb-1 line-clamp-1">
+                      {mentor.university}
+                    </p>
+                    
+                    {/* Major */}
+                    <p className="text-xs sm:text-sm font-semibold text-blue-600 mb-2 line-clamp-2">
+                      {mentor.major}
+                    </p>
+                    
+                    {/* Rating or New Badge */}
+                    <div className="mb-3 sm:mb-4">
+                      {mentor.reviewCount === 0 ? (
+                        <div className="inline-flex items-center gap-1.5 px-2 py-1 rounded-lg bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 shadow-sm whitespace-nowrap">
+                          <span className="text-xs font-bold tracking-wider text-emerald-700 uppercase">New</span>
                         </div>
-                        <span className="text-xs font-semibold text-foreground">
-                          {mentor.rating.toFixed(1)}
+                      ) : (
+                        <div className="flex items-center gap-1.5">
+                          <div className="flex items-center">
+                            {[...Array(5)].map((_, i) => (
+                              <span
+                                key={i}
+                                className={`text-sm ${
+                                  i < Math.floor(mentor.rating)
+                                    ? "text-yellow-400"
+                                    : "text-gray-300"
+                                }`}
+                              >
+                                ★
+                              </span>
+                            ))}
+                          </div>
+                          <span className="text-xs font-semibold text-foreground">
+                            {mentor.rating.toFixed(1)}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Professional Field Badge */}
+                    {mentor.field && (
+                      <div className="flex items-center gap-2 mb-3 sm:mb-4 px-2 sm:px-3 py-1.5 sm:py-2 bg-primary/5 rounded-lg w-fit">
+                        <span className="text-blue-600 w-4 h-4 flex-shrink-0">{getFieldIcon(mentor.field)}</span>
+                        <span className="text-xs font-medium text-blue-700">
+                          {getFieldLabel(mentor.field)}
                         </span>
                       </div>
                     )}
-                  </div>
 
-                  {/* Professional Field Badge */}
-                  {mentor.field && (
-                    <div className="flex items-center gap-2 mb-3 sm:mb-4 px-2 sm:px-3 py-1.5 sm:py-2 bg-primary/5 rounded-lg w-fit">
-                      <span className="text-blue-600 w-4 h-4 flex-shrink-0">{getFieldIcon(mentor.field)}</span>
-                      <span className="text-xs font-medium text-blue-700">
-                        {getFieldLabel(mentor.field)}
-                      </span>
+                    {/* Bio Section with Dynamic Spacing */}
+                    <div className="flex-grow mb-3 sm:mb-4">
+                      {mentor.bio && mentor.bio !== "자기소개 미등록" ? (
+                        <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2 sm:line-clamp-3">
+                          {mentor.bio}
+                        </p>
+                      ) : null}
                     </div>
-                  )}
 
-                  {/* Bio Section with Dynamic Spacing */}
-                  <div className="flex-grow mb-3 sm:mb-4">
-                    {mentor.bio && mentor.bio !== "자기소개 미등록" ? (
-                      <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2 sm:line-clamp-3">
-                        {mentor.bio}
-                      </p>
-                    ) : null}
+                    {/* CTA Button */}
+                    <button
+                      onClick={() => setLocation(`/mentor/${mentor.uuid || mentor.id}`)}
+                      className="w-full py-2 sm:py-3 px-3 sm:px-4 bg-blue-600 text-white text-sm sm:text-base font-semibold rounded-lg hover:bg-blue-700 transition-colors mt-auto"
+                    >
+                      프로필 보기
+                    </button>
                   </div>
-
-                  {/* CTA Button */}
-                  <button
-                    onClick={() => setLocation(`/mentor/${mentor.uuid || mentor.id}`)}
-                    className="w-full py-2 sm:py-3 px-3 sm:px-4 bg-blue-600 text-white text-sm sm:text-base font-semibold rounded-lg hover:bg-blue-700 transition-colors mt-auto"
-                  >
-                    프로필 보기
-                  </button>
-                </div>
               </div>
+              </>
             ))}
           </div>
 

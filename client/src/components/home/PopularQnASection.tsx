@@ -24,25 +24,13 @@ export function PopularQnASection() {
     }
   }, [questions]);
 
-  const getCategoryBadgeColor = (category: string) => {
-    const colors: Record<string, string> = {
-      "입시 전략": "bg-primary/10 text-blue-700",
-      "전공 선택": "bg-purple-100 text-purple-700",
-      "대학 생활": "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400",
-      "학업 관리": "bg-orange-100 text-orange-700",
-      "진로 상담": "bg-pink-100 text-pink-700",
-      "기타": "bg-muted 800 text-foreground",
-    };
-    return colors[category] || "bg-muted 800 text-foreground";
-  };
-
   const getStatusBadgeColor = (status: string) => {
     const colors: Record<string, string> = {
       awaiting_answer: "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400",
       answered: "bg-primary/10 text-blue-700",
       solved: "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400",
     };
-    return colors[status] || "bg-muted 800 text-foreground";
+    return colors[status] || "bg-muted text-foreground";
   };
 
   const getStatusLabel = (status: string) => {
@@ -62,7 +50,7 @@ export function PopularQnASection() {
     <section
       id="popular-qna"
       role="region"
-      className="py-16 sm:py-24 md:py-32 bg-slate-50 dark:bg-slate-900"
+      className="py-24 sm:py-30 md:py-36 bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-950"
       aria-label="인기 Q&A"
     >
       <div className="container mx-auto px-4">
@@ -85,25 +73,17 @@ export function PopularQnASection() {
           </div>
 
           {/* Q&A 카드 그리드 */}
-          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3 md:gap-4 lg:gap-6 mb-8 sm:mb-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-8 sm:mb-12">
             {popularQuestions.map((question) => (
               <Link
                 key={question.id}
                 href={`/qna/${question.id}`}
                 className="group"
               >
-                <Card className="h-full hover:shadow-lg transition-all duration-300 border-border 700 700 hover:border-blue-300 cursor-pointer hover:scale-105 hover:-translate-y-2 group">
-                  <CardHeader className="pb-3 sm:pb-4">
-                    {/* 카테고리 및 상태 배지 */}
-                    <div className="flex items-center gap-2 mb-3 flex-wrap">
-                      <Badge
-                        className={`text-xs ${getCategoryBadgeColor(
-                          question.category || "기타"
-                        )}`}
-                        variant="secondary"
-                      >
-                        {question.category || "기타"}
-                      </Badge>
+                <Card className="h-full hover:shadow-lg transition-all duration-300 border-[#E2E8F0] hover:border-blue-300 cursor-pointer hover:scale-105 hover:-translate-y-2">
+                  <CardHeader className="pb-4 sm:pb-6">
+                    {/* 상태 배지만 표시 (카테고리 제거) */}
+                    <div className="flex items-start justify-between mb-3">
                       <Badge
                         className={`text-xs ${getStatusBadgeColor(
                           question.status || "awaiting_answer"
@@ -112,30 +92,57 @@ export function PopularQnASection() {
                       >
                         {getStatusLabel(question.status || "awaiting_answer")}
                       </Badge>
+                      <span className="text-xs text-muted-foreground">
+                        {question.isAnonymous ? "익명" : "공개"}
+                      </span>
                     </div>
 
                     {/* 질문 제목 */}
-                    <h3 className="text-sm sm:text-base font-semibold text-foreground group-hover:text-indigo-600 transition-colors line-clamp-2">
+                    <h3 className="text-sm sm:text-base font-semibold text-foreground group-hover:text-indigo-600 transition-colors line-clamp-2 mb-3">
                       {question.title}
                     </h3>
                   </CardHeader>
 
-                  <CardContent className="space-y-3 sm:space-y-4">
-                    {/* 질문 내용 미리보기 */}
-                    <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2 group-hover:text-foreground transition-colors">
-                      {question.content}
-                    </p>
+                  <CardContent className="space-y-4">
+                    {/* 가장 반응이 좋은 답변 미리보기 */}
+                    {question.bestAnswer && (
+                      <div className="p-3 sm:p-4 bg-primary/5 rounded-lg border border-primary/20">
+                        <div className="flex items-start gap-3 mb-2">
+                          {/* 답변 멘토 프로필 이미지 */}
+                          <img
+                            src={question.bestAnswer.mentorImage || "/logonew.png"}
+                            alt={question.bestAnswer.mentorName}
+                            className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover flex-shrink-0"
+                          />
+                          <div className="flex-1 min-w-0">
+                            <p className="text-xs sm:text-sm font-semibold text-foreground">
+                              {question.bestAnswer.mentorName}
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                              최고 평가 답변
+                            </p>
+                          </div>
+                        </div>
+                        <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2">
+                          {question.bestAnswer.content}
+                        </p>
+                      </div>
+                    )}
+
+                    {/* 질문 내용 미리보기 (답변이 없을 때) */}
+                    {!question.bestAnswer && (
+                      <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2 group-hover:text-foreground transition-colors">
+                        {question.content}
+                      </p>
+                    )}
 
                     {/* 답변 수 및 추가 정보 */}
-                    <div className="flex items-center justify-between pt-2 border-t border-border 700 700">
-                      <div className="flex items-center gap-1 text-xs sm:text-sm text-muted-foreground 300 300">
+                    <div className="flex items-center justify-between pt-3 border-t border-[#E2E8F0]">
+                      <div className="flex items-center gap-1 text-xs sm:text-sm text-muted-foreground">
                         <MessageCircle className="h-4 w-4 text-blue-500" />
                         <span className="font-semibold">{question.answerCount || 0}</span>
                         <span>개의 답변</span>
                       </div>
-                      <span className="text-xs text-muted-foreground">
-                        {question.isAnonymous ? "익명" : "공개"}
-                      </span>
                     </div>
                   </CardContent>
                 </Card>
@@ -144,7 +151,7 @@ export function PopularQnASection() {
           </div>
 
           {/* 하단 CTA */}
-          <div className="mt-12 sm:mt-16 p-6 sm:p-8 rounded-2xl bg-primary/5 border border-blue-200 text-center">
+          <div className="mt-12 sm:mt-16 p-6 sm:p-8 rounded-2xl bg-gradient-to-r from-indigo-500/10 to-purple-500/10 border border-indigo-200 dark:border-indigo-800 text-center">
             <h3 className="text-lg sm:text-xl font-semibold text-foreground mb-2">
               당신의 고민을 멘토 커뮤니티에 물어보세요
             </h3>

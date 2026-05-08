@@ -3512,3 +3512,9 @@
 - [x] 테두리 색상 통일 (#E2E8F0)
 - [x] border-radius 증가 (rounded-xl → rounded-2xl)
 - [x] 모든 섹션 컴포넌트 적용 (Home.tsx, MentorVerificationUSPSection, ZeroCommissionUSPSection 등)
+
+
+## 컴포넌트별 디자인 고도화 (완료)
+- [x] 멘토 리스트에 프로모션 카드 삽입 (4번째 위치)
+- [x] 칼럼 스튜디오 7:3 레이아웃 구성 (Featured + 인기 칼럼 리스트)
+- [x] Q&A 섹션 개선 (카테고리 아이콘 제거, 프로필 이미지 추가, 답변 미리보기)
