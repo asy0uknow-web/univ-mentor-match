@@ -16,6 +16,12 @@ export default function MentorVerificationBanner() {
 
   // 배너 표시 조건 체크
   useEffect(() => {
+    // Admin은 배너 표시 안 함
+    if (user?.role === "admin") {
+      setIsVisible(false);
+      return;
+    }
+
     // localStorage에서 닫힘 상태 확인
     const isBannerClosed = localStorage.getItem("mentor-verification-banner-closed");
     
