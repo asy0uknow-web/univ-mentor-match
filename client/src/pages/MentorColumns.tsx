@@ -275,8 +275,6 @@ export default function MentorColumns() {
 
               {/* 칼럼 목록 (세로) */}
               <div>
-                <h2 className="text-xl sm:text-2xl font-bold mb-4">모든 칼럼</h2>
-
                 {isLoading ? (
                   <div className="text-center py-12">
                     <p className="text-muted-foreground">로딩 중...</p>
