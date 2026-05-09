@@ -1,0 +1,9 @@
+{
+  "query": "\nINSERT INTO student_profiles (uuid, userId, school, grade, region, bio, createdAt, updatedAt)\nVALUES (\n  UUID(),\n  840023,\n  '서울과학고등학교',\n  '3',\n  'seoul',\n  '안녕하세요! 서울과학고 3학년 박멘티입니다. 대학 진학과 전공 선택에 대해 고민 중이며, 다양한 멘토님들의 조언을 듣고 싶습니다. 특히 컴퓨터과학, AI, 웹 개발에 관심이 많습니다.',\n  NOW(),\n  NOW()\n);\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute \nINSERT INTO student_profiles (uuid, userId, school, grade, region, bio, createdAt, updatedAt)\nVALUES (\n  UUID(),\n  840023,\n  '서울과학고등학교',\n  '3',\n  'seoul',\n  '안녕하세요! 서울과학고 3학년 박멘티입니다. 대학 진학과 전공 선택에 대해 고민 중이며, 다양한 멘토님들의 조언을 듣고 싶습니다. 특히 컴퓨터과학, AI, 웹 개발에 관심이 많습니다.',\n  NOW(),\n  NOW()\n);\n",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 1731
+}

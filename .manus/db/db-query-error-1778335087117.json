@@ -1,0 +1,8 @@
+{
+  "query": "\n-- Kim Mentor Account\nINSERT INTO users (id, email, passwordHash, name, emailVerified, role, userType, createdAt, updatedAt)\nVALUES (\n  'user_kim_001',\n  'kim@test.com',\n  '8b5a4e8f7d9c1b2a3e4f5g6h7i8j9k0l1m2n3o4p5q6r7s8t9u0v1w2x3y4z5',\n  '김멘토',\n  true,\n  'mentor',\n  'university_student',\n  NOW(),\n  NOW()\n);\n\n-- Park Mentee Account\nINSERT INTO users (id, email, passwordHash, name, emailVerified, role, userType, createdAt, updatedAt)\nVALUES (\n  'user_park_001',\n  'park@test.com',\n  '8b5a4e8f7d9c1b2a3e4f5g6h7i8j9k0l1m2n3o4p5q6r7s8t9u0v1w2x3y4z5',\n  '박멘티',\n  true,\n  'student',\n  'high_school_student',\n  NOW(),\n  NOW()\n);\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute \n-- Kim Mentor Account\nINSERT INTO users (id, email, passwordHash, name, emailVerified, role, userType, createdAt, updatedAt)\nVALUES (\n  'user_kim_001',\n  'kim@test.com',\n  '8b5a4e8f7d9c1b2a3e4f5g6h7i8j9k0l1m2n3o4p5q6r7s8t9u0v1w2x3y4z5',\n  '김멘토',\n  true,\n  'mentor',\n  'university_student',\n  NOW(),\n  NOW()\n);\n\n-- Park Mentee Account\nINSERT INTO users (id, email, passwordHash, name, emailVerified, role, userType, createdAt, updatedAt)\nVALUES (\n  'user_park_001',\n  'park@test.com',\n  '8b5a4e8f7d9c1b2a3e4f5g6h7i8j9k0l1m2n3o4p5q6r7s8t9u0v1w2x3y4z5',\n  '박멘티',\n  true,\n  'student',\n  'high_school_student',\n  NOW(),\n  NOW()\n);\n",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1366 (HY000) at line 3: Incorrect ? value: '?' for column 'id' at row 1"
+  ]
+}

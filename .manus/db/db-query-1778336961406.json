@@ -1,0 +1,9 @@
+{
+  "query": "\nUPDATE users SET passwordHash = '4148dfea1a6cded28a56aabeeaf7be30d7ed5bc57086b50e91e7a98512ff5925c6eb1581b72c74a07bb2b6fc59dcd631b1162090f5efbcb76bd02b79f9e825f0' WHERE email = 'kim@test.com';\nUPDATE users SET passwordHash = 'e6a5c18442fae72e87887ee5baeb2df68335e49af951e4d7d6f2cb816bf60b2face2e0d141e2373bc2d313d88089b8ce6f344790ea39f597c182fabd0754c58b' WHERE email = 'park@test.com';\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute \nUPDATE users SET passwordHash = '4148dfea1a6cded28a56aabeeaf7be30d7ed5bc57086b50e91e7a98512ff5925c6eb1581b72c74a07bb2b6fc59dcd631b1162090f5efbcb76bd02b79f9e825f0' WHERE email = 'kim@test.com';\nUPDATE users SET passwordHash = 'e6a5c18442fae72e87887ee5baeb2df68335e49af951e4d7d6f2cb816bf60b2face2e0d141e2373bc2d313d88089b8ce6f344790ea39f597c182fabd0754c58b' WHERE email = 'park@test.com';\n",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 1934
+}
