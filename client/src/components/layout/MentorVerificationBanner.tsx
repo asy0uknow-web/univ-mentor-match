@@ -25,11 +25,11 @@ export default function MentorVerificationBanner() {
     // localStorage에서 닫힘 상태 확인
     const isBannerClosed = localStorage.getItem("mentor-verification-banner-closed");
     
-    // 멘토이고, 미인증 상태이고, 닫혀있지 않은 경우에만 표시
+    // 대학생 멘토이고, 미인증 상태이고, 닫혀있지 않은 경우에만 표시
     if (
       isAuthenticated &&
-      verification &&
-      verification.status !== "approved" &&
+      user?.userType === "university_student" &&
+      verification?.status !== "approved" &&
       !isBannerClosed
     ) {
       setIsVisible(true);
