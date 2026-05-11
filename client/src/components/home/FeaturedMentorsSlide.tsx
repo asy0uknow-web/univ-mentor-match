@@ -218,10 +218,9 @@ export const FeaturedMentorsSlide = () => {
           {/* Mentor Cards Grid */}
           <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6 lg:gap-8">
             {visibleMentors.map((mentor, index) => (
-              <>
+              <div key={`mentor-${mentor.id}-${currentIndex}-${index}`}>
                 {index === 3 && <PromotionCard height={maxCardHeight} />}
                 <div
-                  key={`${mentor.id}-${currentIndex}`}
                   className="bg-card  rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden hover:scale-105 hover:-translate-y-2 cursor-pointer flex flex-col h-full group"
                   style={{ height: `${maxCardHeight}px` }}
                 >
@@ -308,8 +307,8 @@ export const FeaturedMentorsSlide = () => {
                       프로필 보기
                     </button>
                   </div>
+                </div>
               </div>
-              </>
             ))}
           </div>
 
