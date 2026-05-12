@@ -20,6 +20,7 @@ import { getLoginUrl } from "@/const";
 import { toast } from "sonner";
 import { format, formatDistanceToNow, isToday, isYesterday, differenceInMinutes } from "date-fns";
 import { ko } from "date-fns/locale";
+import { MessageAvatar, ReadReceipt, TypingIndicator, DateDivider, ReactionBubbles } from "@/components/messages";
 
 // ===== 상담 유형 상수 =====
 const CONSULTATION_TYPES = {
@@ -42,115 +43,7 @@ const PROPOSAL_STATUS = {
 // 이모지 반응 목록
 const REACTION_EMOJIS = ["👍", "❤️", "😂", "😮", "😢", "🔥"];
 
-// ===== 아바타 컴포넌트 =====
-function Avatar({ name, profileImageUrl, size = "md" }: { name: string; profileImageUrl?: string | null; size?: "sm" | "md" | "lg" }) {
-  const sizeClass = { sm: "w-7 h-7 text-xs", md: "w-9 h-9 text-sm", lg: "w-12 h-12 text-base" }[size];
-  const initial = name ? name.charAt(0) : "?";
-  const colors = ["bg-violet-500", "bg-blue-500", "bg-emerald-500", "bg-amber-500", "bg-rose-500", "bg-indigo-500"];
-  const colorIdx = name ? name.charCodeAt(0) % colors.length : 0;
 
-  if (profileImageUrl) {
-    return (
-      <div className={`${sizeClass} rounded-full overflow-hidden shrink-0`}>
-        <img src={profileImageUrl} alt={name} className="w-full h-full object-cover" />
-      </div>
-    );
-  }
-  return (
-    <div className={`${sizeClass} rounded-full ${colors[colorIdx]} text-white flex items-center justify-center font-semibold shrink-0`}>
-      {initial}
-    </div>
-  );
-}
-
-// ===== 읽음 표시 컴포넌트 =====
-function ReadReceipt({ isRead, isMe }: { isRead: boolean; isMe: boolean }) {
-  if (!isMe) return null;
-  return (
-    <span className="inline-flex items-center ml-1">
-      {isRead ? (
-        <CheckCheck className="h-3 w-3 text-[var(--brand-primary-700)]" />
-      ) : (
-        <Check className="h-3 w-3 text-[var(--color-text-secondary)]/60" />
-      )}
-    </span>
-  );
-}
-
-// ===== 타이핑 표시기 =====
-function TypingIndicator({ name }: { name: string }) {
-  return (
-    <div className="flex items-center gap-2 px-4 py-2">
-      <div className="flex gap-1 items-center bg-[var(--color-bg-card)] rounded-2xl px-3 py-2 border border-[var(--color-border-default)]">
-        <span className="text-xs text-[var(--color-text-secondary)] mr-1">{name}님이 입력 중</span>
-        <span className="flex gap-0.5">
-          {[0, 1, 2].map(i => (
-            <span
-              key={i}
-              className="w-1.5 h-1.5 bg-[var(--color-text-secondary)]/60 rounded-full animate-bounce"
-              style={{ animationDelay: `${i * 0.15}s` }}
-            />
-          ))}
-        </span>
-      </div>
-    </div>
-  );
-}
-
-// ===== 날짜 구분선 =====
-function DateDivider({ date }: { date: Date }) {
-  let label = "";
-  if (isToday(date)) label = "오늘";
-  else if (isYesterday(date)) label = "어제";
-  else label = format(date, "yyyy년 M월 d일 (E)", { locale: ko });
-
-  return (
-    <div className="flex items-center gap-3 my-4">
-      <div className="flex-1 h-px bg-[var(--color-border-default)]" />
-      <span className="text-xs text-[var(--color-text-secondary)] bg-[var(--color-bg-card)] px-2 whitespace-nowrap">{label}</span>
-      <div className="flex-1 h-px bg-[var(--color-border-default)]" />
-    </div>
-  );
-}
-
-// ===== 이모지 반응 표시 =====
-function ReactionBubbles({ reactions, currentUserId, messageId, onToggle }: {
-  reactions: any[];
-  currentUserId: number;
-  messageId: number;
-  onToggle: (emoji: string) => void;
-}) {
-  if (!reactions || reactions.length === 0) return null;
-
-  const grouped = reactions.reduce((acc: Record<string, { count: number; users: number[] }>, r: any) => {
-    if (!acc[r.emoji]) acc[r.emoji] = { count: 0, users: [] };
-    acc[r.emoji].count++;
-    acc[r.emoji].users.push(r.userId);
-    return acc;
-  }, {});
-
-  return (
-    <div className="flex flex-wrap gap-1 mt-1">
-      {Object.entries(grouped).map(([emoji, { count, users }]) => {
-        const isMyReaction = users.includes(currentUserId);
-        return (
-          <button
-            key={emoji}
-            onClick={() => onToggle(emoji)}
-            className={`flex items-center gap-0.5 px-2 py-0.5 rounded-full text-xs border transition-all ${
-              isMyReaction
-                ? "bg-[var(--brand-primary-50)] border-[var(--brand-primary-700)]/30 text-[var(--brand-primary-700)]"
-                : "bg-[var(--color-bg-card)] border-[var(--color-border-default)] hover:bg-[var(--color-bg-card)]"
-            }`}
-          >
-            <span>{emoji}</span>
-            <span className="font-medium">{count}</span>
-          </button>
-        );
-      })}
-    </div>
-  );
-}
 
 // ===== 이모지 피커 =====
 function EmojiPicker({ onSelect, onClose }: { onSelect: (emoji: string) => void; onClose: () => void }) {
@@ -900,7 +793,7 @@ export function Messages() {
         {/* 아바타 (그룹화되지 않은 마지막 메시지에만 표시) */}
         {!isMe && (
           <div className={`${msg.isLast ? "opacity-100" : "opacity-0"} transition-opacity`}>
-            <Avatar name={msg.senderName || ""} size="sm" />
+            <MessageAvatar name={msg.senderName || ""} size="sm" />
           </div>
         )}
 
@@ -1081,7 +974,7 @@ export function Messages() {
                           }`}
                         >
                           <div className="flex items-start gap-3">
-                            <Avatar name={name} size="sm" />
+                            <MessageAvatar name={name} size="sm" />
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center justify-between gap-2 mb-1.5">
                                 <p className={`font-semibold truncate ${
@@ -1190,7 +1083,7 @@ export function Messages() {
                           }`}
                         >
                           <div className="flex items-start gap-3">
-                            <Avatar name={name} size="sm" />
+                            <MessageAvatar name={name} size="sm" />
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center justify-between gap-2 mb-1.5">
                                 <p className={`font-semibold truncate ${
@@ -1234,7 +1127,7 @@ export function Messages() {
                 <CardHeader className="border-b border-[var(--color-border-default)] shrink-0 py-2 sm:py-3">
                   <div className="flex items-center justify-between gap-2">
                     <div className="flex items-center gap-2 sm:gap-3">
-                      <Avatar name={getOtherUserName(selectedConversation || 0)} size="sm" />
+                      <MessageAvatar name={getOtherUserName(selectedConversation || 0)} size="sm" />
                       <div>
                         <CardTitle className="text-sm sm:text-base text-[var(--color-text-primary)]">{otherUserName}</CardTitle>
                         {typingStatus?.isTyping && (

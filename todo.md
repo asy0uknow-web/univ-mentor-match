@@ -3525,3 +3525,57 @@
 - [x] 실시간 글자 수 경고 메시지 개선 (��마른 글자 순, 성공 메시지)
 - [x] 버튼 비활성화 (내용 50자 미만 시)
 - [x] 기능 테스트 완료
+
+
+## 향후 구현 예정 기능
+- [ ] 칼럼 추천 알고리즘 (태그 기반 또는 협업 필터링)
+- [ ] 상담 예약 시스템 (일정 조율, 예약 확인)
+- [ ] 실시간 메시지 기능 (Socket.io)
+- [ ] 결제 플로우 완성 (Stripe 통합)
+- [ ] 칼럼 댓글 기능
+- [ ] 칼럼 태그 필터링
+
+
+## 성능 최적화 분석 (진행 중)
+- [ ] 번들 크기 분석 및 최적화 (현재: 387MB node_modules)
+- [ ] 이미지 최적화 (lazy loading, 포맷 변환)
+- [ ] 데이터베이스 쿼리 최적화 (N+1 문제 확인)
+- [ ] 메시지 페이지 렌더링 성능 개선 (1404줄 컴포넌트)
+- [ ] 불필요한 의존성 제거
+
+## 실시간 메시지 UX 검토 (진행 중)
+- [ ] 메시지 로딩 상태 표시 개선
+- [ ] 스크롤 성능 최적화 (가상 스크롤링)
+- [ ] 메시지 입력 필드 UX 개선
+- [ ] 타이핑 표시기 성능 최적화
+- [ ] 읽음 표시 실시간 업데이트 확인
+
+
+## 성능 최적화 - Phase 1: 메시지 시스템 컴포넌트 분리 (진행 중)
+- [x] MessageAvatar 컴포넌트 추출 (client/src/components/messages/MessageAvatar.tsx)
+- [x] ReadReceipt 컴포넌트 추출 (client/src/components/messages/ReadReceipt.tsx)
+- [x] TypingIndicator 컴포넌트 추출 (client/src/components/messages/TypingIndicator.tsx)
+- [x] DateDivider 컴포넌트 추출 (client/src/components/messages/DateDivider.tsx)
+- [x] ReactionBubbles 컴포넌트 추출 (client/src/components/messages/ReactionBubbles.tsx)
+- [x] 컴포넌트 인덱스 파일 생성 (client/src/components/messages/index.ts)
+- [x] Messages.tsx에서 추출된 컴포넌트 임포트 및 사용
+- [ ] 가상 스크롤링 구현 (react-window 라이브러리 사용)
+- [ ] 메시지 리스트 성능 테스트 (Vitest)
+
+## 성능 최적화 - Phase 2: 이미지 최적화 및 Lazy Loading
+- [ ] 이미지 Lazy Loading 구현 (Intersection Observer API)
+- [ ] WebP 포맷 변환 및 적용
+- [ ] 이미지 크기 최적화 (srcset 및 sizes 속성)
+- [ ] 이미지 최적화 테스트
+
+## 성능 최적화 - Phase 3: 데이터베이스 쿼리 최적화
+- [ ] N+1 쿼리 문제 분석 및 해결
+- [ ] 메시지 페칭 쿼리 최적화 (JOIN 사용)
+- [ ] 칼럼 페칭 쿼리 최적화
+- [ ] 데이터베이스 인덱스 추가 (필요한 경우)
+
+## 성능 최적화 - Phase 4: 번들 크기 분석 및 최적화
+- [ ] 번들 크기 분석 (Vite 플러그인)
+- [ ] 불필요한 의존성 제거
+- [ ] 동적 임포트 및 코드 스플리팅 적용
+- [ ] 번들 크기 감소 검증
