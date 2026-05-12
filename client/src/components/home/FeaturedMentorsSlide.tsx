@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight, Cpu, Microscope, Briefcase, BookOpen, Gradua
 import { useLocation } from "wouter";
 import { trpc } from "@/lib/trpc";
 import { PromotionCard } from "./PromotionCard";
+import { LazyImage } from "@/components/LazyImage";
 
 interface FeaturedMentor {
   id: number;
@@ -227,10 +228,11 @@ export const FeaturedMentorsSlide = () => {
                   {/* Mentor Image Placeholder */}
                   <div className="w-full flex-shrink-0 bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 overflow-hidden" style={{ height: '192px' }}>
                     {/* 프로필 이미지 또는 로고 */}
-                    <img
+                    <LazyImage
                       src={mentor.image || "/logonew.png"}
                       alt={mentor.image ? mentor.name : "유니브매치 로고"}
                       className={`${mentor.image ? 'w-full h-full object-cover' : 'w-24 h-24 object-contain'} group-hover:scale-125 transition-transform duration-300`}
+                      placeholder="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect fill='%23e5e7eb' width='100' height='100'/%3E%3C/svg%3E"
                     />
                   </div>
 

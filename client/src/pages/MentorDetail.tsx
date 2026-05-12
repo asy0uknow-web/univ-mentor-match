@@ -11,6 +11,7 @@ import { setPageMeta, PAGE_META } from "@/lib/seo";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { GalleryUpload } from "@/components/GalleryUpload";
 import { BookingModal } from "@/components/BookingModal";
+import { LazyImage } from "@/components/LazyImage";
 
 const OPEN_CONVERSATION_KEY = "univmatch:openConversationUserId";
 const DRAFT_MESSAGE_KEY = "univmatch:draftMessage";
@@ -155,10 +156,11 @@ export default function MentorDetail() {
                 <CardContent className="p-4 sm:p-8">
                   <div className="flex flex-col sm:flex-row gap-4 sm:gap-8">
                     <div className="flex-shrink-0">
-                      <img
+                      <LazyImage
                         src={(mentor.profile as any)?.profileImage || "https://d2xsxph8kpxj0f.cloudfront.net/310519663280786037/Gy6RaYwMhnXP5TJQbTpkxJ/mentor-default-avatar-XSMy7BuwnsbcDukFiGhL9q.webp"}
                         alt={mentor.user.name || "멘토 프로필"}
                         className="w-24 h-24 sm:w-40 sm:h-40 rounded-xl object-cover"
+                        placeholder="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect fill='%23e5e7eb' width='100' height='100'/%3E%3C/svg%3E"
                       />
                     </div>
 
@@ -256,11 +258,12 @@ export default function MentorDetail() {
                     {/* PC: 3열 그리드 */}
                     <div className="hidden sm:grid grid-cols-3 gap-3">
                       {gallery.map((image) => (
-                        <img
+                        <LazyImage
                           key={image.id}
                           src={image.imageUrl}
                           alt="갤러리"
                           className="w-full aspect-square object-cover rounded-lg"
+                          placeholder="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect fill='%23e5e7eb' width='100' height='100'/%3E%3C/svg%3E"
                         />
                       ))}
                     </div>
@@ -269,11 +272,12 @@ export default function MentorDetail() {
                     <div className="sm:hidden overflow-x-auto pb-2">
                       <div className="flex gap-3 min-w-min">
                         {gallery.map((image) => (
-                          <img
+                          <LazyImage
                             key={image.id}
                             src={image.imageUrl}
                             alt="갤러리"
                             className="flex-shrink-0 w-24 h-24 object-cover rounded-lg"
+                            placeholder="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect fill='%23e5e7eb' width='100' height='100'/%3E%3C/svg%3E"
                           />
                         ))}
                       </div>

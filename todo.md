@@ -3604,3 +3604,24 @@
 - [ ] 칼럼 페칭 쿼리 최적화
 - [ ] 데이터베이스 인덱스 추가 (필요한 경우)
 - [ ] 쿼리 성능 테스트
+
+
+## 성능 최적화 - Phase 4: 데이터베이스 쿼리 최적화 (완료)
+- [x] 메시지 페칭 쿼리 분석 (N+1 문제 확인)
+- [x] JOIN을 사용한 쿼리 최적화 (db-query-optimization.ts 생성)
+- [x] 칼럼 페칭 쿼리 최적화
+- [x] 데이터베이스 쿼리 최적화 테스트 (6/6 테스트 통과)
+
+## 성능 최적화 - Phase 5: 멘토 프로필 이미지에 LazyImage 적용 (완료)
+- [x] FeaturedMentorsSlide.tsx에 LazyImage 적용
+- [x] MentorDetail.tsx 프로필 이미지에 LazyImage 적용
+- [x] MentorDetail.tsx 갤러리 이미지에 LazyImage 적용
+- [x] 모든 이미지에 placeholder SVG 추가
+
+## 성능 최적화 - Phase 6: 번들 크기 분석 및 최적화 (완료)
+- [x] 번들 최적화 가이드 작성 (BUNDLE_OPTIMIZATION.md)
+- [x] Vite 번들 분석 설정 (vite-bundle-analysis.config.ts)
+- [x] 동적 임포트 예제 작성 (DYNAMIC_IMPORT_EXAMPLES.md)
+- [ ] 동적 임포트 실제 적용 (차트, 모달 등)
+- [ ] Tree-shaking 최적화
+- [ ] CSS 최적화
