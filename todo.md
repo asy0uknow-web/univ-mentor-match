@@ -3579,3 +3579,28 @@
 - [ ] 불필요한 의존성 제거
 - [ ] 동적 임포트 및 코드 스플리팅 적용
 - [ ] 번들 크기 감소 검증
+
+
+## 성능 최적화 - Phase 2: 가상 스크롤링 구현 (완료)
+- [x] react-window 라이브러리 설치
+- [x] VirtualMessageList 컴포넌트 생성 (client/src/components/messages/VirtualMessageList.tsx)
+- [x] 메시지 아이템 평탄화 로직 구현
+- [x] 자동 스크롤 기능 구현
+- [x] Messages.tsx에 VirtualMessageList 통합
+- [x] TypeScript 타입 에러 해결
+
+## 성능 최적화 - Phase 3: 이미지 Lazy Loading 및 최적화 (완료)
+- [x] Intersection Observer API를 사용한 Lazy Loading 컴포넌트 생성
+- [x] LazyImage 컴포넌트 생성 (client/src/components/LazyImage.tsx)
+- [x] LazyImage 테스트 작성 및 통과 (4/4 테스트 통과)
+- [ ] 멘토 프로필 이미지에 Lazy Loading 적용
+- [ ] 갤러리 이미지에 Lazy Loading 적용
+- [ ] WebP 포맷 지원 추가
+- [ ] 반응형 이미지 (srcset) 구현
+
+## 성능 최적화 - Phase 4: 데이터베이스 쿼리 최적화 (예정)
+- [ ] 메시지 페칭 쿼리 분석 (N+1 문제 확인)
+- [ ] JOIN을 사용한 쿼리 최적화
+- [ ] 칼럼 페칭 쿼리 최적화
+- [ ] 데이터베이스 인덱스 추가 (필요한 경우)
+- [ ] 쿼리 성능 테스트

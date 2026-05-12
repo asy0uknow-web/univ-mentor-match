@@ -21,6 +21,7 @@ import { toast } from "sonner";
 import { format, formatDistanceToNow, isToday, isYesterday, differenceInMinutes } from "date-fns";
 import { ko } from "date-fns/locale";
 import { MessageAvatar, ReadReceipt, TypingIndicator, DateDivider, ReactionBubbles } from "@/components/messages";
+import { VirtualMessageList } from "@/components/messages/VirtualMessageList";
 
 // ===== 상담 유형 상수 =====
 const CONSULTATION_TYPES = {
@@ -1165,27 +1166,16 @@ export function Messages() {
                 </CardHeader>
 
                 {/* 메시지 목록 */}
-                <div className="flex-1 overflow-y-auto p-2 sm:p-4 min-h-0" style={{ minHeight: 0 }}>
+                <div className="flex-1 overflow-hidden min-h-0" style={{ minHeight: 0 }}>
                   {groupedMessages.length > 0 ? (
-                    <div className="space-y-1">
-                      {groupedMessages.map((group, gIdx) => (
-                        <div key={gIdx}>
-                          <DateDivider date={group.date} />
-                          <div className="space-y-1">
-                            {group.messages.map((msg, mIdx) => (
-                              <div key={msg.id || mIdx} className={`${msg.isGrouped ? "mt-0.5" : "mt-3"}`}>
-                                {renderMessage(msg)}
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      ))}
-                      {/* 타이핑 표시기 */}
-                      {typingStatus?.isTyping && (
-                        <TypingIndicator name={otherUserName} />
-                      )}
-                      <div ref={messagesEndRef} />
-                    </div>
+                    <VirtualMessageList
+                      groupedMessages={groupedMessages}
+                      renderMessage={renderMessage}
+                      typingStatus={typingStatus}
+                      otherUserName={otherUserName}
+                      messagesEndRef={messagesEndRef as any}
+                      containerHeight={500}
+                    />
                   ) : (
                     <div className="flex items-center justify-center h-full">
                       <div className="text-center">
