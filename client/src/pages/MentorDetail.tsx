@@ -3,15 +3,17 @@ import { trpc } from "@/lib/trpc";
 import { Link, useParams, useLocation } from "wouter";
 import { GraduationCap, Star, ArrowLeft, MessageCircle, CheckCircle, Sparkles, Users, Clock, Award, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useState, useEffect } from "react";
+import { useState, useEffect, lazy, Suspense } from "react";
 import { getLoginUrl } from "@/const";
 import { toast } from "sonner";
 import { PageLayout } from "@/components/layout";
 import { setPageMeta, PAGE_META } from "@/lib/seo";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { GalleryUpload } from "@/components/GalleryUpload";
-import { BookingModal } from "@/components/BookingModal";
 import { LazyImage } from "@/components/LazyImage";
+
+// Dynamic import for BookingModal to reduce initial bundle size
+const BookingModal = lazy(() => import("@/components/BookingModal").then(m => ({ default: m.BookingModal })));
 
 const OPEN_CONVERSATION_KEY = "univmatch:openConversationUserId";
 const DRAFT_MESSAGE_KEY = "univmatch:draftMessage";
@@ -526,12 +528,16 @@ export default function MentorDetail() {
           </div>
         </div>
       </div>
-      <BookingModal
-        isOpen={isBookingModalOpen}
-        onOpenChange={setIsBookingModalOpen}
-        mentorId={mentor?.profile?.uuid || id || ""}
-        mentorName={mentor?.user?.name || ""}
-      />
+      {isBookingModalOpen && (
+        <Suspense fallback={null}>
+          <BookingModal
+            isOpen={isBookingModalOpen}
+            onOpenChange={setIsBookingModalOpen}
+            mentorId={mentor?.profile?.uuid || id || ""}
+            mentorName={mentor?.user?.name || ""}
+          />
+        </Suspense>
+      )}
     </PageLayout>
   );
 }

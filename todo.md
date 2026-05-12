@@ -3625,3 +3625,15 @@
 - [ ] 동적 임포트 실제 적용 (차트, 모달 등)
 - [ ] Tree-shaking 최적화
 - [ ] CSS 최적화
+
+
+## 성능 최적화 - Phase 7: 동적 임포트 실제 적용 (완료)
+- [x] MentorDetail.tsx에 BookingModal 동적 임포트 적용
+- [x] Suspense 폴백 구현
+- [x] 조건부 렌더링으로 필요할 때만 로드
+
+## 성능 최적화 - Phase 8: Mentors.tsx LazyImage 적용 (완료)
+- [x] Mentors.tsx에 LazyImage import 추가
+- [x] 멘토 프로필 이미지에 LazyImage 적용
+- [x] 대학 로고 이미지에 LazyImage 적용
+- [x] 모든 이미지에 placeholder SVG 추가

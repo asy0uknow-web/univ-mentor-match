@@ -8,6 +8,7 @@ import { setPageMeta, PAGE_META } from "@/lib/seo";
 import { Button } from "@/components/ui/button";
 import { getUniversityLogo } from "@/const/universities";
 import { COLLEGES, getMajorNames } from "@/const/majors";
+import { LazyImage } from "@/components/LazyImage";
 
 const REGIONS = [
   { value: "seoul", label: "서울" },
@@ -607,10 +608,11 @@ export default function Mentors() {
                   <div className="bg-[var(--color-bg-card)] border border-[var(--color-border-default)] rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300 h-full flex flex-col cursor-pointer group-hover:-translate-y-1">
                       {/* 갤러리 이미지 - 대표 사진 또는 로고 */}
                       <div className="w-full h-24 sm:h-32 bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center overflow-hidden">
-                        <img
+                        <LazyImage
                           src={(mentor as any).profileImage || "/logonew.png"}
                           alt={(mentor as any).profileImage ? "프로필" : "유니브매치 로고"}
                           className={`${(mentor as any).profileImage ? 'w-full h-full object-cover' : 'w-12 h-12 sm:w-16 sm:h-16 object-contain'}`}
+                          placeholder="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect fill='%23e5e7eb' width='100' height='100'/%3E%3C/svg%3E"
                         />
                       </div>
                       
@@ -628,10 +630,11 @@ export default function Mentors() {
                             </div>
                             <div className="flex items-center gap-1 text-xs sm:text-sm text-[var(--color-text-secondary)] mb-2">
                               {getUniversityLogo(mentor.university) && (
-                                <img
+                                <LazyImage
                                   src={getUniversityLogo(mentor.university)}
                                   alt={mentor.university}
                                   className="h-4 w-4 rounded-full"
+                                  placeholder="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect fill='%23e5e7eb' width='100' height='100'/%3E%3C/svg%3E"
                                 />
                               )}
                               <span>{mentor.university}</span>
