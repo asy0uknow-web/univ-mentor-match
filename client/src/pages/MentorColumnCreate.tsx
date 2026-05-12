@@ -98,17 +98,20 @@ export default function MentorColumnCreate() {
     },
   });
 
-  // 자동 저장 기능
+   // 자동 저장 기능
   useEffect(() => {
     if (autoSaveTimerRef.current) {
       clearTimeout(autoSaveTimerRef.current);
     }
-
+    // 자동 저장 검증: 제목 5자 이상, 내용 50자 이상, 카테고리 필수
     if (!title.trim() || !content.trim() || categories.length === 0) {
       return;
     }
-
-    setAutoSaveStatus("saving");
+    if (title.length < 5 || content.length < 50) {
+      // 최소 요구사항을 충족하지 않으면 자동 저장 스킵
+      return;
+    }
+    setAutoSaveStatus("saving");;
 
     autoSaveTimerRef.current = setTimeout(() => {
       if (columnId) {
@@ -543,9 +546,15 @@ export default function MentorColumnCreate() {
                     onChange={(e) => setContent(e.target.value)}
                     className="min-h-64 text-sm font-mono"
                   />
-                  <p className="text-xs text-muted-foreground mt-1">
-                    {content.length} 자 (최소 50자)
-                  </p>
+                  <div className="flex items-center justify-between mt-1">
+                    <p className={`text-xs font-medium ${
+                      content.length < 50
+                        ? "text-red-500"
+                        : "text-green-600"
+                    }`}>
+                      {content.length} 자 {content.length < 50 ? `(남은 글자: ${50 - content.length}자)` : "(최소 요구사항 충족)"}
+                    </p>
+                  </div>
                 </div>
 
                 {/* 액션 버튼 */}
@@ -570,7 +579,7 @@ export default function MentorColumnCreate() {
                     onClick={() => {
                       handleSubmit("draft");
                     }}
-                    disabled={createMutation.isPending || updateMutation.isPending}
+                    disabled={createMutation.isPending || updateMutation.isPending || content.length < 50}
                     className="flex-1 gap-2"
                   >
                     <Save className="h-4 w-4" />
@@ -580,7 +589,7 @@ export default function MentorColumnCreate() {
                     onClick={() => {
                       handleSubmit("published");
                     }}
-                    disabled={createMutation.isPending}
+                    disabled={createMutation.isPending || content.length < 50}
                     className="flex-1 gap-2"
                   >
                     <Save className="h-4 w-4" />
