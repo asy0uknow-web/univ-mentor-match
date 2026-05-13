@@ -61,13 +61,12 @@ export const VirtualMessageList = memo(function VirtualMessageList({
     }
   }, [flatItems.length]);
 
-  // 각 아이템의 높이 계산 (추정값)
+  // 각 아이템의 높이 계산 (고정값으로 변경 - react-window 오류 강력한 해결)
+  // itemSize는 반드시 숫자여야 하고, null/undefined가 되면 안 됨
   const getItemSize = useCallback((index: number) => {
-    const item = flatItems[index];
-    if (item.type === "date") return 40; // DateDivider 높이
-    if (item.type === "typing") return 50; // TypingIndicator 높이
-    return 60; // 일반 메시지 평균 높이
-  }, [flatItems]);
+    // 항상 유효한 숫자 반환 (null/undefined 방지)
+    return 80;
+  }, []);
 
   // 아이템 렌더링 함수
   const Row = useCallback(
@@ -110,6 +109,7 @@ export const VirtualMessageList = memo(function VirtualMessageList({
       itemSize={getItemSize}
       width="100%"
       overscanCount={5}
+
     >
       {Row}
     </ListComponent>
