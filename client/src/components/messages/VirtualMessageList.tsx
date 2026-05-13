@@ -36,10 +36,13 @@ export const VirtualMessageList = memo(function VirtualMessageList({
     }> = [];
 
     groupedMessages.forEach((group) => {
+      if (!group || !group.date) return;
       items.push({ type: "date", date: group.date });
-      group.messages.forEach((msg) => {
-        items.push({ type: "message", message: msg });
-      });
+      if (group.messages && Array.isArray(group.messages)) {
+        group.messages.forEach((msg) => {
+          items.push({ type: "message", message: msg });
+        });
+      }
     });
 
     // 타이핑 표시기 추가

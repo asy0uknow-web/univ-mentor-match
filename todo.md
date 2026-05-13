@@ -3702,3 +3702,8 @@
 - [x] MentorDetail.tsx에서 field 대신 consultationType 표시
 - [x] RecommendedMentors.tsx에서 field 대신 consultationType 표시
 - [x] mentor.getById 라우터에 consultationTypes 데이터 추가
+
+## 메시지 전송 오류 수정 (react-window null 체크)
+- [x] 이전 불필요한 conversations useMemo 롤백
+- [x] groupedMessages 생성 시 null date 체크 추가
+- [x] VirtualMessageList에 방어 코드 추가
