@@ -469,17 +469,7 @@ export default function MentorColumnCreate() {
                   <div className="flex items-center justify-between mb-2">
                     <label className="block text-xs sm:text-sm font-medium">
                       내용 <span className="text-red-500">*</span>
-                    </label>
-                    {autoSaveStatus !== "idle" && (
-                      <span className={`text-xs font-medium ${
-                        autoSaveStatus === "saving"
-                          ? "text-amber-600"
-                          : "text-green-600"
-                      }`}>
-                        {autoSaveStatus === "saving" ? "저장 중..." : "저장됨"}
-                      </span>
-                    )}
-                  </div>
+                    </label></div>
                   <Textarea
                     placeholder="칼럼 내용을 입력해주세요"
                     value={content}
