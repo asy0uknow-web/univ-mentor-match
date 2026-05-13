@@ -3707,3 +3707,8 @@
 - [x] 이전 불필요한 conversations useMemo 롤백
 - [x] groupedMessages 생성 시 null date 체크 추가
 - [x] VirtualMessageList에 방어 코드 추가
+
+## OpenAI API 키 설정 (배포 차단 해제)
+- [ ] OpenAI API 키 획득
+- [ ] llm-pipeline.ts와 embedding-service.ts의 주석 해제
+- [ ] 배포 재시도

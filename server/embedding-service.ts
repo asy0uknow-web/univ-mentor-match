@@ -1,8 +1,10 @@
 import OpenAI from "openai";
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+// TODO: OpenAI API 키 설정 후 활성화
+// const openai = new OpenAI({
+//   apiKey: process.env.OPENAI_API_KEY,
+// });
+const openai = null as any; // 임시 처리
 
 /**
  * 텍스트를 벡터 임베딩으로 변환합니다
@@ -48,8 +50,8 @@ export async function generateEmbeddingsBatch(texts: string[]): Promise<number[]
 
     // 응답 데이터를 인덱스 순서대로 정렬
     return response.data
-      .sort((a, b) => a.index - b.index)
-      .map((item) => item.embedding);
+      .sort((a: any, b: any) => a.index - b.index)
+      .map((item: any) => item.embedding);
   } catch (error) {
     console.error("Error generating embeddings batch:", error);
     throw error;
