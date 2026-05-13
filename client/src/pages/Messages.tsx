@@ -742,7 +742,7 @@ export function Messages() {
   // ===== 메시지 렌더링 =====
   const renderMessage = (msg: any) => {
     const isMe = msg.senderId === user?.id;
-    const msgReactions = reactions?.filter((r: any) => r.messageId === msg.id) || [];
+    const msgReactions = (reactions?.filter((r: any) => r.messageId === msg.id) || []) ?? [];
     const isEditing = editingMessageId === msg.id;
     const showEmojiPicker = emojiPickerMessageId === msg.id;
 

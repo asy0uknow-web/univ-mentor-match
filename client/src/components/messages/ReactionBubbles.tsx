@@ -13,7 +13,8 @@ export const ReactionBubbles = memo(function ReactionBubbles({
   messageId,
   onToggle,
 }: ReactionBubblesProps) {
-  if (!reactions || reactions.length === 0) return null;
+  // reactions가 null, undefined, 또는 빈 배열이면 렌더링하지 않음
+  if (!reactions || !Array.isArray(reactions) || reactions.length === 0) return null;
 
   const grouped = reactions.reduce(
     (acc: Record<string, { count: number; users: number[] }>, r: any) => {
@@ -34,7 +35,7 @@ export const ReactionBubbles = memo(function ReactionBubbles({
 
   return (
     <div className="flex flex-wrap gap-1 mt-1">
-      {Object.entries(grouped).map(([emoji, { count, users }]) => {
+      {Object.entries(grouped ?? {}).map(([emoji, { count, users }]) => {
         const isMyReaction = users.includes(currentUserId);
         return (
           <button
