@@ -3698,7 +3698,7 @@
 - [x] 의미적 유사도 기반 검색 테스트 ("간장게장" 등 비관련 단어 검색) - 20개 테스트 모두 통과
 - [ ] 검색 결과에 매칭 점수 표시 기능 (Mentors.tsx에서 matchScore 표시)
 
-## 멘토 카드 UI 개선 (전공 분야 한글화)
-- [x] MentorDetail.tsx에서 field를 한글로 표시 (engineering → 공학 등)
-- [x] RecommendedMentors.tsx에서 field를 한글로 표시
-- [x] Mentors.tsx에서 consultationType은 이미 한글로 표시되어 있음
+## 멘토 카드 UI 개선 (상담 유형 표시)
+- [x] MentorDetail.tsx에서 field 대신 consultationType 표시
+- [x] RecommendedMentors.tsx에서 field 대신 consultationType 표시
+- [x] mentor.getById 라우터에 consultationTypes 데이터 추가

@@ -357,7 +357,7 @@ export const appRouter = router({
         // getMentorById 함수가 UUID와 숫자 ID 모두 지원
         const mentor = await getMentorById(input.mentorId);
         
-        // 대표 사진 추가
+        // 대표 사진 추가 및 상담 유형 추가
         if (mentor) {
           const db = await getDb();
           if (db) {
@@ -368,6 +368,14 @@ export const appRouter = router({
               .limit(1);
             
             (mentor.profile as any).profileImage = primaryImage.length > 0 ? primaryImage[0].imageUrl : null;
+            
+            // 상담 유형 추가
+            const consultationTypes = await db
+              .select({ consultationType: mentorConsultationTypes.consultationType })
+              .from(mentorConsultationTypes)
+              .where(eq(mentorConsultationTypes.mentorId, mentor.profile.userId));
+            
+            (mentor as any).consultationTypes = consultationTypes.map((ct: any) => ct.consultationType);
           }
         }
         
