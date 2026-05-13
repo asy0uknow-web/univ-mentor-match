@@ -59,8 +59,8 @@ export default function Mentors() {
   const [showConsultationTypePanel, setShowConsultationTypePanel] = useState(false);
   const [tempSelectedConsultationTypes, setTempSelectedConsultationTypes] = useState<string[]>([]);
   const [sortBy, setSortBy] = useState("rating");
-
-
+  const [aiSearchTerm, setAiSearchTerm] = useState("");
+  const [showAiResults, setShowAiResults] = useState(false);
 
   useEffect(() => {
     setPageMeta(PAGE_META.mentors);
@@ -188,11 +188,31 @@ export default function Mentors() {
     limit: 20,
   });
 
-  // AI 매칭 검색 쿼리
+  // AI 매칭 검색 쿼리 (기존 검색)
   const { data: aiSearchResults = [] } = trpc.aiMatching.performNaturalLanguageSearch.useQuery(
     { query: debouncedSearch, limit: 20 },
     { enabled: !!debouncedSearch && debouncedSearch.length > 0 }
   );
+
+  // AI 추천 검색 쿼리 (새로운 검색)
+  const { data: aiSearchResponse = null, isLoading: isAiSearchLoading } = trpc.aiSearch.search.useQuery(
+    { query: aiSearchTerm, limit: 20 },
+    { enabled: !!aiSearchTerm && aiSearchTerm.length > 0 }
+  );
+  
+  const aiRecommendedResults = aiSearchResponse?.results || [];
+
+  const handleAiSearch = async () => {
+    if (aiSearchTerm.trim()) {
+      setShowAiResults(true);
+    }
+  };
+
+  const handleAiSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      handleAiSearch();
+    }
+  };
 
   // 클라이언트 측 필터링
   const filteredMentors = useMemo(() => {
@@ -332,6 +352,146 @@ export default function Mentors() {
                   </Select>
                 </div>
               </div>
+          </div>
+        </div>
+      </div>
+
+        {/* AI 추천 검색 섹션 */}
+        {showAiResults && (
+          <div className="bg-[var(--color-bg-card)] border-b border-[var(--color-border-default)]">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <Sparkles className="w-5 h-5 text-[var(--brand-primary-500)]" />
+                  <h2 className="text-lg sm:text-xl font-bold text-[var(--color-text-primary)]">AI 추천 검색 결과</h2>
+                </div>
+                <button
+                  onClick={() => setShowAiResults(false)}
+                  className="p-1 hover:bg-[var(--color-bg-card)] rounded-md transition-colors"
+                >
+                  <X className="h-5 w-5 text-[var(--color-text-primary)]" />
+                </button>
+              </div>
+              
+              {isAiSearchLoading ? (
+                <div className="flex justify-center items-center py-8">
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[var(--brand-secondary-600)]"></div>
+                </div>
+              ) : aiRecommendedResults.length === 0 ? (
+                <div className="text-center py-8">
+                  <AlertCircle className="h-8 w-8 text-[var(--color-text-secondary)] mx-auto mb-2" />
+                  <p className="text-[var(--color-text-secondary)] text-sm sm:text-base">검색 결과가 없습니다. 다른 키워드로 시도해보세요.</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
+                  {aiRecommendedResults.map((mentor: any) => {
+                    const displayName = mentor.name || mentor.user?.name || "멘토";
+                    return (
+                    <Link key={mentor.uuid || mentor.id} href={`/mentor/${mentor.uuid}`} className="group">
+                      <div className="bg-[var(--color-bg-card)] border border-[var(--color-border-default)] rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300 h-full flex flex-col cursor-pointer group-hover:-translate-y-1">
+                        {/* 갤러리 이미지 */}
+                        <div className="w-full h-24 sm:h-32 bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center overflow-hidden">
+                          <LazyImage
+                            src={(mentor as any).profileImage || "/logonew.png"}
+                            alt={(mentor as any).profileImage ? "프로필" : "유니브매치 로고"}
+                            className={`${(mentor as any).profileImage ? 'w-full h-full object-cover' : 'w-12 h-12 sm:w-16 sm:h-16 object-contain'}`}
+                            placeholder="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect fill='%23e5e7eb' width='100' height='100'/%3E%3C/svg%3E"
+                          />
+                        </div>
+                        
+                        {/* 멘토 정보 */}
+                        <div className="p-4 sm:p-6 border-b border-[var(--color-border-default)]">
+                          <div className="flex items-start justify-between mb-3">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-1">
+                                <h3 className="text-base sm:text-lg font-bold text-[var(--color-text-primary)] group-hover:text-[var(--brand-secondary-600)] transition-colors">
+                                  {displayName}
+                                </h3>
+                                {mentor.verificationStatus === "approved" && (
+                                  <BadgeCheck className="h-4 w-4 text-[var(--brand-secondary-600)] flex-shrink-0" />
+                                )}
+                              </div>
+                              <div className="flex items-center gap-1 text-xs sm:text-sm text-[var(--color-text-secondary)] mb-2">
+                                {getUniversityLogo(mentor.university) && (
+                                  <LazyImage
+                                    src={getUniversityLogo(mentor.university)}
+                                    alt={mentor.university}
+                                    className="h-4 w-4 rounded-full"
+                                    placeholder="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect fill='%23e5e7eb' width='100' height='100'/%3E%3C/svg%3E"
+                                  />
+                                )}
+                                <span>{mentor.university}</span>
+                              </div>
+                            </div>
+                            {mentor.averageRating && (
+                              <div className="flex items-center gap-1 ml-2">
+                                <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                                <span className="text-sm font-semibold text-[var(--color-text-primary)]">{mentor.averageRating.toFixed(1)}</span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                        
+                        {/* 매칭 점수 표시 */}
+                        {mentor.matchScore && (
+                          <div className="px-4 sm:px-6 py-3 bg-[var(--brand-primary-50)] border-t border-[var(--color-border-default)]">
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs font-medium text-[var(--brand-primary-700)]">AI 매칭 점수</span>
+                              <div className="flex items-center gap-2">
+                                <div className="w-16 h-2 bg-[var(--color-border-default)] rounded-full overflow-hidden">
+                                  <div 
+                                    className="h-full bg-[var(--brand-primary-500)]" 
+                                    style={{ width: `${Math.min(mentor.matchScore, 100)}%` }}
+                                  />
+                                </div>
+                                    <span className="text-xs font-bold text-[var(--brand-primary-700)]">{Math.round((mentor.matchScore || 0) * 100)}%</span>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </Link>
+                  );
+                  })}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* AI 추천 검색 입력 섹션 */}
+        <div className="bg-[var(--color-bg-card)] border-b border-[var(--color-border-default)]">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+            <div className="mb-4">
+              <div className="flex items-center gap-2 mb-3">
+                <Sparkles className="w-5 h-5 text-[var(--brand-primary-500)]" />
+                <h2 className="text-lg sm:text-xl font-bold text-[var(--color-text-primary)]">AI 추천 검색</h2>
+              </div>
+              <p className="text-[var(--color-text-secondary)] text-xs sm:text-sm mb-4">
+                자연어로 원하는 멘토를 설명해보세요. AI가 가장 적합한 멘토를 찾아드립니다.
+              </p>
+            </div>
+            
+            <div className="flex flex-col gap-2">
+              <div className="bg-[var(--color-bg-card)] border border-[var(--color-border-default)] rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 px-3 sm:px-4 py-2 flex items-center gap-2 w-full">
+                <Search className="h-4 sm:h-5 w-4 sm:w-5 text-[var(--color-text-secondary)] flex-shrink-0" />
+                <input
+                  type="text"
+                  placeholder="예: 간장게장 좋아하는 멘토, 수시 전문가, 의대 준비 중인 멘토"
+                  value={aiSearchTerm}
+                  onChange={(e) => setAiSearchTerm(e.target.value)}
+                  onKeyDown={handleAiSearchKeyDown}
+                  className="flex-1 bg-transparent text-xs sm:text-sm text-[var(--color-text-primary)] placeholder-[var(--color-text-secondary)] focus:outline-none py-2"
+                />
+              </div>
+              <Button
+                onClick={handleAiSearch}
+                disabled={!aiSearchTerm.trim()}
+                className="bg-[var(--brand-primary-500)] hover:bg-[var(--brand-primary-600)] text-white disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <Sparkles className="h-4 w-4 mr-2" />
+                AI 검색
+              </Button>
             </div>
           </div>
         </div>

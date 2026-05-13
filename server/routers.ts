@@ -67,6 +67,7 @@ import { getMonthlyConsultationStats, getOverallConsultationStats, getLast12Mont
 import { createQuestion, getQuestionById, getQuestions, updateQuestion, deleteQuestion, createAnswer, getAnswersByQuestionId, getAnswerById, updateAnswer, deleteAnswer, createAnswerReply, getRepliesByAnswerId, getReplyById, updateReply, deleteReply, getQuestionDetail, acceptAnswer, toggleAnswerLike, getUserAnswerLikes, notifyQuestionAuthorOnAnswer, getMyQuestions, getMyAnswers } from "./qna";
 import { getColumnsList, getColumnById, createColumn, updateColumn, deleteColumn, toggleColumnLike, getColumnComments, createComment, updateComment, deleteComment, getMyColumns, incrementViewCount } from "./columns";
 import { hybridSearch } from "./hybrid-search";
+import { aiSearchMentors, getSearchStats } from "./ai-search";
 import { mentorColumns, emailVerificationCodes, mentorGallery, messages, notifications, bookings, reviews, mentorProfiles, mentorVerifications, users, bugReports, mentorConsultationTypes, consultationProposals, studentProfiles, studentInterests, mentorRecommendations, mentorSearchCorpus } from "../drizzle/schema";
 
 import { eq, and, desc, isNull, eq as drizzleEq, or as drizzleOr, desc as drizzleDesc, count } from "drizzle-orm";
@@ -2882,6 +2883,38 @@ getTopMentors: publicProcedure
         });
         
         return { success: true };
+      }),
+  }),
+
+  aiSearch: router({
+    search: publicProcedure
+      .input(z.object({
+        query: z.string().min(1, "Search query cannot be empty"),
+        limit: z.number().int().min(1).max(50).default(10),
+      }))
+      .query(async ({ input }) => {
+        try {
+          const results = await aiSearchMentors(input.query, input.limit);
+          return {
+            success: true,
+            results,
+            count: results.length,
+          };
+        } catch (error) {
+          console.error("[AI Search] Error:", error);
+          throw new Error("Failed to perform AI search");
+        }
+      }),
+
+    stats: publicProcedure
+      .query(async () => {
+        try {
+          const stats = await getSearchStats();
+          return stats;
+        } catch (error) {
+          console.error("[AI Search] Error getting stats:", error);
+          throw new Error("Failed to get search statistics");
+        }
       }),
   }),
 });
