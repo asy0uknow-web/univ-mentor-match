@@ -384,7 +384,10 @@ export function Messages() {
   // 새로운 대화 시작 시 상대방 사용자 정보 조회
   const { data: otherUserInfo } = trpc.user.getById.useQuery(
     { userId: selectedConversation || 0 },
-    { enabled: selectedConversation !== null && selectedConversation > 0 }
+    { 
+      enabled: selectedConversation !== null && selectedConversation > 0,
+      retry: false
+    }
   );
   
   // 멘토 데이터를 받으면 사용자 ID로 selectedConversation 설정

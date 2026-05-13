@@ -3712,3 +3712,6 @@
 - [ ] OpenAI API 키 획득
 - [ ] llm-pipeline.ts와 embedding-service.ts의 주석 해제
 - [ ] 배포 재시도
+## Messages 페이지 메시지 전송 오류 수정
+- [x] otherUserInfo 조회에 retry: false 설정
+- [x] 불필요한 로드링/에러 UI 제거
