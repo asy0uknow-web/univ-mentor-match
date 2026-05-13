@@ -575,13 +575,16 @@ export function Messages() {
   };
 
   // ===== 대화 목록 처리 =====
-  const conversations = inbox?.reduce((acc: any, msg: any) => {
-    const otherId = msg.senderId === user?.id ? msg.recipientId : msg.senderId;
-    if (!acc[otherId]) acc[otherId] = [];
-    acc[otherId].push(msg);
-    return acc;
-  }, {}) || {};
-
+  const conversations = useMemo(() => {
+    if (!inbox || !Array.isArray(inbox) || inbox.length === 0) return {};
+    return inbox.reduce((acc: any, msg: any) => {
+      const otherId = msg.senderId === user?.id ? msg.recipientId : msg.senderId;
+      if (!acc[otherId]) acc[otherId] = [];
+      acc[otherId].push(msg);
+      return acc;
+    }, {});
+  }, [inbox, user?.id]);
+  
   const getOtherUserName = (userId: number) => {
     // 1. 먼저 conversations[userId]에서 상대방 이름 찾기
     const msgs: any[] = conversations[userId] || [];
@@ -650,9 +653,9 @@ export function Messages() {
     return msgs.filter((m: any) => m.recipientId === user?.id && !m.isRead).length;
   };
 
-  const filteredConversations = Object.entries(conversations).filter(([userId]: [string, any]) =>
+  const filteredConversations = conversations && typeof conversations === 'object' ? Object.entries(conversations).filter(([userId]: [string, any]) =>
     getOtherUserName(parseInt(userId)).toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  ) : [];
 
   const getRelativeTime = (date: string | Date) => {
     try {
