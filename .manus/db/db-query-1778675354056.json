@@ -1,0 +1,18 @@
+{
+  "query": "SELECT mentorId, corpus FROM mentor_search_corpus LIMIT 10;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute SELECT mentorId, corpus FROM mentor_search_corpus LIMIT 10;",
+  "rows": [
+    {
+      "mentorId": "1",
+      "corpus": "양주혁 부산대학교 기계공학부 안녕하세요, 부산대학교 기계공학부 학생 양주혁입니다. 저는 입시 과정에서 얻은 경험을 바탕으로 고등학생들을 도와주고 싶습니다. 입시 전략, 대학 선택, 멘탈 관리 수시 준비생, 성적 향상 필요 학생부종합, 수시 개인 과외 경험, 학생부 작성 지도"
+    },
+    {
+      "mentorId": "30001",
+      "corpus": "최세영 부산대학교 컴퓨터공학부 안녕하세요! 부산대학교 컴퓨터공학부 최세영입니다. 수시 학종으로 입학했고, 대학 생활 중 다양한 프로젝트 경험이 있습니다. 프로그래밍, 대학 생활 적응, 진로 상담 수시 준비생, 진로 미정 학생부종합 프로젝트 경험, 학생부 작성 지도"
+    }
+  ],
+  "messages": [],
+  "stdout": "mentorId\tcorpus\n1\t양주혁 부산대학교 기계공학부 안녕하세요, 부산대학교 기계공학부 학생 양주혁입니다. 저는 입시 과정에서 얻은 경험을 바탕으로 고등학생들을 도와주고 싶습니다. 입시 전략, 대학 선택, 멘탈 관리 수시 준비생, 성적 향상 필요 학생부종합, 수시 개인 과외 경험, 학생부 작성 지도\n30001\t최세영 부산대학교 컴퓨터공학부 안녕하세요! 부산대학교 컴퓨터공학부 최세영입니다. 수시 학종으로 입학했고, 대학 생활 중 다양한 프로젝트 경험이 있습니다. 프로그래밍, 대학 생활 적응, 진로 상담 수시 준비생, 진로 미정 학생부종합 프로젝트 경험, 학생부 작성 지도\n",
+  "stderr": "",
+  "execution_time_ms": 1805
+}

@@ -1,0 +1,8 @@
+{
+  "query": "SELECT mct.id, mct.mentor_id, mct.consultation_type, mct.description FROM mentor_consultation_types mct \nWHERE mct.mentor_id = 840022;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute SELECT mct.id, mct.mentor_id, mct.consultation_type, mct.description FROM mentor_consultation_types mct \nWHERE mct.mentor_id = 840022;",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1054 (42S22) at line 1: Unknown column 'mct.mentor_id' in 'where clause'"
+  ]
+}

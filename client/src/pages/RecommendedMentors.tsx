@@ -6,6 +6,16 @@ import { Badge } from "../components/ui/badge";
 import { Star, Sparkles, ArrowRight } from "lucide-react";
 import PageLayout from "../components/layout/PageLayout";
 
+const FIELD_LABELS: Record<string, string> = {
+  engineering: "공학",
+  natural_science: "자연과학",
+  business: "경영/상경",
+  humanities: "인문학",
+  education: "교육",
+  liberal_arts: "교양",
+  medicine: "의학",
+};
+
 export default function RecommendedMentors() {
   const [interests, setInterests] = useState<Array<{ category: string; level: string }>>([]);
   const [selectedInterests, setSelectedInterests] = useState<Set<string>>(new Set());
@@ -148,7 +158,7 @@ export default function RecommendedMentors() {
                         </CardDescription>
                       </div>
                       <Badge variant="secondary" className="bg-[var(--brand-primary-100)] text-[var(--brand-primary-700)]">
-                        {mentor.field || "전공"}
+                        {mentor.field ? FIELD_LABELS[mentor.field] : "전공 미등록"}
                       </Badge>
                     </div>
                   </CardHeader>

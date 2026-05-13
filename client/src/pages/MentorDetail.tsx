@@ -18,6 +18,16 @@ const BookingModal = lazy(() => import("@/components/BookingModal").then(m => ({
 const OPEN_CONVERSATION_KEY = "univmatch:openConversationUserId";
 const DRAFT_MESSAGE_KEY = "univmatch:draftMessage";
 
+const FIELD_LABELS: Record<string, string> = {
+  engineering: "공학",
+  natural_science: "자연과학",
+  business: "경영/상경",
+  humanities: "인문학",
+  education: "교육",
+  liberal_arts: "교양",
+  medicine: "의학",
+};
+
 export default function MentorDetail() {
   const { id } = useParams();
   const { user, isAuthenticated } = useAuth({ redirectOnUnauthenticated: false });
@@ -302,7 +312,7 @@ export default function MentorDetail() {
                   <CardContent>
                     <div className="flex flex-wrap gap-2">
                       <span className="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full text-sm font-medium">
-                        {mentor.profile.field}
+                        {FIELD_LABELS[mentor.profile.field] || mentor.profile.field}
                       </span>
                     </div>
                   </CardContent>
