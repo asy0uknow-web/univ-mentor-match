@@ -127,7 +127,9 @@ export default function MentorDetail() {
       setLocation('/login');
       return;
     }
-    setIsBookingModalOpen(true);
+    // 멘토와 메시지 페이지로 이동
+    const profileId = mentor?.profile?.uuid || id;
+    setLocation(`/messages?mentorId=${profileId}`);
   };
 
   const avgRating = reviews && reviews.length > 0
