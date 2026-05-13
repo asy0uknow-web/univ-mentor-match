@@ -3682,3 +3682,13 @@
 - [ ] 벡터 DB 쿼리 최적화
 - [ ] 사용자 피드백 기반 가중치 조정
 - [ ] 프로덕션 배포 및 모니터링
+
+
+## AI 매칭 시스템 도입 (Phase 1-6) - 완료
+- [x] Phase 1: 데이터베이스 스키마 업데이트 (mentor_features, mentor_search_corpus, mentor_embeddings, search_queries, search_results_cache)
+- [x] Phase 2: LLM 파이프라인 구현 (GPT-4o-mini를 사용한 멘토 특성 추출)
+- [x] Phase 3: 임베딩 및 벡터 DB 구축 (text-embedding-3-small, InMemoryVectorDB, PineconeVectorDB)
+- [x] Phase 4: 하이브리드 검색 구현 (의미론적 + 키워드 검색, BM25, 메타데이터 필터링)
+- [x] Phase 5: 랭킹 시스템 구현 (최종 점수 = 벡터 60% + 키워드 30% + 프로필 10%, 부스트 점수, 다양성 점수)
+- [x] Phase 6: 테스트 및 최적화 (61개 테스트 모두 통과, 캐싱, 벤치마크)
+- [x] AI 매칭 통합 API 구현 (performNaturalLanguageSearch, getRecommendedMentors, benchmarkSearch)
