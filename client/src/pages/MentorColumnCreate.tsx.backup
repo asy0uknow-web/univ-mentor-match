@@ -47,7 +47,10 @@ export default function MentorColumnCreate() {
   const [isMentor, setIsMentor] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
-  const [dragActive, setDragActive] = useState(false);  const [columnId, setColumnId] = useState<number | null>(null);
+  const [dragActive, setDragActive] = useState(false);
+  const [autoSaveStatus, setAutoSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
+  const autoSaveTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const [columnId, setColumnId] = useState<number | null>(null);
   const [showPublishChecklist, setShowPublishChecklist] = useState(false);
 
   // 멘토 프로필 조회
@@ -86,17 +89,74 @@ export default function MentorColumnCreate() {
 
   const updateMutation = trpc.mentorColumns.update.useMutation({
     onSuccess: () => {
-      
+      setAutoSaveStatus("saved");
+      setTimeout(() => setAutoSaveStatus("idle"), 2000);
     },
     onError: (error: any) => {
-      console.error("저장 실패:", error.message);
+      setAutoSaveStatus("idle");
+      console.error("자동 저장 실패:", error.message);
     },
   });
+
+   // 자동 저장 기능
+  useEffect(() => {
+    if (autoSaveTimerRef.current) {
+      clearTimeout(autoSaveTimerRef.current);
+    }
+    // 자동 저장 검증: 제목 5자 이상, 내용 50자 이상, 카테고리 필수
+    if (!title.trim() || !content.trim() || categories.length === 0) {
+      return;
+    }
+    if (title.length < 5 || content.length < 50) {
+      // 최소 요구사항을 충족하지 않으면 자동 저장 스킵
+      return;
+    }
+    setAutoSaveStatus("saving");;
+
+    autoSaveTimerRef.current = setTimeout(() => {
+      if (columnId) {
+        // 기존 칼럼 업데이트
+        updateMutation.mutate({
+          columnId,
+          title,
+          content,
+          category: categories.join(", "),
+          excerpt: excerpt || content.substring(0, 200),
+          coverImageUrl: coverImageUrl || undefined,
+        });
+      } else {
+        // 새로운 칼럼 생성 (자동 저장)
+        createMutation.mutate({
+          title,
+          content,
+          category: categories.join(", "),
+          excerpt: excerpt || content.substring(0, 200),
+          coverImageUrl: coverImageUrl || undefined,
+          status: "draft",
+        });
+      }
+    }, 3000); // 3초 후 자동 저장
+
+    return () => {
+      if (autoSaveTimerRef.current) {
+        clearTimeout(autoSaveTimerRef.current);
+      }
+    };
+  }, [title, content, categories, excerpt, coverImageUrl]);
 
   setPageMeta({
     title: "칼럼 작성 | 유니브매치",
     description: "칼럼 스튜디오을 작성해보세요",
   });
+
+  // 컴포넌트 언마운트 시 타이머 정리
+  useEffect(() => {
+    return () => {
+      if (autoSaveTimerRef.current) {
+        clearTimeout(autoSaveTimerRef.current);
+      }
+    };
+  }, []);
 
   // 조건부 렌더링 (return 제거)
   if (!isAuthenticated) {
