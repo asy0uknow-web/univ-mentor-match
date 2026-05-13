@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>유니브매치 - 대학 멘토 매칭 플랫폼</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        .slide-container {
+            width: 1280px;
+            min-height: 720px;
+            background: linear-gradient(135deg, #FFFFFF 0%, #F0F8FF 100%);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-family: 'Montserrat', sans-serif;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .content-left {
+            flex: 1;
+            padding-left: 80px;
+            z-index: 10;
+        }
+        
+        .main-title {
+            font-size: 72px;
+            font-weight: 800;
+            color: #1A1A1A;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            letter-spacing: -2px;
+        }
+        
+        .subtitle {
+            font-size: 24px;
+            font-weight: 400;
+            color: #4A4A4A;
+            line-height: 1.5;
+            margin-bottom: 40px;
+            max-width: 500px;
+        }
+        
+        .tagline {
+            font-size: 18px;
+            font-weight: 600;
+            color: #4361EE;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+        
+        .visual-right {
+            flex: 1;
+            position: relative;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .color-block-1 {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: #4361EE;
+            border-radius: 20px;
+            top: 100px;
+            right: 100px;
+            opacity: 0.9;
+            transform: rotate(15deg);
+        }
+        
+        .color-block-2 {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background: #FF3366;
+            border-radius: 15px;
+            bottom: 150px;
+            right: 50px;
+            opacity: 0.85;
+            transform: rotate(-20deg);
+        }
+        
+        .circle-accent {
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            background: rgba(67, 97, 238, 0.1);
+            border-radius: 50%;
+            top: 50px;
+            right: 300px;
+        }
+        
+        .footer-info {
+            position: absolute;
+            bottom: 40px;
+            left: 80px;
+            font-size: 14px;
+            color: #4A4A4A;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="content-left">
+            <div class="tagline">혁신적인 진로 상담</div>
+            <h1 class="main-title">유니브매치</h1>
+            <p class="subtitle">고등학생의 진로 선택을 혁신하는 신뢰할 수 있는 1:1 멘토링 플랫폼</p>
+        </div>
+        
+        <div class="visual-right">
+            <div class="circle-accent"></div>
+            <div class="color-block-1"></div>
+            <div class="color-block-2"></div>
+        </div>
+        
+        <div class="footer-info">
+            대학 멘토 매칭 플랫폼 | 2026년 5월
+        </div>
+    </div>
+</body>
+</html>

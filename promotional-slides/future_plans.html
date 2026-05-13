@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>향후 계획</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        .slide-container {
+            width: 1280px;
+            min-height: 720px;
+            background: #FFFFFF;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: 'Montserrat', sans-serif;
+            padding-top: 60px;
+        }
+        
+        .header-section {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        .accent-line {
+            width: 60px;
+            height: 4px;
+            background: #4361EE;
+            margin: 0 auto 20px;
+        }
+        
+        .slide-title {
+            font-size: 44px;
+            font-weight: 800;
+            color: #1A1A1A;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+        
+        .phases-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 30px;
+            width: 100%;
+            max-width: 1100px;
+            padding: 0 60px;
+        }
+        
+        .phase-card {
+            display: flex;
+            flex-direction: column;
+            border-top: 4px solid;
+            padding-top: 25px;
+        }
+        
+        .phase-card-1 {
+            border-top-color: #4361EE;
+        }
+        
+        .phase-card-2 {
+            border-top-color: #FF3366;
+        }
+        
+        .phase-card-3 {
+            border-top-color: #00D4AA;
+        }
+        
+        .phase-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1A1A1A;
+            margin-bottom: 8px;
+        }
+        
+        .phase-timeline {
+            font-size: 14px;
+            font-weight: 600;
+            color: #4A4A4A;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .phase-timeline-1 {
+            color: #4361EE;
+        }
+        
+        .phase-timeline-2 {
+            color: #FF3366;
+        }
+        
+        .phase-timeline-3 {
+            color: #00D4AA;
+        }
+        
+        .initiative-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .initiative-item {
+            font-size: 15px;
+            color: #4A4A4A;
+            line-height: 1.5;
+            padding-left: 25px;
+            position: relative;
+            font-weight: 500;
+        }
+        
+        .initiative-item::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #4361EE;
+            font-weight: 700;
+            font-size: 18px;
+        }
+        
+        .phase-card-2 .initiative-item::before {
+            color: #FF3366;
+        }
+        
+        .phase-card-3 .initiative-item::before {
+            color: #00D4AA;
+        }
+        
+        .footer-message {
+            text-align: center;
+            margin-top: 50px;
+            font-size: 16px;
+            color: #4A4A4A;
+            line-height: 1.6;
+            font-weight: 500;
+            max-width: 900px;
+            padding: 0 60px;
+        }
+        
+        .highlight-text {
+            color: #FF3366;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="header-section">
+            <div class="accent-line"></div>
+            <h2 class="slide-title">지속적인 성장과 혁신을 통한 플랫폼 확대</h2>
+        </div>
+        
+        <div class="phases-container">
+            <div class="phase-card phase-card-1">
+                <h3 class="phase-title">단기 계획</h3>
+                <p class="phase-timeline phase-timeline-1">1-3개월</p>
+                <div class="initiative-list">
+                    <div class="initiative-item">서버 코드 도메인별 분리</div>
+                    <div class="initiative-item">E2E 테스트 추가</div>
+                    <div class="initiative-item">SEO 개선</div>
+                    <div class="initiative-item">접근성 개선</div>
+                </div>
+            </div>
+            
+            <div class="phase-card phase-card-2">
+                <h3 class="phase-title">중기 계획</h3>
+                <p class="phase-timeline phase-timeline-2">3-6개월</p>
+                <div class="initiative-list">
+                    <div class="initiative-item">AI 기반 멘토 추천</div>
+                    <div class="initiative-item">완전한 결제 통합</div>
+                    <div class="initiative-item">모바일 앱 출시</div>
+                    <div class="initiative-item">성능 모니터링</div>
+                </div>
+            </div>
+            
+            <div class="phase-card phase-card-3">
+                <h3 class="phase-title">장기 계획</h3>
+                <p class="phase-timeline phase-timeline-3">6개월 이상</p>
+                <div class="initiative-list">
+                    <div class="initiative-item">국제 확장</div>
+                    <div class="initiative-item">대학원 멘토링</div>
+                    <div class="initiative-item">직업 멘토링</div>
+                    <div class="initiative-item">커뮤니티 기능</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer-message">
+            <p>이러한 계획들을 통해 유니브매치는 <span class="highlight-text">단순한 멘토 매칭 플랫폼에서 종합적인 진로 상담 생태계</span>로 성장할 것입니다.</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>품질 보증</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        .slide-container {
+            width: 1280px;
+            min-height: 720px;
+            background: #FFFFFF;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Montserrat', sans-serif;
+            padding-top: 60px;
+        }
+        
+        .header-section {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .accent-line {
+            width: 60px;
+            height: 4px;
+            background: #4361EE;
+            margin: 0 auto 20px;
+        }
+        
+        .slide-title {
+            font-size: 48px;
+            font-weight: 800;
+            color: #1A1A1A;
+            line-height: 1.2;
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 40px;
+            width: 100%;
+            max-width: 1100px;
+            margin-bottom: 60px;
+            padding: 0 60px;
+        }
+        
+        .metric-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .metric-number {
+            font-size: 72px;
+            font-weight: 800;
+            line-height: 1;
+            margin-bottom: 15px;
+        }
+        
+        .metric-1 .metric-number {
+            color: #4361EE;
+        }
+        
+        .metric-2 .metric-number {
+            color: #FF3366;
+        }
+        
+        .metric-3 .metric-number {
+            color: #00D4AA;
+        }
+        
+        .metric-label {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1A1A1A;
+            margin-bottom: 12px;
+        }
+        
+        .metric-description {
+            font-size: 15px;
+            color: #4A4A4A;
+            line-height: 1.6;
+            font-weight: 500;
+        }
+        
+        .details-section {
+            background: #F0F8FF;
+            width: 100%;
+            padding-top: 50px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 40px;
+            max-width: 1100px;
+            padding: 0 60px;
+        }
+        
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .detail-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1A1A1A;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .detail-icon {
+            width: 32px;
+            height: 32px;
+            background: #4361EE;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            margin-right: 12px;
+            font-size: 16px;
+        }
+        
+        .detail-icon-2 {
+            background: #FF3366;
+        }
+        
+        .detail-icon-3 {
+            background: #00D4AA;
+        }
+        
+        .detail-description {
+            font-size: 15px;
+            color: #4A4A4A;
+            line-height: 1.6;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="header-section">
+            <div class="accent-line"></div>
+            <h2 class="slide-title">71개 테스트와 0개 컴파일 에러로 보증하는 안정성</h2>
+        </div>
+        
+        <div class="metrics-grid">
+            <div class="metric-card metric-1">
+                <div class="metric-number">71</div>
+                <div class="metric-label">자동화 테스트</div>
+                <p class="metric-description">모든 테스트 통과로 코드 품질 보증</p>
+            </div>
+            
+            <div class="metric-card metric-2">
+                <div class="metric-number">0</div>
+                <div class="metric-label">컴파일 에러</div>
+                <p class="metric-description">TypeScript로 런타임 에러 사전 방지</p>
+            </div>
+            
+            <div class="metric-card metric-3">
+                <div class="metric-number">22.4%</div>
+                <div class="metric-label">코드 감소</div>
+                <p class="metric-description">pt 0.9 대비 리팩토링 완료</p>
+            </div>
+        </div>
+        
+        <div class="details-section">
+            <div class="details-grid">
+                <div class="detail-item">
+                    <div class="detail-title">
+                        <div class="detail-icon">✓</div>
+                        <span>자동화 테스트</span>
+                    </div>
+                    <p class="detail-description">
+                        Vitest를 사용한 71개의 자동화 테스트로 핵심 기능 100% 커버리지를 달성했습니다. 모든 테스트가 지속적으로 실행되어 회귀를 방지합니다.
+                    </p>
+                </div>
+                
+                <div class="detail-item">
+                    <div class="detail-title">
+                        <div class="detail-icon detail-icon-2">T</div>
+                        <span>타입 안전성</span>
+                    </div>
+                    <p class="detail-description">
+                        프로젝트 전체에서 TypeScript를 사용하며 컴파일 에러는 0건입니다. 이는 런타임 에러를 사전에 방지하고 코드 유지보수성을 높입니다.
+                    </p>
+                </div>
+                
+                <div class="detail-item">
+                    <div class="detail-title">
+                        <div class="detail-icon detail-icon-3">↓</div>
+                        <span>지속적 리팩토링</span>
+                    </div>
+                    <p class="detail-description">
+                        pt 0.9에서 pt 1.0으로의 업그레이드 과정에서 코드 라인 수를 22.4% 감소시키면서도 기능은 완벽하게 유지했습니다.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>리뷰 시스템</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        .slide-container {
+            width: 1280px;
+            min-height: 720px;
+            background: #FFFFFF;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Montserrat', sans-serif;
+            padding-top: 60px;
+        }
+        
+        .header-section {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        .accent-line {
+            width: 60px;
+            height: 4px;
+            background: #4361EE;
+            margin: 0 auto 20px;
+        }
+        
+        .slide-title {
+            font-size: 48px;
+            font-weight: 800;
+            color: #1A1A1A;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+        
+        .slide-subtitle {
+            font-size: 20px;
+            color: #4A4A4A;
+            font-weight: 500;
+        }
+        
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            width: 100%;
+            max-width: 1100px;
+            padding: 0 60px;
+        }
+        
+        .feature-box {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .feature-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #1A1A1A;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .feature-icon {
+            width: 40px;
+            height: 40px;
+            background: #4361EE;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            margin-right: 15px;
+            font-size: 20px;
+        }
+        
+        .feature-description {
+            font-size: 16px;
+            color: #4A4A4A;
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+        
+        .rating-display {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .stars {
+            font-size: 18px;
+            color: #FFB800;
+        }
+        
+        .rating-text {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1A1A1A;
+        }
+        
+        .review-count {
+            font-size: 14px;
+            color: #4A4A4A;
+        }
+        
+        .benefit-list {
+            margin-top: 25px;
+        }
+        
+        .benefit-item {
+            font-size: 15px;
+            color: #4A4A4A;
+            line-height: 1.6;
+            margin-bottom: 12px;
+            padding-left: 25px;
+            position: relative;
+        }
+        
+        .benefit-item::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #FF3366;
+            font-weight: 700;
+            font-size: 16px;
+        }
+        
+        .highlight-text {
+            color: #FF3366;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="header-section">
+            <div class="accent-line"></div>
+            <h2 class="slide-title">투명한 평가로 멘토 품질 보증</h2>
+            <p class="slide-subtitle">신뢰할 수 있는 리뷰 시스템이 모든 멘토의 품질을 보장합니다</p>
+        </div>
+        
+        <div class="content-grid">
+            <div class="feature-box">
+                <div class="feature-title">
+                    <div class="feature-icon">★</div>
+                    <span>학생의 평가</span>
+                </div>
+                <p class="feature-description">
+                    상담이 완료된 후 학생은 멘토에 대해 <span class="highlight-text">별점(1~5점)과 코멘트</span>를 작성할 수 있습니다.
+                </p>
+                <div class="rating-display">
+                    <span class="stars">★★★★★</span>
+                    <span class="rating-text">4.9</span>
+                </div>
+                <p class="review-count">128개의 리뷰 기반</p>
+                <div class="benefit-list">
+                    <div class="benefit-item">실제 상담 경험을 바탕으로 한 평가</div>
+                    <div class="benefit-item">다른 학생들의 선택에 영향</div>
+                    <div class="benefit-item">멘토의 신뢰도 지표</div>
+                </div>
+            </div>
+            
+            <div class="feature-box">
+                <div class="feature-title">
+                    <div class="feature-icon">📊</div>
+                    <span>품질 관리</span>
+                </div>
+                <p class="feature-description">
+                    멘토 프로필에는 <span class="highlight-text">평균 평점, 총 리뷰 수, 상담 경험 수</span>가 표시되어 신뢰성을 한눈에 파악할 수 있습니다.
+                </p>
+                <div class="benefit-list">
+                    <div class="benefit-item">멘토는 자신이 받은 모든 리뷰 조회 가능</div>
+                    <div class="benefit-item">필요시 리뷰 삭제 가능</div>
+                    <div class="benefit-item">지속적인 품질 개선 동기 부여</div>
+                    <div class="benefit-item">저품질 멘토 자동 식별</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

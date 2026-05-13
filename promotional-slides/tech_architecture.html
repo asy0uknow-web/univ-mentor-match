@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>기술 아키텍처</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        .slide-container {
+            width: 1280px;
+            min-height: 720px;
+            background: #FFFFFF;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            font-family: 'Montserrat', sans-serif;
+            padding-top: 40px;
+        }
+        
+        .header-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .accent-line {
+            width: 60px;
+            height: 4px;
+            background: #4361EE;
+            margin: 0 auto 15px;
+        }
+        
+        .slide-title {
+            font-size: 44px;
+            font-weight: 800;
+            color: #1A1A1A;
+            margin-bottom: 10px;
+            line-height: 1.2;
+        }
+        
+        .slide-subtitle {
+            font-size: 18px;
+            color: #4A4A4A;
+            font-weight: 500;
+        }
+        
+        .tech-image-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            margin-bottom: 30px;
+            padding-top: 20px;
+        }
+        
+        .tech-image {
+            width: 100%;
+            max-width: 1100px;
+            height: 320px;
+            object-fit: contain;
+        }
+        
+        .tech-highlights {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 40px;
+            width: 100%;
+            max-width: 1100px;
+            padding: 0 60px;
+        }
+        
+        .tech-category {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .category-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #4361EE;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+        
+        .tech-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .tech-item {
+            font-size: 15px;
+            color: #4A4A4A;
+            line-height: 1.5;
+            padding-left: 20px;
+            position: relative;
+            font-weight: 500;
+        }
+        
+        .tech-item::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #FF3366;
+            font-weight: 700;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="header-section">
+            <div class="accent-line"></div>
+            <h2 class="slide-title">최신 기술로 구축된 안정적인 플랫폼</h2>
+            <p class="slide-subtitle">React, Node.js, TypeScript, MySQL을 활용한 현대적 아키텍처</p>
+        </div>
+        
+        <div class="tech-image-container">
+            <img src="https://d2xsxph8kpxj0f.cloudfront.net/310519663280786037/Gy6RaYwMhnXP5TJQbTpkxJ/univmatch-technology-VL88uanh6ANKD9fQp64zyy.webp" alt="기술 스택 및 아키텍처" class="tech-image">
+        </div>
+        
+        <div class="tech-highlights">
+            <div class="tech-category">
+                <div class="category-title">프론트엔드</div>
+                <div class="tech-list">
+                    <div class="tech-item">React 19.2</div>
+                    <div class="tech-item">TypeScript 5.9</div>
+                    <div class="tech-item">Tailwind CSS 4.1</div>
+                    <div class="tech-item">Vite 7.1</div>
+                </div>
+            </div>
+            
+            <div class="tech-category">
+                <div class="category-title">백엔드</div>
+                <div class="tech-list">
+                    <div class="tech-item">Node.js 22.13</div>
+                    <div class="tech-item">Express 4.21</div>
+                    <div class="tech-item">tRPC 11.6</div>
+                    <div class="tech-item">JWT 인증</div>
+                </div>
+            </div>
+            
+            <div class="tech-category">
+                <div class="category-title">데이터 및 서비스</div>
+                <div class="tech-list">
+                    <div class="tech-item">MySQL 8.0</div>
+                    <div class="tech-item">Drizzle ORM</div>
+                    <div class="tech-item">AWS S3</div>
+                    <div class="tech-item">Stripe 결제</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

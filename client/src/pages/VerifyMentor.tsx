@@ -194,7 +194,7 @@ export default function VerifyMentor() {
                         인증 서류가 제출되었습니다. 관리자 검토 후 승인됩니다.
                       </p>
                       <p className="text-xs text-amber-600 mb-3">
-                        제출일: {new Date(verification.createdAt).toLocaleDateString("ko-KR")} · 보통 1~2 영업일 소요
+                        제출일: {new Date(verification.createdAt).toLocaleDateString("ko-KR")} · 평균 1~2 영업일 소요
                       </p>
                       <Button
                         size="sm"

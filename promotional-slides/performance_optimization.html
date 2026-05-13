@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>성능 최적화</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        .slide-container {
+            width: 1280px;
+            min-height: 720px;
+            background: #FFFFFF;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: 'Montserrat', sans-serif;
+            padding-top: 60px; /* keep title upper padding */
+        }
+        .header-section { text-align: center; margin-bottom: 20px; }
+        .accent-line { width: 60px; height: 4px; background: #4361EE; margin: 0 auto 16px; }
+        .slide-title { font-size: 44px; font-weight: 800; color: #1A1A1A; margin-bottom: 12px; line-height: 1.2; }
+        .slide-subtitle { font-size: 18px; color: #4A4A4A; font-weight: 500; }
+        .optimizations-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px 30px; /* row-gap smaller */
+            width: 100%;
+            max-width: 1100px;
+            padding: 0 40px;
+            margin-bottom: 20px;
+        }
+        .optimization-card { display: flex; flex-direction: column; padding: 8px 0; }
+        .opt-title { font-size: 20px; font-weight: 700; color: #1A1A1A; margin-bottom: 8px; display: flex; align-items: center; }
+        .opt-number { width: 36px; height: 36px; background: #4361EE; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; margin-right: 12px; flex-shrink: 0; }
+        .opt-description { font-size: 15px; color: #4A4A4A; line-height: 1.6; margin-bottom: 8px; }
+        .opt-metric { display: flex; align-items: center; gap: 10px; }
+        .metric-value { font-size: 24px; font-weight: 800; color: #FF3366; }
+        .metric-label { font-size: 14px; color: #4A4A4A; font-weight: 600; }
+        .summary-section { background: #F0F8FF; width: 100%; padding-top: 20px; display: flex; flex-direction: column; align-items: center; }
+        .summary-title { font-size: 26px; font-weight: 700; color: #1A1A1A; margin-bottom: 18px; }
+        .summary-metrics {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px 20px;
+            max-width: 1100px;
+            padding: 0 30px;
+            margin-bottom: 12px;
+        }
+        .summary-metric { text-align: center; padding: 6px 0; }
+        .summary-value { font-size: 32px; font-weight: 800; color: #4361EE; margin-bottom: 4px; }
+        .summary-label { font-size: 14px; color: #4A4A4A; font-weight: 600; line-height: 1.4; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="header-section">
+            <div class="accent-line"></div>
+            <h2 class="slide-title">30-40% 성능 개선으로 빠른 사용자 경험 제공</h2>
+            <p class="slide-subtitle">최신 최적화 기법을 통한 플랫폼 성능 극대화</p>
+        </div>
+        <div class="optimizations-grid">
+            <div class="optimization-card">
+                <div class="opt-title">
+                    <div class="opt-number">1</div>
+                    <span>가상 스크롤링</span>
+                </div>
+                <p class="opt-description">react-window 라이브러리를 사용하여 화면에 보이는 항목만 렌더링합니다.</p>
+                <div class="opt-metric">
+                    <span class="metric-value">40-50%</span>
+                    <span class="metric-label">DOM 노드 감소</span>
+                </div>
+            </div>
+            <div class="optimization-card">
+                <div class="opt-title">
+                    <div class="opt-number">2</div>
+                    <span>이미지 Lazy Loading</span>
+                </div>
+                <p class="opt-description">Intersection Observer API를 사용하여 필요할 때만 이미지를 로드합니다.</p>
+                <div class="opt-metric">
+                    <span class="metric-value">30-40%</span>
+                    <span class="metric-label">로드 시간 단축</span>
+                </div>
+            </div>
+            <div class="optimization-card">
+                <div class="opt-title">
+                    <div class="opt-number">3</div>
+                    <span>동적 임포트</span>
+                </div>
+                <p class="opt-description">자주 사용되지 않는 컴포넌트를 필요할 때만 로드합니다.</p>
+                <div class="opt-metric">
+                    <span class="metric-value">15-20%</span>
+                    <span class="metric-label">번들 크기 감소</span>
+                </div>
+            </div>
+            <div class="optimization-card">
+                <div class="opt-title">
+                    <div class="opt-number">4</div>
+                    <span>쿼리 최적화</span>
+                </div>
+                <p class="opt-description">JOIN 쿼리를 사용하여 N+1 쿼리 문제를 해결합니다.</p>
+                <div class="opt-metric">
+                    <span class="metric-value">50-70%</span>
+                    <span class="metric-label">쿼리 수 감소</span>
+                </div>
+            </div>
+        </div>
+        <div class="summary-section">
+            <h3 class="summary-title">종합 성능 개선 결과</h3>
+            <div class="summary-metrics">
+                <div class="summary-metric">
+                    <div class="summary-value">30-40%</div>
+                    <div class="summary-label">Time to Interactive 개선</div>
+                </div>
+                <div class="summary-metric">
+                    <div class="summary-value">40-50%</div>
+                    <div class="summary-label">DOM 노드 감소</div>
+                </div>
+                <div class="summary-metric">
+                    <div class="summary-value">30-40%</div>
+                    <div class="summary-label">초기 로드 시간 단축</div>
+                </div>
+                <div class="summary-metric">
+                    <div class="summary-value">50-70%</div>
+                    <div class="summary-label">DB 쿼리 감소</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

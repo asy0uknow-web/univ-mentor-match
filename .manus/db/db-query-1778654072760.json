@@ -1,0 +1,9 @@
+{
+  "query": "UPDATE mentor_verifications SET status = 'approved', verifiedAt = NOW() WHERE userId = 480061 AND status = 'pending';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute UPDATE mentor_verifications SET status = 'approved', verifiedAt = NOW() WHERE userId = 480061 AND status = 'pending';",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 1796
+}

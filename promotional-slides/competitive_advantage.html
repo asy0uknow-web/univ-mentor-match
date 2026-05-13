@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>경쟁 우위</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        .slide-container {
+            width: 1280px;
+            min-height: 720px;
+            background: #FFFFFF;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: 'Montserrat', sans-serif;
+            padding-top: 60px;
+        }
+        
+        .header-section {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        .accent-line {
+            width: 60px;
+            height: 4px;
+            background: #4361EE;
+            margin: 0 auto 20px;
+        }
+        
+        .slide-title {
+            font-size: 44px;
+            font-weight: 800;
+            color: #1A1A1A;
+            line-height: 1.2;
+        }
+        
+        .advantages-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 25px;
+            width: 100%;
+            max-width: 1100px;
+            padding: 0 60px;
+            margin-bottom: 50px;
+        }
+        
+        .advantage-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .advantage-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 20px;
+        }
+        
+        .advantage-icon-1 {
+            background: #4361EE;
+        }
+        
+        .advantage-icon-2 {
+            background: #FF3366;
+        }
+        
+        .advantage-icon-3 {
+            background: #00D4AA;
+        }
+        
+        .advantage-icon-4 {
+            background: #FFB800;
+        }
+        
+        .advantage-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1A1A1A;
+            margin-bottom: 15px;
+        }
+        
+        .advantage-description {
+            font-size: 14px;
+            color: #4A4A4A;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+        
+        .advantage-points {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            align-items: flex-start;
+            width: 100%;
+        }
+        
+        .point-item {
+            font-size: 13px;
+            color: #4A4A4A;
+            line-height: 1.4;
+            padding-left: 18px;
+            position: relative;
+            font-weight: 500;
+            text-align: left;
+        }
+        
+        .point-item::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            font-weight: 700;
+            font-size: 14px;
+        }
+        
+        .advantage-card-1 .point-item::before {
+            color: #4361EE;
+        }
+        
+        .advantage-card-2 .point-item::before {
+            color: #FF3366;
+        }
+        
+        .advantage-card-3 .point-item::before {
+            color: #00D4AA;
+        }
+        
+        .advantage-card-4 .point-item::before {
+            color: #FFB800;
+        }
+        
+        .comparison-section {
+            background: #F0F8FF;
+            width: 100%;
+            padding-top: 50px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .comparison-title {
+            font-size: 26px;
+            font-weight: 700;
+            color: #1A1A1A;
+            margin-bottom: 30px;
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 40px;
+            max-width: 1000px;
+            padding: 0 60px;
+        }
+        
+        .comparison-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .comparison-metric {
+            font-size: 32px;
+            font-weight: 800;
+            color: #4361EE;
+            margin-bottom: 10px;
+        }
+        
+        .comparison-label {
+            font-size: 15px;
+            color: #4A4A4A;
+            font-weight: 600;
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="header-section">
+            <div class="accent-line"></div>
+            <h2 class="slide-title">신뢰성, 효율성, 기술력으로 차별화된 경쟁 우위</h2>
+        </div>
+        
+        <div class="advantages-grid">
+            <div class="advantage-card advantage-card-1">
+                <div class="advantage-icon advantage-icon-1">🛡️</div>
+                <h3 class="advantage-title">신뢰성</h3>
+                <p class="advantage-description">검증된 멘토와 투명한 시스템</p>
+                <div class="advantage-points">
+                    <div class="point-item">학생증 인증</div>
+                    <div class="point-item">관리자 승인</div>
+                    <div class="point-item">투명한 리뷰</div>
+                </div>
+            </div>
+            
+            <div class="advantage-card advantage-card-2">
+                <div class="advantage-icon advantage-icon-2">⚡</div>
+                <h3 class="advantage-title">효율성</h3>
+                <p class="advantage-description">빠른 매칭과 체계적 관리</p>
+                <div class="advantage-points">
+                    <div class="point-item">다중 필터링</div>
+                    <div class="point-item">자동 매칭</div>
+                    <div class="point-item">실시간 알림</div>
+                </div>
+            </div>
+            
+            <div class="advantage-card advantage-card-3">
+                <div class="advantage-icon advantage-icon-3">💻</div>
+                <h3 class="advantage-title">기술력</h3>
+                <p class="advantage-description">최신 기술과 높은 품질</p>
+                <div class="advantage-points">
+                    <div class="point-item">React + Node.js</div>
+                    <div class="point-item">71개 테스트</div>
+                    <div class="point-item">0 컴파일 에러</div>
+                </div>
+            </div>
+            
+            <div class="advantage-card advantage-card-4">
+                <div class="advantage-icon advantage-icon-4">😊</div>
+                <h3 class="advantage-title">사용자 경험</h3>
+                <p class="advantage-description">직관적이고 빠른 인터페이스</p>
+                <div class="advantage-points">
+                    <div class="point-item">30-40% 빠름</div>
+                    <div class="point-item">모바일 최적화</div>
+                    <div class="point-item">접근성 우수</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="comparison-section">
+            <h3 class="comparison-title">기존 입시 컨설팅 vs 유니브매치</h3>
+            <div class="comparison-grid">
+                <div class="comparison-item">
+                    <div class="comparison-metric">↓ 비용</div>
+                    <div class="comparison-label">기존 컨설팅 대비 70% 저렴한 가격대</div>
+                </div>
+                <div class="comparison-item">
+                    <div class="comparison-metric">↑ 접근성</div>
+                    <div class="comparison-label">온라인으로 언제 어디서나 상담 가능</div>
+                </div>
+                <div class="comparison-item">
+                    <div class="comparison-metric">↑ 신뢰도</div>
+                    <div class="comparison-label">검증된 현직 대학생의 실제 경험</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

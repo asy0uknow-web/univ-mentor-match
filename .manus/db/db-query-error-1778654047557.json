@@ -1,0 +1,8 @@
+{
+  "query": "SELECT u.id, u.email, mp.university, mp.major, mv.id as verification_id, mv.status, mv.studentIdImageUrl FROM users u LEFT JOIN mentor_profiles mp ON u.id = mp.userId LEFT JOIN mentor_verifications mv ON mp.id = mv.mentorId WHERE u.email = 's8079349@naver.com';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute SELECT u.id, u.email, mp.university, mp.major, mv.id as verification_id, mv.status, mv.studentIdImageUrl FROM users u LEFT JOIN mentor_profiles mp ON u.id = mp.userId LEFT JOIN mentor_verifications mv ON mp.id = mv.mentorId WHERE u.email = 's8079349@naver.com';",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1054 (42S22) at line 1: Unknown column 'mv.mentorid' in 'on clause'"
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "query": "SELECT u.id, u.email, mp.university, mp.major, mv.id as verification_id, mv.status, mv.studentIdImageUrl FROM users u LEFT JOIN mentor_profiles mp ON u.id = mp.userId LEFT JOIN mentor_verifications mv ON u.id = mv.userId WHERE u.email = 's8079349@naver.com';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute SELECT u.id, u.email, mp.university, mp.major, mv.id as verification_id, mv.status, mv.studentIdImageUrl FROM users u LEFT JOIN mentor_profiles mp ON u.id = mp.userId LEFT JOIN mentor_verifications mv ON u.id = mv.userId WHERE u.email = 's8079349@naver.com';",
+  "rows": [
+    {
+      "id": "480061",
+      "email": "s8079349@naver.com",
+      "university": "부산대학교",
+      "major": "기계공학부",
+      "verification_id": "90001",
+      "status": "pending",
+      "studentIdImageUrl": "https://d2xsxph8kpxj0f.cloudfront.net/310519663280786037/Gy6RaYwMhnXP5TJQbTpkxJ/student-id/480061/1778653890752-g61v23xmag.png"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\temail\tuniversity\tmajor\tverification_id\tstatus\tstudentIdImageUrl\n480061\ts8079349@naver.com\t부산대학교\t기계공학부\t90001\tpending\thttps://d2xsxph8kpxj0f.cloudfront.net/310519663280786037/Gy6RaYwMhnXP5TJQbTpkxJ/student-id/480061/1778653890752-g61v23xmag.png\n",
+  "stderr": "",
+  "execution_time_ms": 1787
+}

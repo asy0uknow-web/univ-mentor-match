@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>핵심 가치</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        .slide-container {
+            width: 1280px;
+            min-height: 720px;
+            background: #FFFFFF;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: 'Montserrat', sans-serif;
+            padding-top: 60px;
+        }
+        
+        .slide-header {
+            text-align: center;
+            margin-bottom: 60px;
+            width: 100%;
+        }
+        
+        .accent-line {
+            width: 60px;
+            height: 4px;
+            background: #4361EE;
+            margin: 0 auto 20px;
+        }
+        
+        .slide-title {
+            font-size: 44px;
+            font-weight: 800;
+            color: #1A1A1A;
+            line-height: 1.2;
+        }
+        
+        .values-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 40px;
+            width: 100%;
+            padding: 0 60px;
+        }
+        
+        .value-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .value-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            color: white;
+            margin-bottom: 25px;
+        }
+        
+        .value-icon-1 {
+            background: #4361EE;
+        }
+        
+        .value-icon-2 {
+            background: #FF3366;
+        }
+        
+        .value-icon-3 {
+            background: #00D4AA;
+        }
+        
+        .value-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #1A1A1A;
+            margin-bottom: 15px;
+        }
+        
+        .value-description {
+            font-size: 16px;
+            color: #4A4A4A;
+            line-height: 1.7;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="slide-header">
+            <div class="accent-line"></div>
+            <h2 class="slide-title">유니브매치의 세 가지 핵심 가치</h2>
+        </div>
+        
+        <div class="values-container">
+            <div class="value-card">
+                <div class="value-icon value-icon-1">
+                    <i class="fas fa-heart"></i>
+                </div>
+                <h3 class="value-title">실제 경험 공유</h3>
+                <p class="value-description">
+                    멘토들은 대학 홍보팀이 아닌 현재 재학 중인 대학생입니다. 학과의 현실적인 모습, 수업의 난이도, 동기들의 분위기, 실제 취업 경로 등을 자신의 경험을 통해 전달합니다.
+                </p>
+            </div>
+            
+            <div class="value-card">
+                <div class="value-icon value-icon-2">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3 class="value-title">신뢰할 수 있는 멘토</h3>
+                <p class="value-description">
+                    모든 멘토는 학생증 인증을 통해 검증되며, 관리자 승인 시스템을 통해 검증된 멘토만 활동합니다. 이는 가짜 정보로부터 학생들을 보호합니다.
+                </p>
+            </div>
+            
+            <div class="value-card">
+                <div class="value-icon value-icon-3">
+                    <i class="fas fa-bolt"></i>
+                </div>
+                <h3 class="value-title">효율적인 매칭</h3>
+                <p class="value-description">
+                    학생들은 전공, 지역, 학년별 필터링을 통해 자신이 원하는 멘토를 빠르게 찾을 수 있습니다. 이는 무작정 정보를 검색하는 시간을 줄입니다.
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

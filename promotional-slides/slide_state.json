@@ -1,0 +1,204 @@
+{
+  "project_info": {
+    "title": "유니브매치: 대학 멘토 매칭 플랫폼",
+    "created": 1778597905.7205377,
+    "last_updated": 1778598335.1738794,
+    "total_slides": 16
+  },
+  "slides": [
+    {
+      "id": "title_slide",
+      "state": "edited",
+      "pageNum": 1
+    },
+    {
+      "id": "problem_definition",
+      "state": "edited",
+      "pageNum": 2
+    },
+    {
+      "id": "solution_presentation",
+      "state": "edited",
+      "pageNum": 3
+    },
+    {
+      "id": "core_values",
+      "state": "edited",
+      "pageNum": 4
+    },
+    {
+      "id": "mentor_search",
+      "state": "edited",
+      "pageNum": 5
+    },
+    {
+      "id": "booking_system",
+      "state": "edited",
+      "pageNum": 6
+    },
+    {
+      "id": "messaging_notifications",
+      "state": "edited",
+      "pageNum": 7
+    },
+    {
+      "id": "review_system",
+      "state": "edited",
+      "pageNum": 8
+    },
+    {
+      "id": "tech_architecture",
+      "state": "edited",
+      "pageNum": 9
+    },
+    {
+      "id": "performance_optimization",
+      "state": "edited",
+      "pageNum": 10
+    },
+    {
+      "id": "quality_assurance",
+      "state": "edited",
+      "pageNum": 11
+    },
+    {
+      "id": "current_status",
+      "state": "edited",
+      "pageNum": 12
+    },
+    {
+      "id": "future_plans",
+      "state": "edited",
+      "pageNum": 13
+    },
+    {
+      "id": "market_opportunity",
+      "state": "edited",
+      "pageNum": 14
+    },
+    {
+      "id": "competitive_advantage",
+      "state": "edited",
+      "pageNum": 15
+    },
+    {
+      "id": "conclusion",
+      "state": "edited",
+      "pageNum": 16
+    }
+  ],
+  "outline": [
+    {
+      "id": "title_slide",
+      "title": "유니브매치: 대학 멘토 매칭 플랫폼",
+      "summary": "플랫폼 소개 및 핵심 메시지 전달",
+      "image_plan": "",
+      "slide_template_key": ""
+    },
+    {
+      "id": "problem_definition",
+      "title": "고등학생들이 직면한 진로 선택의 어려움",
+      "summary": "신뢰할 수 있는 정보 부족과 현재 재학생과의 대화 기회 부족 문제 제시",
+      "image_plan": "/home/ubuntu/webdev-static-assets/univmatch-problem.png - The image perfectly depicts a high school student overwhelmed by choices and information, aligning with the slide's theme of difficulties in career selection.",
+      "slide_template_key": ""
+    },
+    {
+      "id": "solution_presentation",
+      "title": "신뢰할 수 있는 멘토와의 1:1 상담으로 진로 선택 문제 해결",
+      "summary": "학생증 인증을 통한 검증된 멘토와의 개인화된 상담 경험 제공",
+      "image_plan": "/home/ubuntu/webdev-static-assets/univmatch-solution.png - This image shows a high school student interacting with a verified university student mentor, directly illustrating the solution of 1:1 counseling.",
+      "slide_template_key": ""
+    },
+    {
+      "id": "core_values",
+      "title": "유니브매치의 세 가지 핵심 가치",
+      "summary": "실제 경험 공유, 신뢰할 수 있는 멘토, 효율적인 매칭",
+      "image_plan": "",
+      "slide_template_key": ""
+    },
+    {
+      "id": "mentor_search",
+      "title": "효율적인 멘토 검색 및 필터링",
+      "summary": "전공, 지역, 학년별 필터링과 다양한 정렬 옵션",
+      "image_plan": "/home/ubuntu/webdev-static-assets/univmatch-hero.png - This image displays a 'Browse Mentors' interface with filtering options, directly matching the slide's content about efficient mentor search and filtering.",
+      "slide_template_key": ""
+    },
+    {
+      "id": "booking_system",
+      "title": "체계적인 상담 예약 및 관리",
+      "summary": "상담 종류 선택, 시간 예약, 멘토 수락/거절 프로세스",
+      "image_plan": "/home/ubuntu/webdev-static-assets/univmatch-features.png - The image shows a 'Book a Session' interface with a calendar and messaging, which aligns with the slide's focus on systematic consultation booking and management.",
+      "slide_template_key": ""
+    },
+    {
+      "id": "messaging_notifications",
+      "title": "실시간 소통과 알림으로 상담 진행 관리",
+      "summary": "메시지 시스템, 읽음 상태 표시, 실시간 알림",
+      "image_plan": "",
+      "slide_template_key": ""
+    },
+    {
+      "id": "review_system",
+      "title": "투명한 평가로 멘토 품질 보증",
+      "summary": "별점과 코멘트를 통한 투명한 평가 시스템",
+      "image_plan": "",
+      "slide_template_key": ""
+    },
+    {
+      "id": "tech_architecture",
+      "title": "최신 기술로 구축된 안정적인 플랫폼",
+      "summary": "React, Node.js, TypeScript, MySQL, AWS S3, Stripe를 활용한 현대적 아키텍처",
+      "image_plan": "/home/ubuntu/webdev-static-assets/univmatch-technology.png - This image is a detailed technology stack and architecture diagram, which is highly relevant to the slide discussing the platform's technical architecture.",
+      "slide_template_key": ""
+    },
+    {
+      "id": "performance_optimization",
+      "title": "30-40% 성능 개선으로 빠른 사용자 경험 제공",
+      "summary": "가상 스크롤링, Lazy Loading, 동적 임포트, 쿼리 최적화",
+      "image_plan": "",
+      "slide_template_key": ""
+    },
+    {
+      "id": "quality_assurance",
+      "title": "71개 테스트와 0개 컴파일 에러로 보증하는 안정성",
+      "summary": "자동화 테스트, TypeScript 타입 안전성, 지속적 리팩토링",
+      "image_plan": "",
+      "slide_template_key": ""
+    },
+    {
+      "id": "current_status",
+      "title": "프로덕션급 수준의 완성도 달성",
+      "summary": "완료된 항목, 진행 중인 항목, 계획된 항목 정리",
+      "image_plan": "",
+      "slide_template_key": ""
+    },
+    {
+      "id": "future_plans",
+      "title": "지속적인 성장과 혁신을 통한 플랫폼 확대",
+      "summary": "단기, 중기, 장기 계획 제시",
+      "image_plan": "",
+      "slide_template_key": ""
+    },
+    {
+      "id": "market_opportunity",
+      "title": "연 50만 명의 고등학생이 참여하는 거대한 시장 기회",
+      "summary": "입시 시장 규모와 멘토링 서비스 수요",
+      "image_plan": "",
+      "slide_template_key": ""
+    },
+    {
+      "id": "competitive_advantage",
+      "title": "신뢰성, 효율성, 기술력으로 차별화된 경쟁 우위",
+      "summary": "신뢰성, 효율성, 기술력, 사용자 경험의 차별화 요소",
+      "image_plan": "",
+      "slide_template_key": ""
+    },
+    {
+      "id": "conclusion",
+      "title": "고등학생의 진로 선택을 혁신하는 유니브매치",
+      "summary": "플랫폼의 비전과 미래에 대한 메시지",
+      "image_plan": "",
+      "slide_template_key": ""
+    }
+  ]
+}

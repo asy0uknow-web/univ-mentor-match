@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>솔루션 제시</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        .slide-container {
+            width: 1280px;
+            min-height: 720px;
+            background: #FFFFFF;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+            font-family: 'Montserrat', sans-serif;
+            padding-top: 60px;
+        }
+        
+        .image-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding-left: 60px;
+            order: -1;
+        }
+        
+        .solution-image {
+            width: 100%;
+            max-width: 500px;
+            height: auto;
+            object-fit: contain;
+        }
+        
+        .content-section {
+            padding-right: 60px;
+        }
+        
+        .slide-title {
+            font-size: 44px;
+            font-weight: 800;
+            color: #1A1A1A;
+            margin-bottom: 30px;
+            line-height: 1.2;
+        }
+        
+        .accent-line {
+            width: 60px;
+            height: 4px;
+            background: #4361EE;
+            margin-bottom: 20px;
+        }
+        
+        .solution-text {
+            font-size: 18px;
+            color: #4A4A4A;
+            line-height: 1.8;
+            margin-bottom: 25px;
+            font-weight: 500;
+        }
+        
+        .highlight-text {
+            color: #FF3366;
+            font-weight: 700;
+        }
+        
+        .benefit-list {
+            margin-top: 30px;
+        }
+        
+        .benefit-item {
+            font-size: 16px;
+            color: #4A4A4A;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            padding-left: 25px;
+            position: relative;
+        }
+        
+        .benefit-item::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #4361EE;
+            font-weight: 700;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="image-section">
+            <img src="https://d2xsxph8kpxj0f.cloudfront.net/310519663280786037/Gy6RaYwMhnXP5TJQbTpkxJ/univmatch-solution-HrqtRSyQK58xXN34KepvsM.webp" alt="멘토와 학생의 상담" class="solution-image">
+        </div>
+        
+        <div class="content-section">
+            <div class="accent-line"></div>
+            <h2 class="slide-title">신뢰할 수 있는 멘토와의 1:1 상담</h2>
+            
+            <p class="solution-text">
+                유니브매치는 <span class="highlight-text">학생증 인증을 통해 검증된 대학생 멘토</span>들이 자신의 실제 경험을 공유하는 플랫폼입니다.
+            </p>
+            
+            <p class="solution-text">
+                고등학생들은 전공과 지역별로 멘토를 찾아 <span class="highlight-text">신뢰할 수 있는 1:1 상담</span>을 받을 수 있습니다.
+            </p>
+            
+            <p class="solution-text">
+                이는 단순한 정보 제공을 넘어 <span class="highlight-text">개인화된 진로 상담 경험</span>을 제공합니다.
+            </p>
+            
+            <div class="benefit-list">
+                <div class="benefit-item">모든 멘토는 학생증 인증을 통해 검증됨</div>
+                <div class="benefit-item">관리자 승인 시스템으로 신뢰성 보장</div>
+                <div class="benefit-item">학생의 평점과 리뷰로 품질 판단 가능</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

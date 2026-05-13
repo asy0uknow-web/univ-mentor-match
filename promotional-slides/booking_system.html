@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>체계적인 상담 예약 및 관리</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        .slide-container {
+            width: 1280px;
+            min-height: 720px;
+            background: #FFFFFF;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+            font-family: 'Montserrat', sans-serif;
+            padding-top: 60px;
+        }
+        
+        .image-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding-left: 60px;
+        }
+        
+        .booking-image {
+            width: 100%;
+            max-width: 480px;
+            height: auto;
+            object-fit: contain;
+        }
+        
+        .content-section {
+            padding-right: 60px;
+        }
+        
+        .slide-title {
+            font-size: 44px;
+            font-weight: 800;
+            color: #1A1A1A;
+            margin-bottom: 30px;
+            line-height: 1.2;
+        }
+        
+        .accent-line {
+            width: 60px;
+            height: 4px;
+            background: #4361EE;
+            margin-bottom: 20px;
+        }
+        
+        .description-text {
+            font-size: 16px;
+            color: #4A4A4A;
+            line-height: 1.7;
+            margin-bottom: 25px;
+            font-weight: 500;
+        }
+        
+        .highlight-text {
+            color: #FF3366;
+            font-weight: 700;
+        }
+        
+        .consultation-types {
+            margin-top: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .type-label {
+            font-size: 14px;
+            font-weight: 700;
+            color: #4361EE;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+        
+        .type-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        
+        .type-item {
+            font-size: 14px;
+            color: #4A4A4A;
+            background: #F0F8FF;
+            padding: 12px 16px;
+            border-left: 3px solid #4361EE;
+        }
+        
+        .process-flow {
+            margin-top: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 14px;
+            color: #4A4A4A;
+        }
+        
+        .process-step {
+            background: #F0F8FF;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #4361EE;
+        }
+        
+        .arrow {
+            color: #FF3366;
+            font-weight: 700;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="image-section">
+            <img src="https://d2xsxph8kpxj0f.cloudfront.net/310519663280786037/Gy6RaYwMhnXP5TJQbTpkxJ/univmatch-features-cY5sAV2UiqHdqMLQcK4nQQ.webp" alt="상담 예약 시스템" class="booking-image">
+        </div>
+        
+        <div class="content-section">
+            <div class="accent-line"></div>
+            <h2 class="slide-title">체계적인 상담 예약 및 관리</h2>
+            
+            <p class="description-text">
+                학생이 멘토를 선택하면 상담을 신청할 수 있습니다. <span class="highlight-text">상담 종류와 원하는 시간</span>을 선택하면 멘토에게 자동으로 메시지가 전송됩니다.
+            </p>
+            
+            <div class="consultation-types">
+                <div class="type-label">상담 종류</div>
+                <div class="type-grid">
+                    <div class="type-item">생기부 컨설팅</div>
+                    <div class="type-item">진로 상담</div>
+                    <div class="type-item">학업 관리</div>
+                    <div class="type-item">대학 탐방</div>
+                </div>
+            </div>
+            
+            <p class="description-text">
+                각 상담 종류는 기본 <span class="highlight-text">1시간 비용</span>이 정해져 있으며, 추가 시간에 대해서는 별도 비용이 발생합니다.
+            </p>
+            
+            <div class="process-flow">
+                <span class="process-step">신청</span>
+                <span class="arrow">→</span>
+                <span class="process-step">수락/거절</span>
+                <span class="arrow">→</span>
+                <span class="process-step">완료</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

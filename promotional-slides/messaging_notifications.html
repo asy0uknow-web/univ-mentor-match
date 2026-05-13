@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>실시간 소통과 알림</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        .slide-container {
+            width: 1280px;
+            min-height: 720px;
+            background: #FFFFFF;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Montserrat', sans-serif;
+            padding-top: 60px;
+        }
+        
+        .slide-title {
+            font-size: 48px;
+            font-weight: 800;
+            color: #1A1A1A;
+            margin-bottom: 50px;
+            text-align: center;
+            max-width: 900px;
+        }
+        
+        .accent-line {
+            width: 80px;
+            height: 4px;
+            background: #4361EE;
+            margin: 0 auto 50px;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 40px;
+            max-width: 1100px;
+            margin-bottom: 60px;
+        }
+        
+        .feature-card {
+            text-align: center;
+        }
+        
+        .feature-icon {
+            font-size: 48px;
+            color: #4361EE;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+        
+        .feature-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #1A1A1A;
+            margin-bottom: 15px;
+        }
+        
+        .feature-description {
+            font-size: 16px;
+            color: #4A4A4A;
+            line-height: 1.6;
+            font-weight: 500;
+        }
+        
+        .benefits-section {
+            background: #F0F8FF;
+            width: 100%;
+            padding-top: 50px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .benefits-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1A1A1A;
+            margin-bottom: 30px;
+        }
+        
+        .benefits-list {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            max-width: 900px;
+        }
+        
+        .benefit-item {
+            font-size: 16px;
+            color: #4A4A4A;
+            line-height: 1.6;
+            padding-left: 30px;
+            position: relative;
+            font-weight: 500;
+        }
+        
+        .benefit-item::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #FF3366;
+            font-weight: 700;
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <h2 class="slide-title">실시간 소통과 알림으로 상담 진행 관리</h2>
+        <div class="accent-line"></div>
+        
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">💬</div>
+                <h3 class="feature-title">메시지 시스템</h3>
+                <p class="feature-description">멘토와 학생이 플랫폼 내에서 1:1로 소통하며 상담을 신청하고 진행합니다.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">✓</div>
+                <h3 class="feature-title">읽음 상태 표시</h3>
+                <p class="feature-description">모든 메시지의 읽음 상태가 표시되어 상대방의 응답 여부를 확인할 수 있습니다.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🔔</div>
+                <h3 class="feature-title">실시간 알림</h3>
+                <p class="feature-description">상담 신청 수락, 예약 변경, 리뷰 등록 시 실시간 알림이 전송됩니다.</p>
+            </div>
+        </div>
+        
+        <div class="benefits-section">
+            <h3 class="benefits-title">주요 이점</h3>
+            <div class="benefits-list">
+                <div class="benefit-item">상담 신청부터 완료까지 모든 과정이 플랫폼 내에서 관리됨</div>
+                <div class="benefit-item">중요한 소식을 놓치지 않도록 실시간 알림 제공</div>
+                <div class="benefit-item">투명한 커뮤니케이션으로 신뢰 관계 형성</div>
+                <div class="benefit-item">메시지 기록이 남아 나중에 참고 가능</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
