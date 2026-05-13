@@ -1,0 +1,9 @@
+{
+  "query": "INSERT INTO mentor_features (mentorId, admissionTypes, highSchoolTypes, strengths, targetStudents, experiences, majorDescription, admissionAchievements, confidenceScore) VALUES (30001, '[\"학생부종합\"]', '[\"일반고\"]', '[\"프로그래밍\",\"대학 생활 적응\",\"진로 상담\"]', '[\"수시 준비생\",\"진로 미정\"]', '[\"프로젝트 경험\",\"학생부 작성 지도\"]', '컴퓨터공학부는 소프트웨어, 하드웨어, 인공지능 등 다양한 분야를 다룹니다. 미래 기술을 주도할 인재를 양성합니다.', '부산대학교 컴퓨터공학부 수시 합격', 0.85);",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute INSERT INTO mentor_features (mentorId, admissionTypes, highSchoolTypes, strengths, targetStudents, experiences, majorDescription, admissionAchievements, confidenceScore) VALUES (30001, '[\"학생부종합\"]', '[\"일반고\"]', '[\"프로그래밍\",\"대학 생활 적응\",\"진로 상담\"]', '[\"수시 준비생\",\"진로 미정\"]', '[\"프로젝트 경험\",\"학생부 작성 지도\"]', '컴퓨터공학부는 소프트웨어, 하드웨어, 인공지능 등 다양한 분야를 다룹니다. 미래 기술을 주도할 인재를 양성합니다.', '부산대학교 컴퓨터공학부 수시 합격', 0.85);",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 1794
+}

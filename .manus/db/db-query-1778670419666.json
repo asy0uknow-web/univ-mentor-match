@@ -1,0 +1,26 @@
+{
+  "query": "SELECT mp.id, mp.uuid, mp.userId, u.name, u.email, mp.bio FROM mentor_profiles mp JOIN users u ON mp.userId = u.id LIMIT 2;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute SELECT mp.id, mp.uuid, mp.userId, u.name, u.email, mp.bio FROM mentor_profiles mp JOIN users u ON mp.userId = u.id LIMIT 2;",
+  "rows": [
+    {
+      "id": "1",
+      "uuid": "322504b9-7b36-4f35-994a-a6291c2ce106",
+      "userId": "210004",
+      "name": "양주혁",
+      "email": "yjh03220@naver.com",
+      "bio": ""
+    },
+    {
+      "id": "30001",
+      "uuid": "da4aa42c-ada1-4fc3-9771-7e2d5bcdf73b",
+      "userId": "480061",
+      "name": "최세영",
+      "email": "s8079349@naver.com",
+      "bio": "NULL"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tuuid\tuserId\tname\temail\tbio\n1\t322504b9-7b36-4f35-994a-a6291c2ce106\t210004\t양주혁\tyjh03220@naver.com\t\n30001\tda4aa42c-ada1-4fc3-9771-7e2d5bcdf73b\t480061\t최세영\ts8079349@naver.com\tNULL\n",
+  "stderr": "",
+  "execution_time_ms": 1834
+}

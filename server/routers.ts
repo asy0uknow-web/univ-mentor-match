@@ -1497,6 +1497,48 @@ getTopMentors: publicProcedure
       }),
   }),
 
+  aiMatching: router({
+    performNaturalLanguageSearch: publicProcedure
+      .input(z.object({
+        query: z.string(),
+        limit: z.number().default(20),
+      }))
+      .query(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+
+        const term = input.query.toLowerCase();
+        
+        const mentors = await db
+          .select()
+          .from(mentorProfiles)
+          .limit(input.limit);
+
+        const results = [];
+        for (const mentor of mentors) {
+          const corpus = await db
+            .select()
+            .from(mentorSearchCorpus)
+            .where(eq(mentorSearchCorpus.mentorId, mentor.userId))
+            .limit(1);
+          
+          if (corpus.length > 0 && corpus[0].corpus.toLowerCase().includes(term)) {
+            results.push({
+              id: mentor.userId,
+              name: mentor.name || "",
+              university: mentor.university || "",
+              major: mentor.major || "",
+              averageRating: mentor.averageRating || 0,
+              reviewCount: mentor.reviewCount || 0,
+              createdAt: mentor.createdAt,
+            });
+          }
+        }
+
+        return results;
+      }),
+  }),
+
   admin: router({
     getAllMentors: protectedProcedure.query(async ({ ctx }) => {
       if (ctx.user?.role !== "admin") {

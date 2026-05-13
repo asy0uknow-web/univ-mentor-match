@@ -648,3 +648,131 @@ export const mentorRecommendations = mysqlTable("mentor_recommendations", {
 
 export type MentorRecommendation = typeof mentorRecommendations.$inferSelect;
 export type InsertMentorRecommendation = typeof mentorRecommendations.$inferInsert;
+
+
+/**
+ * Mentor Features - AI가 추출한 멘토의 특성 데이터
+ * LLM 파이프라인에서 자동으로 생성되는 정형 데이터
+ */
+export const mentorFeatures = mysqlTable("mentor_features", {
+  id: int("id").autoincrement().primaryKey(),
+  mentorId: int("mentorId").notNull().unique(), // References mentorProfiles.id
+  
+  // 입시 전형: ["학생부종합", "일반전형", "수시", "정시", "특기자전형"]
+  admissionTypes: text("admissionTypes"), // JSON array
+  
+  // 출신 고교 유형: ["일반고", "지방 평준화", "자사고", "영재고", "특목고"]
+  highSchoolTypes: text("highSchoolTypes"), // JSON array
+  
+  // 상담 강점: ["멘탈 관리", "생기부 컨설팅", "수학 성적 향상", "영어 성적 향상", "과학 성적 향상", "진로 상담", "대학 선택"]
+  strengths: text("strengths"), // JSON array
+  
+  // 추천 대상 학생: ["수시 준비생", "정시 준비생", "성적 향상 필요", "멘탈 관리 필요", "진로 미정"]
+  targetStudents: text("targetStudents"), // JSON array
+  
+  // 주요 경험: ["입시 컨설턴트 경험", "학원 강사 경험", "개인 과외 경험", "학생부 작성 지도"]
+  experiences: text("experiences"), // JSON array
+  
+  // 전공 관련 정보
+  majorDescription: text("majorDescription"), // 전공에 대한 상세 설명
+  
+  // 입시 성과 (선택사항)
+  admissionAchievements: text("admissionAchievements"), // 예: "고대 컴공 수시 합격", "서울대 경제학부 정시 합격"
+  
+  // AI 신뢰도 점수 (0-100)
+  confidenceScore: decimal("confidenceScore", { precision: 3, scale: 2 }).default("0.00"),
+  
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type MentorFeatures = typeof mentorFeatures.$inferSelect;
+export type InsertMentorFeatures = typeof mentorFeatures.$inferInsert;
+
+/**
+ * Mentor Search Corpus - 검색 최적화를 위한 코퍼스 텍스트
+ * 멘토의 프로필 정보와 추출된 특성을 합친 검색용 텍스트
+ * 사용자 화면에는 보이지 않음
+ */
+export const mentorSearchCorpus = mysqlTable("mentor_search_corpus", {
+  id: int("id").autoincrement().primaryKey(),
+  mentorId: int("mentorId").notNull().unique(), // References mentorProfiles.id
+  
+  // 검색용 코퍼스 텍스트 (멘토 소개글 + 추출된 특성)
+  corpus: text("corpus").notNull(),
+  
+  // BM25 토큰화된 텍스트 (검색 최적화용)
+  tokens: text("tokens"), // JSON array
+  
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type MentorSearchCorpus = typeof mentorSearchCorpus.$inferSelect;
+export type InsertMentorSearchCorpus = typeof mentorSearchCorpus.$inferInsert;
+
+/**
+ * Mentor Embeddings - 벡터 임베딩 저장
+ * text-embedding-3-small 모델로 생성된 768차원 벡터
+ */
+export const mentorEmbeddings = mysqlTable("mentor_embeddings", {
+  id: int("id").autoincrement().primaryKey(),
+  mentorId: int("mentorId").notNull().unique(), // References mentorProfiles.id
+  
+  // 768차원 벡터를 JSON 배열로 저장
+  embedding: text("embedding").notNull(), // JSON array of 768 floats
+  
+  // 벡터 생성 모델 버전
+  modelVersion: varchar("modelVersion", { length: 64 }).default("text-embedding-3-small"),
+  
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type MentorEmbedding = typeof mentorEmbeddings.$inferSelect;
+export type InsertMentorEmbedding = typeof mentorEmbeddings.$inferInsert;
+
+/**
+ * Search Queries - 검색 쿼리 로그
+ * 사용자 검색 패턴 분석용
+ */
+export const searchQueries = mysqlTable("search_queries", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId"), // References users.id (nullable for anonymous searches)
+  
+  // 검색 쿼리
+  query: text("query").notNull(),
+  
+  // 검색 결과 수
+  resultCount: int("resultCount").default(0),
+  
+  // 사용자가 클릭한 결과 (멘토 ID)
+  clickedMentorId: int("clickedMentorId"),
+  
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type SearchQuery = typeof searchQueries.$inferSelect;
+export type InsertSearchQuery = typeof searchQueries.$inferInsert;
+
+/**
+ * Search Results Cache - 검색 결과 캐싱
+ * 동일한 쿼리에 대한 빠른 응답
+ */
+export const searchResultsCache = mysqlTable("search_results_cache", {
+  id: int("id").autoincrement().primaryKey(),
+  
+  // 검색 쿼리 (해시값)
+  queryHash: varchar("queryHash", { length: 64 }).notNull().unique(),
+  
+  // 캐시된 결과 (JSON array of mentor IDs with scores)
+  results: text("results").notNull(), // JSON array
+  
+  // 캐시 유효 기간 (24시간)
+  expiresAt: timestamp("expiresAt").notNull(),
+  
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type SearchResultsCache = typeof searchResultsCache.$inferSelect;
+export type InsertSearchResultsCache = typeof searchResultsCache.$inferInsert;

@@ -188,12 +188,21 @@ export default function Mentors() {
     limit: 20,
   });
 
+  // AI 매칭 검색 쿼리
+  const { data: aiSearchResults = [] } = trpc.aiMatching.performNaturalLanguageSearch.useQuery(
+    { query: debouncedSearch, limit: 20 },
+    { enabled: !!debouncedSearch && debouncedSearch.length > 0 }
+  );
+
   // 클라이언트 측 필터링
   const filteredMentors = useMemo(() => {
     let result = mentors;
 
-    // 검색어 필터링
-    if (debouncedSearch) {
+    // AI 매칭 검색 결과가 있으면 우선 사용
+    if (debouncedSearch && aiSearchResults.length > 0) {
+      result = aiSearchResults;
+    } else if (debouncedSearch) {
+      // AI 매칭 검색 결과가 없으면 기존 키워드 필터링 사용
       const term = debouncedSearch.toLowerCase();
       result = result.filter((m: any) =>
         m.name?.toLowerCase().includes(term) ||
