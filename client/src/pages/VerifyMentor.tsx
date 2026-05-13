@@ -196,14 +196,6 @@ export default function VerifyMentor() {
                       <p className="text-xs text-amber-600 mb-3">
                         제출일: {new Date(verification.createdAt).toLocaleDateString("ko-KR")} · 평균 1~2 영업일 소요
                       </p>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="border-amber-300 text-amber-700 dark:text-amber-400 hover:bg-amber-100 dark:bg-amber-900/30"
-                        onClick={() => refetchVerification()}
-                      >
-                        상태 새로고침
-                      </Button>
                     </div>
                   </div>
                 </CardContent>
