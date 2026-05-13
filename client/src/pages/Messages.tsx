@@ -406,15 +406,16 @@ export function Messages() {
   }, [studentData]);
 
 
-  const { data: inbox } = trpc.message.getInbox.useQuery(undefined, {
+  const { data: inbox = [] } = trpc.message.getInbox.useQuery(undefined, {
     enabled: isAuthenticated,
     refetchInterval: 5000,
   });
 
-  const { data: conversation, refetch: refetchConversation } = trpc.message.getConversation.useQuery(
+  const { data: conversation = [] } = trpc.message.getConversation.useQuery(
     { otherUserId: selectedConversation || 0 },
     { enabled: isAuthenticated && selectedConversation !== null, refetchInterval: 3000 }
   );
+  const refetchConversation = trpc.useContext().message.getConversation.refetch;
 
   // 타이핑 상태 조회 (3초마다)
   const { data: typingStatus } = trpc.message.getTyping.useQuery(
