@@ -3692,3 +3692,8 @@
 - [x] Phase 5: 랭킹 시스템 구현 (최종 점수 = 벡터 60% + 키워드 30% + 프로필 10%, 부스트 점수, 다양성 점수)
 - [x] Phase 6: 테스트 및 최적화 (61개 테스트 모두 통과, 캐싱, 벤치마크)
 - [x] AI 매칭 통합 API 구현 (performNaturalLanguageSearch, getRecommendedMentors, benchmarkSearch)
+
+## AI 매칭 검색 개선 (의미적 유사도 기반)
+- [x] AI 매칭 라우터 개선: 하이브리드 검색(의미론적 + 키워드) 통합
+- [x] 의미적 유사도 기반 검색 테스트 ("간장게장" 등 비관련 단어 검색) - 20개 테스트 모두 통과
+- [ ] 검색 결과에 매칭 점수 표시 기능 (Mentors.tsx에서 matchScore 표시)

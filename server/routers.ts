@@ -66,6 +66,7 @@ import { sendConsultationReminders } from "./booking-notifications";
 import { getMonthlyConsultationStats, getOverallConsultationStats, getLast12MonthsStats } from "./booking-statistics";
 import { createQuestion, getQuestionById, getQuestions, updateQuestion, deleteQuestion, createAnswer, getAnswersByQuestionId, getAnswerById, updateAnswer, deleteAnswer, createAnswerReply, getRepliesByAnswerId, getReplyById, updateReply, deleteReply, getQuestionDetail, acceptAnswer, toggleAnswerLike, getUserAnswerLikes, notifyQuestionAuthorOnAnswer, getMyQuestions, getMyAnswers } from "./qna";
 import { getColumnsList, getColumnById, createColumn, updateColumn, deleteColumn, toggleColumnLike, getColumnComments, createComment, updateComment, deleteComment, getMyColumns, incrementViewCount } from "./columns";
+import { hybridSearch } from "./hybrid-search";
 import { mentorColumns, emailVerificationCodes, mentorGallery, messages, notifications, bookings, reviews, mentorProfiles, mentorVerifications, users, bugReports, mentorConsultationTypes, consultationProposals, studentProfiles, studentInterests, mentorRecommendations, mentorSearchCorpus } from "../drizzle/schema";
 
 import { eq, and, desc, isNull, eq as drizzleEq, or as drizzleOr, desc as drizzleDesc, count } from "drizzle-orm";
@@ -73,8 +74,6 @@ import { eq, and, desc, isNull, eq as drizzleEq, or as drizzleOr, desc as drizzl
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2025-12-15.clover",
 });
-
-
 
 function adminProcedure(ctx: any) {
   if (ctx.user?.role !== "admin") {
@@ -1507,14 +1506,14 @@ getTopMentors: publicProcedure
         const db = await getDb();
         if (!db) throw new Error("Database not available");
 
-        const term = input.query.toLowerCase();
-        
+        // 모든 멘토 프로필 및 검색 코퍼스 조회
         const mentors = await db
           .select()
           .from(mentorProfiles)
           .limit(input.limit);
 
-        const results = [];
+        // 각 멘토의 검색 코퍼스 수집
+        const mentorCorpuses = [];
         for (const mentor of mentors) {
           const corpus = await db
             .select()
@@ -1522,16 +1521,42 @@ getTopMentors: publicProcedure
             .where(eq(mentorSearchCorpus.mentorId, mentor.userId))
             .limit(1);
           
-          if (corpus.length > 0 && corpus[0].corpus.toLowerCase().includes(term)) {
-            const user = await db.select().from(users).where(eq(users.id, mentor.userId)).limit(1);
+          if (corpus.length > 0) {
+            const avgRating = typeof mentor.averageRating === 'number' ? mentor.averageRating : 0;
+            mentorCorpuses.push({
+              mentorId: mentor.userId,
+              corpus: corpus[0].corpus,
+              profileScore: avgRating / 5, // 0-1 범위로 정규화
+            });
+          }
+        }
+
+        // 하이브리드 검색 수행
+        const searchResults = await hybridSearch(
+          input.query,
+          mentorCorpuses,
+          0.6, // 의미론적 검색 가중치
+          0.3, // 키워드 검색 가중치
+          0.1  // 프로필 점수 가중치
+        );
+
+        // 검색 결과를 멘토 정보와 함께 반환
+        const results = [];
+        for (const result of searchResults) {
+          const mentor = mentors.find(m => m.userId === result.mentorId);
+          if (mentor) {
+            const user = await db.select().from(users).where(eq(users.id, result.mentorId)).limit(1);
             results.push({
-              id: mentor.userId,
+              id: result.mentorId,
               name: user.length > 0 ? user[0].name : "",
               university: mentor.university || "",
               major: mentor.major || "",
               averageRating: mentor.averageRating || 0,
               reviewCount: mentor.reviewCount || 0,
               createdAt: mentor.createdAt,
+              matchScore: Math.round(result.finalScore * 100), // 0-100 범위의 매칭 점수
+              semanticScore: result.semanticScore,
+              keywordScore: result.keywordScore,
             });
           }
         }
