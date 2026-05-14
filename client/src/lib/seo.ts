@@ -11,8 +11,8 @@ export interface PageMeta {
   keywords?: string;
 }
 
-const DEFAULT_OG_IMAGE = "https://files.manuscdn.com/user_upload_by_module/session_file/310519663280786037/SPxbaeRMjBqMqqlh.png";
-const BASE_URL = "https://univmatch-gy6raywm.manus.space";
+const DEFAULT_OG_IMAGE = "https://univmatch.com/og-image.png";
+const BASE_URL = "https://univmatch.com";
 
 /**
  * 페이지 메타 태그 설정

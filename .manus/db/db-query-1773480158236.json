@@ -1,9 +1,0 @@
-{
-  "query": "\nINSERT INTO messages (senderId, recipientId, content, bookingId, createdAt, updatedAt)\nSELECT \n  (SELECT id FROM users WHERE email = 'test-mentee@test.com'),\n  (SELECT id FROM users WHERE name = '이윤호'),\n  '테스트멘티 학생이 진로상담 상담을 신청했습니다.\\n\\n📅 예정 날짜: 03-15 09:22\\n⏱️ 상담 시간: 1시간\\n💰 상담료: 30000원\\n\\n메시지를 통해 상담을 수락하거나 거절할 수 있습니다.',\n  (SELECT id FROM bookings WHERE studentId = (SELECT id FROM users WHERE email = 'test-mentee@test.com') LIMIT 1),\n  NOW(),\n  NOW();\n",
-  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute \nINSERT INTO messages (senderId, recipientId, content, bookingId, createdAt, updatedAt)\nSELECT \n  (SELECT id FROM users WHERE email = 'test-mentee@test.com'),\n  (SELECT id FROM users WHERE name = '이윤호'),\n  '테스트멘티 학생이 진로상담 상담을 신청했습니다.\\n\\n📅 예정 날짜: 03-15 09:22\\n⏱️ 상담 시간: 1시간\\n💰 상담료: 30000원\\n\\n메시지를 통해 상담을 수락하거나 거절할 수 있습니다.',\n  (SELECT id FROM bookings WHERE studentId = (SELECT id FROM users WHERE email = 'test-mentee@test.com') LIMIT 1),\n  NOW(),\n  NOW();\n",
-  "rows": [],
-  "messages": [],
-  "stdout": "",
-  "stderr": "",
-  "execution_time_ms": 1733
-}

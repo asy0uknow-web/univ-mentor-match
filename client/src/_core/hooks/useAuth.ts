@@ -56,11 +56,11 @@ export function useAuth(options?: UseAuthOptions) {
     
     if (isAuth) {
       localStorage.setItem(
-        "manus-runtime-user-info",
+        "univmatch-user-info",
         JSON.stringify(userData)
       );
     } else {
-      localStorage.removeItem("manus-runtime-user-info");
+      localStorage.removeItem("univmatch-user-info");
     }
     
     return {

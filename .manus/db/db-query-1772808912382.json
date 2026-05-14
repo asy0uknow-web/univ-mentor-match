@@ -1,9 +1,0 @@
-{
-  "query": "INSERT INTO mentor_profiles (userId, university, major, grade, bio, hourlyRate, verificationStatus, isActive, isDeleted, createdAt, updatedAt) VALUES (3, '서울대학교', '컴퓨터공학과', '3', '안녕하세요. 테스트 멘토입니다.', '40000', 'approved', true, false, NOW(), NOW())",
-  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute INSERT INTO mentor_profiles (userId, university, major, grade, bio, hourlyRate, verificationStatus, isActive, isDeleted, createdAt, updatedAt) VALUES (3, '서울대학교', '컴퓨터공학과', '3', '안녕하세요. 테스트 멘토입니다.', '40000', 'approved', true, false, NOW(), NOW())",
-  "rows": [],
-  "messages": [],
-  "stdout": "",
-  "stderr": "",
-  "execution_time_ms": 1624
-}

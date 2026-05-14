@@ -1,9 +1,0 @@
-{
-  "query": "INSERT INTO users (openId, email, name, phoneNumber, role, userType, verificationStatus) VALUES ('test-mentor-001', 'test@test.com', '김테스토', '010-0000-0000', 'user', 'university_student', 'verified');",
-  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute INSERT INTO users (openId, email, name, phoneNumber, role, userType, verificationStatus) VALUES ('test-mentor-001', 'test@test.com', '김테스토', '010-0000-0000', 'user', 'university_student', 'verified');",
-  "rows": [],
-  "messages": [],
-  "stdout": "",
-  "stderr": "",
-  "execution_time_ms": 1508
-}

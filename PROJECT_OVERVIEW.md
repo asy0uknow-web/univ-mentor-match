@@ -226,7 +226,7 @@ DATABASE_URL=mysql://user:password@host:3306/dbname
 
 # 인증
 JWT_SECRET=your_jwt_secret
-OAUTH_SERVER_URL=https://api.manus.im
+OAUTH_SERVER_URL=https://your-oauth-server.com
 
 # AWS S3
 AWS_ACCESS_KEY_ID=your_access_key
@@ -297,9 +297,9 @@ pnpm start            # 프로덕션 서버 실행
 
 ## 👥 팀 정보
 
-- **프로젝트 매니저**: Manus AI
-- **개발 환경**: Manus Sandbox (Node.js 22.13, pnpm 10.4)
-- **배포 환경**: Manus Hosting (자동 배포)
+- **팀명**: 유니브매치
+- **개발 환경**: Node.js 22.13, pnpm 10.4
+- **배포 환경**: Cloud Run (Google Cloud)
 
 ---
 

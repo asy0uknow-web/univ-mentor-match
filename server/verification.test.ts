@@ -10,7 +10,7 @@ function createAuthContext(userId: number = 1, role: "user" | "admin" = "user"):
     openId: `test-user-${userId}`,
     email: `test${userId}@example.com`,
     name: `Test User ${userId}`,
-    loginMethod: "manus",
+    loginMethod: "oauth",
     role,
     userType: null,
     stripeCustomerId: null,

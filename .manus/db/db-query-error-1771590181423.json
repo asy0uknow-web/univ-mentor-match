@@ -1,8 +1,0 @@
-{
-  "query": "\n-- 먼저 사용자 ID 조회\nWITH user_to_delete AS (\n  SELECT id FROM users WHERE email = 'syoung.choi327@gmail.com'\n)\n-- 메시지 삭제 (발신자 또는 수신자)\nDELETE FROM messages \nWHERE sender_id IN (SELECT id FROM user_to_delete) \n   OR recipient_id IN (SELECT id FROM user_to_delete);\n\n-- 멘토 프로필 삭제\nDELETE FROM \"mentorProfiles\" \nWHERE user_id IN (SELECT id FROM users WHERE email = 'syoung.choi327@gmail.com');\n\n-- 버그 리포트 삭제\nDELETE FROM \"bugReports\" \nWHERE user_id IN (SELECT id FROM users WHERE email = 'syoung.choi327@gmail.com');\n\n-- 사용자 계정 삭제\nDELETE FROM users WHERE email = 'syoung.choi327@gmail.com';\n",
-  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute \n-- 먼저 사용자 ID 조회\nWITH user_to_delete AS (\n  SELECT id FROM users WHERE email = 'syoung.choi327@gmail.com'\n)\n-- 메시지 삭제 (발신자 또는 수신자)\nDELETE FROM messages \nWHERE sender_id IN (SELECT id FROM user_to_delete) \n   OR recipient_id IN (SELECT id FROM user_to_delete);\n\n-- 멘토 프로필 삭제\nDELETE FROM \"mentorProfiles\" \nWHERE user_id IN (SELECT id FROM users WHERE email = 'syoung.choi327@gmail.com');\n\n-- 버그 리포트 삭제\nDELETE FROM \"bugReports\" \nWHERE user_id IN (SELECT id FROM users WHERE email = 'syoung.choi327@gmail.com');\n\n-- 사용자 계정 삭제\nDELETE FROM users WHERE email = 'syoung.choi327@gmail.com';\n",
-  "returncode": 1,
-  "logs": [
-    "ERROR 1054 (42S22) at line 3: Unknown column 'sender_id' in 'where clause'"
-  ]
-}

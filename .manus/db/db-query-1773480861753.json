@@ -1,9 +1,0 @@
-{
-  "query": "\n-- 먼저 테스트 계정의 mentor_profiles 삭제\nDELETE mp FROM mentor_profiles mp\nJOIN users u ON mp.userId = u.id\nWHERE u.name LIKE '%ReReg%' OR u.name LIKE '%Test%';\n\n-- 테스트 계정의 users 삭제\nDELETE FROM users \nWHERE name LIKE '%ReReg%' OR name LIKE '%Test%';\n",
-  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 21udWRELz6j8Ux6.root --database Gy6RaYwMhnXP5TJQbTpkxJ --execute \n-- 먼저 테스트 계정의 mentor_profiles 삭제\nDELETE mp FROM mentor_profiles mp\nJOIN users u ON mp.userId = u.id\nWHERE u.name LIKE '%ReReg%' OR u.name LIKE '%Test%';\n\n-- 테스트 계정의 users 삭제\nDELETE FROM users \nWHERE name LIKE '%ReReg%' OR name LIKE '%Test%';\n",
-  "rows": [],
-  "messages": [],
-  "stdout": "",
-  "stderr": "",
-  "execution_time_ms": 1817
-}
