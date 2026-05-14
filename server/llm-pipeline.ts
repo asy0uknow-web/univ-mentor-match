@@ -1,10 +1,8 @@
 import OpenAI from "openai";
 
-// TODO: OpenAI API 키 설정 후 활성화
-// const openai = new OpenAI({
-//   apiKey: process.env.OPENAI_API_KEY,
-// });
-const openai = null as any; // 임시 처리
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
 /**
  * 멘토 프로필 텍스트에서 특성을 추출하는 LLM 파이프라인

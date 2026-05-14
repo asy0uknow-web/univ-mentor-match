@@ -18,23 +18,6 @@ const BookingModal = lazy(() => import("@/components/BookingModal").then(m => ({
 const OPEN_CONVERSATION_KEY = "univmatch:openConversationUserId";
 const DRAFT_MESSAGE_KEY = "univmatch:draftMessage";
 
-const FIELD_LABELS: Record<string, string> = {
-  engineering: "공학",
-  natural_science: "자연과학",
-  business: "경영/상경",
-  humanities: "인문학",
-  education: "교육",
-  liberal_arts: "교양",
-  medicine: "의학",
-};
-
-const CONSULTATION_TYPE_LABELS: Record<string, string> = {
-  career_counseling: "진로상담",
-  university_tour: "대학탐방",
-  resume_consulting: "생기부컨설팅",
-  academic_management: "학업관리",
-};
-
 export default function MentorDetail() {
   const { id } = useParams();
   const { user, isAuthenticated } = useAuth({ redirectOnUnauthenticated: false });
@@ -307,8 +290,8 @@ export default function MentorDetail() {
                 </div>
               )}
 
-              {/* 상담 유형 */}
-              {(mentor as any).consultationTypes && (mentor as any).consultationTypes.length > 0 && (
+              {/* 상담 분야 */}
+              {mentor.profile?.field && (
                 <div className="card-premium p-6 sm:p-8">
                   <CardHeader className="pb-3 sm:pb-4">
                     <CardTitle className="text-lg sm:text-xl flex items-center gap-2">
@@ -318,14 +301,9 @@ export default function MentorDetail() {
                   </CardHeader>
                   <CardContent>
                     <div className="flex flex-wrap gap-2">
-                      {(mentor as any).consultationTypes.map((type: string) => {
-                        const typeLabel = CONSULTATION_TYPE_LABELS[type] || type;
-                        return (
-                          <span key={type} className="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full text-sm font-medium">
-                            {typeLabel}
-                          </span>
-                        );
-                      })}
+                      <span className="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full text-sm font-medium">
+                        {mentor.profile.field}
+                      </span>
                     </div>
                   </CardContent>
                 </div>

@@ -67,7 +67,6 @@ import { getMonthlyConsultationStats, getOverallConsultationStats, getLast12Mont
 import { createQuestion, getQuestionById, getQuestions, updateQuestion, deleteQuestion, createAnswer, getAnswersByQuestionId, getAnswerById, updateAnswer, deleteAnswer, createAnswerReply, getRepliesByAnswerId, getReplyById, updateReply, deleteReply, getQuestionDetail, acceptAnswer, toggleAnswerLike, getUserAnswerLikes, notifyQuestionAuthorOnAnswer, getMyQuestions, getMyAnswers } from "./qna";
 import { getColumnsList, getColumnById, createColumn, updateColumn, deleteColumn, toggleColumnLike, getColumnComments, createComment, updateComment, deleteComment, getMyColumns, incrementViewCount } from "./columns";
 import { hybridSearch } from "./hybrid-search";
-import { aiSearchMentors, getSearchStats } from "./ai-search";
 import { mentorColumns, emailVerificationCodes, mentorGallery, messages, notifications, bookings, reviews, mentorProfiles, mentorVerifications, users, bugReports, mentorConsultationTypes, consultationProposals, studentProfiles, studentInterests, mentorRecommendations, mentorSearchCorpus } from "../drizzle/schema";
 
 import { eq, and, desc, isNull, eq as drizzleEq, or as drizzleOr, desc as drizzleDesc, count } from "drizzle-orm";
@@ -358,7 +357,7 @@ export const appRouter = router({
         // getMentorById 함수가 UUID와 숫자 ID 모두 지원
         const mentor = await getMentorById(input.mentorId);
         
-        // 대표 사진 추가 및 상담 유형 추가
+        // 대표 사진 추가
         if (mentor) {
           const db = await getDb();
           if (db) {
@@ -369,14 +368,6 @@ export const appRouter = router({
               .limit(1);
             
             (mentor.profile as any).profileImage = primaryImage.length > 0 ? primaryImage[0].imageUrl : null;
-            
-            // 상담 유형 추가
-            const consultationTypes = await db
-              .select({ consultationType: mentorConsultationTypes.consultationType })
-              .from(mentorConsultationTypes)
-              .where(eq(mentorConsultationTypes.mentorId, mentor.profile.userId));
-            
-            (mentor as any).consultationTypes = consultationTypes.map((ct: any) => ct.consultationType);
           }
         }
         
@@ -1512,65 +1503,145 @@ getTopMentors: publicProcedure
         limit: z.number().default(20),
       }))
       .query(async ({ input }) => {
-        const db = await getDb();
-        if (!db) throw new Error("Database not available");
+        try {
+          const db = await getDb();
+          if (!db) throw new Error("Database not available");
 
-        // 모든 멘토 프로필 및 검색 코퍼스 조회
-        const mentors = await db
-          .select()
-          .from(mentorProfiles)
-          .limit(input.limit);
+          const query = input.query.toLowerCase();
+          const limit = Math.min(input.limit, 50);
 
-        // 각 멘토의 검색 코퍼스 수집
-        const mentorCorpuses = [];
-        for (const mentor of mentors) {
-          const corpus = await db
+          // 승인된 멘토만 조회
+          const mentors = await db
             .select()
-            .from(mentorSearchCorpus)
-            .where(eq(mentorSearchCorpus.mentorId, mentor.userId))
-            .limit(1);
-          
-          if (corpus.length > 0) {
-            const avgRating = typeof mentor.averageRating === 'number' ? mentor.averageRating : 0;
-            mentorCorpuses.push({
-              mentorId: mentor.userId,
-              corpus: corpus[0].corpus,
-              profileScore: avgRating / 5, // 0-1 범위로 정규화
-            });
+            .from(mentorProfiles)
+            .where(
+              and(
+                eq(mentorProfiles.verificationStatus, "approved"),
+                eq(mentorProfiles.isDeleted, false)
+              )
+            )
+            .limit(limit * 2);
+
+          // 검색어와 매칭되는 멘토 필터링
+          const results = [];
+          for (const mentor of mentors) {
+            let matchScore = 0;
+            const searchText = `${mentor.university || ''} ${mentor.major || ''} ${mentor.field || ''} ${mentor.bio || ''}`.toLowerCase();
+            
+            // 키워드 매칭
+            const keywords = query.split(/\s+/).filter(k => k.length > 0);
+            for (const keyword of keywords) {
+              if (searchText.includes(keyword)) {
+                matchScore += 20;
+              }
+            }
+
+            if (matchScore > 0) {
+              const user = await db
+                .select()
+                .from(users)
+                .where(eq(users.id, mentor.userId))
+                .limit(1);
+
+              results.push({
+                id: mentor.id,
+                uuid: mentor.uuid,
+                name: user.length > 0 ? user[0].name : "멘토",
+                email: user.length > 0 ? user[0].email : "",
+                university: mentor.university || "",
+                major: mentor.major || "",
+                field: mentor.field || "",
+                bio: mentor.bio || "",
+                averageRating: mentor.averageRating || 0,
+                reviewCount: mentor.reviewCount || 0,
+                verificationStatus: mentor.verificationStatus,
+                matchScore: Math.min(matchScore, 100),
+              });
+            }
           }
+
+          // 매칭 점수로 정렬
+          results.sort((a, b) => b.matchScore - a.matchScore);
+          return results.slice(0, limit);
+        } catch (error) {
+          console.error("[AI Search] Error:", error);
+          return [];
         }
+      }),
 
-        // 하이브리드 검색 수행
-        const searchResults = await hybridSearch(
-          input.query,
-          mentorCorpuses,
-          0.6, // 의미론적 검색 가중치
-          0.3, // 키워드 검색 가중치
-          0.1  // 프로필 점수 가중치
-        );
+  }),
 
-        // 검색 결과를 멘토 정보와 함께 반환
-        const results = [];
-        for (const result of searchResults) {
-          const mentor = mentors.find(m => m.userId === result.mentorId);
-          if (mentor) {
-            const user = await db.select().from(users).where(eq(users.id, result.mentorId)).limit(1);
-            results.push({
-              id: result.mentorId,
-              name: user.length > 0 ? user[0].name : "",
-              university: mentor.university || "",
-              major: mentor.major || "",
-              averageRating: mentor.averageRating || 0,
-              reviewCount: mentor.reviewCount || 0,
-              createdAt: mentor.createdAt,
-              matchScore: Math.round(result.finalScore * 100), // 0-100 범위의 매칭 점수
-              semanticScore: result.semanticScore,
-              keywordScore: result.keywordScore,
-            });
+  aiSearch: router({
+    search: publicProcedure
+      .input(z.object({
+        query: z.string(),
+        limit: z.number().default(20),
+      }))
+      .query(async ({ input }) => {
+        try {
+          const db = await getDb();
+          if (!db) throw new Error("Database not available");
+
+          const query = input.query.toLowerCase();
+          const limit = Math.min(input.limit, 50);
+
+          // 승인된 멘토만 조회
+          const mentors = await db
+            .select()
+            .from(mentorProfiles)
+            .where(
+              and(
+                eq(mentorProfiles.verificationStatus, "approved"),
+                eq(mentorProfiles.isDeleted, false)
+              )
+            )
+            .limit(limit * 2);
+
+          // 검색어와 매칭되는 멘토 필터링
+          const results = [];
+          for (const mentor of mentors) {
+            let matchScore = 0;
+            const searchText = `${mentor.university || ''} ${mentor.major || ''} ${mentor.field || ''} ${mentor.bio || ''}`.toLowerCase();
+            
+            // 키워드 매칭
+            const keywords = query.split(/\s+/).filter(k => k.length > 0);
+            for (const keyword of keywords) {
+              if (searchText.includes(keyword)) {
+                matchScore += 20;
+              }
+            }
+
+            if (matchScore > 0) {
+              const user = await db
+                .select()
+                .from(users)
+                .where(eq(users.id, mentor.userId))
+                .limit(1);
+
+              results.push({
+                id: mentor.id,
+                uuid: mentor.uuid,
+                name: user.length > 0 ? user[0].name : "멘토",
+                email: user.length > 0 ? user[0].email : "",
+                university: mentor.university || "",
+                major: mentor.major || "",
+                field: mentor.field || "",
+                bio: mentor.bio || "",
+                averageRating: mentor.averageRating || 0,
+                reviewCount: mentor.reviewCount || 0,
+                verificationStatus: mentor.verificationStatus,
+                matchScore: Math.min(matchScore, 100),
+              });
+            }
           }
-        }
 
-        return results;
+          // 매칭 점수로 정렬
+          results.sort((a, b) => b.matchScore - a.matchScore);
+          return results.slice(0, limit);
+        } catch (error) {
+          console.error("[AI Search] Error:", error);
+          throw new Error("Failed to perform AI search");
+        }
       }),
   }),
 
@@ -2883,38 +2954,6 @@ getTopMentors: publicProcedure
         });
         
         return { success: true };
-      }),
-  }),
-
-  aiSearch: router({
-    search: publicProcedure
-      .input(z.object({
-        query: z.string().min(1, "Search query cannot be empty"),
-        limit: z.number().int().min(1).max(50).default(10),
-      }))
-      .query(async ({ input }) => {
-        try {
-          const results = await aiSearchMentors(input.query, input.limit);
-          return {
-            success: true,
-            results,
-            count: results.length,
-          };
-        } catch (error) {
-          console.error("[AI Search] Error:", error);
-          throw new Error("Failed to perform AI search");
-        }
-      }),
-
-    stats: publicProcedure
-      .query(async () => {
-        try {
-          const stats = await getSearchStats();
-          return stats;
-        } catch (error) {
-          console.error("[AI Search] Error getting stats:", error);
-          throw new Error("Failed to get search statistics");
-        }
       }),
   }),
 });

@@ -875,7 +875,7 @@ export default function QnADetail() {
                 <Textarea
                   value={answerContent}
                   onChange={(e) => setAnswerContent(e.target.value)}
-                  placeholder="멘토의 실제 경험을 바탕으로 성실한 답변을 작성해주세요"
+                  placeholder="멘티의 실제 경험을 바탕으로 성실한 답변을 작성해주세요"
                   className="text-xs sm:text-sm min-h-24 sm:min-h-32 resize-none border-green-200 dark:border-green-800/50 focus:border-green-400"
                 />
                 <Button

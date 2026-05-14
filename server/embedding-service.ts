@@ -1,30 +1,28 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import OpenAI from "openai";
 
-// Gemini API 초기화
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
 /**
  * 텍스트를 벡터 임베딩으로 변환합니다
- * text-embedding-004 모델 사용
+ * text-embedding-3-small 모델 사용
  * @param text 임베딩할 텍스트
  * @returns 벡터 배열
  */
 export async function generateEmbedding(text: string): Promise<number[]> {
   try {
-    if (!genAI) {
-      throw new Error("Gemini API not initialized. Please set GEMINI_API_KEY environment variable.");
+    const response = await openai.embeddings.create({
+      model: "text-embedding-3-small",
+      input: text,
+      encoding_format: "float",
+    });
+
+    if (!response.data || response.data.length === 0) {
+      throw new Error("No embedding returned from OpenAI");
     }
 
-    const model = genAI.getGenerativeModel({ model: "text-embedding-004" });
-    
-    const result = await model.embedContent(text);
-    const embedding = result.embedding;
-
-    if (!embedding || !embedding.values || embedding.values.length === 0) {
-      throw new Error("No embedding returned from Gemini");
-    }
-
-    return embedding.values;
+    return response.data[0].embedding;
   } catch (error) {
     console.error("Error generating embedding:", error);
     throw error;
@@ -38,27 +36,20 @@ export async function generateEmbedding(text: string): Promise<number[]> {
  */
 export async function generateEmbeddingsBatch(texts: string[]): Promise<number[][]> {
   try {
-    if (!genAI) {
-      throw new Error("Gemini API not initialized. Please set GEMINI_API_KEY environment variable.");
+    const response = await openai.embeddings.create({
+      model: "text-embedding-3-small",
+      input: texts,
+      encoding_format: "float",
+    });
+
+    if (!response.data) {
+      throw new Error("No embeddings returned from OpenAI");
     }
 
-    const model = genAI.getGenerativeModel({ model: "text-embedding-004" });
-    
-    const embeddings: number[][] = [];
-    
-    // Gemini API는 배치 요청을 직접 지원하지 않으므로 순차 처리
-    for (const text of texts) {
-      const result = await model.embedContent(text);
-      const embedding = result.embedding;
-      
-      if (!embedding || !embedding.values) {
-        throw new Error("No embedding returned from Gemini");
-      }
-      
-      embeddings.push(embedding.values);
-    }
-
-    return embeddings;
+    // 응답 데이터를 인덱스 순서대로 정렬
+    return response.data
+      .sort((a, b) => a.index - b.index)
+      .map((item) => item.embedding);
   } catch (error) {
     console.error("Error generating embeddings batch:", error);
     throw error;

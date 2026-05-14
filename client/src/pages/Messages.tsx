@@ -384,10 +384,7 @@ export function Messages() {
   // 새로운 대화 시작 시 상대방 사용자 정보 조회
   const { data: otherUserInfo } = trpc.user.getById.useQuery(
     { userId: selectedConversation || 0 },
-    { 
-      enabled: selectedConversation !== null && selectedConversation > 0,
-      retry: false
-    }
+    { enabled: selectedConversation !== null && selectedConversation > 0 }
   );
   
   // 멘토 데이터를 받으면 사용자 ID로 selectedConversation 설정
@@ -578,12 +575,15 @@ export function Messages() {
   };
 
   // ===== 대화 목록 처리 =====
-  const conversations = inbox?.reduce((acc: any, msg: any) => {
-    const otherId = msg.senderId === user?.id ? msg.recipientId : msg.senderId;
-    if (!acc[otherId]) acc[otherId] = [];
-    acc[otherId].push(msg);
-    return acc;
-  }, {}) || {};
+  const conversations = useMemo(() => {
+    if (!inbox || !Array.isArray(inbox) || inbox.length === 0) return {};
+    return inbox.reduce((acc: any, msg: any) => {
+      const otherId = msg.senderId === user?.id ? msg.recipientId : msg.senderId;
+      if (!acc[otherId]) acc[otherId] = [];
+      acc[otherId].push(msg);
+      return acc;
+    }, {});
+  }, [inbox, user?.id]);
   
   const getOtherUserName = (userId: number) => {
     // 1. 먼저 conversations[userId]에서 상대방 이름 찾기
@@ -653,9 +653,9 @@ export function Messages() {
     return msgs.filter((m: any) => m.recipientId === user?.id && !m.isRead).length;
   };
 
-  const filteredConversations = Object.entries(conversations).filter(([userId]: [string, any]) =>
+  const filteredConversations = conversations && typeof conversations === 'object' ? Object.entries(conversations).filter(([userId]: [string, any]) =>
     getOtherUserName(parseInt(userId)).toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  ) : [];
 
   const getRelativeTime = (date: string | Date) => {
     try {
@@ -710,9 +710,7 @@ export function Messages() {
       if (currentGroup.length > 1) currentGroup[currentGroup.length - 2].isLast = false;
     });
 
-    if (currentGroup.length > 0 && currentDate) {
-      groups.push({ date: currentDate, messages: currentGroup });
-    }
+    if (currentGroup.length > 0) groups.push({ date: currentDate!, messages: currentGroup });
     return groups;
   }, [conversation, messageSearch]);
 

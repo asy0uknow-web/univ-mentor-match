@@ -6,23 +6,6 @@ import { Badge } from "../components/ui/badge";
 import { Star, Sparkles, ArrowRight } from "lucide-react";
 import PageLayout from "../components/layout/PageLayout";
 
-const FIELD_LABELS: Record<string, string> = {
-  engineering: "공학",
-  natural_science: "자연과학",
-  business: "경영/상경",
-  humanities: "인문학",
-  education: "교육",
-  liberal_arts: "교양",
-  medicine: "의학",
-};
-
-const CONSULTATION_TYPE_LABELS: Record<string, string> = {
-  career_counseling: "진로상담",
-  university_tour: "대학탐방",
-  resume_consulting: "생기부컨설팅",
-  academic_management: "학업관리",
-};
-
 export default function RecommendedMentors() {
   const [interests, setInterests] = useState<Array<{ category: string; level: string }>>([]);
   const [selectedInterests, setSelectedInterests] = useState<Set<string>>(new Set());
@@ -164,24 +147,9 @@ export default function RecommendedMentors() {
                           {mentor.major}
                         </CardDescription>
                       </div>
-                      {(mentor as any).consultationTypes && (mentor as any).consultationTypes.length > 0 ? (
-                        <div className="flex flex-wrap gap-1">
-                          {(mentor as any).consultationTypes.slice(0, 2).map((type: string) => (
-                            <Badge key={type} variant="secondary" className="bg-[var(--brand-primary-100)] text-[var(--brand-primary-700)] text-xs">
-                              {CONSULTATION_TYPE_LABELS[type] || type}
-                            </Badge>
-                          ))}
-                          {(mentor as any).consultationTypes.length > 2 && (
-                            <Badge variant="secondary" className="bg-[var(--brand-primary-100)] text-[var(--brand-primary-700)] text-xs">
-                              +{(mentor as any).consultationTypes.length - 2}
-                            </Badge>
-                          )}
-                        </div>
-                      ) : (
-                        <Badge variant="secondary" className="bg-[var(--brand-primary-100)] text-[var(--brand-primary-700)]">
-                          상담 유형 미등록
-                        </Badge>
-                      )}
+                      <Badge variant="secondary" className="bg-[var(--brand-primary-100)] text-[var(--brand-primary-700)]">
+                        {mentor.field || "전공"}
+                      </Badge>
                     </div>
                   </CardHeader>
                   <CardContent>
