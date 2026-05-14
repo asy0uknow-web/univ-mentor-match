@@ -39,11 +39,18 @@ export const VirtualMessageList = memo(function VirtualMessageList({
       message?: any;
     }> = [];
 
+    if (!groupedMessages || !Array.isArray(groupedMessages)) {
+      return items;
+    }
+
     groupedMessages.forEach((group) => {
+      if (!group || !group.date) return;
       items.push({ type: "date", date: group.date });
-      group.messages.forEach((msg) => {
-        items.push({ type: "message", message: msg });
-      });
+      if (Array.isArray(group.messages)) {
+        group.messages.forEach((msg) => {
+          if (msg) items.push({ type: "message", message: msg });
+        });
+      }
     });
 
     // 타이핑 표시기 추가
@@ -71,7 +78,11 @@ export const VirtualMessageList = memo(function VirtualMessageList({
 
   // 각 아이템의 높이 계산 (추정값)
   const getItemSize = useCallback((index: number) => {
+    if (!flatItems || flatItems.length === 0 || index < 0 || index >= flatItems.length) {
+      return 60; // 기본값
+    }
     const item = flatItems[index];
+    if (!item) return 60;
     if (item.type === "date") return 40; // DateDivider 높이
     if (item.type === "typing") return 50; // TypingIndicator 높이
     return 60; // 일반 메시지 평균 높이
@@ -80,7 +91,9 @@ export const VirtualMessageList = memo(function VirtualMessageList({
   // 아이템 렌더링 함수
   const Row = useCallback(
     ({ index, style }: { index: number; style: React.CSSProperties }) => {
+      if (!flatItems || !style) return null;
       const item = flatItems[index];
+      if (!item) return null;
 
       return (
         <div style={style} className="px-2 sm:px-4">
@@ -90,7 +103,7 @@ export const VirtualMessageList = memo(function VirtualMessageList({
           {item.type === "message" && item.message && (
             <div
               className={`${
-                item.message.isGrouped ? "mt-0.5" : "mt-3"
+                item.message?.isGrouped ? "mt-0.5" : "mt-3"
               }`}
             >
               {renderMessage(item.message)}
@@ -110,6 +123,22 @@ export const VirtualMessageList = memo(function VirtualMessageList({
   }
 
   const ListComponent = List as any;
+  
+  // containerHeight가 유효한지 확인
+  if (!containerHeight || containerHeight <= 0) {
+    return (
+      <div style={{ height: 300, width: "100%", overflow: "auto" }}>
+        {flatItems.map((item, idx) => (
+          <div key={idx}>
+            {item.type === "date" && item.date && <DateDivider date={item.date} />}
+            {item.type === "message" && item.message && renderMessage(item.message)}
+            {item.type === "typing" && <TypingIndicator name={otherUserName} />}
+          </div>
+        ))}
+      </div>
+    );
+  }
+
   return (
     <div style={{ height: containerHeight, width: "100%", overflow: "hidden", display: "flex", flexDirection: "column" }}>
       <ListComponent
