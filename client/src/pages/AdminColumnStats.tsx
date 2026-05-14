@@ -55,10 +55,12 @@ export default function AdminColumnStats() {
       });
 
       // 평균값 계산
-      Object.keys(stats).forEach((category) => {
-        stats[category].avgLikes = Math.round(stats[category].likes / stats[category].count);
-        stats[category].avgComments = Math.round(stats[category].comments / stats[category].count);
-      });
+      if (stats && typeof stats === 'object') {
+        Object.keys(stats).forEach((category) => {
+          stats[category].avgLikes = Math.round(stats[category].likes / stats[category].count);
+          stats[category].avgComments = Math.round(stats[category].comments / stats[category].count);
+        });
+      }
 
       setCategoryStats(stats);
       setTotalStats({
@@ -68,6 +70,18 @@ export default function AdminColumnStats() {
       });
     }
   }, [columns]);
+
+  // categoryStats가 null/undefined일 때 대비
+  if (!categoryStats || typeof categoryStats !== 'object') {
+    return (
+      <PageLayout>
+        <div className="container mx-auto px-4 py-8">
+          <h1 className="text-3xl font-bold mb-8">컬럼 통계</h1>
+          <p>데이터를 로드 중입니다...</p>
+        </div>
+      </PageLayout>
+    );
+  }
 
   if (isLoading) {
     return (
@@ -87,8 +101,9 @@ export default function AdminColumnStats() {
     );
   }
 
-  const sortedCategories = Object.entries(categoryStats)
-    .sort(([, a]: any, [, b]: any) => b.likes - a.likes);
+  const sortedCategories = (categoryStats && typeof categoryStats === 'object')
+    ? Object.entries(categoryStats).sort(([, a]: any, [, b]: any) => b.likes - a.likes)
+    : [];
 
   return (
     <PageLayout>

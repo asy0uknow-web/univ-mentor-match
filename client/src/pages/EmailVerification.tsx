@@ -32,7 +32,7 @@ export default function EmailVerification({ email, onVerified }: EmailVerificati
     }
 
     setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    return !newErrors || typeof newErrors !== 'object' ? true : Object.keys(newErrors).length === 0;
   };
 
   const handleSendCode = async () => {
@@ -133,11 +133,11 @@ export default function EmailVerification({ email, onVerified }: EmailVerificati
           {isLoading || sendCodeMutation.isPending ? "발송 중..." : "코드 발송"}
         </button>
 
-        {Object.values(errors).length > 0 && (
-          <div className="p-3 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800/50 rounded text-red-700 dark:text-red-400 text-sm">
-            {Object.values(errors)[0]}
-          </div>
-        )}
+        {errors && typeof errors === 'object' && Object.values(errors).length > 0 && (
+            <div className="bg-red-50 border border-red-200 rounded-lg p-3 mb-4">
+              {Object.values(errors)[0]}
+            </div>
+          )}
       </div>
     );
   }

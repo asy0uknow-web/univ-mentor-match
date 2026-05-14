@@ -576,17 +576,25 @@ export function Messages() {
 
   // ===== 대화 목록 처리 =====
   const conversations = useMemo(() => {
-    if (!inbox || !Array.isArray(inbox) || inbox.length === 0) return {};
-    return inbox.reduce((acc: any, msg: any) => {
-      const otherId = msg.senderId === user?.id ? msg.recipientId : msg.senderId;
-      if (!acc[otherId]) acc[otherId] = [];
-      acc[otherId].push(msg);
-      return acc;
-    }, {});
+    if (!inbox || !Array.isArray(inbox) || inbox.length === 0) {
+      return {};
+    }
+    try {
+      return inbox.reduce((acc: any, msg: any) => {
+        const otherId = msg.senderId === user?.id ? msg.recipientId : msg.senderId;
+        if (otherId && !acc[otherId]) acc[otherId] = [];
+        if (otherId) acc[otherId].push(msg);
+        return acc;
+      }, {});
+    } catch (error) {
+      console.error("Error processing conversations:", error);
+      return {};
+    }
   }, [inbox, user?.id]);
   
   const getOtherUserName = (userId: number) => {
     // 1. 먼저 conversations[userId]에서 상대방 이름 찾기
+    if (!conversations || typeof conversations !== 'object') return "";
     const msgs: any[] = conversations[userId] || [];
     if (msgs.length > 0) {
       const msg = msgs[0];
@@ -649,13 +657,19 @@ export function Messages() {
   };
 
   const getUnreadCount = (userId: number) => {
+    if (!conversations || typeof conversations !== 'object') return 0;
     const msgs: any[] = conversations[userId] || [];
     return msgs.filter((m: any) => m.recipientId === user?.id && !m.isRead).length;
   };
 
-  const filteredConversations = conversations && typeof conversations === 'object' ? Object.entries(conversations).filter(([userId]: [string, any]) =>
-    getOtherUserName(parseInt(userId)).toLowerCase().includes(searchQuery.toLowerCase())
-  ) : [];
+  const filteredConversations = useMemo(() => {
+    if (!conversations || typeof conversations !== 'object' || Object.keys(conversations).length === 0) {
+      return [];
+    }
+    return Object.entries(conversations).filter(([userId]: [string, any]) =>
+      getOtherUserName(parseInt(userId)).toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [conversations, searchQuery]);
 
   const getRelativeTime = (date: string | Date) => {
     try {
