@@ -1309,6 +1309,11 @@ getTopMentors: publicProcedure
         studentIdImageUrl: z.string().url(),
       }))
       .mutation(async ({ ctx, input }) => {
+        // 멘티(고등학생)는 멘토 인증 신청 불가
+        if (ctx.user.userType === "high_school_student") {
+          throw new Error("멘티 계정은 멘토 인증 신청을 할 수 없습니다.");
+        }
+
         const existingVerification = await getMentorVerificationByUserId(ctx.user.id);
         
         if (existingVerification && existingVerification.status === "pending") {

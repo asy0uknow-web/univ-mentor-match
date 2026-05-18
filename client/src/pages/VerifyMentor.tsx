@@ -12,7 +12,7 @@ import { toast } from "sonner";
 import { PageLayout } from "@/components/layout";
 
 export default function VerifyMentor() {
-  const { isAuthenticated } = useAuth({ redirectOnUnauthenticated: false });
+  const { isAuthenticated, user } = useAuth({ redirectOnUnauthenticated: false });
   const [, setLocation] = useLocation();
 
   // All hooks must be declared before any conditional returns (React Rules of Hooks)
@@ -102,6 +102,30 @@ export default function VerifyMentor() {
     };
     reader.readAsDataURL(selectedFile);
   };
+
+  // 멘티(고등학생)는 멘토 인증 페이지 접근 불가
+  if (isAuthenticated && user?.userType === "high_school_student") {
+    return (
+      <PageLayout>
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-tr from-green-50 via-white to-blue-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
+          <Card className="max-w-md shadow-lg border-0">
+            <CardHeader className="text-center pb-4">
+              <div className="mx-auto w-14 h-14 rounded-2xl bg-red-100 dark:bg-red-900/30 flex items-center justify-center mb-3">
+                <ShieldAlert className="h-7 w-7 text-red-600 dark:text-red-400" />
+              </div>
+              <CardTitle className="text-xl">접근 불가</CardTitle>
+              <CardDescription>멘티 계정은 멘토 인증 신청을 할 수 없습니다.<br />멘토로 활동하려면 대학생 계정으로 가입해 주세요.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Link href="/">
+                <Button className="w-full" variant="outline">홈으로 돌아가기</Button>
+              </Link>
+            </CardContent>
+          </Card>
+        </div>
+      </PageLayout>
+    );
+  }
 
   if (!isAuthenticated) {
     return (
