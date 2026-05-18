@@ -18,6 +18,49 @@ interface VirtualMessageListProps {
   onScroll?: (info: { scrollOffset: number }) => void;
 }
 
+type FlatItem =
+  | { type: "date"; date: Date }
+  | { type: "message"; message: any }
+  | { type: "typing" };
+
+// react-window 2.x RowComponent props 타입
+interface RowComponentProps {
+  index: number;
+  style: React.CSSProperties;
+  // react-window 2.x는 rowProps를 RowComponent에 직접 전달
+  renderMessage: (msg: any) => React.ReactNode;
+  flatItems: FlatItem[];
+  otherUserName: string;
+}
+
+// react-window 2.x에서 rowComponent는 별도 컴포넌트로 정의해야 함
+const RowComponent = memo(function RowComponent({
+  index,
+  style,
+  renderMessage,
+  flatItems,
+  otherUserName,
+}: RowComponentProps) {
+  const item = flatItems[index];
+  if (!item) return null;
+
+  return (
+    <div style={style} className="px-2 sm:px-4">
+      {item.type === "date" && (
+        <DateDivider date={item.date} />
+      )}
+      {item.type === "message" && item.message && (
+        <div className={item.message?.isGrouped ? "mt-0.5" : "mt-3"}>
+          {renderMessage(item.message)}
+        </div>
+      )}
+      {item.type === "typing" && (
+        <TypingIndicator name={otherUserName} />
+      )}
+    </div>
+  );
+});
+
 export const VirtualMessageList = memo(function VirtualMessageList({
   groupedMessages,
   renderMessage,
@@ -27,17 +70,11 @@ export const VirtualMessageList = memo(function VirtualMessageList({
   containerHeight,
 }: VirtualMessageListProps) {
   const listRef = useRef<any>(null);
-
-  // 모든 메시지를 평타화하여 가상 스크롤링용 아이템 생성
-  // 메시지 끌을 추적하기 위한 레퍼
   const prevLengthRef = useRef(0);
 
-  const flatItems = useMemo(() => {
-    const items: Array<{
-      type: "date" | "message" | "typing";
-      date?: Date;
-      message?: any;
-    }> = [];
+  // 모든 메시지를 평탄화하여 가상 스크롤링용 아이템 생성
+  const flatItems = useMemo<FlatItem[]>(() => {
+    const items: FlatItem[] = [];
 
     if (!groupedMessages || !Array.isArray(groupedMessages)) {
       return items;
@@ -53,7 +90,6 @@ export const VirtualMessageList = memo(function VirtualMessageList({
       }
     });
 
-    // 타이핑 표시기 추가
     if (typingStatus?.isTyping) {
       items.push({ type: "typing" });
     }
@@ -63,95 +99,69 @@ export const VirtualMessageList = memo(function VirtualMessageList({
 
   // 새 메시지 추가 시 자동 스크롤
   useEffect(() => {
-    // 메시지가 실제로 추가되면 스크롤 실패
     if (listRef.current && flatItems.length > prevLengthRef.current) {
       const lastIndex = flatItems.length - 1;
-      // 단순 스크롤만 실패하면 누락되는 단점을 보완하기 위해 단순 지연 추가
       setTimeout(() => {
         if (listRef.current) {
-          listRef.current.scrollToItem(lastIndex, "end");
+          listRef.current.scrollToRow({ index: lastIndex, align: "end" });
         }
       }, 50);
     }
     prevLengthRef.current = flatItems.length;
   }, [flatItems.length]);
 
-  // 각 아이템의 높이 계산 (추정값)
-  const getItemSize = useCallback((index: number) => {
+  // 각 아이템의 높이 계산
+  const getRowHeight = useCallback((index: number) => {
     if (!flatItems || flatItems.length === 0 || index < 0 || index >= flatItems.length) {
-      return 60; // 기본값
+      return 60;
     }
     const item = flatItems[index];
     if (!item) return 60;
-    if (item.type === "date") return 40; // DateDivider 높이
-    if (item.type === "typing") return 50; // TypingIndicator 높이
-    return 60; // 일반 메시지 평균 높이
+    if (item.type === "date") return 40;
+    if (item.type === "typing") return 50;
+    return 60;
   }, [flatItems]);
 
-  // 아이템 렌더링 함수
-  const Row = useCallback(
-    ({ index, style }: { index: number; style: React.CSSProperties }) => {
-      if (!flatItems || !style) return null;
-      const item = flatItems[index];
-      if (!item) return null;
-
-      return (
-        <div style={style} className="px-2 sm:px-4">
-          {item.type === "date" && item.date && (
-            <DateDivider date={item.date} />
-          )}
-          {item.type === "message" && item.message && (
-            <div
-              className={`${
-                item.message?.isGrouped ? "mt-0.5" : "mt-3"
-              }`}
-            >
-              {renderMessage(item.message)}
-            </div>
-          )}
-          {item.type === "typing" && (
-            <TypingIndicator name={otherUserName} />
-          )}
-        </div>
-      );
-    },
-    [flatItems, renderMessage, otherUserName]
-  );
-
-  if (flatItems.length === 0) {
-    return null;
-  }
-
-  const ListComponent = List as any;
-  
-  // containerHeight가 유효한지 확인
+  // containerHeight가 유효하지 않으면 일반 스크롤로 폴백
   if (!containerHeight || containerHeight <= 0) {
     return (
-      <div style={{ height: 300, width: "100%", overflow: "auto" }}>
+      <div style={{ height: 300, width: "100%", overflowY: "auto" }}>
         {flatItems.map((item, idx) => (
-          <div key={idx}>
-            {item.type === "date" && item.date && <DateDivider date={item.date} />}
+          <div key={idx} className="px-2 sm:px-4">
+            {item.type === "date" && <DateDivider date={item.date} />}
             {item.type === "message" && item.message && renderMessage(item.message)}
             {item.type === "typing" && <TypingIndicator name={otherUserName} />}
           </div>
         ))}
+        <div ref={messagesEndRef} />
       </div>
     );
   }
 
+  if (flatItems.length === 0) {
+    return <div ref={messagesEndRef} />;
+  }
+
+  // react-window 2.x API: rowCount, rowHeight, rowComponent, rowProps
+  const ListComponent = List as any;
+
   return (
     <div style={{ height: containerHeight, width: "100%", overflow: "hidden", display: "flex", flexDirection: "column" }}>
       <ListComponent
-        ref={listRef}
-        height={containerHeight}
-        itemCount={flatItems.length}
-        itemSize={getItemSize}
-        width="100%"
+        listRef={listRef}
+        defaultHeight={containerHeight}
+        rowCount={flatItems.length}
+        rowHeight={getRowHeight}
+        rowComponent={RowComponent}
+        rowProps={{
+          renderMessage,
+          flatItems,
+          otherUserName,
+        }}
         overscanCount={5}
+        style={{ height: containerHeight, width: "100%" }}
       >
-        {Row}
       </ListComponent>
-      {/* 메시지 끌 스크롤 보정용 */}
       <div ref={messagesEndRef} style={{ height: 0 }} />
     </div>
   );
