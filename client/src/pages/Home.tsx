@@ -124,9 +124,10 @@ export default function Home() {
         role="banner"
         className="relative min-h-[85vh] py-12 sm:py-20 md:py-32 overflow-hidden flex items-center w-screen -mx-[calc((100vw-100%)/2)] bg-gradient-to-br from-background via-background to-muted" 
         style={{
-          backgroundImage: 'linear-gradient(135deg, #eff6ff 0%, #dbeafe 50%, #ede9fe 100%)',
+          backgroundImage: 'url(/manus-storage/hero-background_2745ac4b.png)',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
+          backgroundAttachment: 'fixed',
         }}
         aria-label="히어로 섹션"
       >
