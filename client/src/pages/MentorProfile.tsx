@@ -326,7 +326,7 @@ export default function MentorProfile() {
         {/* 헤더 */}
         <div className="bg-card  border-b">
           <div className="max-w-7xl mx-auto px-4 py-6">
-            <h1 className="text-3xl font-bold text-foreground">멘토 대시보드</h1>
+            <h1 className="text-3xl font-bold text-foreground">{user?.userType === "university_student" ? "멘토 대시보드" : "내 프로필"}</h1>
             <p className="text-muted-foreground 300 300 mt-2">프로필 정보를 관리하고 활동을 추적하세요.</p>
           </div>
         </div>
@@ -648,12 +648,14 @@ export default function MentorProfile() {
                     <h2 className="text-2xl font-bold text-foreground">칼럼 스튜디오</h2>
                     <p className="text-sm text-muted-foreground 300 300 mt-1">작성한 칼럼 관리</p>
                   </div>
-                  <Link href="/columns/new">
-                    <button className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition flex items-center gap-2">
-                      <Plus className="w-4 h-4" />
-                      새 칼럼
-                    </button>
-                  </Link>
+                  {user?.userType === "university_student" && (
+                    <Link href="/columns/new">
+                      <button className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition flex items-center gap-2">
+                        <Plus className="w-4 h-4" />
+                        새 칼럼
+                      </button>
+                    </Link>
+                  )}
                 </div>
 
                 {myColumns && myColumns.length > 0 ? (

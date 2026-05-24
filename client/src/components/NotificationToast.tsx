@@ -32,6 +32,14 @@ export function NotificationToast() {
   // 알림 읽음 표시 뮤테이션
   const markAsReadMutation = trpc.notification.markAsRead.useMutation();
 
+  // 비로그인 시 알림 state 초기화
+  useEffect(() => {
+    if (!isAuthenticated) {
+      setNotifications([]);
+      setVisibleNotifications(new Set());
+    }
+  }, [isAuthenticated]);
+
   // 새 알림 감지 및 토스트 표시
   useEffect(() => {
     if (allNotifications) {
