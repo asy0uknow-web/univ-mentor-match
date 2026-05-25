@@ -45,6 +45,8 @@ const CONSULTATION_TYPES = [
 
 export default function Mentors() {
   const [searchParams] = useSearchParams();
+  // wouter의 searchParams는 렌더마다 새 인스턴스 → 문자열로 안정화
+  const typesParamStr = searchParams.get('types') ?? '';
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [selectedRegions, setSelectedRegions] = useState<string[]>([]);
@@ -86,18 +88,20 @@ export default function Mentors() {
     setPageMeta(PAGE_META.mentors);
   }, []);
 
-  // URL 파라미터에서 상담 유형 필터 읽기
+  // URL 파라미터에서 상담 유형 필터 읽기 - 문자열 의존성으로 무한 루프 방지
   useEffect(() => {
-    const typesParam = searchParams.get('types');
-    if (typesParam) {
-      const types = typesParam.split(',').map(t => t.trim());
+    if (typesParamStr) {
+      const types = typesParamStr.split(',').map(t => t.trim());
       const mappedTypes = types.map(type => {
         const consultationType = CONSULTATION_TYPES.find(ct => ct.label === type);
         return consultationType ? consultationType.value : null;
       }).filter(Boolean) as string[];
-      setSelectedConsultationTypes(mappedTypes);
+      setSelectedConsultationTypes(prev =>
+        JSON.stringify(prev) === JSON.stringify(mappedTypes) ? prev : mappedTypes
+      );
     }
-  }, [searchParams]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [typesParamStr]);
 
   const handleSearch = () => {
     // 최소 2글자 이상일 때만 검색
