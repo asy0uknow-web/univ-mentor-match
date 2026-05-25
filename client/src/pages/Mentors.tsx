@@ -65,22 +65,20 @@ export default function Mentors() {
   const [showAiResults, setShowAiResults] = useState(false);
   const [aiSearchQuery, setAiSearchQuery] = useState("");
   const [isAiSearchLoading, setIsAiSearchLoading] = useState(false);
-  const [aiRecommendedResults, setAiRecommendedResults] = useState<any[]>([]);
 
-  // AI 검색 쿼리 (버튼 클릭 시만 실패)
-  const { data: aiSearchQueryData = [] } = trpc.aiMatching.performNaturalLanguageSearch.useQuery(
+  // AI 버튼 검색 쿼리 (버튼 클릭 시만 활성화)
+  const { data: aiSearchQueryData = [], isFetching: isAiFetching } = trpc.aiMatching.performNaturalLanguageSearch.useQuery(
     { query: aiSearchQuery, limit: 20 },
     { enabled: !!aiSearchQuery && aiSearchQuery.length > 0 }
   );
 
-  // AI 검색 결과 업데이트 (0건 포함 처리) - aiSearchQueryData 변경 시에만 실행
+  // isAiFetching이 false로 바뀔 때(=쿼리 완료) 로딩 해제
   useEffect(() => {
-    if (aiSearchQueryData !== undefined) {
-      setAiRecommendedResults(aiSearchQueryData);
+    if (!isAiFetching && isAiSearchLoading) {
       setIsAiSearchLoading(false);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [aiSearchQueryData]);
+  }, [isAiFetching]);
 
 
 
@@ -218,8 +216,7 @@ export default function Mentors() {
     limit: 20,
   });
 
-  // AI 매칭 검색 쿼리 (기존 검색창용 - 디바운싱 1000ms)
-  // 최소 2글자 이상을 만족하는 경우만 검색
+  // AI 매칭 검색 쿼리 (기존 검색창 디바운스용)
   const { data: aiSearchResults = [] } = trpc.aiMatching.performNaturalLanguageSearch.useQuery(
     { query: debouncedSearch, limit: 20 },
     { enabled: !!debouncedSearch && debouncedSearch.length >= 2 }
@@ -245,7 +242,6 @@ export default function Mentors() {
       return;
     }
     setIsAiSearchLoading(true);
-    setAiRecommendedResults([]);
     setShowAiResults(true);
     setAiSearchQuery(aiSearchTerm);
   };
@@ -262,7 +258,7 @@ export default function Mentors() {
 
     // AI 버튼 검색 결과가 있으면 최우선 사용 (0건 포함)
     if (showAiResults) {
-      result = aiRecommendedResults;
+      result = aiSearchQueryData;
     } else if (debouncedSearch && aiSearchResults.length > 0) {
       result = aiSearchResults;
     } else if (debouncedSearch) {
@@ -306,7 +302,7 @@ export default function Mentors() {
     }
 
     return sorted;
-  }, [mentors, debouncedSearch, selectedMajors, selectedRegions, selectedConsultationTypes, sortBy, showAiResults, aiRecommendedResults]);
+  }, [mentors, debouncedSearch, selectedMajors, selectedRegions, selectedConsultationTypes, sortBy, showAiResults, aiSearchQueryData]);
 
 
   return (
@@ -423,7 +419,7 @@ export default function Mentors() {
                   className="flex-1 bg-transparent text-xs sm:text-sm text-[var(--color-text-primary)] placeholder-[var(--color-text-secondary)] focus:outline-none py-1"
                 />
                 {aiSearchTerm && (
-                  <button onClick={() => { setAiSearchTerm(""); setAiSearchQuery(""); setAiRecommendedResults([]); }} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]">
+                  <button onClick={() => { setAiSearchTerm(""); setAiSearchQuery(""); setShowAiResults(false); }} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]">
                     <X className="h-4 w-4" />
                   </button>
                 )}
@@ -443,8 +439,8 @@ export default function Mentors() {
             </div>
             {showAiResults && !isAiSearchLoading && (
               <p className="text-xs text-[var(--brand-primary-600)] mt-2 font-medium">
-                {aiRecommendedResults.length > 0
-                  ? `✨ AI가 ${aiRecommendedResults.length}명의 멘토를 추천했습니다`
+                {aiSearchQueryData.length > 0
+                  ? `✨ AI가 ${aiSearchQueryData.length}명의 멘토를 추천했습니다`
                   : "😔 조건에 맞는 멘토를 찾지 못했습니다. 다른 키워드로 검색해보세요"}
               </p>
             )}
@@ -703,15 +699,15 @@ export default function Mentors() {
               <Sparkles className="w-6 h-6 text-[var(--brand-primary-500)]" />
               <h2 className="text-2xl sm:text-3xl font-bold text-[var(--color-text-primary)]">
                 {showAiResults
-                  ? aiRecommendedResults.length > 0
-                    ? `✨ AI 추천 결과 (${aiRecommendedResults.length}명)`
+                  ? aiSearchQueryData.length > 0
+                    ? `✨ AI 추천 결과 (${aiSearchQueryData.length}명)`
                     : isAiSearchLoading ? "AI가 멘토를 찾는 중..." : "검색 결과 없음"
                   : "지금 가장 인기있는 추천멘토들을 만나보세요"}
               </h2>
             </div>
             <p className="text-[var(--color-text-secondary)] text-sm sm:text-base mb-6">
               {showAiResults
-                ? aiRecommendedResults.length > 0
+                ? aiSearchQueryData.length > 0
                   ? `"${aiSearchQuery}" 검색 결과입니다`
                   : isAiSearchLoading ? "잠시만 기다려주세요" : `"${aiSearchQuery}"에 맞는 멘토가 없습니다`
                 : "높은 평점과 많은 상담 경험을 가진 멘토들을 추천해드립니다"}
@@ -740,7 +736,7 @@ export default function Mentors() {
                   <p className="text-[var(--color-text-primary)] font-semibold text-base mb-2">"{aiSearchQuery}"에 맞는 멘토를 찾지 못했습니다</p>
                   <p className="text-[var(--color-text-secondary)] text-sm">다른 키워드로 다시 검색해보세요</p>
                   <button
-                    onClick={() => { setShowAiResults(false); setAiSearchTerm(""); setAiSearchQuery(""); setAiRecommendedResults([]); }}
+                    onClick={() => { setShowAiResults(false); setAiSearchTerm(""); setAiSearchQuery(""); }}
                     className="mt-4 px-4 py-2 text-sm text-[var(--brand-primary-600)] border border-[var(--brand-primary-300)] rounded-lg hover:bg-[var(--brand-primary-50)] transition-colors"
                   >
                     전체 멘토 보기

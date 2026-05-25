@@ -22,6 +22,9 @@ export const LazyImage = memo(function LazyImage({
   const [imageSrc, setImageSrc] = useState<string>(placeholder || "");
   const [isLoaded, setIsLoaded] = useState(false);
   const imgRef = useRef<HTMLImageElement>(null);
+  // onLoad를 ref로 저장하여 렌더마다 새 함수 참조로 인한 무한 루프 방지
+  const onLoadRef = useRef(onLoad);
+  onLoadRef.current = onLoad;
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -32,7 +35,7 @@ export const LazyImage = memo(function LazyImage({
             img.src = src;
             img.onload = () => {
               setIsLoaded(true);
-              onLoad?.();
+              onLoadRef.current?.();
             };
             observer.unobserve(img);
           }
@@ -52,7 +55,9 @@ export const LazyImage = memo(function LazyImage({
         observer.unobserve(imgRef.current);
       }
     };
-  }, [src, onLoad]);
+  // onLoad를 의존성에서 제거 - ref로 관리하므로 src 변경 시에만 재실행
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [src]);
 
   return (
     <img
