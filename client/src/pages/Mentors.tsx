@@ -71,12 +71,13 @@ export default function Mentors() {
     { enabled: !!aiSearchQuery && aiSearchQuery.length > 0 }
   );
 
-  // AI 검색 결과 업데이트
+  // AI 검색 결과 업데이트 (0건 포함 처리)
   useEffect(() => {
-    if (aiSearchQueryData && aiSearchQueryData.length > 0) {
+    if (aiSearchQuery && aiSearchQueryData !== undefined) {
       setAiRecommendedResults(aiSearchQueryData);
+      setIsAiSearchLoading(false);
     }
-  }, [aiSearchQueryData]);
+  }, [aiSearchQueryData, aiSearchQuery]);
 
 
 
@@ -233,27 +234,15 @@ export default function Mentors() {
   }, [searchTerm]);
 
   // AI 추천 검색 (버튼 클릭 시에만)
-  const handleAiSearch = async () => {
-    // 최소 2글자 이상 제한
+  const handleAiSearch = () => {
     if (!aiSearchTerm.trim() || aiSearchTerm.length < 2) {
       alert("최소 2글자 이상 입력해주세요");
       return;
     }
-    
     setIsAiSearchLoading(true);
-    setAiSearchQuery(aiSearchTerm);
+    setAiRecommendedResults([]);
     setShowAiResults(true);
-    
-    try {
-      // 버튼 클릭 시 검색 실패
-      setAiSearchQuery(aiSearchTerm);
-      // useQuery가 자동으로 검색 실패
-    } catch (error) {
-      console.error("AI search error:", error);
-      setAiRecommendedResults([]);
-    } finally {
-      setIsAiSearchLoading(false);
-    }
+    setAiSearchQuery(aiSearchTerm);
   };
   const handleAiSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
@@ -266,8 +255,8 @@ export default function Mentors() {
   const filteredMentors = useMemo(() => {
     let result = mentors;
 
-    // AI 버튼 검색 결과가 있으면 최우선 사용
-    if (showAiResults && aiRecommendedResults.length > 0) {
+    // AI 버튼 검색 결과가 있으면 최우선 사용 (0건 포함)
+    if (showAiResults) {
       result = aiRecommendedResults;
     } else if (debouncedSearch && aiSearchResults.length > 0) {
       result = aiSearchResults;
@@ -447,9 +436,11 @@ export default function Mentors() {
                 AI 검색
               </button>
             </div>
-            {aiRecommendedResults.length > 0 && (
+            {showAiResults && !isAiSearchLoading && (
               <p className="text-xs text-[var(--brand-primary-600)] mt-2 font-medium">
-                ✨ AI가 {aiRecommendedResults.length}명의 멘토를 추천했습니다
+                {aiRecommendedResults.length > 0
+                  ? `✨ AI가 ${aiRecommendedResults.length}명의 멘토를 추천했습니다`
+                  : "😔 조건에 맞는 멘토를 찾지 못했습니다. 다른 키워드로 검색해보세요"}
               </p>
             )}
           </div>
@@ -706,14 +697,18 @@ export default function Mentors() {
             <div className="flex items-center gap-2 mb-4">
               <Sparkles className="w-6 h-6 text-[var(--brand-primary-500)]" />
               <h2 className="text-2xl sm:text-3xl font-bold text-[var(--color-text-primary)]">
-                {showAiResults && aiRecommendedResults.length > 0
-                  ? `✨ AI 추천 결과 (${aiRecommendedResults.length}명)`
+                {showAiResults
+                  ? aiRecommendedResults.length > 0
+                    ? `✨ AI 추천 결과 (${aiRecommendedResults.length}명)`
+                    : isAiSearchLoading ? "AI가 멘토를 찾는 중..." : "검색 결과 없음"
                   : "지금 가장 인기있는 추천멘토들을 만나보세요"}
               </h2>
             </div>
             <p className="text-[var(--color-text-secondary)] text-sm sm:text-base mb-6">
-              {showAiResults && aiRecommendedResults.length > 0
-                ? `"${aiSearchQuery}" 검색 결과입니다`
+              {showAiResults
+                ? aiRecommendedResults.length > 0
+                  ? `"${aiSearchQuery}" 검색 결과입니다`
+                  : isAiSearchLoading ? "잠시만 기다려주세요" : `"${aiSearchQuery}"에 맞는 멘토가 없습니다`
                 : "높은 평점과 많은 상담 경험을 가진 멘토들을 추천해드립니다"}
             </p>
             <Link href="/recommended-mentors" className="inline-block">
@@ -727,13 +722,28 @@ export default function Mentors() {
 
         {/* 멘토 목록 */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-          {isLoading ? (
-            <div className="flex justify-center items-center py-12">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--brand-secondary-600)]"></div>
+          {isLoading || (showAiResults && isAiSearchLoading) ? (
+            <div className="flex flex-col justify-center items-center py-16 gap-3">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--brand-primary-500)]"></div>
+              {showAiResults && <p className="text-sm text-[var(--color-text-secondary)]">✨ AI가 적합한 멘토를 찾고 있습니다...</p>}
             </div>
           ) : filteredMentors.length === 0 ? (
-            <div className="text-center py-12">
-              <p className="text-[var(--color-text-secondary)] text-sm sm:text-base">검색 결과가 없습니다</p>
+            <div className="text-center py-16">
+              {showAiResults ? (
+                <>
+                  <p className="text-4xl mb-4">😔</p>
+                  <p className="text-[var(--color-text-primary)] font-semibold text-base mb-2">"{aiSearchQuery}"에 맞는 멘토를 찾지 못했습니다</p>
+                  <p className="text-[var(--color-text-secondary)] text-sm">다른 키워드로 다시 검색해보세요</p>
+                  <button
+                    onClick={() => { setShowAiResults(false); setAiSearchTerm(""); setAiSearchQuery(""); setAiRecommendedResults([]); }}
+                    className="mt-4 px-4 py-2 text-sm text-[var(--brand-primary-600)] border border-[var(--brand-primary-300)] rounded-lg hover:bg-[var(--brand-primary-50)] transition-colors"
+                  >
+                    전체 멘토 보기
+                  </button>
+                </>
+              ) : (
+                <p className="text-[var(--color-text-secondary)] text-sm sm:text-base">검색 결과가 없습니다</p>
+              )}
             </div>
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
