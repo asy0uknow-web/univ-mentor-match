@@ -66,15 +66,6 @@ export default function Home() {
   const { user, isAuthenticated, loading } = useAuth({ redirectOnUnauthenticated: false });
   const [, navigate] = useLocation();
   
-  // 디버그: 인증 상태 로깅
-  useEffect(() => {
-    console.log('[Home] Auth state:', {
-      isAuthenticated,
-      loading,
-      user: user ? { id: user.id, name: user.name, userType: user.userType } : null,
-    });
-  }, [isAuthenticated, loading, user]);
-  
   // 프로필 완성 상태 조회
   const { data: verificationStatus } = trpc.verification.getProfileVerificationStatus.useQuery(
     undefined,
@@ -90,12 +81,10 @@ export default function Home() {
     if (loading) return;
     // 비로그인 사용자는 리다이렉트하지 않음 (user.id로 명확히 확인)
     if (!user?.id) {
-      console.log('[Home] 비로그인 사용자 - 리다이렉트 안함');
       return;
     }
     // 프로필 미완성 사용자만 리다이렉트
     if (!user.name || !user.userType) {
-      console.log('[Home] 프로필 미완성 - 리다이렉트:', { name: user.name, userType: user.userType });
       navigate("/complete-profile", { replace: true });
     }
   }, [user, navigate, loading]);
@@ -124,7 +113,7 @@ export default function Home() {
         role="banner"
         className="relative min-h-[85vh] py-12 sm:py-20 md:py-32 overflow-hidden flex items-center w-screen -mx-[calc((100vw-100%)/2)] bg-gradient-to-br from-background via-background to-muted" 
         style={{
-          backgroundImage: 'url(/manus-storage/hero-background_2745ac4b.png)',
+          backgroundImage: 'url(/manus-storage/hero-background_468e4d48.png)',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundAttachment: 'fixed',
