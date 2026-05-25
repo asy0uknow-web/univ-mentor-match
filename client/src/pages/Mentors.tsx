@@ -71,13 +71,14 @@ export default function Mentors() {
     { enabled: !!aiSearchQuery && aiSearchQuery.length > 0 }
   );
 
-  // AI 검색 결과 업데이트 (0건 포함 처리)
+  // AI 검색 결과 업데이트 (0건 포함 처리) - aiSearchQueryData 변경 시에만 실행
   useEffect(() => {
-    if (aiSearchQuery && aiSearchQueryData !== undefined) {
+    if (aiSearchQueryData !== undefined) {
       setAiRecommendedResults(aiSearchQueryData);
       setIsAiSearchLoading(false);
     }
-  }, [aiSearchQueryData, aiSearchQuery]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [aiSearchQueryData]);
 
 
 
