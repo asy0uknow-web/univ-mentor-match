@@ -266,8 +266,10 @@ export default function Mentors() {
   const filteredMentors = useMemo(() => {
     let result = mentors;
 
-    // AI 매칭 검색 결과가 있으면 우선 사용
-    if (debouncedSearch && aiSearchResults.length > 0) {
+    // AI 버튼 검색 결과가 있으면 최우선 사용
+    if (showAiResults && aiRecommendedResults.length > 0) {
+      result = aiRecommendedResults;
+    } else if (debouncedSearch && aiSearchResults.length > 0) {
       result = aiSearchResults;
     } else if (debouncedSearch) {
       // AI 매칭 검색 결과가 없으면 기존 키워드 필터링 사용
@@ -310,7 +312,7 @@ export default function Mentors() {
     }
 
     return sorted;
-  }, [mentors, debouncedSearch, selectedMajors, selectedRegions, selectedConsultationTypes, sortBy]);
+  }, [mentors, debouncedSearch, selectedMajors, selectedRegions, selectedConsultationTypes, sortBy, showAiResults, aiRecommendedResults]);
 
 
   return (
@@ -703,10 +705,16 @@ export default function Mentors() {
           <div className="mb-12">
             <div className="flex items-center gap-2 mb-4">
               <Sparkles className="w-6 h-6 text-[var(--brand-primary-500)]" />
-              <h2 className="text-2xl sm:text-3xl font-bold text-[var(--color-text-primary)]">지금 가장 인기있는 추천멘토들을 만나보세요</h2>
+              <h2 className="text-2xl sm:text-3xl font-bold text-[var(--color-text-primary)]">
+                {showAiResults && aiRecommendedResults.length > 0
+                  ? `✨ AI 추천 결과 (${aiRecommendedResults.length}명)`
+                  : "지금 가장 인기있는 추천멘토들을 만나보세요"}
+              </h2>
             </div>
             <p className="text-[var(--color-text-secondary)] text-sm sm:text-base mb-6">
-              높은 평점과 많은 상담 경험을 가진 멘토들을 추천해드립니다
+              {showAiResults && aiRecommendedResults.length > 0
+                ? `"${aiSearchQuery}" 검색 결과입니다`
+                : "높은 평점과 많은 상담 경험을 가진 멘토들을 추천해드립니다"}
             </p>
             <Link href="/recommended-mentors" className="inline-block">
               <Button className="bg-[var(--color-cta-primary-bg)] hover:bg-[var(--color-cta-primary-bg-hover)] text-white">
