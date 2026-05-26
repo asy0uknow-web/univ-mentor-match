@@ -792,6 +792,37 @@ export async function approveMentorVerification(verificationId: number) {
       eq(mentorProfiles.isDeleted, false)
     )
   );
+
+  // 임베딩 자동 생성: 멘토 승인 시 AI 검색에 사용할 벡터 생성
+  // 실패해도 승인 자체는 정상 완료되도록 try-catch로 감싸기
+  try {
+    const approvedProfile = await db
+      .select()
+      .from(mentorProfiles)
+      .where(
+        and(
+          eq(mentorProfiles.userId, verification[0].userId),
+          eq(mentorProfiles.isDeleted, false)
+        )
+      )
+      .limit(1);
+
+    if (approvedProfile.length > 0) {
+      const { upsertMentorEmbedding } = await import("./embedding-service");
+      await upsertMentorEmbedding({
+        mentorProfileId: approvedProfile[0].id,
+        university: approvedProfile[0].university || "",
+        major: approvedProfile[0].major || "",
+        field: approvedProfile[0].field || "",
+        selfIntroduction: approvedProfile[0].bio || "",
+        consultationTypes: [],
+      });
+      console.log(`[Embedding] Auto-generated embedding for mentorProfileId=${approvedProfile[0].id}`);
+    }
+  } catch (embeddingError) {
+    // 임베딩 생성 실패는 시스템 로그만 남기고 승인 프로세스에는 영향 없음
+    console.error("[Embedding] Failed to auto-generate embedding after approval:", embeddingError);
+  }
 }
 
 export async function rejectMentorVerification(verificationId: number, adminNotes: string) {

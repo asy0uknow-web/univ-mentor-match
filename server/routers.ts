@@ -67,7 +67,8 @@ import { getMonthlyConsultationStats, getOverallConsultationStats, getLast12Mont
 import { createQuestion, getQuestionById, getQuestions, updateQuestion, deleteQuestion, createAnswer, getAnswersByQuestionId, getAnswerById, updateAnswer, deleteAnswer, createAnswerReply, getRepliesByAnswerId, getReplyById, updateReply, deleteReply, getQuestionDetail, acceptAnswer, toggleAnswerLike, getUserAnswerLikes, notifyQuestionAuthorOnAnswer, getMyQuestions, getMyAnswers } from "./qna";
 import { getColumnsList, getColumnById, createColumn, updateColumn, deleteColumn, toggleColumnLike, getColumnComments, createComment, updateComment, deleteComment, getMyColumns, incrementViewCount } from "./columns";
 import { hybridSearch } from "./hybrid-search";
-import { mentorColumns, emailVerificationCodes, mentorGallery, messages, notifications, bookings, reviews, mentorProfiles, mentorVerifications, users, bugReports, mentorConsultationTypes, consultationProposals, studentProfiles, studentInterests, mentorRecommendations, mentorSearchCorpus } from "../drizzle/schema";
+import { searchMentorsByEmbedding, upsertMentorEmbedding } from "./embedding-service";
+import { mentorColumns, emailVerificationCodes, mentorGallery, messages, notifications, bookings, reviews, mentorProfiles, mentorVerifications, users, userProfiles, bugReports, mentorConsultationTypes, consultationProposals, studentProfiles, studentInterests, mentorRecommendations, mentorSearchCorpus } from "../drizzle/schema";
 
 import { eq, and, desc, isNull, eq as drizzleEq, or as drizzleOr, desc as drizzleDesc, count } from "drizzle-orm";
 
@@ -1646,6 +1647,84 @@ getTopMentors: publicProcedure
         } catch (error) {
           console.error("[AI Search] Error:", error);
           throw new Error("Failed to perform AI search");
+        }
+      }),
+
+    // ─────────────────────────────────────────────────────────────
+    // 임베딩 기반 AI 자연어 검색 (Phase 2)
+    // 기존 search(키워드 매칭)와 독립적으로 동작 - 문제 시 이 블록만 제거
+    // ─────────────────────────────────────────────────────────────
+    embeddingSearch: publicProcedure
+      .input(z.object({
+        query: z.string().min(1),
+        limit: z.number().default(10),
+        threshold: z.number().default(0.25),
+      }))
+      .query(async ({ input }) => {
+        try {
+          const db = await getDb();
+          if (!db) throw new Error("Database not available");
+
+          // 임베딩 유사도 검색 (searchMentorsByEmbedding)
+          const embeddingResults = await searchMentorsByEmbedding({
+            query: input.query,
+            limit: input.limit,
+            threshold: input.threshold,
+          });
+
+          if (embeddingResults.length === 0) return [];
+
+          // mentorProfileId 목록으로 멘토 상세 정보 조회 (userProfiles는 leftJoin)
+          const mentorRows = await db
+            .select({
+              profile: mentorProfiles,
+              user: {
+                id: users.id,
+                name: users.name,
+                email: users.email,
+              },
+              userProfile: {
+                profileImageUrl: userProfiles.profileImageUrl,
+              },
+            })
+            .from(mentorProfiles)
+            .innerJoin(users, eq(mentorProfiles.userId, users.id))
+            .leftJoin(userProfiles, eq(userProfiles.userId, users.id))
+            .where(
+              and(
+                eq(mentorProfiles.verificationStatus, "approved"),
+                eq(mentorProfiles.isDeleted, false)
+              )
+            );
+
+          // 유사도 점수와 멘토 정보 병합 후 정렬
+          const resultMap = new Map<number, number>(
+            embeddingResults.map((r) => [r.mentorProfileId, r.similarity])
+          );
+          const merged = mentorRows
+            .filter((row) => resultMap.has(row.profile.id))
+            .map((row) => ({
+              id: row.profile.id,
+              uuid: row.profile.uuid,
+              name: row.user.name,
+              email: row.user.email,
+              profileImageUrl: row.userProfile?.profileImageUrl ?? null,
+              university: row.profile.university || "",
+              major: row.profile.major || "",
+              field: row.profile.field || "",
+              bio: row.profile.bio || "",
+              averageRating: row.profile.averageRating || 0,
+              reviewCount: row.profile.reviewCount || 0,
+              verificationStatus: row.profile.verificationStatus,
+              similarity: resultMap.get(row.profile.id) as number,
+            }))
+            .sort((a, b) => b.similarity - a.similarity);
+
+          console.log(`[EmbeddingSearch] query="${input.query}" → ${merged.length}명 반환`);
+          return merged;
+        } catch (error) {
+          console.error("[EmbeddingSearch] Error:", error);
+          return []; // 오류 시 빈 배열 반환 (기존 검색에 영향 없음)
         }
       }),
   }),

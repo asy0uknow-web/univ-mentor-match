@@ -196,3 +196,145 @@ export class PineconeVectorDB implements VectorDBClient {
 
 // 기본 벡터 DB 클라이언트 (개발용)
 export const vectorDB: VectorDBClient = new InMemoryVectorDB();
+
+// ─────────────────────────────────────────────────────────────
+// 구조화 문서 생성 및 DB 기반 임베딩 저장/검색 (Phase 2 AI 검색)
+// 기존 키워드 검색(performNaturalLanguageSearch)과 독립적으로 동작
+// ─────────────────────────────────────────────────────────────
+
+/**
+ * 멘토 프로필 데이터를 AI 임베딩 모델이 최적의 의미(Semantic)를 파악할 수 있도록
+ * 구조화된 텍스트 문서로 변환합니다.
+ */
+export function generateMentorDocument(params: {
+  university: string;
+  major: string;
+  field: string;
+  selfIntroduction: string;
+  consultationTypes: string[];
+}): string {
+  const consultationTypeKorean: Record<string, string> = {
+    career_counseling: "진로 상담",
+    university_tour: "대학 탐방",
+    resume_consulting: "자기소개서 첨삭",
+    academic_management: "학업 관리",
+  };
+  const consultationTypesStr = params.consultationTypes
+    .map((t) => consultationTypeKorean[t] ?? t)
+    .join(", ");
+
+  return `[멘토 정보 카테고리별 요약]
+- 소속 대학: ${params.university.trim()}
+- 전공 학과: ${params.major.trim()}
+- 전문 분야: ${params.field.trim()}
+- 상담 유형: ${consultationTypesStr}
+
+[멘토 상세 자기소개 및 핵심 키워드]
+${params.selfIntroduction.trim()}`.trim();
+}
+
+/**
+ * 멘토 프로필 임베딩을 생성하여 mentor_embeddings 테이블에 저장(upsert)합니다.
+ * 기존 임베딩이 있으면 덮어씁니다.
+ */
+export async function upsertMentorEmbedding(params: {
+  mentorProfileId: number;
+  university: string;
+  major: string;
+  field: string;
+  selfIntroduction: string;
+  consultationTypes: string[];
+}): Promise<void> {
+  const { getDb } = await import("./db.js");
+  const { mentorEmbeddings } = await import("../drizzle/schema.js");
+  const { eq } = await import("drizzle-orm");
+
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  const document = generateMentorDocument(params);
+  const vector = await generateEmbedding(document);
+  const embeddingJson = JSON.stringify(vector);
+
+  // upsert: 이미 있으면 업데이트, 없으면 삽입
+  const existing = await db
+    .select({ id: mentorEmbeddings.id })
+    .from(mentorEmbeddings)
+    .where(eq(mentorEmbeddings.mentorId, params.mentorProfileId))
+    .limit(1);
+
+  if (existing.length > 0) {
+    await db
+      .update(mentorEmbeddings)
+      .set({ embedding: embeddingJson, modelVersion: "text-embedding-3-small" })
+      .where(eq(mentorEmbeddings.mentorId, params.mentorProfileId));
+  } else {
+    await db.insert(mentorEmbeddings).values({
+      mentorId: params.mentorProfileId,
+      embedding: embeddingJson,
+      modelVersion: "text-embedding-3-small",
+    });
+  }
+  console.log(`[Embedding] Upserted embedding for mentorProfileId=${params.mentorProfileId}`);
+}
+
+/**
+ * 자연어 검색어로 유사 멘토를 검색합니다.
+ * DB에 저장된 임베딩과 코사인 유사도를 계산하여 임계값 이상인 멘토를 반환합니다.
+ *
+ * @param query 사용자 검색어
+ * @param limit 최대 반환 수 (기본 10)
+ * @param threshold 유사도 임계값 (기본 0.25)
+ */
+export async function searchMentorsByEmbedding(params: {
+  query: string;
+  limit?: number;
+  threshold?: number;
+}): Promise<Array<{ mentorProfileId: number; similarity: number }>> {
+  const limit = Math.min(params.limit ?? 10, 50);
+  const threshold = params.threshold ?? 0.25;
+
+  const { getDb } = await import("./db.js");
+  const { mentorEmbeddings, mentorProfiles } = await import("../drizzle/schema.js");
+  const { eq, and } = await import("drizzle-orm");
+
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  // 검색어 임베딩 생성 (쿼리도 동일한 구조화 형식으로 감싸기)
+  const queryDocument = `[검색 요청]\n${params.query.trim()}`;
+  const queryVector = await generateEmbedding(queryDocument);
+
+  // 승인된 멘토의 임베딩만 조회
+  const rows = await db
+    .select({
+      mentorId: mentorEmbeddings.mentorId,
+      embedding: mentorEmbeddings.embedding,
+    })
+    .from(mentorEmbeddings)
+    .innerJoin(mentorProfiles, eq(mentorProfiles.id, mentorEmbeddings.mentorId))
+    .where(
+      and(
+        eq(mentorProfiles.verificationStatus, "approved"),
+        eq(mentorProfiles.isDeleted, false)
+      )
+    );
+
+  // 코사인 유사도 계산 및 임계값 필터링
+  const results: Array<{ mentorProfileId: number; similarity: number }> = [];
+  for (const row of rows) {
+    try {
+      const storedVector: number[] = JSON.parse(row.embedding);
+      const similarity = cosineSimilarity(queryVector, storedVector);
+      if (similarity >= threshold) {
+        results.push({ mentorProfileId: row.mentorId, similarity });
+      }
+    } catch {
+      // 파싱 오류 시 해당 멘토 스킵
+    }
+  }
+
+  // 유사도 내림차순 정렬 후 상위 limit개 반환
+  results.sort((a, b) => b.similarity - a.similarity);
+  return results.slice(0, limit);
+}

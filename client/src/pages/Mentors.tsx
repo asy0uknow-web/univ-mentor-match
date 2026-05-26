@@ -66,8 +66,8 @@ export default function Mentors() {
   const [aiSearchQuery, setAiSearchQuery] = useState("");
   const [isAiSearchLoading, setIsAiSearchLoading] = useState(false);
 
-  // AI 버튼 검색 쿼리 (버튼 클릭 시만 활성화)
-  const { data: aiSearchQueryData = [], isFetching: isAiFetching } = trpc.aiMatching.performNaturalLanguageSearch.useQuery(
+  // AI 버튼 검색 쿼리 (버튼 클릭 시만 활성화) - 임베딩 기반 AI 검색 사용
+  const { data: aiSearchQueryData = [], isFetching: isAiFetching } = trpc.aiSearch.embeddingSearch.useQuery(
     { query: aiSearchQuery, limit: 20 },
     { enabled: !!aiSearchQuery && aiSearchQuery.length > 0 }
   );
@@ -216,8 +216,8 @@ export default function Mentors() {
     limit: 20,
   });
 
-  // AI 매칭 검색 쿼리 (기존 검색창 디바운스용)
-  const { data: aiSearchResults = [] } = trpc.aiMatching.performNaturalLanguageSearch.useQuery(
+  // AI 매칭 검색 쿼리 (기존 검색창 디바운스용) - 임베딩 기반 AI 검색 사용
+  const { data: aiSearchResults = [] } = trpc.aiSearch.embeddingSearch.useQuery(
     { query: debouncedSearch, limit: 20 },
     { enabled: !!debouncedSearch && debouncedSearch.length >= 2 }
   );
