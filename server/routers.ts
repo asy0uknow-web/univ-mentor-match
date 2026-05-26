@@ -83,6 +83,43 @@ function adminProcedure(ctx: any) {
   return true;
 }
 
+// ── 검색 쿼리 유효성 검사: 욕설/무관한 입력을 Gemini로 판단 ──
+async function validateSearchQuery(query: string): Promise<boolean> {
+  try {
+    const trimmed = query.trim();
+    if (trimmed.length < 2) return false;
+
+    const { GoogleGenAI } = await import("@google/genai");
+    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+    const response = await ai.models.generateContent({
+      model: "gemini-2.5-flash-lite",
+      contents: `당신은 대학 멘토 매칭 서비스의 검색 필터입니다.
+사용자가 입력한 텍스트가 "대학 멘토를 찾기 위한 의미 있는 검색어"인지 판단하세요.
+
+[통과 기준] 다음 중 하나라도 해당하면 YES:
+- 대학교 이름, 학과, 전공 관련
+- 진로, 취업, 입시, 학업 관련
+- 자기소개서, 면접, 스펙 관련
+- 상담, 멘토링, 조언 요청
+- 특정 분야(공학, 의학, 경영 등) 관련
+
+[차단 기준] 다음 중 하나라도 해당하면 NO:
+- 욕설, 비속어, 혁오 표현 (예: 씨발, 개새끼, 존나 등)
+- 음식, 날씨, 게임 등 멘토링과 전혀 무관한 내용
+- 의미 없는 반복 문자 (ㄱㄱㄱ, ㅅㅅㅅ 등)
+- 스팸성 문자열
+
+입력: "${trimmed}"
+
+YES 또는 NO 중 하나만 답하세요.`,
+    });
+    const answer = response.text?.trim().toUpperCase() ?? "NO";
+    return answer.startsWith("YES");
+  } catch {
+    return true; // 판단 실패 시 통과 (검색 기능 보존 우선)
+  }
+}
+
 export const appRouter = router({
   system: systemRouter,
   auth: router({
@@ -1658,12 +1695,19 @@ getTopMentors: publicProcedure
       .input(z.object({
         query: z.string().min(1),
         limit: z.number().default(10),
-        threshold: z.number().default(0.25),
+        threshold: z.number().default(0.60),
       }))
       .query(async ({ input }) => {
         try {
           const db = await getDb();
           if (!db) throw new Error("Database not available");
+
+          // ── 쿼리 유효성 검사: 욕설/무의미 입력 조기 차단 ──
+          const isValidQuery = await validateSearchQuery(input.query);
+          if (!isValidQuery) {
+            console.log(`[EmbeddingSearch] 유효하지 않은 쿼리 차단: "${input.query}"`);
+            return [];
+          }
 
           // 임베딩 유사도 검색 (searchMentorsByEmbedding)
           const embeddingResults = await searchMentorsByEmbedding({
