@@ -1,70 +1,73 @@
-import OpenAI from "openai";
+import { GoogleGenAI } from "@google/genai";
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+
+// 임베딩 모델 설정
+const EMBEDDING_MODEL = "gemini-embedding-001";
+const EMBEDDING_DIMENSIONS = 1536; // 768 / 1536 / 3072 중 선택 (기본 3072)
+const MODEL_VERSION = "gemini-embedding-001-1536d";
 
 /**
- * 텍스트를 벡터 임베딩으로 변환합니다
- * text-embedding-3-small 모델 사용
+ * 텍스트를 벡터 임베딩으로 변환합니다.
+ * gemini-embedding-001 모델, 1536차원 출력
+ *
  * @param text 임베딩할 텍스트
- * @returns 벡터 배열
+ * @param taskType 태스크 유형 (기본: RETRIEVAL_DOCUMENT)
+ * @returns 1536차원 벡터 배열
  */
-export async function generateEmbedding(text: string): Promise<number[]> {
+export async function generateEmbedding(
+  text: string,
+  taskType: "RETRIEVAL_DOCUMENT" | "RETRIEVAL_QUERY" | "SEMANTIC_SIMILARITY" | "CLASSIFICATION" | "CLUSTERING" = "RETRIEVAL_DOCUMENT"
+): Promise<number[]> {
   try {
-    const response = await openai.embeddings.create({
-      model: "text-embedding-3-small",
-      input: text,
-      encoding_format: "float",
+    const response = await ai.models.embedContent({
+      model: EMBEDDING_MODEL,
+      contents: text,
+      config: {
+        taskType,
+        outputDimensionality: EMBEDDING_DIMENSIONS,
+      },
     });
 
-    if (!response.data || response.data.length === 0) {
-      throw new Error("No embedding returned from OpenAI");
+    const embeddings = response.embeddings;
+    if (!embeddings || embeddings.length === 0 || !embeddings[0].values) {
+      throw new Error("No embedding returned from Gemini");
     }
 
-    return response.data[0].embedding;
+    return embeddings[0].values;
   } catch (error) {
-    console.error("Error generating embedding:", error);
+    console.error("[Embedding] Error generating embedding:", error);
     throw error;
   }
 }
 
 /**
- * 여러 텍스트를 배치로 임베딩합니다
+ * 여러 텍스트를 순차적으로 임베딩합니다.
+ * (gemini-embedding-001은 배치 요청 시 단일 집계 벡터를 반환하므로 개별 처리)
+ *
  * @param texts 임베딩할 텍스트 배열
  * @returns 벡터 배열의 배열
  */
 export async function generateEmbeddingsBatch(texts: string[]): Promise<number[][]> {
-  try {
-    const response = await openai.embeddings.create({
-      model: "text-embedding-3-small",
-      input: texts,
-      encoding_format: "float",
-    });
-
-    if (!response.data) {
-      throw new Error("No embeddings returned from OpenAI");
-    }
-
-    // 응답 데이터를 인덱스 순서대로 정렬
-    return response.data
-      .sort((a, b) => a.index - b.index)
-      .map((item) => item.embedding);
-  } catch (error) {
-    console.error("Error generating embeddings batch:", error);
-    throw error;
+  const results: number[][] = [];
+  for (const text of texts) {
+    const vector = await generateEmbedding(text, "RETRIEVAL_DOCUMENT");
+    results.push(vector);
   }
+  return results;
 }
 
 /**
- * 두 벡터 간의 코사인 유사도를 계산합니다
+ * 두 벡터 간의 코사인 유사도를 계산합니다.
+ * gemini-embedding-001의 비-3072 차원 벡터는 정규화가 필요하므로 내부에서 처리합니다.
+ *
  * @param vectorA 첫 번째 벡터
  * @param vectorB 두 번째 벡터
- * @returns 유사도 점수 (0-1)
+ * @returns 유사도 점수 (0~1)
  */
 export function cosineSimilarity(vectorA: number[], vectorB: number[]): number {
   if (vectorA.length !== vectorB.length) {
-    throw new Error("Vectors must have the same dimension");
+    throw new Error(`Vector dimension mismatch: ${vectorA.length} vs ${vectorB.length}`);
   }
 
   let dotProduct = 0;
@@ -78,9 +81,7 @@ export function cosineSimilarity(vectorA: number[], vectorB: number[]): number {
   }
 
   const denominator = Math.sqrt(normA) * Math.sqrt(normB);
-  if (denominator === 0) {
-    return 0;
-  }
+  if (denominator === 0) return 0;
 
   return dotProduct / denominator;
 }
@@ -89,59 +90,42 @@ export function cosineSimilarity(vectorA: number[], vectorB: number[]): number {
  * 벡터 DB 인터페이스 (Pinecone/ChromaDB 통합용)
  */
 export interface VectorDBClient {
-  // 벡터 저장
-  upsert(id: string, vector: number[], metadata?: Record<string, any>): Promise<void>;
-  
-  // 벡터 검색
-  query(vector: number[], topK: number, filter?: Record<string, any>): Promise<QueryResult[]>;
-  
-  // 벡터 삭제
+  upsert(id: string, vector: number[], metadata?: Record<string, unknown>): Promise<void>;
+  query(vector: number[], topK: number, filter?: Record<string, unknown>): Promise<QueryResult[]>;
   delete(id: string): Promise<void>;
-  
-  // 벡터 업데이트
-  update(id: string, vector: number[], metadata?: Record<string, any>): Promise<void>;
+  update(id: string, vector: number[], metadata?: Record<string, unknown>): Promise<void>;
 }
 
 export interface QueryResult {
   id: string;
   score: number;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 /**
  * 메모리 기반 벡터 DB (개발/테스트용)
- * 실제 프로덕션에서는 Pinecone/ChromaDB 사용
  */
 export class InMemoryVectorDB implements VectorDBClient {
-  private vectors: Map<string, { vector: number[]; metadata?: Record<string, any> }> = new Map();
+  private vectors: Map<string, { vector: number[]; metadata?: Record<string, unknown> }> = new Map();
 
-  async upsert(id: string, vector: number[], metadata?: Record<string, any>): Promise<void> {
+  async upsert(id: string, vector: number[], metadata?: Record<string, unknown>): Promise<void> {
     this.vectors.set(id, { vector, metadata });
   }
 
-  async query(vector: number[], topK: number, filter?: Record<string, any>): Promise<QueryResult[]> {
+  async query(vector: number[], topK: number, filter?: Record<string, unknown>): Promise<QueryResult[]> {
     const results: QueryResult[] = [];
 
     this.vectors.forEach(({ vector: storedVector, metadata }, id) => {
-      // 필터 적용
       if (filter && metadata) {
-        let passFilter = true;
         for (const [key, value] of Object.entries(filter)) {
-          if (metadata[key] !== value) {
-            passFilter = false;
-            break;
-          }
+          if (metadata[key] !== value) return;
         }
-        if (!passFilter) return;
       }
-
       const score = cosineSimilarity(vector, storedVector);
       results.push({ id, score, metadata });
     });
 
-    // 점수 기준으로 정렬 (내림차순)
     results.sort((a, b) => b.score - a.score);
-
     return results.slice(0, topK);
   }
 
@@ -149,57 +133,18 @@ export class InMemoryVectorDB implements VectorDBClient {
     this.vectors.delete(id);
   }
 
-  async update(id: string, vector: number[], metadata?: Record<string, any>): Promise<void> {
+  async update(id: string, vector: number[], metadata?: Record<string, unknown>): Promise<void> {
     if (this.vectors.has(id)) {
       this.vectors.set(id, { vector, metadata });
     }
   }
 }
 
-/**
- * Pinecone 벡터 DB 클라이언트 (실제 구현은 pinecone-client 라이브러리 사용)
- * 현재는 인터페이스만 정의
- */
-export class PineconeVectorDB implements VectorDBClient {
-  private apiKey: string;
-  private environment: string;
-  private indexName: string;
-
-  constructor(apiKey: string, environment: string, indexName: string) {
-    this.apiKey = apiKey;
-    this.environment = environment;
-    this.indexName = indexName;
-    // Pinecone 클라이언트 초기화 (실제 구현 필요)
-  }
-
-  async upsert(id: string, vector: number[], metadata?: Record<string, any>): Promise<void> {
-    // Pinecone upsert 구현
-    console.log(`Upserting vector ${id} to Pinecone`);
-  }
-
-  async query(vector: number[], topK: number, filter?: Record<string, any>): Promise<QueryResult[]> {
-    // Pinecone query 구현
-    console.log(`Querying Pinecone with topK=${topK}`);
-    return [];
-  }
-
-  async delete(id: string): Promise<void> {
-    // Pinecone delete 구현
-    console.log(`Deleting vector ${id} from Pinecone`);
-  }
-
-  async update(id: string, vector: number[], metadata?: Record<string, any>): Promise<void> {
-    // Pinecone update 구현
-    console.log(`Updating vector ${id} in Pinecone`);
-  }
-}
-
-// 기본 벡터 DB 클라이언트 (개발용)
 export const vectorDB: VectorDBClient = new InMemoryVectorDB();
 
 // ─────────────────────────────────────────────────────────────
-// 구조화 문서 생성 및 DB 기반 임베딩 저장/검색 (Phase 2 AI 검색)
-// 기존 키워드 검색(performNaturalLanguageSearch)과 독립적으로 동작
+// 구조화 문서 생성 및 DB 기반 임베딩 저장/검색 (AI 자연어 검색)
+// 기존 키워드 검색(aiSearch.search)과 독립적으로 동작
 // ─────────────────────────────────────────────────────────────
 
 /**
@@ -252,8 +197,9 @@ export async function upsertMentorEmbedding(params: {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
 
+  // 멘토 문서 생성 후 RETRIEVAL_DOCUMENT 타입으로 임베딩
   const document = generateMentorDocument(params);
-  const vector = await generateEmbedding(document);
+  const vector = await generateEmbedding(document, "RETRIEVAL_DOCUMENT");
   const embeddingJson = JSON.stringify(vector);
 
   // upsert: 이미 있으면 업데이트, 없으면 삽입
@@ -266,16 +212,17 @@ export async function upsertMentorEmbedding(params: {
   if (existing.length > 0) {
     await db
       .update(mentorEmbeddings)
-      .set({ embedding: embeddingJson, modelVersion: "text-embedding-3-small" })
+      .set({ embedding: embeddingJson, modelVersion: MODEL_VERSION })
       .where(eq(mentorEmbeddings.mentorId, params.mentorProfileId));
   } else {
     await db.insert(mentorEmbeddings).values({
       mentorId: params.mentorProfileId,
       embedding: embeddingJson,
-      modelVersion: "text-embedding-3-small",
+      modelVersion: MODEL_VERSION,
     });
   }
-  console.log(`[Embedding] Upserted embedding for mentorProfileId=${params.mentorProfileId}`);
+
+  console.log(`[Embedding] Upserted embedding for mentorProfileId=${params.mentorProfileId} (${EMBEDDING_DIMENSIONS}d)`);
 }
 
 /**
@@ -301,9 +248,8 @@ export async function searchMentorsByEmbedding(params: {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
 
-  // 검색어 임베딩 생성 (쿼리도 동일한 구조화 형식으로 감싸기)
-  const queryDocument = `[검색 요청]\n${params.query.trim()}`;
-  const queryVector = await generateEmbedding(queryDocument);
+  // 검색어는 RETRIEVAL_QUERY 타입으로 임베딩 (문서와 비대칭 최적화)
+  const queryVector = await generateEmbedding(params.query.trim(), "RETRIEVAL_QUERY");
 
   // 승인된 멘토의 임베딩만 조회
   const rows = await db
