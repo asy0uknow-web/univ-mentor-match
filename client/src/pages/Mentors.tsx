@@ -227,7 +227,9 @@ export default function Mentors() {
 
     // 전공 필터링
     if (selectedMajors.length > 0) {
-      result = result.filter((m: any) => selectedMajors.includes(m.major));
+      // selectedMajors는 id(영문 slug) 배열, m.major는 한글 학과명이므로 이름으로 변환 후 비교
+      const selectedMajorNames = getMajorNames(selectedMajors);
+      result = result.filter((m: any) => selectedMajorNames.includes(m.major));
     }
 
     // 지역 필터링

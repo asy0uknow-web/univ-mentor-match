@@ -103,7 +103,7 @@ export const COLLEGES: College[] = [
     id: "information",
     name: "정보대학",
     majors: [
-      { id: "computer_science", name: "컴퓨터학과" },
+      { id: "computer_science", name: "컴퓨터과학과" },
       { id: "data_science", name: "데이터과학과" },
       { id: "artificial_intelligence", name: "인공지능학과" },
     ],
