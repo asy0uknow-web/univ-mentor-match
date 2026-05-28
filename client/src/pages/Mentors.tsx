@@ -274,6 +274,55 @@ export default function Mentors() {
               </p>
             </div>
 
+            {/* AI 자연어 검색 */}
+            <div className="bg-gradient-to-r from-[var(--brand-primary-50)] to-[var(--brand-secondary-50)] border border-[var(--brand-primary-200)] rounded-xl p-4 sm:p-5 mb-4">
+              <div className="flex items-center gap-2 mb-2">
+                <Sparkles className="w-4 h-4 text-[var(--brand-primary-500)]" />
+                <h3 className="text-sm sm:text-base font-bold text-[var(--color-text-primary)]">AI 자연어 검색</h3>
+                <span className="text-xs bg-[var(--brand-primary-100)] text-[var(--brand-primary-700)] px-2 py-0.5 rounded-full font-medium">Beta</span>
+              </div>
+              <p className="text-xs text-[var(--color-text-secondary)] mb-3">
+                예: "서울대 컴퓨터공학과 진로 고민 상담해줄 멘토 찾아줘", "수시 생기부 컨설팅 잘하는 멘토"
+              </p>
+              <div className="flex gap-2">
+                <div className="flex-1 bg-white dark:bg-[var(--color-bg-card)] border border-[var(--brand-primary-300)] rounded-lg px-3 sm:px-4 py-2 flex items-center gap-2 shadow-sm">
+                  <Sparkles className="h-4 w-4 text-[var(--brand-primary-400)] flex-shrink-0" />
+                  <input
+                    type="text"
+                    placeholder="원하는 멘토를 자연어로 설명해보세요..."
+                    value={aiSearchTerm}
+                    onChange={(e) => setAiSearchTerm(e.target.value)}
+                    onKeyDown={handleAiSearchKeyDown}
+                    className="flex-1 bg-transparent text-xs sm:text-sm text-[var(--color-text-primary)] placeholder-[var(--color-text-secondary)] focus:outline-none py-1"
+                  />
+                  {aiSearchTerm && (
+                    <button onClick={() => { setAiSearchTerm(""); setAiSearchQuery(""); setShowAiResults(false); }} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]">
+                      <X className="h-4 w-4" />
+                    </button>
+                  )}
+                </div>
+                <button
+                  onClick={handleAiSearch}
+                  disabled={isAiSearchLoading || !aiSearchTerm.trim()}
+                  className="px-4 sm:px-6 py-2 bg-[var(--brand-primary-500)] hover:bg-[var(--brand-primary-600)] disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg text-xs sm:text-sm font-medium transition-colors flex items-center gap-2 whitespace-nowrap"
+                >
+                  {isAiSearchLoading ? (
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <Sparkles className="w-4 h-4" />
+                  )}
+                  AI 검색
+                </button>
+              </div>
+              {showAiResults && !isAiSearchLoading && (
+                <p className="text-xs text-[var(--brand-primary-600)] mt-2 font-medium">
+                  {aiSearchQueryData.length > 0
+                    ? `✨ AI가 ${aiSearchQueryData.length}명의 멘토를 추천했습니다`
+                    : "😔 조건에 맞는 멘토를 찾지 못했습니다. 다른 키워드로 검색해보세요"}
+                </p>
+              )}
+            </div>
+
             {/* 필터 및 정렬 바 */}
             <div className="flex flex-wrap items-center gap-2 sm:gap-3">
                 {/* 학과 필터 */}
@@ -331,57 +380,6 @@ export default function Mentors() {
                   </Select>
                 </div>
             </div>
-          </div>
-        </div>
-
-        {/* AI 검색 섹션 */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="bg-gradient-to-r from-[var(--brand-primary-50)] to-[var(--brand-secondary-50)] border border-[var(--brand-primary-200)] rounded-xl p-4 sm:p-6">
-            <div className="flex items-center gap-2 mb-3">
-              <Sparkles className="w-5 h-5 text-[var(--brand-primary-500)]" />
-              <h3 className="text-base sm:text-lg font-bold text-[var(--color-text-primary)]">AI 자연어 검색</h3>
-              <span className="text-xs bg-[var(--brand-primary-100)] text-[var(--brand-primary-700)] px-2 py-0.5 rounded-full font-medium">Beta</span>
-            </div>
-            <p className="text-xs sm:text-sm text-[var(--color-text-secondary)] mb-4">
-              예: "서울대 컴퓨터공학과 진로 고민 상담해줄 멘토 찾아줘", "수시 생기부 컨설팅 잘하는 멘토"
-            </p>
-            <div className="flex gap-2">
-              <div className="flex-1 bg-white dark:bg-[var(--color-bg-card)] border border-[var(--brand-primary-300)] rounded-lg px-3 sm:px-4 py-2 flex items-center gap-2 shadow-sm">
-                <Sparkles className="h-4 w-4 text-[var(--brand-primary-400)] flex-shrink-0" />
-                <input
-                  type="text"
-                  placeholder="원하는 멘토를 자연어로 설명해보세요..."
-                  value={aiSearchTerm}
-                  onChange={(e) => setAiSearchTerm(e.target.value)}
-                  onKeyDown={handleAiSearchKeyDown}
-                  className="flex-1 bg-transparent text-xs sm:text-sm text-[var(--color-text-primary)] placeholder-[var(--color-text-secondary)] focus:outline-none py-1"
-                />
-                {aiSearchTerm && (
-                  <button onClick={() => { setAiSearchTerm(""); setAiSearchQuery(""); setShowAiResults(false); }} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]">
-                    <X className="h-4 w-4" />
-                  </button>
-                )}
-              </div>
-              <button
-                onClick={handleAiSearch}
-                disabled={isAiSearchLoading || !aiSearchTerm.trim()}
-                className="px-4 sm:px-6 py-2 bg-[var(--brand-primary-500)] hover:bg-[var(--brand-primary-600)] disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg text-xs sm:text-sm font-medium transition-colors flex items-center gap-2 whitespace-nowrap"
-              >
-                {isAiSearchLoading ? (
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                ) : (
-                  <Sparkles className="w-4 h-4" />
-                )}
-                AI 검색
-              </button>
-            </div>
-            {showAiResults && !isAiSearchLoading && (
-              <p className="text-xs text-[var(--brand-primary-600)] mt-2 font-medium">
-                {aiSearchQueryData.length > 0
-                  ? `✨ AI가 ${aiSearchQueryData.length}명의 멘토를 추천했습니다`
-                  : "😔 조건에 맞는 멘토를 찾지 못했습니다. 다른 키워드로 검색해보세요"}
-              </p>
-            )}
           </div>
         </div>
 
