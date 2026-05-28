@@ -1358,8 +1358,16 @@ getTopMentors: publicProcedure
           throw new Error("이미 인증 요청이 진행 중입니다.");
         }
         
-        // 거부된 상태인 경우 기존 인증 요청 업데이트
-        if (existingVerification && existingVerification.status === "rejected") {
+        // 거부된 상태 또는 비활성화(approved) 상태인 경우 기존 인증 요청 업데이트
+        if (existingVerification && (existingVerification.status === "rejected" || existingVerification.status === "approved")) {
+          // 멘토 프로필 verificationStatus를 pending으로 되돌려 재심사 대기 상태로 설정
+          const db = await getDb();
+          if (db) {
+            await db.update(mentorProfiles).set({
+              verificationStatus: "pending",
+              updatedAt: new Date(),
+            }).where(eq(mentorProfiles.userId, ctx.user.id));
+          }
           return await updateMentorVerification(existingVerification.id, {
             studentIdImageUrl: input.studentIdImageUrl,
             status: "pending",

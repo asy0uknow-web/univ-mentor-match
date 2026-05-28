@@ -372,7 +372,17 @@ export default function MentorProfile() {
                     {/* 인증 상태 배지 */}
                     {verification && (
                       <div className="mb-4 p-3 rounded-lg bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800">
-                        {verification.status === "approved" && (
+                        {/* 비활성화 상태: verification은 approved지만 mentorProfile.verificationStatus가 pending */}
+                        {verification.status === "approved" && profile?.verificationStatus === "pending" && (
+                          <div className="space-y-1">
+                            <div className="flex items-center gap-2">
+                              <div className="w-2 h-2 rounded-full bg-orange-500"></div>
+                              <span className="text-sm font-medium text-orange-700 dark:text-orange-400">관리자에 의해 비활성화됨</span>
+                            </div>
+                            <p className="text-xs text-muted-foreground">멘토 검색에 노출되지 않습니다. 재인증 신청 후 승인을 받으면 다시 노출됩니다.</p>
+                          </div>
+                        )}
+                        {verification.status === "approved" && profile?.verificationStatus === "approved" && (
                           <div className="flex items-center gap-2">
                             <div className="w-2 h-2 rounded-full bg-green-500"></div>
                             <span className="text-sm font-medium text-green-700 dark:text-green-400">인증 완료</span>
@@ -395,13 +405,20 @@ export default function MentorProfile() {
 
                     {/* 액션 버튼 */}
                     <div className="space-y-2">
-                      {user?.userType === "university_student" && (!verification || verification.status === "rejected") && (
+                      {/* 인증 신청: 미인증, 거부됨, 또는 비활성화(approved+pending) 상태일 때 */}
+                      {user?.userType === "university_student" && (
+                        !verification ||
+                        verification.status === "rejected" ||
+                        (verification.status === "approved" && profile?.verificationStatus === "pending")
+                      ) && (
                         <Link
                           href="/verify-mentor"
                           className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition font-medium"
                         >
                           <CheckCircle className="w-4 h-4" />
-                          멘토 인증 신청
+                          {verification?.status === "approved" && profile?.verificationStatus === "pending"
+                            ? "재인증 신청"
+                            : "멘토 인증 신청"}
                         </Link>
                       )}
                       <button
