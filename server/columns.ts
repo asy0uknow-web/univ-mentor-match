@@ -8,11 +8,12 @@ export async function getColumnsList(options: {
   sortBy?: "latest" | "likes" | "comments";
   category?: string;
   searchQuery?: string;
+  authorId?: number;
 } = {}) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
 
-  const { limit = 20, offset = 0, sortBy = "latest", category, searchQuery } = options;
+  const { limit = 20, offset = 0, sortBy = "latest", category, searchQuery, authorId } = options;
 
   let baseQuery = db
     .select({
@@ -50,7 +51,8 @@ export async function getColumnsList(options: {
               like(mentorColumns.title, `%${searchQuery}%`),
               like(mentorColumns.content, `%${searchQuery}%`)
             )
-          : undefined
+          : undefined,
+        authorId ? eq(mentorColumns.authorId, authorId) : undefined
       )
     );
 

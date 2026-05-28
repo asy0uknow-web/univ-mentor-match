@@ -762,7 +762,12 @@ export async function getPendingMentorVerifications() {
     .where(eq(mentorVerifications.status, "pending"))
     .orderBy(desc(mentorVerifications.createdAt));
   
-  return result;
+  // 프론트엔드에서 verification.id, verification.user 등으로 접근하므로 평탄화
+  return result.map((row) => ({
+    ...row.verification,
+    user: row.user,
+    profile: row.profile,
+  }));
 }
 
 export async function approveMentorVerification(verificationId: number) {

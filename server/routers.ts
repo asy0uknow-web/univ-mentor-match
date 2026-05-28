@@ -1828,6 +1828,23 @@ getTopMentors: publicProcedure
         }).where(eq(mentorProfiles.userId, input.mentorId));
         return { success: true };
       }),
+    deactivateMentorProfile: protectedProcedure
+      .input(z.object({
+        mentorProfileId: z.number(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user?.role !== "admin") {
+          throw new Error("Only admins can deactivate mentor profiles");
+        }
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+        // verificationStatus를 pending으로 되돌려 멘토 검색 결과에서 제외시킴
+        await db.update(mentorProfiles).set({
+          verificationStatus: "pending",
+          updatedAt: new Date(),
+        }).where(eq(mentorProfiles.id, input.mentorProfileId));
+        return { success: true };
+      }),
 
     getPendingVerifications: protectedProcedure.query(async ({ ctx }) => {
       if (ctx.user?.role !== "admin") {
@@ -2856,6 +2873,7 @@ getTopMentors: publicProcedure
         sortBy: z.enum(["latest", "likes", "comments"]).optional(),
         category: z.string().optional(),
         searchQuery: z.string().optional(),
+        authorId: z.number().optional(),
       }))
       .query(async ({ input }) => {
         return await getColumnsList(input);

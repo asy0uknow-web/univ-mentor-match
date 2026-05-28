@@ -90,6 +90,14 @@ export default function AdminDashboard() {
     onError: (error) => toast.error(`수정 실패: ${error.message}`),
   });
 
+  const deactivateMentorMutation = trpc.admin.deactivateMentorProfile.useMutation({
+    onSuccess: () => {
+      toast.success("멘토가 비활성화되었습니다. 인증 전 상태로 되돌아갑니다.");
+      utils.admin.getAllMentors.invalidate();
+    },
+    onError: (error) => toast.error(`비활성화 실패: ${error.message}`),
+  });
+
   // 로딩 중일 때
   if (loading) {
     return (
@@ -375,8 +383,8 @@ export default function AdminDashboard() {
                   {filteredMentors && filteredMentors.length > 0 ? (
                     <div className="space-y-3">
                       {filteredMentors.map((mentor: any) => (
-                        <div key={mentor.id}>
-                          <div className="border border-border 700 700 rounded-lg p-4 hover:shadow-sm transition-shadow">
+                        <div key={mentor.profile.id}>
+                          <div className="border border-border rounded-lg p-4 hover:shadow-sm transition-shadow">
                             <div className="flex items-start justify-between mb-2">
                               <div>
                                 <h3 className="font-semibold text-foreground">{mentor.user?.name}</h3>
@@ -384,22 +392,28 @@ export default function AdminDashboard() {
                               </div>
                               <Badge className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 border-0">활성</Badge>
                             </div>
-                            <p className="text-sm text-muted-foreground 300 300 mb-3">{mentor.profile.bio}</p>
+                            <p className="text-sm text-muted-foreground mb-3">{mentor.profile.bio}</p>
                             <div className="flex gap-2">
                               <Button
                                 size="sm"
                                 variant="outline"
-                                onClick={() => setEditingMentor(editingMentor?.id === mentor.id ? null : mentor)}
+                                className="text-amber-600 border-amber-300 hover:bg-amber-50 dark:hover:bg-amber-950/30"
+                                onClick={() => {
+                                  if (confirm(`${mentor.user?.name} 멘토를 비활성화하시겠습니까?\n인증 전 상태로 되돌아가며 멘토 검색에서 제외됩니다.`)) {
+                                    deactivateMentorMutation.mutate({ mentorProfileId: mentor.profile.id });
+                                  }
+                                }}
+                                disabled={deactivateMentorMutation.isPending}
                               >
-                                <Edit className="h-4 w-4" />
-                                편집
+                                <ShieldAlert className="h-4 w-4" />
+                                비활성화
                               </Button>
                               <Button
                                 size="sm"
                                 variant="destructive"
                                 onClick={() => {
                                   if (confirm("정말 이 멘토를 삭제하시겠습니까?")) {
-                                    deleteMentorMutation.mutate({ mentorId: mentor.id });
+                                    deleteMentorMutation.mutate({ mentorId: mentor.profile.userId });
                                   }
                                 }}
                               >
@@ -408,68 +422,6 @@ export default function AdminDashboard() {
                               </Button>
                             </div>
                           </div>
-                          
-                          {/* 편집 폼 */}
-                          {editingMentor?.id === mentor.id && editingMentor?.profile && (
-                            <div className="border border-blue-200 bg-primary/5 rounded-lg p-4 mt-2">
-                              <h4 className="font-semibold text-foreground mb-3">프로필 편집</h4>
-                              <div className="space-y-3">
-                                <div>
-                                  <Label className="text-sm">대학교</Label>
-                                  <Input
-                                    value={editingMentor.profile?.university || ""}
-                                    onChange={(e) => setEditingMentor({
-                                      ...editingMentor,
-                                      profile: { ...editingMentor.profile, university: e.target.value }
-                                    })}
-                                    className="mt-1"
-                                  />
-                                </div>
-                                <div>
-                                  <Label className="text-sm">학과</Label>
-                                  <Input
-                                    value={editingMentor.profile?.major || ""}
-                                    onChange={(e) => setEditingMentor({
-                                      ...editingMentor,
-                                      profile: { ...editingMentor.profile, major: e.target.value }
-                                    })}
-                                    className="mt-1"
-                                  />
-                                </div>
-                                <div className="flex gap-2 pt-2">
-                                  <Button
-                                    size="sm"
-                                    onClick={() => {
-                                      if (editingMentor?.profile) {
-                                        updateMentorMutation.mutate({
-                                          mentorId: mentor.id,
-                                          university: editingMentor.profile.university,
-                                          major: editingMentor.profile.major,
-                                        });
-                                      }
-                                    }}
-                                    disabled={updateMentorMutation.isPending}
-                                  >
-                                    {updateMentorMutation.isPending ? (
-                                      <>
-                                        <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                                        저장 중...
-                                      </>
-                                    ) : (
-                                      "저장"
-                                    )}
-                                  </Button>
-                                  <Button
-                                    size="sm"
-                                    variant="outline"
-                                    onClick={() => setEditingMentor(null)}
-                                  >
-                                    취소
-                                  </Button>
-                                </div>
-                              </div>
-                            </div>
-                          )}
                         </div>
                       ))}
                     </div>

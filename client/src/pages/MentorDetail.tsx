@@ -47,14 +47,12 @@ export default function MentorDetail() {
   const { data: gallery } = galleryQuery;
 
   const { data: mentorColumns } = trpc.mentorColumns.getList.useQuery(
-    { limit: 3, sortBy: "latest" },
+    { limit: 3, sortBy: "latest", authorId: mentor?.user?.id },
     { enabled: !!mentor?.user?.id }
   );
 
-  // 현재 멘토가 작성한 칼럼만 필터링
-  const filteredMentorColumns = mentorColumns?.filter(
-    (column: any) => column.authorId === mentor?.user?.id
-  ) || [];
+  // 서버에서 authorId로 필터링하므로 클라이언트 필터링 불필요
+  const filteredMentorColumns = mentorColumns || [];
 
   const [, setLocation] = useLocation();
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
