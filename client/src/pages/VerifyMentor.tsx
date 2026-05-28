@@ -27,6 +27,13 @@ export default function VerifyMentor() {
     refetchInterval: (data: any) => data?.status === "pending" ? 30000 : false,
   });
 
+  const { data: mentorProfile } = trpc.mentor.getMyProfile.useQuery(undefined, {
+    enabled: isAuthenticated,
+  });
+
+  // 비활성화 상태: verification은 approved지만 mentorProfile.verificationStatus가 pending
+  const isDeactivated = verification?.status === "approved" && mentorProfile?.verificationStatus === "pending";
+
   const uploadStudentIdMutation = trpc.verification.uploadStudentId.useMutation({
     onSuccess: (data) => {
       submitVerificationMutation.mutate({
@@ -176,8 +183,29 @@ export default function VerifyMentor() {
             </div>
 
             {/* [오류4 수정] 인증 상태별 정확한 카드 표시 */}
-            {/* 승인 완료 상태 */}
-            {verification?.status === "approved" && (
+            {/* 비활성화 상태 안내 */}
+            {isDeactivated && (
+              <Card className="mb-5 border-orange-200 dark:border-orange-800/50 bg-orange-50 dark:bg-orange-950/30 shadow-sm">
+                <CardContent className="pt-5">
+                  <div className="flex items-start gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center flex-shrink-0">
+                      <ShieldAlert className="h-5 w-5 text-orange-600 dark:text-orange-400" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="font-semibold text-orange-800 dark:text-orange-300">관리자에 의해 비활성화됨</span>
+                      </div>
+                      <p className="text-sm text-orange-700 dark:text-orange-400">
+                        멘토 검색에 노출되지 않는 상태입니다. 아래에서 학적내역을 다시 업로드하여 재인증을 신청해주세요.
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* 승인 완료 상태 (비활성화가 아닌 경우만) */}
+            {verification?.status === "approved" && !isDeactivated && (
               <Card className="mb-5 border-green-200 dark:border-green-800/50 bg-green-50 dark:bg-green-950/30 shadow-sm">
                 <CardContent className="pt-5">
                   <div className="flex items-start gap-3">
@@ -254,9 +282,8 @@ export default function VerifyMentor() {
               </Card>
             )}
 
-            {/* [오류4 수정] pending 상태에서는 업로드 폼 숨김, approved 상태에서도 숨김 */}
-            {/* 업로드 폼: 미인증 또는 거부 상태에서만 표시 */}
-            {(!verification || verification.status === "rejected") && (
+            {/* 업로드 폼: 미인증, 거부, 또는 비활성화(재인증 필요) 상태에서 표시 */}
+            {(!verification || verification.status === "rejected" || isDeactivated) && (
               <Card className="shadow-sm border-0 bg-card ">
                 <CardHeader className="pb-4">
                   <CardTitle className="text-lg">학적내역 캡처 업로드</CardTitle>
@@ -365,8 +392,8 @@ export default function VerifyMentor() {
               </Card>
             )}
 
-            {/* 승인 완료 상태: 프로필 이동 버튼 */}
-            {verification?.status === "approved" && (
+            {/* 승인 완료 상태: 프로필 이동 버튼 (비활성화가 아닌 경우만) */}
+            {verification?.status === "approved" && !isDeactivated && (
               <Card className="shadow-sm border-0 bg-card ">
                 <CardContent className="pt-6 pb-6">
                   <div className="text-center">
