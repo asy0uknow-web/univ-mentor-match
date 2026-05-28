@@ -1,7 +1,7 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { trpc } from "@/lib/trpc";
 import { Link, useSearchParams } from "wouter";
-import { Search, X, ChevronRight, Star, MapPin, BadgeCheck, Sparkles, TrendingUp, AlertCircle } from "lucide-react";
+import { X, ChevronRight, Star, MapPin, BadgeCheck, Sparkles, TrendingUp, AlertCircle } from "lucide-react";
 import { useState, useEffect, useMemo } from "react";
 import { PageLayout } from "@/components/layout";
 import { setPageMeta, PAGE_META } from "@/lib/seo";
@@ -47,8 +47,7 @@ export default function Mentors() {
   const [searchParams] = useSearchParams();
   // wouter의 searchParams는 렌더마다 새 인스턴스 → 문자열로 안정화
   const typesParamStr = searchParams.get('types') ?? '';
-  const [searchTerm, setSearchTerm] = useState("");
-  const [debouncedSearch, setDebouncedSearch] = useState("");
+
   const [selectedRegions, setSelectedRegions] = useState<string[]>([]);
   const [selectedMajors, setSelectedMajors] = useState<string[]>([]);
   const [selectedConsultationTypes, setSelectedConsultationTypes] = useState<string[]>([]);
@@ -100,22 +99,6 @@ export default function Mentors() {
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [typesParamStr]);
-
-  const handleSearch = () => {
-    // 최소 2글자 이상일 때만 검색
-    if (searchTerm.length >= 2) {
-      setDebouncedSearch(searchTerm);
-    } else {
-      setDebouncedSearch("");
-    }
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      handleSearch();
-    }
-  };
 
   const openMajorPanel = () => {
     setTempSelectedMajors(selectedMajors);
@@ -216,25 +199,6 @@ export default function Mentors() {
     limit: 20,
   });
 
-  // AI 매칭 검색 쿼리 (기존 검색창 디바운스용) - 임베딩 기반 AI 검색 사용
-  const { data: aiSearchResults = [] } = trpc.aiSearch.embeddingSearch.useQuery(
-    { query: debouncedSearch, limit: 20 },
-    { enabled: !!debouncedSearch && debouncedSearch.length >= 2 }
-  );
-
-  // 디바운싱 효과: 300ms → 1000ms
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (searchTerm.length >= 2) {
-        setDebouncedSearch(searchTerm);
-      } else {
-        setDebouncedSearch("");
-      }
-    }, 1000);
-
-    return () => clearTimeout(timer);
-  }, [searchTerm]);
-
   // AI 추천 검색 (버튼 클릭 시에만)
   const handleAiSearch = () => {
     if (!aiSearchTerm.trim() || aiSearchTerm.length < 2) {
@@ -252,23 +216,13 @@ export default function Mentors() {
     }
   };
 
-  // 클라이언트 측 필터링 (기존 검색용)
+  // 클라이언트 측 필터링
   const filteredMentors = useMemo(() => {
     let result = mentors;
 
     // AI 버튼 검색 결과가 있으면 최우선 사용 (0건 포함)
     if (showAiResults) {
       result = aiSearchQueryData;
-    } else if (debouncedSearch && aiSearchResults.length > 0) {
-      result = aiSearchResults;
-    } else if (debouncedSearch) {
-      // AI 매칭 검색 결과가 없으면 기존 키워드 필터링 사용
-      const term = debouncedSearch.toLowerCase();
-      result = result.filter((m: any) =>
-        m.name?.toLowerCase().includes(term) ||
-        m.university?.toLowerCase().includes(term) ||
-        m.major?.toLowerCase().includes(term)
-      );
     }
 
     // 전공 필터링
@@ -302,7 +256,7 @@ export default function Mentors() {
     }
 
     return sorted;
-  }, [mentors, debouncedSearch, selectedMajors, selectedRegions, selectedConsultationTypes, sortBy, showAiResults, aiSearchQueryData]);
+  }, [mentors, selectedMajors, selectedRegions, selectedConsultationTypes, sortBy, showAiResults, aiSearchQueryData]);
 
 
   return (
@@ -320,23 +274,8 @@ export default function Mentors() {
               </p>
             </div>
 
-            {/* 검색 및 필터 바 */}
-            <div className="flex flex-col gap-3">
-              {/* 검색 바 */}
-              <div className="bg-[var(--color-bg-card)] border border-[var(--color-border-default)] rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 px-3 sm:px-4 py-2 flex items-center gap-2 w-full">
-                <Search className="h-4 sm:h-5 w-4 sm:w-5 text-[var(--color-text-secondary)] flex-shrink-0" />
-                <input
-                  type="text"
-                  placeholder="대학, 전공, 이름"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  onKeyDown={handleKeyDown}
-                  className="flex-1 bg-transparent text-xs sm:text-sm text-[var(--color-text-primary)] placeholder-[var(--color-text-secondary)] focus:outline-none py-2"
-                />
-              </div>
-
-              {/* 필터 및 정렬 버튼 그룹 */}
-              <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+            {/* 필터 및 정렬 바 */}
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
                 {/* 학과 필터 */}
                 <button
                   onClick={openMajorPanel}
@@ -391,7 +330,6 @@ export default function Mentors() {
                     </SelectContent>
                   </Select>
                 </div>
-              </div>
             </div>
           </div>
         </div>
