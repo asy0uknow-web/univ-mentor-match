@@ -55,14 +55,15 @@ export default function Login() {
 
       toast.success("로그인이 완료되었습니다!");
       
+      // 관리자 계정은 userType 체크 없이 바로 /admin으로 이동
+      if (response.user?.role === "admin") {
+        navigate("/admin");
+        return;
+      }
       // 프로필 완성 여부 확인
       if (response.user?.name && response.user?.userType) {
         // 프로필 완성됨 - 홈으로 이동
-        if (response.user?.role === "admin") {
-          navigate("/admin");
-        } else {
-          navigate("/");
-        }
+        navigate("/");
       } else {
         // 프로필 미완성 - 프로필 완성 페이지로 이동
         navigate("/complete-profile");
