@@ -13,6 +13,7 @@ import Home from "./pages/Home";
 const Mentors = lazy(() => import("./pages/Mentors"));
 const MentorDetail = lazy(() => import("./pages/MentorDetail"));
 const MentorProfile = lazy(() => import("./pages/MentorProfile"));
+const MyProfile = lazy(() => import("./pages/MyProfile"));
 const Bookings = lazy(() => import("./pages/Bookings"));
 const Notifications = lazy(() => import("./pages/Notifications"));
 const Messages = lazy(() => import("./pages/Messages"));
@@ -53,7 +54,7 @@ function Router() {
           {() => (
             <ProtectedRoute>
               <Suspense fallback={<div className="flex items-center justify-center min-h-screen">로딩 중...</div>}>
-                <MentorProfile />
+                <MyProfile />
               </Suspense>
             </ProtectedRoute>
           )}
