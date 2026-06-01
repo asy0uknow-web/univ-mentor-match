@@ -167,11 +167,12 @@ export default function Home() {
                 칼럼 스튜디오
               </Button>
               
-              {isAuthenticated && (
+              {/* 멘티(고등학생)에게는 멘토 참여 버튼 숨김 */}
+              {(!isAuthenticated || user?.userType !== 'high_school_student') && (
                 <Button 
                   size="lg" 
                   className="w-full sm:w-auto px-8 py-3 text-base font-semibold bg-[var(--brand-accent-50)] hover:bg-[var(--brand-accent-50)]/90 text-[var(--brand-accent-700)] shadow-md hover:shadow-lg transition-all duration-200 rounded-md"
-                  onClick={() => navigate('/my-profile')}
+                  onClick={() => navigate(isAuthenticated ? '/my-profile' : getLoginUrl())}
                 >
                   멘토로 참여하기
                 </Button>
