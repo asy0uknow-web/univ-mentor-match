@@ -555,6 +555,19 @@ getTopMentors: publicProcedure
         // getStudentById 함수가 UUID와 숫자 ID 모두 지원
         return await getStudentById(input.studentId);
       }),
+
+    // 본인 멘티 프로필 조회 (고등학교, 학년, 지역 등)
+    getMyProfile: protectedProcedure
+      .query(async ({ ctx }) => {
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+        const result = await db
+          .select()
+          .from(studentProfiles)
+          .where(eq(studentProfiles.userId, ctx.user.id))
+          .limit(1);
+        return result[0] ?? null;
+      }),
   }),
 
   booking: router({

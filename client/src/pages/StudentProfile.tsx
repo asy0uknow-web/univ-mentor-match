@@ -1,13 +1,29 @@
 import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { trpc } from "@/lib/trpc";
 import { Link, useLocation } from "wouter";
-import { MessageCircle, Calendar, User, Mail, LogOut, Search, Loader2, ArrowRight } from "lucide-react";
+import { MessageCircle, Calendar, User, Mail, LogOut, Search, Loader2, ArrowRight, School, MapPin, GraduationCap, Phone } from "lucide-react";
 import { useEffect } from "react";
 import { getLoginUrl } from "@/const";
 import { PageLayout } from "@/components/layout";
 import { setPageMeta, PAGE_META } from "@/lib/seo";
+
+const REGION_LABELS: Record<string, string> = {
+  seoul: "서울",
+  gyeonggi: "경기",
+  incheon: "인천",
+  gangwon: "강원",
+  chungcheong: "충청",
+  jeolla: "전라",
+  gyeongsang: "경상",
+  jeju: "제주",
+};
+
+const GRADE_LABELS: Record<string, string> = {
+  "1": "1학년",
+  "2": "2학년",
+  "3": "3학년",
+};
 
 export default function StudentProfile() {
   useEffect(() => {
@@ -21,13 +37,17 @@ export default function StudentProfile() {
     enabled: isAuthenticated,
   });
 
+  const { data: studentProfile, isLoading: studentProfileLoading } = trpc.student.getMyProfile.useQuery(undefined, {
+    enabled: isAuthenticated,
+  });
+
   useEffect(() => {
     if (!loading && mentorProfile) {
       setLocation("/my-profile");
     }
   }, [mentorProfile, loading, setLocation]);
 
-  if (loading) {
+  if (loading || studentProfileLoading) {
     return (
       <PageLayout>
         <div className="flex items-center justify-center min-h-screen">
@@ -78,6 +98,7 @@ export default function StudentProfile() {
               <h2 className="text-xl sm:text-2xl font-bold text-foreground">개인 정보</h2>
             </div>
             <div className="space-y-4">
+              {/* 이름 / 역할 */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <p className="text-xs sm:text-sm text-muted-foreground font-medium mb-1">이름</p>
@@ -88,6 +109,8 @@ export default function StudentProfile() {
                   <p className="font-semibold text-sm sm:text-base text-primary">멘티</p>
                 </div>
               </div>
+
+              {/* 이메일 */}
               <div>
                 <p className="text-xs sm:text-sm text-muted-foreground font-medium mb-1 flex items-center gap-1">
                   <Mail className="h-3 w-3 sm:h-4 sm:w-4" />
@@ -95,6 +118,52 @@ export default function StudentProfile() {
                 </p>
                 <p className="font-semibold text-xs sm:text-sm break-all text-foreground">{user?.email || "정보 없음"}</p>
               </div>
+
+              {/* 고등학교 / 학년 */}
+              {studentProfile && (
+                <>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <p className="text-xs sm:text-sm text-muted-foreground font-medium mb-1 flex items-center gap-1">
+                        <School className="h-3 w-3 sm:h-4 sm:w-4" />
+                        고등학교
+                      </p>
+                      <p className="font-semibold text-sm sm:text-base text-foreground">
+                        {studentProfile.school || "정보 없음"}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-xs sm:text-sm text-muted-foreground font-medium mb-1 flex items-center gap-1">
+                        <GraduationCap className="h-3 w-3 sm:h-4 sm:w-4" />
+                        학년
+                      </p>
+                      <p className="font-semibold text-sm sm:text-base text-foreground">
+                        {GRADE_LABELS[studentProfile.grade] || studentProfile.grade || "정보 없음"}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* 지역 */}
+                  {studentProfile.region && (
+                    <div>
+                      <p className="text-xs sm:text-sm text-muted-foreground font-medium mb-1 flex items-center gap-1">
+                        <MapPin className="h-3 w-3 sm:h-4 sm:w-4" />
+                        상담 희망 지역
+                      </p>
+                      <p className="font-semibold text-sm sm:text-base text-foreground">
+                        {REGION_LABELS[studentProfile.region] || studentProfile.region}
+                      </p>
+                    </div>
+                  )}
+                </>
+              )}
+
+              {/* studentProfile이 없을 때 안내 */}
+              {!studentProfile && (
+                <div className="rounded-lg bg-muted/50 px-4 py-3 text-sm text-muted-foreground">
+                  학교 정보가 아직 등록되지 않았습니다.
+                </div>
+              )}
             </div>
           </div>
 
